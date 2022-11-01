@@ -1,0 +1,10 @@
+.item{
+  width: 23%;
+  /* min-width: 439px; */
+  height: 85%;
+  position: absolute;
+  top: calc(var(--headerH) - 6%);
+  pointer-events: auto;
+  z-index: 2;
+  border: 1px solid rgb(22,83,175);
+}
