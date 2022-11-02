@@ -1,7 +1,6 @@
 // const DEV_ENV = '/demos'
 // const DEV_ENV = '../../new_example/seentao' // 116 服务器
-const DEV_ENV = '' // 本地
-
+const DEV_ENV = window.publicPath // 本地
 
 const boundrayGeojson = DEV_ENV + '/assets/data/beijing/boundray.geojson'
 const trafficGeojson = DEV_ENV + '/assets/data/beijing/traffic.geojson'
