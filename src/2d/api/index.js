@@ -16,40 +16,50 @@ import store from '@/2d/store'
 // }
 // const url = 'https://dapi.seentao.com/custom-form/customForm.formInfos.get?caseVersionId=82347900509093947&enterpriseId=82441349728567340&userName=18871870420&userId=74791556441702461&userType=PLATFORM&userToken=a23defc6acd8954460b543d23bcfee2d&memberId=74791556450091021&orgType=SCHOOL&orgId=100678506119168&schoolId=100678506119168&sceneId=portal_logo&sysCode='
 const p = store.state.urlParam
+// const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+// caseVersionId=${p.caseVersionId}
+// &enterpriseId=${p.enterpriseId}
+// &userName=${p.userName}
+// &userId=${p.userId}
+// &userType=${p.userType}
+// &userToken=${p.userToken}
+// &memberId=${p.memberId}
+// &orgType=${p.orgType}
+// &orgId=${p.orgId}
+// &schoolId=${p.schoolId}
+// &sceneId=${p.sceneId}
+// &sysCode=`
+
 const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
-caseVersionId=${p.caseVersionId}
-&enterpriseId=${p.enterpriseId}
-&userName=${p.userName}
-&userId=${p.userId}
-&userType=${p.userType}
-&userToken=${p.userToken}
-&memberId=${p.memberId}
-&orgType=${p.orgType}
-&orgId=${p.orgId}
-&schoolId=${p.schoolId}
-&sceneId=${p.sceneId}
+caseVersionId=82347900509093947
+&enterpriseId=82441349728567340
+&userName=15178904534
+&userId=85566304814628903
+&userType=PLATFORM
+&userToken=21dc9f30fa4cf0f1a06359d84da1558a
+&memberId=85566304824590394
+&orgType=SCHOOL
+&orgId=31978613954314240
+&schoolId=31978613954314240
+&sceneId=portal_logo
 &sysCode=`
 
-window.xxx = ()=>{
-    console.log(p);
-}
-
-// get
-export function get(params) {
-    return request({
-        url: '/mock/data.json',
-        method: 'get',
-        params
-    })
-}
-// post
-export function post(data) {
-    return request({
-        url: '/mock/data.json',
-        method: 'post',
-        data
-    })
-}
+// // get
+// export function get(params) {
+//     return request({
+//         url: '/mock/data.json',
+//         method: 'get',
+//         params
+//     })
+// }
+// // post
+// export function post(data) {
+//     return request({
+//         url: '/mock/data.json',
+//         method: 'post',
+//         data
+//     })
+// }
 
 // ********************************************* 正式接口 *********************************************
 

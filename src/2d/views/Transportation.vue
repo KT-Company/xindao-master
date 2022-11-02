@@ -89,7 +89,7 @@
   </Left>
   <Right>
     <!-- 物流运输 -->
-    <Title title="物流运输"> </Title>
+    <Title>物流运输</Title>
     <div class="right-wl-o ">
       <div class="dpy-row ">
         <div
@@ -115,9 +115,8 @@
 
     <!-- 出行数据 -->
     <Title
-      title="出行数据"
       class="right-go-out "
-    ></Title>
+    >出行数据</Title>
     <div class="bar-box">
       <Echart
         :option="optionGoingOutData.data"
@@ -126,9 +125,8 @@
     </div>
     <!-- 智能交换 -->
     <Title
-      title="智能交换"
       class="right-go-out "
-    ></Title>
+    >智能交换</Title>
     <div class="bar-box">
       <Echart
         :option="optionIntelligentTransportation.data"
