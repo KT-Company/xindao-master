@@ -32,27 +32,21 @@ watch(
     API.hideAll()
     // 根据路由名称调用三维方法
     if (routerName.value === "/IndustrialEconomy") {
-      // iframeRef.test1(); // 调用三维方法三维方法必须绑定在window上---test1() ......以下同理
-      API.showIndustrialEconomy()
+      API.showIndustrialEconomy();
     }
     if (routerName.value === "/Transportation") {
-      // iframeRef.test2();
-      API.showTraffics()
+      API.showTraffics();
     }
     if (routerName.value === "/Environmental") {
-      // iframeRef.test3();
-      API.showEnvironments()
+      API.showEnvironments();
     }
     if (routerName.value === "/Education") {
-      // iframeRef.test4();
-      API.showEducations()
+      API.showEducations();
     }
     if (routerName.value === "/Energy") {
-      // iframeRef.test5();
-      API.showEnergy()
+      API.showEnergy();
     }
     if (routerName.value === "/Area") {
-      // iframeRef.test6();
     }
   },
   { deep: true }
