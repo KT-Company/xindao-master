@@ -102053,8 +102053,11 @@ void main() {
 	            height: 0.5,
 	            depth: 0.015,
 	            color: '#ff0000',
-	            mixColor: '0000ff',
-	            type: 0
+	            mixColor: '#0000ff',
+	            mixColor2: '#000000',
+	            type: 0,
+	            threshold: 1500,
+	            lights: true
 	        }, opts);
 	        this.geometry = new BoxGeometry(this.opts.width, this.opts.height, this.opts.depth);
 	        this.material = new ShaderMaterial({
@@ -102062,46 +102065,180 @@ void main() {
 	            uniforms: {
 	                color: { value: new Color(this.opts.color) },
 	                height: { value: this.opts.height },
+	                threshold: { value: this.opts.threshold },
 	                type: { value: this.opts.type },
 	                opacity: { value: 1 },
-	                mixColor: { value: new Color(this.opts.mixColor) }
+	                mixColor: { value: new Color(this.opts.mixColor) },
+	                mixColor2: { value: new Color(this.opts.mixColor2) }
 	            },
 	            vertexShader: `
-          #include <logdepthbuf_pars_vertex>
-          #include <common>
+          #ifdef LIGHTS
+            varying vec3 vLightFront;
+            varying vec3 vIndirectFront;
+
+            #ifdef DOUBLE_SIDED
+              varying vec3 vLightBack;
+              varying vec3 vIndirectBack;
+            #endif
+
+            #include <common>
+            #include <uv_pars_vertex>
+            #include <uv2_pars_vertex>
+            #include <bsdfs>
+            #include <lights_pars_begin>
+            #include <color_pars_vertex>
+            #include <fog_pars_vertex>
+            #include <logdepthbuf_pars_vertex>
+            #include <clipping_planes_pars_vertex>
+          #endif
+
+          #ifndef LIGHTS
+            #include <common>
+            #include <logdepthbuf_pars_vertex>
+          #endif
   
           varying float vh;
   
           void main(){
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-              vh = position.y;
+
+            #ifdef LIGHTS
+              #include <uv_vertex>
+              #include <uv2_vertex>
+              #include <color_vertex>
+
+              #include <beginnormal_vertex>
+              #include <defaultnormal_vertex>
+
+              #include <begin_vertex>
+              #include <project_vertex>
               #include <logdepthbuf_vertex>
+              #include <clipping_planes_vertex>
+
+              #include <worldpos_vertex>
+              #include <lights_lambert_vertex>
+              #include <fog_vertex>
+            #endif
+
+            #ifndef LIGHTS
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              #include <logdepthbuf_vertex>
+            #endif
+
+            vh = position.y;
           }
           `,
 	            fragmentShader: `
-          #include <logdepthbuf_pars_fragment>
-          
           uniform vec3 color;
           uniform vec3 mixColor;
+          uniform vec3 mixColor2;
+          uniform float threshold;
           
           uniform float height;
           uniform float type;
           uniform float opacity;
   
           varying float vh;
+
+          #ifdef LIGHTS
+            varying vec3 vLightFront;
+            varying vec3 vIndirectFront;
+
+            #ifdef DOUBLE_SIDED
+              varying vec3 vLightBack;
+              varying vec3 vIndirectBack;
+            #endif
+
+            #include <common>
+            #include <packing>
+            #include <color_pars_fragment>
+            #include <uv_pars_fragment>
+            #include <uv2_pars_fragment>
+            #include <map_pars_fragment>
+            #include <bsdfs>
+            #include <lights_pars_begin>
+            #include <fog_pars_fragment>
+            #include <logdepthbuf_pars_fragment>
+            #include <clipping_planes_pars_fragment>
+
+          #endif
+
+          #ifndef LIGHTS
+            #include <common>
+            #include <logdepthbuf_pars_fragment>
+          #endif
   
           void main(){
+            
+            #ifdef LIGHTS
+              vec4 diffuseColor = vec4( color, opacity );
+              #include <clipping_planes_fragment>
+              ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+    
               #include <logdepthbuf_fragment>
-  
-                if(type == 0.){
-                  gl_FragColor = vec4(mix( color, mixColor, vec3(vh / height)), opacity);
-                }else if(type == 1.){
-                  gl_FragColor = vec4(color, opacity);
-                }
+              #include <map_fragment>
+              #include <color_fragment>
+              #include <alphatest_fragment>
+    
+              #ifdef DOUBLE_SIDED
+    
+                reflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;
+    
+              #else
+    
+                reflectedLight.indirectDiffuse += vIndirectFront;
+    
+              #endif
+    
+              reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+    
+              #ifdef DOUBLE_SIDED
+    
+                reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
+    
+              #else
+    
+                reflectedLight.directDiffuse = vLightFront;
+    
+              #endif
+    
+              reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+    
+              // modulation
+    
+              vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
+              gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+    
+              if(type == 0.){
+                gl_FragColor.rgb += vec3(mix( vec3(0.), mixColor, vec3((2. * (vh+ threshold) / height + 1.) / 4.)));  // 0 ~ 0.5
+                gl_FragColor.rgb += vec3(mix( vec3(0.), mixColor2, vec3(( (vh + threshold) / height + .5) / 2. + .5))); // 0.5 ~ 1
+              }else if(type == 1.){
+                gl_FragColor = vec4(gl_FragColor.rgb, opacity);
+              }
+
               #include <tonemapping_fragment>
+              #include <encodings_fragment>
+              #include <fog_fragment>
+              #include <premultiplied_alpha_fragment>
+            #endif
+
+            #ifndef LIGHTS
+              if(type == 0.){
+                gl_FragColor = vec4(color, opacity);
+                gl_FragColor.rgb += vec3(mix( color, mixColor, vec3((2. * vh / height + 1.) / 2.)));
+                gl_FragColor.rgb += vec3(mix( color, mixColor2, vec3((vh / height + .5) / 2. + .5)));
+              }else if(type == 1.){
+                gl_FragColor = vec4(color, opacity);
+              }
+              #include <logdepthbuf_fragment>
+              #include <tonemapping_fragment>
+            #endif
           }
           `
 	        });
+	        this.material.uniforms = UniformsUtils.merge([this.material.uniforms, UniformsLib.lights]);
+	        if (this.opts.lights)
+	            this.material.defines = { LIGHTS: '' };
+	        this.material.lights = this.opts.lights;
 	    }
 	}
 

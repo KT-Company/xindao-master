@@ -303,45 +303,23 @@ function loadHeatMap() {
   .then((result) => {
 
     const educations = result.poi
-    educations.forEach(d=>{
-      const { options,position,renderOrder } = d
-      options.height = 10000 + Math.random() * 20000
-      options.color = "#f44336"
-      options.mixColor = "#fff"
+    educations.forEach((d)=>{
 
-
+      let { options, position, renderOrder } = d
+  
+      console.log(options)
+      options = Object.assign(options, {
+        threshold: -1500
+      })
+  
       const baseCube = new Bol3D.Primitives.BaseCube(options)
+  
       CACHE.container.scene.add(baseCube)
-      baseCube.position.set(position.x,0,position.z)
+      baseCube.position.set(position.x, position.y, position.z)
       baseCube.renderOrder = renderOrder
       baseCube.visible = false
-      // CACHE.container.addBloom(baseCube)
-
-      CACHE.environment.push(baseCube)
-    })
-  })
-
-  fetch(STATE.education2Geojson)
-  .then((value) => {
-    return value.json()
-  })
-  .then((result) => {
-
-    const educations = result.poi
-    educations.forEach(d=>{
-      const { options,position,renderOrder } = d
-      options.height = 3000 + Math.random() * 10000
-      options.color = "#f66767"
-      options.mixColor = "#fff"
-
-
-      const baseCube = new Bol3D.Primitives.BaseCube(options)
-      CACHE.container.scene.add(baseCube)
-      baseCube.position.set(position.x,0,position.z)
-      baseCube.renderOrder = renderOrder
-      baseCube.visible = false
-      // CACHE.container.addBloom(baseCube)
-
+      CACHE.container.addBloom(baseCube)
+  
       CACHE.environment.push(baseCube)
     })
   })

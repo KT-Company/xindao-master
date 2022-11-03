@@ -67,6 +67,7 @@ watch(
       API._hideIcons()
       API.hideTpIcons()
       API.hideModels()
+      API.hideTraffics()
       API.hideTraffics2()
       // API.showIcons()
       API.cameraAnimation({
@@ -82,6 +83,7 @@ watch(
       API.showEducations()
       API._hideIcons()
       API.hideModels()
+      API.hideTraffics()
       API.hideTraffics2()
       API.hideTpIcons()
       // API.showIcons()
@@ -97,6 +99,7 @@ watch(
       API.showEnergy()
       API._hideIcons()
       API.hideModels()
+      API.hideTraffics()
       API.hideTraffics2()
       API.showTpIcons()
       API.hideAreaIcons()
