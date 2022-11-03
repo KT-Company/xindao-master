@@ -106,9 +106,9 @@ watch(
       API.cameraAnimation({
         cameraState: STATE.industrialState
       });
+      API.showIndustrialEconomy();
     }
     if (routerName.value === "/Area") {
-      // iframeRef.test6();
     }
   },
   { deep: true }

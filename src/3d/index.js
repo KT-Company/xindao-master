@@ -77,7 +77,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     },
 
     gammaEnabled: true,
-    stats: true,
+    stats: false,
     // loadingBar: {
     //   show: true,
     //   type: 10

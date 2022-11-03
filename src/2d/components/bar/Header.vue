@@ -6,7 +6,7 @@ import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
 
 const router = useRouter();
-const title = ref("AIE智镜-数智商业综合实践平台");
+const title = ref("AIE智境-数智商业综合实践平台");
 const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
 const back = () => {

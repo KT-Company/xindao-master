@@ -1,22 +1,9 @@
 import request from '@/2d/utils/request'
 import store from '@/2d/store'
-// let code = {
-//     caseVersionId: '82347900509093947',
-//     enterpriseId: '82441349728567340',
-//     userName: '18871870420',
-//     userId: '74791556441702461',
-//     userType: 'PLATFORM',
-//     userToken: '1bb4c71177fc91d4b5a9b933cdd903cc',
-//     memberId: '74791556450091021',
-//     orgType: 'SCHOOL',
-//     orgId: '100678506119168',
-//     schoolId: '100678506119168',
-//     sceneId: 'portal_logo',
-//     sysCode: 'cyjj'
-// }
 // const url = 'https://dapi.seentao.com/custom-form/customForm.formInfos.get?caseVersionId=82347900509093947&enterpriseId=82441349728567340&userName=18871870420&userId=74791556441702461&userType=PLATFORM&userToken=a23defc6acd8954460b543d23bcfee2d&memberId=74791556450091021&orgType=SCHOOL&orgId=100678506119168&schoolId=100678506119168&sceneId=portal_logo&sysCode='
 const p = store.state.urlParam
-const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+// https://dapi.seentao.com/custom-form/customForm.formInfos.get
+const url = `${window.publicUrl}?
 caseVersionId=${p.caseVersionId}
 &enterpriseId=${p.enterpriseId}
 &userName=${p.userName}
@@ -30,26 +17,36 @@ caseVersionId=${p.caseVersionId}
 &sceneId=${p.sceneId}
 &sysCode=`
 
-window.xxx = ()=>{
-    console.log(p);
-}
+// const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+// caseVersionId=82347900509093947
+// &enterpriseId=82441349728567340
+// &userName=15178904534
+// &userId=85566304814628903
+// &userType=PLATFORM
+// &userToken=256c1efb02a4a5c06818b6e7e5553a7c
+// &memberId=85566304824590394
+// &orgType=SCHOOL
+// &orgId=31978613954314240
+// &schoolId=31978613954314240
+// &sceneId=portal_logo
+// &sysCode=`
 
-// get
-export function get(params) {
-    return request({
-        url: '/mock/data.json',
-        method: 'get',
-        params
-    })
-}
-// post
-export function post(data) {
-    return request({
-        url: '/mock/data.json',
-        method: 'post',
-        data
-    })
-}
+// // get
+// export function get(params) {
+//     return request({
+//         url: '/mock/data.json',
+//         method: 'get',
+//         params
+//     })
+// }
+// // post
+// export function post(data) {
+//     return request({
+//         url: '/mock/data.json',
+//         method: 'post',
+//         data
+//     })
+// }
 
 // ********************************************* 正式接口 *********************************************
 
