@@ -6,5 +6,5 @@
   top: calc(var(--headerH) - 6%);
   pointer-events: auto;
   z-index: 2;
-  border: 1px solid rgb(22,83,175);
+  /* border: 1px solid rgb(22,83,175); */
 }
