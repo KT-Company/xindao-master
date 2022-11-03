@@ -100944,6 +100944,8 @@ uniform float dashSize;
 uniform float dashOffset;
 uniform float gapSize;
 
+uniform float attenuation;
+
 varying float vLineDistance;
 
 #include <common>
@@ -101001,7 +101003,11 @@ void main() {
     #include <logdepthbuf_fragment>
     #include <color_fragment>
 
-    gl_FragColor = diffuseColor;
+    if(attenuation == 0.0){
+      gl_FragColor = diffuseColor;	
+    }else{
+      gl_FragColor = vec4(diffuse, opacity * alpha);
+    }
 
     #include <tonemapping_fragment>
     #include <encodings_fragment>
@@ -101023,9 +101029,11 @@ void main() {
 	                dashSize: { value: opts?.dashSize },
 	                dashOffset: { value: opts?.dashOffset },
 	                gapSize: { value: opts?.gapSize },
-	                opacity: { value: 1 }
+	                opacity: { value: 1 },
+	                attenuation: { value: opts?.attenuation }
 	            })
 	        ]);
+	        this.transparent = true;
 	        this.color = new Color(opts?.color);
 	        this.vertexShader = vertexShader;
 	        this.fragmentShader = fragmentShader;
@@ -102101,6 +102109,388 @@ void main() {
 	    BaseLine,
 	    BaseExtrudeShape,
 	    BaseCube
+	};
+
+	class BaseBuildingStripeMaterial extends ShaderMaterial {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#0000ff',
+	            emissive: '#ffffff',
+	            minHeight: -155,
+	            maxHeight: -36
+	        }, opts);
+	        this.lights = true;
+	        this.transparent = true;
+	        this.depthWrite = true;
+	        this.depthTest = true;
+	        this.uniforms = {
+	            color: {
+	                value: new Color(this.opts.color)
+	            },
+	            opacity: {
+	                value: 1
+	            },
+	            emissive: {
+	                value: new Color(this.opts.emissive)
+	            },
+	            minHeight: {
+	                value: this.opts.minHeight
+	            },
+	            maxHeight: {
+	                value: this.opts.maxHeight
+	            }
+	        };
+	        this.vertexShader = `
+          #include <common>
+
+          precision highp float;
+
+          varying vec3 v_position;
+          varying vec3 v_normal;
+
+          varying vec3 vLightFront;
+          varying vec3 vIndirectFront;
+
+
+          #ifdef DOUBLE_SIDED
+            varying vec3 vLightBack;
+            varying vec3 vIndirectBack;
+          #endif
+
+          #include <uv_pars_vertex>
+          #include <uv2_pars_vertex>
+          #include <bsdfs>
+          #include <lights_pars_begin>
+          #include <color_pars_vertex>
+          #include <fog_pars_vertex>
+          #include <logdepthbuf_pars_vertex>
+          #include <clipping_planes_pars_vertex>
+
+          void main(){
+            #include <uv_vertex>
+            #include <uv2_vertex>
+            #include <color_vertex>
+
+            #include <beginnormal_vertex>
+            #include <defaultnormal_vertex>
+
+            #include <begin_vertex>
+            #include <project_vertex>
+            #include <logdepthbuf_vertex>
+            #include <clipping_planes_vertex>
+
+            #include <worldpos_vertex>
+            #include <lights_lambert_vertex>
+            #include <fog_vertex>
+
+            v_position = position;
+            v_normal = normal;
+          }
+        `;
+	        this.fragmentShader = `
+        precision highp float;
+
+        varying vec3 v_position;
+        varying vec3 v_normal;
+
+        uniform vec3 color;
+        uniform vec3 emissive;
+        uniform float opacity;
+
+        varying vec3 vLightFront;
+        varying vec3 vIndirectFront;
+
+        uniform float minHeight;
+        uniform float maxHeight;
+
+        #ifdef DOUBLE_SIDED
+          varying vec3 vLightBack;
+          varying vec3 vIndirectBack;
+        #endif
+
+        #include <common>
+        #include <packing>
+        #include <color_pars_fragment>
+        #include <uv_pars_fragment>
+        #include <uv2_pars_fragment>
+        #include <map_pars_fragment>
+        #include <bsdfs>
+        #include <lights_pars_begin>
+        #include <fog_pars_fragment>
+        #include <logdepthbuf_pars_fragment>
+        #include <clipping_planes_pars_fragment>
+        void main(){
+          float baseHeight = v_position.y;
+
+          // if(baseHeight < minHeight){
+          //   gl_FragColor = vec4(vec3(color / 2.), opacity);
+          //   return;
+          // }else if(baseHeight < -80.){
+          //   gl_FragColor = vec4(vec3(0.,0.,1.), opacity);
+          //   return;
+          // }else if(baseHeight < maxHeight){
+          //   gl_FragColor = vec4(vec3(0.,1.,1.), opacity);
+          //   return;
+          // }
+
+          vec4 diffuseColor = vec4( color, opacity );
+          // gl_FragColor = diffuseColor; // 基础色
+          #include <clipping_planes_fragment>
+          ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+          vec3 totalEmissiveRadiance = emissive;
+
+          #include <logdepthbuf_fragment>
+          #include <map_fragment>
+          #include <color_fragment>
+          #include <alphatest_fragment>
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;
+
+          #else
+
+            reflectedLight.indirectDiffuse += vIndirectFront;
+
+          #endif
+
+          reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
+
+          #else
+
+            reflectedLight.directDiffuse = vLightFront;
+
+          #endif
+
+          reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          // modulation
+
+          vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
+          gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+
+
+          float centerY = (maxHeight - minHeight) / 2.;
+          float ds = dot(v_normal, vec3(0., 1. ,0.));
+          if(baseHeight >= minHeight && baseHeight <= maxHeight && ds < 0.0001 && ds > -0.0001){
+            float rs = mod(abs(abs(centerY) - abs(baseHeight)), 10.);
+            if(rs <= 2. && rs >= .2){
+              gl_FragColor.rgb += totalEmissiveRadiance;
+            }
+          }
+
+          #include <tonemapping_fragment>
+          #include <encodings_fragment>
+          #include <fog_fragment>
+          #include <premultiplied_alpha_fragment>
+
+        }
+      `;
+	        this.uniforms = UniformsUtils.merge([this.uniforms, UniformsLib.lights]);
+	    }
+	}
+
+	class BaseBuildingGradientMaterial extends ShaderMaterial {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#0000ff',
+	            emissive: '#ffffff',
+	            minHeight: -155,
+	            maxHeight: -36,
+	            mixColor: '#ff0000'
+	        }, opts);
+	        this.lights = true;
+	        this.transparent = true;
+	        this.depthWrite = true;
+	        this.depthTest = true;
+	        this.uniforms = {
+	            color: {
+	                value: new Color(this.opts.color)
+	            },
+	            opacity: {
+	                value: 1
+	            },
+	            emissive: {
+	                value: new Color(this.opts.emissive)
+	            },
+	            minHeight: {
+	                value: this.opts.minHeight
+	            },
+	            maxHeight: {
+	                value: this.opts.maxHeight
+	            },
+	            mixColor: {
+	                value: new Color(this.opts.mixColor)
+	            }
+	        };
+	        this.vertexShader = `
+          #include <common>
+
+          precision highp float;
+
+          varying vec3 v_position;
+          varying vec3 v_normal;
+
+          varying vec3 vLightFront;
+          varying vec3 vIndirectFront;
+
+
+          #ifdef DOUBLE_SIDED
+            varying vec3 vLightBack;
+            varying vec3 vIndirectBack;
+          #endif
+
+          #include <uv_pars_vertex>
+          #include <uv2_pars_vertex>
+          #include <bsdfs>
+          #include <lights_pars_begin>
+          #include <color_pars_vertex>
+          #include <fog_pars_vertex>
+          #include <logdepthbuf_pars_vertex>
+          #include <clipping_planes_pars_vertex>
+
+          void main(){
+            #include <uv_vertex>
+            #include <uv2_vertex>
+            #include <color_vertex>
+
+            #include <beginnormal_vertex>
+            #include <defaultnormal_vertex>
+
+            #include <begin_vertex>
+            #include <project_vertex>
+            #include <logdepthbuf_vertex>
+            #include <clipping_planes_vertex>
+
+            #include <worldpos_vertex>
+            #include <lights_lambert_vertex>
+            #include <fog_vertex>
+
+            v_position = position;
+            v_normal = normal;
+          }
+        `;
+	        this.fragmentShader = `
+        precision highp float;
+
+        varying vec3 v_position;
+        varying vec3 v_normal;
+
+        uniform vec3 color;
+        uniform vec3 emissive;
+        uniform float opacity;
+
+        varying vec3 vLightFront;
+        varying vec3 vIndirectFront;
+
+        uniform vec3 mixColor;
+
+        uniform float minHeight;
+        uniform float maxHeight;
+
+        #ifdef DOUBLE_SIDED
+          varying vec3 vLightBack;
+          varying vec3 vIndirectBack;
+        #endif
+
+        #include <common>
+        #include <packing>
+        #include <color_pars_fragment>
+        #include <uv_pars_fragment>
+        #include <uv2_pars_fragment>
+        #include <map_pars_fragment>
+        #include <bsdfs>
+        #include <lights_pars_begin>
+        #include <fog_pars_fragment>
+        #include <logdepthbuf_pars_fragment>
+        #include <clipping_planes_pars_fragment>
+        void main(){
+          float baseHeight = v_position.y;
+
+          // if(baseHeight < minHeight){
+          //   gl_FragColor = vec4(vec3(color / 2.), opacity);
+          //   return;
+          // }else if(baseHeight < -80.){
+          //   gl_FragColor = vec4(vec3(0.,0.,1.), opacity);
+          //   return;
+          // }else if(baseHeight < maxHeight){
+          //   gl_FragColor = vec4(vec3(0.,1.,1.), opacity);
+          //   return;
+          // }
+
+          vec4 diffuseColor = vec4( color, opacity );
+          // gl_FragColor = diffuseColor; // 基础色
+          #include <clipping_planes_fragment>
+          ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+          vec3 totalEmissiveRadiance = emissive;
+
+          #include <logdepthbuf_fragment>
+          #include <map_fragment>
+          #include <color_fragment>
+          #include <alphatest_fragment>
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;
+
+          #else
+
+            reflectedLight.indirectDiffuse += vIndirectFront;
+
+          #endif
+
+          reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
+
+          #else
+
+            reflectedLight.directDiffuse = vLightFront;
+
+          #endif
+
+          reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          // modulation
+
+          vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
+          gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+
+          float interval = maxHeight - minHeight;
+          float offsetHeight = baseHeight - minHeight;
+
+          float dc = offsetHeight / interval;
+
+           gl_FragColor.rgb += emissive * dc / 2.;
+           gl_FragColor.rgb += mixColor * (dc / 2. + .5);
+
+        //   gl_FragColor.rgb = mix(mixColor * dc, emissive * dc, gl_FragColor.rgb);
+          
+          #include <tonemapping_fragment>
+          #include <encodings_fragment>
+          #include <fog_fragment>
+          #include <premultiplied_alpha_fragment>
+
+        }
+      `;
+	        this.uniforms = UniformsUtils.merge([this.uniforms, UniformsLib.lights]);
+	    }
+	}
+
+	const PrimitiveMaterial = {
+	    BaseLineMaterial,
+	    BaseBuildingStripeMaterial,
+	    BaseBuildingGradientMaterial
 	};
 
 	// 根据节点名称获取opts的key
@@ -108111,6 +108501,7 @@ void main(){
 	exports.LineCurve = LineCurve;
 	exports.LineCurve3 = LineCurve3;
 	exports.LineDashedMaterial = LineDashedMaterial;
+	exports.LineGeometry = LineGeometry;
 	exports.LineLoop = LineLoop;
 	exports.LinePieces = LinePieces;
 	exports.LineSegments = LineSegments;
@@ -108216,6 +108607,7 @@ void main(){
 	exports.PolyhedronBufferGeometry = PolyhedronGeometry;
 	exports.PolyhedronGeometry = PolyhedronGeometry;
 	exports.PositionalAudio = PositionalAudio;
+	exports.PrimitiveMaterial = PrimitiveMaterial;
 	exports.Primitives = Primitives;
 	exports.PropertyBinding = PropertyBinding;
 	exports.PropertyMixer = PropertyMixer;

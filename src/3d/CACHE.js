@@ -7,6 +7,13 @@ const education = []
 const energy = []
 const plates = []
 const icons= []
+const areaIcons = []
+const earth = []
+const lines = []
+const lines2 = []
+const linePoints = []
+const models = []
+const tpIcons = []
 
 export const CACHE = {
   container,
@@ -16,5 +23,12 @@ export const CACHE = {
   education,
   energy,
   plates,
-  icons
+  icons,
+  areaIcons,
+  earth,
+  lines,
+  linePoints,
+  models,
+  lines2,
+  tpIcons
 }

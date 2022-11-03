@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { firstA,getWenhaoA } from "@/2d/utils/letters";
 
 import { API } from "@/3d/API";
+import { STATE } from "@/3d/STATE";
 
 // const iframeRef = inject("iframeRef"); // 获取三维里的方法
 const router = useRouter();
@@ -34,22 +35,74 @@ watch(
     if (routerName.value === "/IndustrialEconomy") {
       // iframeRef.test1(); // 调用三维方法三维方法必须绑定在window上---test1() ......以下同理
       API.showIndustrialEconomy()
+      API._hideIcons()
+      API.hideModels()
+      API.hideTraffics2()
+      API.hideTpIcons()
+      API.cameraAnimation({
+        cameraState: STATE.industrialState,
+        callback: () => {
+          API.showAreaIcons()
+        },
+      });
     }
     if (routerName.value === "/Transportation") {
       // iframeRef.test2();
       API.showTraffics()
+      API.showIcons()
+      API.showModels()
+      API.hideTraffics()
+      API.hideTpIcons()
+      API.showTraffics2()
+      API.cameraAnimation({
+        cameraState: STATE.trafficState,
+        callback:()=>{
+        }
+      });
     }
     if (routerName.value === "/Environmental") {
       // iframeRef.test3();
+      API.showIndustrialEconomy()
       API.showEnvironments()
+      API._hideIcons()
+      API.hideTpIcons()
+      API.hideModels()
+      API.hideTraffics2()
+      // API.showIcons()
+      API.cameraAnimation({
+        cameraState: STATE.popState,
+        callback:()=>{
+          API.animateEnvironment()
+        }
+      });
     }
     if (routerName.value === "/Education") {
       // iframeRef.test4();
+      API.showIndustrialEconomy()
       API.showEducations()
+      API._hideIcons()
+      API.hideModels()
+      API.hideTraffics2()
+      API.hideTpIcons()
+      // API.showIcons()
+      API.cameraAnimation({
+        cameraState: STATE.educationState,
+        callback:()=>{
+          API.animateEducation()
+        }
+      });
     }
     if (routerName.value === "/Energy") {
       // iframeRef.test5();
       API.showEnergy()
+      API._hideIcons()
+      API.hideModels()
+      API.hideTraffics2()
+      API.showTpIcons()
+      API.hideAreaIcons()
+      API.cameraAnimation({
+        cameraState: STATE.industrialState
+      });
     }
     if (routerName.value === "/Area") {
       // iframeRef.test6();

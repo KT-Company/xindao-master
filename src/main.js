@@ -1,2 +1,2 @@
 import '@/2d/main'
-// import '@/3d/index'
+import '@/3d/index'
