@@ -10,7 +10,7 @@ const title = ref("AIE智境-数智商业综合实践平台");
 const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
 const back = () => {
-  router.go(-1);
+  window.location.href='/aie_web'
 
   API.hideAll();
 
@@ -31,13 +31,13 @@ setInterval(() => {
 <template>
   <div class="header">
     <h1 class="title num-jianbian-lan">{{ title }}</h1>
-    <p class="time">
+    <!-- <p class="time">
       <span>{{ year }}</span>
       <span>{{ time }}</span>
-    </p>
+    </p> -->
     <p class="info">
-      <span>🌤&nbsp; 多云</span>
-      <span>23-34℃</span>
+      <!-- <span>🌤&nbsp; 多云</span>
+      <span>23-34℃</span> -->
       <span
         class="back"
         @click="back"

@@ -118,10 +118,10 @@ export function setTrafficMileage(tlzlc, res) {
                     }
                 }
                 if (name == "高速铁路总里程") {
-                    return `{c|${name}}\n{a|${target}}`;
+                    return `{c|${name}}\n{a|${target} 公里}`;
                 }
                 if (name == "普通铁路总里程") {
-                    return `{c|${name}}\n{b|${target}}`;
+                    return `{c|${name}}\n{b|${target} 公里}`;
                 }
 
             }
@@ -175,8 +175,6 @@ export function setTrafficMileage(tlzlc, res) {
 
 // 公共交通
 export function setPublicTransport(res, color, img, maxData) {
-    console.log(maxData);
-    console.log(maxData);
     let data = res;
     return {
         angleAxis: {
@@ -290,7 +288,10 @@ export function setPublicTransport(res, color, img, maxData) {
 import * as echarts from "echarts";
 export function setGoingOutData(res, color, img) {
     const xdata = res.map((v) => v.name);
+    console.log('xdata: ', xdata);
     const ydata = res.map((v) => v.value);
+    const unitList = res.map(v=>v.unit)
+    console.log('ydata: ', ydata);
 
     return {
 
@@ -353,29 +354,29 @@ export function setGoingOutData(res, color, img) {
                     },
                     formatter: (name, index) => {
                         let unit;
-                        res.forEach(item => {
-                            switch (item.id) {
-                                case 0:
-                                    unit = item.unit
-                                    break;
-                                case 1:
-                                    unit = item.unit
-                                    break;
-                                case 2:
-                                    unit = item.unit
-                                    break;
-                                case 3:
-                                    unit = item.unit
-                                    break;
-                                case 4:
-                                    unit = item.unit
-                                    break;
-                                case 5:
-                                    unit = item.unit
-                                    break;
-                            }
-                        })
-                        return `{num1|${name}${unit}}`;
+                        // res.forEach(item => {
+                        //     switch (item.id) {
+                        //         case 0:
+                        //             unit = item.unit
+                        //             break;
+                        //         case 1:
+                        //             unit = item.unit
+                        //             break;
+                        //         case 2:
+                        //             unit = item.unit
+                        //             break;
+                        //         case 3:
+                        //             unit = item.unit
+                        //             break;
+                        //         case 4:
+                        //             unit = item.unit
+                        //             break;
+                        //         case 5:
+                        //             unit = item.unit
+                        //             break;
+                        //     }
+                        // })
+                        return `{num1|${name}${unitList[index]}}`;
                     },
                     rich: {
                         num1: {
@@ -405,7 +406,6 @@ export function setGoingOutData(res, color, img) {
                 type: 'bar',
                 data: ydata,
                 barWidth: 12,
-
                 showBackground: true,
                 backgroundStyle: {
                     color: 'rgba(95, 123, 149, 0.2)',

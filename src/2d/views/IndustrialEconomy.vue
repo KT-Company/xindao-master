@@ -133,7 +133,7 @@ onMounted(() => {
 
 <template>
   <Left>
-    <Title>{{store.state.year}}--产业指标</Title>
+    <Title>{{store.state.year}}--经济总量</Title>
     <ul class="industry-main main">
       <li>
         <span>GDP总值</span><span>{{cyzb.data.gdpzz}}亿</span>
@@ -161,7 +161,7 @@ onMounted(() => {
         class="h-100"
       ></Echart>
     </div>
-    <Title>进出口总额</Title>
+    <Title>外贸总量</Title>
     <div class="totalAmount-main main">
       <Echart
         :option="option.data2"
@@ -170,7 +170,7 @@ onMounted(() => {
     </div>
   </Left>
   <Right>
-    <Title>2021一一经济指标</Title>
+    <Title>2021一一企业总量</Title>
     <ul class="economic-main">
       <li
         v-for="(item, index) in economicData"
@@ -181,14 +181,14 @@ onMounted(() => {
         <span>{{ item.value }}</span>
       </li>
     </ul>
-    <Title>年税收</Title>
+    <Title>税收与债务</Title>
     <div class="tax-main">
       <Echart
         :option="option.data3"
         class="h-100"
       ></Echart>
     </div>
-    <Title>存贷款数据</Title>
+    <Title>社会存贷款总量</Title>
     <div class="data-main">
       <Echart
         :option="option.data4"

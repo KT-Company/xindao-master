@@ -441,7 +441,7 @@ let btnBoeeomData = ([
       .text {
         font-family: Microsoft YaHei;
         font-weight: 400;
-        font-size: 25px;
+        font-size: 1.3vw;
         color: #FFFFFF;
         opacity: 1;
 
