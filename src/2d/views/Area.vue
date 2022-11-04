@@ -463,7 +463,7 @@ let btnBoeeomData = ([
 }
 
 .center-content {
-  height: calc(34.5% - var(--titleH));
+  // height: calc(34.5% - var(--titleH));
   pointer-events: auto;
   width: 37%;
   position: absolute;
