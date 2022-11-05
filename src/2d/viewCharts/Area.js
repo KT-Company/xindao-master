@@ -326,12 +326,12 @@ export function setAddValue(res, color, img) {
           y2: 1,
           colorStops: [
             {
-              offset: 0,
+              offset: 1,
               color: color[index][0], // 0% 处的颜色
             },
             {
               offset: 1,
-              color: color[index][1], // 100% 处的颜色
+              color: color[index][0], // 100% 处的颜色
             },
           ],
           global: false, // 缺省为 false
@@ -423,8 +423,6 @@ export function setAddValue(res, color, img) {
 
 // 企业家 
 export function setLineChartsQYJ(res, color1, color2, color3, color4, max, xftjdata2) {
-  console.log(xftjdata2);
-  console.log('xftjdata2---------------------------');
   let xData = res.map(item => item.name)
   let yData = res.map(item => item.value)
 

@@ -5,12 +5,12 @@
     <div class="item-wrap-TM">
       <div class="wrap-tm dpy-row">
         <div class="bg-box dpy-column">
-          <div class="title">{{ base.data.glzlcs }}</div>
-          <div>公路总里程数(公里)</div>
+          <div class="title">{{ base.data.glzlcs }}&nbsp;公里</div>
+          <div>公路总里程数</div>
         </div>
         <div class="bg-box dpy-column">
-          <div class="title">{{ base.data.gsglzlc }}</div>
-          <div>高速公路总里程(公里)</div>
+          <div class="title">{{ base.data.gsglzlc }}&nbsp;公里</div>
+          <div>高速公路总里程</div>
         </div>
       </div>
       <Echart
@@ -18,7 +18,7 @@
         class="chart-box"
       ></Echart>
       <div class="box-km">
-        城市轨道交通总公里：<span class="span">{{ base.data.csgdjtzlc }}{{base.data.csgdjtzlc !== undefined ? '公里' : ''}}</span>
+        城市轨道交通总公里：<span class="span">{{ base.data.csgdjtzlc }}&nbsp;公里</span>
       </div>
     </div>
 
@@ -182,24 +182,21 @@ onMounted(() => {
 
   // 出行数据
   goingOutData.value = [
-    { id: 0, value: "2312.00", name: "交通通信支出", unit: "元/年" },
-    { id: 1, value: "512", name: "平均通勤时", unit: "分钟" },
-    { id: 2, value: "211", name: "交通通信支出", unit: "公里" },
+    { id: 0, value: "", name: "交通通信支出", unit: "元/年" },
+    { id: 1, value: "", name: "平均通勤时", unit: "分钟" },
+    { id: 2, value: "", name: "平均通勤距离", unit: "公里" },
   ];
-  console.log("goingOutData.value : ", goingOutData.value);
   // 智能交通
   intelligentTransportation.value = [
-    { id: 3, value: "3423", name: "交通通信支出", unit: "个" },
-    { id: 4, value: "23423", name: "交通通信支出", unit: "个" },
-    { id: 5, value: "12312", name: "交通通信支出", unit: "个" },
+    { id: 3, value: "", name: "智能停车场", unit: "个" },
+    { id: 4, value: "", name: "智能图像采集终端", unit: "个" },
+    { id: 5, value: "", name: "智能信号灯", unit: "个" },
   ];
 
   getjtcx().then((res) => {
     console.log("getjtcx", res);
     const data = res.data.formInfoList;
     base.data = data.find((item) => item.year == store.state.year);
-    console.log(base.data);
-    console.log("base.data");
     // 交通里程
     let dataTrafficMileage = [
       {
@@ -263,7 +260,6 @@ onMounted(() => {
         console.log(item, index);
       console.log("item");
     });
-    console.log(logisticsTransportation.value, "logisticsTransportation.value");
 
     // 出行数据
     goingOutData.value.forEach((item, index) => {
@@ -279,7 +275,6 @@ onMounted(() => {
           break;
       }
     });
-    console.log(goingOutData, "goingOutData");
     optionGoingOutData.data = setGoingOutData(
       goingOutData.value,
       [

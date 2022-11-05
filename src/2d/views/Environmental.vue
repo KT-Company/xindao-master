@@ -408,10 +408,10 @@ const message = ref("page2");
         </div>
       </div>
     </div>
-    <Title>消费统计</Title>
+    <Title>物价指数</Title>
     <div class="xftj-wrap">
       <div class="title">
-        社会消费品零售总额(元)<span>321321</span>
+        居民消费价格指数CPI :<span>321321</span>
       </div>
       <Echart
         :option="optionXFTJ.data"
@@ -599,7 +599,7 @@ const message = ref("page2");
 
   .title {
     width: 100%;
-    height: 30%;
+    // height: 30%;
     line-height: 3rem;
     background: url("@/2d/assets/images/chart-title-bai-bg.png") no-repeat;
     background-size: 100% 100%;
@@ -701,7 +701,7 @@ const message = ref("page2");
 
   .title {
     width: 100%;
-    height: 29%;
+    // height: 29%;
     line-height: 3.4rem;
     background: url("@/2d/assets/images/chart-title-lan-bg.png") no-repeat;
     background-size: 100% 100%;

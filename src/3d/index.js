@@ -42,17 +42,17 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         autoRotateSpeed: 1,
         target: [1656.3432304127095, 0, 9800.149326543074],
         minDistance: 1000,
-        maxDistance: 48000,
+        maxDistance: 45000,
         maxPolarAngle: Math.PI * 0.44,
         minPolarAngle: Math.PI * 0.05,
         enableDamping: true,
         dampingFactor: 0.05,
       }
     },
-    bounds: {
-      radius: 48000,
-      center: [0, 0, 0]
-    },
+    // bounds: {
+    //   radius: 48000,
+    //   center: [0, 0, 0]
+    // },
     lights: {
       directionLights: [
         { color: 0xffffff, intensity: 1.2, position: [-1300, 500, 3800], mapSize: [4096, 4096], near: 10, far: 15000, bias: -0.001, distance: 8000 },

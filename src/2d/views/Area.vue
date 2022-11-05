@@ -441,7 +441,7 @@ let btnBoeeomData = ([
       .text {
         font-family: Microsoft YaHei;
         font-weight: 400;
-        font-size: 25px;
+        font-size: 1.3vw;
         color: #FFFFFF;
         opacity: 1;
 
@@ -463,7 +463,7 @@ let btnBoeeomData = ([
 }
 
 .center-content {
-  height: calc(34.5% - var(--titleH));
+  // height: calc(34.5% - var(--titleH));
   pointer-events: auto;
   width: 37%;
   position: absolute;

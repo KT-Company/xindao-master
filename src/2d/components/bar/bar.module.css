@@ -1,6 +1,6 @@
 .item{
   width: 23%;
-  /* min-width: 439px; */
+  min-width: 439px;
   height: 85%;
   position: absolute;
   top: calc(var(--headerH) - 6%);

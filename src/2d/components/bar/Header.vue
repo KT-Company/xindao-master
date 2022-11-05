@@ -11,6 +11,7 @@ const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
 const back = () => {
   router.push('/Transportation');
+  // window.location.href='/aie_web'
 
   // API.hideAll();
 
