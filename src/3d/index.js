@@ -213,138 +213,138 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       evt.scene.add(groundMirror)
 
       // ********************** gui start **********************
-      const gui = new dat.GUI()
-      // scenes
-      const scenesFolder = gui.addFolder('场景')
-      // floor
-      const defaults = {vertical: 24000, shapeColor: '#ffffff', shapeExtrude: '#ffffff', lineBottom: '#ffffff', line: '#ffffff', floorOpacity: 1, floorColor: '#101119', buildingColor: '#ffffff', fogColor: '#111472', skySize: 2, minHeight: -155, maxHeight: -36, city1Color: '#0000ff', city1StripeColor: '#00ffff', city1MixColor: '#ff0000' }
+      // const gui = new dat.GUI()
+      // // scenes
+      // const scenesFolder = gui.addFolder('场景')
+      // // floor
+      // const defaults = {vertical: 24000, shapeColor: '#ffffff', shapeExtrude: '#ffffff', lineBottom: '#ffffff', line: '#ffffff', floorOpacity: 1, floorColor: '#101119', buildingColor: '#ffffff', fogColor: '#111472', skySize: 2, minHeight: -155, maxHeight: -36, city1Color: '#0000ff', city1StripeColor: '#00ffff', city1MixColor: '#ff0000' }
 
-      scenesFolder
-        .add(defaults, 'vertical')
-        .name('水平起始')
-        .onChange((val) => {
-          CACHE.industries.forEach((c) => {
-            c.material.uniforms.vertical.value = val
-          })
-        })
+      // scenesFolder
+      //   .add(defaults, 'vertical')
+      //   .name('水平起始')
+      //   .onChange((val) => {
+      //     CACHE.industries.forEach((c) => {
+      //       c.material.uniforms.vertical.value = val
+      //     })
+      //   })
 
-        scenesFolder.addColor(defaults, 'shapeColor').onChange((val) => {
-          CACHE.industries.forEach((c, index) => {
-            c.material.uniforms.color.value.set(val)
-          })
-        })
+      //   scenesFolder.addColor(defaults, 'shapeColor').onChange((val) => {
+      //     CACHE.industries.forEach((c, index) => {
+      //       c.material.uniforms.color.value.set(val)
+      //     })
+      //   })
 
-        scenesFolder.addColor(defaults, 'shapeExtrude').onChange((val) => {
-          CACHE.industries.forEach((c) => {
-            c.material.uniforms.gradient.value.set(val)
-          })
-        })
+      //   scenesFolder.addColor(defaults, 'shapeExtrude').onChange((val) => {
+      //     CACHE.industries.forEach((c) => {
+      //       c.material.uniforms.gradient.value.set(val)
+      //     })
+      //   })
 
-      scenesFolder.addColor(defaults, 'city1Color').onChange((val) => {
-        CACHE.models.forEach(d => {
-          d.traverse(c => {
-            if (c.isMesh) {
-              c.material.uniforms.color.value.set(val)
-            }
-          })
-        })
-      })
-        .name('color')
+      // scenesFolder.addColor(defaults, 'city1Color').onChange((val) => {
+      //   CACHE.models.forEach(d => {
+      //     d.traverse(c => {
+      //       if (c.isMesh) {
+      //         c.material.uniforms.color.value.set(val)
+      //       }
+      //     })
+      //   })
+      // })
+      //   .name('color')
 
-      scenesFolder.addColor(defaults, 'city1StripeColor').onChange((val) => {
-        CACHE.models.forEach(d => {
-          d.traverse(c => {
-            if (c.isMesh) {
-              c.material.uniforms.emissive.value.set(val)
-            }
-          })
-        })
-      })
-        .name('emissive')
-
-
-      scenesFolder.addColor(defaults, 'city1MixColor').onChange((val) => {
-        CACHE.models.forEach(d => {
-          d.traverse(c => {
-            if (c.isMesh) {
-              c.material.uniforms.mixColor.value.set(val)
-            }
-          })
-        })
-      })
-        .name('mixColor')
+      // scenesFolder.addColor(defaults, 'city1StripeColor').onChange((val) => {
+      //   CACHE.models.forEach(d => {
+      //     d.traverse(c => {
+      //       if (c.isMesh) {
+      //         c.material.uniforms.emissive.value.set(val)
+      //       }
+      //     })
+      //   })
+      // })
+      //   .name('emissive')
 
 
-      scenesFolder
-        .add(defaults, 'maxHeight')
-        .name('maxHeight')
-        .step(1)
-        .onChange((val) => {
-          CACHE.models.forEach(d => {
-            d.traverse(c => {
-              if (c.isMesh) {
-                c.material.uniforms.maxHeight.value = val
-              }
-            })
-          })
-        })
-      scenesFolder
-        .add(defaults, 'minHeight')
-        .name('minHeight')
-        .step(1)
-        .onChange((val) => {
-          CACHE.models.forEach(d => {
-            d.traverse(c => {
-              if (c.isMesh) {
-                c.material.uniforms.minHeight.value = val
-              }
-            })
-          })
-        })
+      // scenesFolder.addColor(defaults, 'city1MixColor').onChange((val) => {
+      //   CACHE.models.forEach(d => {
+      //     d.traverse(c => {
+      //       if (c.isMesh) {
+      //         c.material.uniforms.mixColor.value.set(val)
+      //       }
+      //     })
+      //   })
+      // })
+      //   .name('mixColor')
 
 
-      // scenesFolder.add(floor.material, 'opacity', 0, 1).step(0.001).name('地板透明度')
-      // // toneMapping
-      scenesFolder.add(evt.renderer, 'toneMappingExposure', 0, 10).step(0.001).name('exposure')
-      scenesFolder.add(evt.ambientLight, 'intensity').step(0.001).min(0).name('环境光强度')
-      scenesFolder.add(evt.directionLights[0], 'intensity').step(0.001).min(0).name('平行光1强度')
-      scenesFolder.add(evt.directionLights[0].position, 'x').name('平行光1X')
-      scenesFolder.add(evt.directionLights[0].position, 'y').name('平行光1Y')
-      scenesFolder.add(evt.directionLights[0].position, 'z').name('平行光1Z')
-      // scenesFolder.add(evt.directionLights[1], 'intensity').step(0.001).min(0).name('平行光2强度')
-      // scenesFolder.add(evt.directionLights[1].position, 'x').name('平行光2X')
-      // scenesFolder.add(evt.directionLights[1].position, 'y').name('平行光2Y')
-      // scenesFolder.add(evt.directionLights[1].position, 'z').name('平行光2Z')
-      scenesFolder.addColor(defaults, 'fogColor').name('雾颜色').onChange((val) => {
-        CACHE.container.scene.fog.color.set(val)
-      })
-      scenesFolder.addColor(defaults, 'floorColor').name('地板颜色').onChange((val) => {
-        floorMat.color.set(val)
-      })
-      scenesFolder.add(defaults, 'floorOpacity').step(0.001).min(0).name('地板透明度').onChange(val => {
-        floorMat.opacity = val
-      })
-      scenesFolder.add(evt.scene.fog, 'density').step(0.000001).min(0).name('雾强度')
-      scenesFolder.add(defaults, 'skySize').step(.5).min(0).name('天空盒大小')
-        .onChange(val => {
-          evt.sky.scale.set(val, val, val)
-        })
+      // scenesFolder
+      //   .add(defaults, 'maxHeight')
+      //   .name('maxHeight')
+      //   .step(1)
+      //   .onChange((val) => {
+      //     CACHE.models.forEach(d => {
+      //       d.traverse(c => {
+      //         if (c.isMesh) {
+      //           c.material.uniforms.maxHeight.value = val
+      //         }
+      //       })
+      //     })
+      //   })
+      // scenesFolder
+      //   .add(defaults, 'minHeight')
+      //   .name('minHeight')
+      //   .step(1)
+      //   .onChange((val) => {
+      //     CACHE.models.forEach(d => {
+      //       d.traverse(c => {
+      //         if (c.isMesh) {
+      //           c.material.uniforms.minHeight.value = val
+      //         }
+      //       })
+      //     })
+      //   })
 
 
-      scenesFolder.addColor(defaults, 'line').name('line').onChange((val) => {
+      // // scenesFolder.add(floor.material, 'opacity', 0, 1).step(0.001).name('地板透明度')
+      // // // toneMapping
+      // scenesFolder.add(evt.renderer, 'toneMappingExposure', 0, 10).step(0.001).name('exposure')
+      // scenesFolder.add(evt.ambientLight, 'intensity').step(0.001).min(0).name('环境光强度')
+      // scenesFolder.add(evt.directionLights[0], 'intensity').step(0.001).min(0).name('平行光1强度')
+      // scenesFolder.add(evt.directionLights[0].position, 'x').name('平行光1X')
+      // scenesFolder.add(evt.directionLights[0].position, 'y').name('平行光1Y')
+      // scenesFolder.add(evt.directionLights[0].position, 'z').name('平行光1Z')
+      // // scenesFolder.add(evt.directionLights[1], 'intensity').step(0.001).min(0).name('平行光2强度')
+      // // scenesFolder.add(evt.directionLights[1].position, 'x').name('平行光2X')
+      // // scenesFolder.add(evt.directionLights[1].position, 'y').name('平行光2Y')
+      // // scenesFolder.add(evt.directionLights[1].position, 'z').name('平行光2Z')
+      // scenesFolder.addColor(defaults, 'fogColor').name('雾颜色').onChange((val) => {
+      //   CACHE.container.scene.fog.color.set(val)
+      // })
+      // scenesFolder.addColor(defaults, 'floorColor').name('地板颜色').onChange((val) => {
+      //   floorMat.color.set(val)
+      // })
+      // scenesFolder.add(defaults, 'floorOpacity').step(0.001).min(0).name('地板透明度').onChange(val => {
+      //   floorMat.opacity = val
+      // })
+      // scenesFolder.add(evt.scene.fog, 'density').step(0.000001).min(0).name('雾强度')
+      // scenesFolder.add(defaults, 'skySize').step(.5).min(0).name('天空盒大小')
+      //   .onChange(val => {
+      //     evt.sky.scale.set(val, val, val)
+      //   })
 
-        CACHE.lines.forEach(l => {
-          l.material.color.set(val)
-        })
 
-      })
-      scenesFolder.addColor(defaults, 'lineBottom').name('lineBottom').onChange((val) => {
+      // scenesFolder.addColor(defaults, 'line').name('line').onChange((val) => {
 
-        CACHE.linesBottom.forEach(l => {
-          l.material.color.set(val)
-        })
+      //   CACHE.lines.forEach(l => {
+      //     l.material.color.set(val)
+      //   })
 
-      })
+      // })
+      // scenesFolder.addColor(defaults, 'lineBottom').name('lineBottom').onChange((val) => {
+
+      //   CACHE.linesBottom.forEach(l => {
+      //     l.material.color.set(val)
+      //   })
+
+      // })
 
 
 

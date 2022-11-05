@@ -33,12 +33,9 @@ setInterval(() => {
   <div class="header">
     <h1 class="title num-jianbian-lan">{{ title }}</h1>
     <p class="time">
-      <span>{{ year }}</span>
-      <span>{{ time }}</span>
+      <span>数据统计时间： 2021年</span>
     </p>
     <p class="info">
-      <span>🌤&nbsp; 多云</span>
-      <span>23-34℃</span>
       <span
         class="back"
         @click="back"

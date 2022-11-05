@@ -1,7 +1,7 @@
 <!-- 交通出行 -->
 <template>
   <Left>
-    <Title>{{ store.state.year }}一一交通里程</Title>
+    <Title>交通里程</Title>
     <div class="item-wrap-TM">
       <div class="wrap-tm dpy-row">
         <div class="bg-box dpy-column">
@@ -18,7 +18,7 @@
         class="chart-box"
       ></Echart>
       <div class="box-km">
-        城市轨道交通总公里(公里)：<span class="span">{{ base.data.csgdjtzlc }}</span>
+        城市轨道交通总公里：<span class="span">{{ base.data.csgdjtzlc }}{{base.data.csgdjtzlc !== undefined ? '公里' : ''}}</span>
       </div>
     </div>
 
@@ -34,9 +34,8 @@
         <div class="dpy-row">
           <div class="left ">
             <p>公路总里程</p>
-            <p>单位：公里</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.gjzlc }}</span><span class="span2">公里</span></div>
+          <div class="right"><span class="span1">{{ base.data.gjzlc }}</span><span class="span2">{{ base.data.gjzlc !== undefined ?  '公里' : ''}}</span></div>
         </div>
 
       </div>
@@ -49,9 +48,8 @@
         <div class="dpy-row">
           <div class="left">
             <p>年客运量</p>
-            <p>单位：人</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.nkyl }}</span><span class="span2">亿人次</span></div>
+          <div class="right"><span class="span1">{{ base.data.nkyl }}</span><span class="span2">{{ base.data.nkyl !== undefined ?  '亿人次' : ''}}</span></div>
 
         </div>
 
@@ -65,9 +63,8 @@
         <div class="dpy-row">
           <div class="left">
             <p>出租车保有量</p>
-            <p>单位：辆</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.czcbyl }}</span><span class="span2">万辆</span></div>
+          <div class="right"><span class="span1">{{ base.data.czcbyl }}</span><span class="span2">{{ base.data.czcbyl !== undefined ?  '万辆' : ''}}</span></div>
         </div>
 
       </div>
@@ -80,9 +77,8 @@
         <div class="dpy-row">
           <div class="left">
             <p>共享自行车投放量</p>
-            <p>单位：辆</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.gxzxctfl }}</span><span class="span2">万辆</span></div>
+          <div class="right"><span class="span1">{{ base.data.gxzxctfl }}</span><span class="span2">{{ base.data.gxzxctfl !== undefined ?  '万辆' : ''}}</span></div>
         </div>
       </div>
     </Item>
@@ -123,10 +119,10 @@
         :style="{ height: '220px' }"
       ></Echart>
     </div>
-    <!-- 智能交换 -->
+    <!-- 智能交通 -->
     <Title
       class="right-go-out "
-    >智能交换</Title>
+    >智能交通</Title>
     <div class="bar-box">
       <Echart
         :option="optionIntelligentTransportation.data"
