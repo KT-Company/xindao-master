@@ -15,14 +15,14 @@ window.useShowView = (bool) => {
 // router.push("/");
 onMounted(() => {
   // provide("iframeRef", iframeRef.value.contentWindow);
-  nextTick(() => {
-    sceneOnLoad({
-      domElement: canvas3d.value,
-      callback: () => {
-        // console.log('load finish')
-      },
+    nextTick(() => {
+      sceneOnLoad({
+        domElement: canvas3d.value,
+        callback: () => {
+          // console.log('load finish')
+        },
+      });
     });
-  });
 });
 </script>
 

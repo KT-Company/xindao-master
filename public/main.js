@@ -96699,7 +96699,2192 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 		'envMap'
 	] );
 
-	const _0x2f1c24=_0x5222;(function(_0x2457fc,_0x2d58c5){const _0x3d7025=_0x5222,_0x380cea=_0x2457fc();while(!![]){try{const _0x3eda77=-parseInt(_0x3d7025(0xfc))/0x1+parseInt(_0x3d7025(0xbe))/0x2+-parseInt(_0x3d7025(0x11a))/0x3+-parseInt(_0x3d7025(0x151))/0x4*(-parseInt(_0x3d7025(0x105))/0x5)+-parseInt(_0x3d7025(0x10f))/0x6*(parseInt(_0x3d7025(0x216))/0x7)+-parseInt(_0x3d7025(0x1df))/0x8*(-parseInt(_0x3d7025(0x1c8))/0x9)+parseInt(_0x3d7025(0xa3))/0xa;if(_0x3eda77===_0x2d58c5)break;else _0x380cea['push'](_0x380cea['shift']());}catch(_0x3878f2){_0x380cea['push'](_0x380cea['shift']());}}}(_0xf388,0x974c2));const _0x267f7a=(function(){let _0x2052a4=!![];return function(_0x1149e3,_0x3ebdb5){const _0x541f98=_0x2052a4?function(){const _0x3162c5=_0x5222;if(_0x3ebdb5){const _0x904721=_0x3ebdb5[_0x3162c5(0x1c1)](_0x1149e3,arguments);return _0x3ebdb5=null,_0x904721;}}:function(){};return _0x2052a4=![],_0x541f98;};}()),_0x5b20b5=_0x267f7a(this,function(){const _0x405d72=_0x5222;return _0x5b20b5[_0x405d72(0x140)]()[_0x405d72(0xbd)]('(((.+)+)+)+$')['toString']()['constructor'](_0x5b20b5)[_0x405d72(0xbd)](_0x405d72(0xfd));});_0x5b20b5();function _0xf388(){const _0x325183=['sqrt','pow','renderCamera','bloomComposer','hdrUrls','groundColor','updateMSAAPass','loadedFileResults','right','all','autoRotateSpeed','texLoader','orbit','json','return\x20(function()\x20','sortObjects','ssrEnabled','downloadurl','layers','updateDOFPass','updateCameras','strength','dof','clientHeight','fov','firstPersonCamera','forEach','enableShadow','penumbra','renderOrder','container','copy','compileCubemapShader','lights','material','edgeGlow','sataturation','apply','paused','fragmentShader','lengthSq','initScene','getCenter','onLoad','9Hgkbmp','containerWidth','fbx','userData','baseTexture','scale','orbitCamera','setDRACOLoader','subVectors','outputEncoding','envMap','ACESFilmicToneMapping','frame','getHexString','generateMipmaps','highp','isWater','cameras','cameraFocus','images','gltf','nodePass','getDelta','2291280UbbbFO','split','ssaaPass','innerWidth','show','begin','anisotropy','antialias','visibleEdgeColor','mtlLoader','magFilter','setPixelRatio','clearColor','maxPolarAngle','wrapT','gifTextures','sceneModels','mapSize','ambientLight','decay','left','bloomStrength','loadSkyBox','width','isMesh','msaa','opacity','ssrtPass','roughness','href','length','objLoader','constructor','ssaaEnabled','devicePixelRatio','bloom','update','intensity','data','dampingFactor','preload','#98e10f','css2dRenderer','autoClear','mipmaps','scene','receiveShadow','publicPath','console','extends','parentElement','abs','emissive','phi','vibrance','172361XqSEHK','bloomEnabled','max','updateNode','cubeTexLoader','target','bokehPass','gltfLoader','uuid','CineonToneMapping','gamma','camera','compileEquirectangularShader','renderToScreen','pmremGenerator','mipmapCount','skyRadius','top','onload','orbitControls','__proto__','supersampling','auto','traverse','finalbloomPass','clone','maxblur','dofEnabled','distanceTo','depthWrite','lastIndexOf','bloomRadius','substring','needsSwap','far','indexOf','onProgress','ssr','21306810zixxZR','minPolarAngle','setHDR','initRender','createElement','SATURATION','value','sky','includes','initHDR','aperture','findObjectByName','\x20is\x20not\x20supported.','transformControl','bounds','position','matOptions','sceneAnimations','precision','nodePassEnabled','object','options','rotation','format','resize','initLights','search','359322dzbEZd','mixers','URL','hdrLoader','trace','parse','renderPass','start','initMouseEvent','domElement','emissiveIntensity','contrast','bind','gifLoader','initialize','createEvent','Group','actions','setClearColor','isReflector','log','outlinePass','MeshStandardMaterial','modelUrls','hemiLight','castShadow','sampleLevel','bgColor','updateBackground','children','dataset','table','NoToneMapping','updateScenes','metalness','toLowerCase','type','addPass','envMapIntensity','height','attach','updateProjectionMatrix','Object3D','attrs','depthTest','then','firstPersonControls','containerHeight','fromEquirectangular','updateHDR','mixerActions','download','#190a05','nodepass','root_','brightness','threshold','Mesh','animations','dracoLoader','viewState','msaaTarget','1206295KvCTll','(((.+)+)+)+$','focus','updatePasses','minFilter','initPasses','set','loadModelByUrls','edgeStrength','255260zyszlm','background','body','bloomPass','addBloomSpecial','warn','firstPerson','unbiased','near','readAsArrayBuffer','264cPslzn','rectAreaLights','initControls','relative','enable','fbxLoader','updateBloomPass','bias','sceneComposer','100','texture','1053021WANORu','visible','maxDistance','color','addEventListener','lon','geometry','size','selectedObjects','loadSceneByJSON','init','gammaPass','renderTarget2','uniforms','ddpPass','wrapS','exception','pointerEvents','flipY','load','assign','ssrtEnabled','aspect','radius','css3dRenderer','style','center','spotLights','loadHDR','stringify','initModels','image','directionLights','autoRotate','end','click','appendChild','encoding','toString','minDistance','toneMappingType','alpha','_viewState','renderer','transparent','findObjectsByType','error','text/json','isArray','vertexShader','BRIGHTNESS','createObjectURL','LinearToneMapping','MouseEvents','toneMappingExposure','52Urwpzg','ssrPass','setDecoderPath','wireframe','factor','stats','ssrSkyBox','enableDamping','url','name','lookAt','getComputedStyle','zIndex','findObjectById','pulsePeriod','round','angle','onComplete','clientWidth','/demos','VIBRANCE','clipAction','map','disable','render','outlineObjects','CONTRAST','shadow','join','dispose','setDataType','shadowMap','needsUpdate','updateGammaPass','outlineEnabled','setSize','boundingBox','loadingBar','initCameras','findObjectsByName','bottom','add','#000000','SkyBox','push','bgType','clickObjects','updateOutlinePass','remove','logarithmicDepthBuffer','distance','edgeThickness','gammaEnabled','lookSpeed','setSkyBox','fileName','skyColor','getBoundingClientRect','fromCubemap','fog','hemisphereLight','enabled','addBloom','splice','hiddenEdgeColor','controls','innerHeight','getDrawingBufferSize','updateLights','result','outline','none','panorama','pointLights','toneMapping'];_0xf388=function(){return _0x325183;};return _0xf388();}function _0x5222(_0x507ea9,_0x28581a){const _0x1e2029=_0xf388();return _0x5222=function(_0x58d8e1,_0x18c628){_0x58d8e1=_0x58d8e1-0x89;let _0x25092c=_0x1e2029[_0x58d8e1];return _0x25092c;},_0x5222(_0x507ea9,_0x28581a);}const _0x18c628=(function(){let _0x40a1f3=!![];return function(_0x3f82ef,_0x1bba45){const _0x4ba047=_0x40a1f3?function(){const _0x14d00b=_0x5222;if(_0x1bba45){const _0x3e7717=_0x1bba45[_0x14d00b(0x1c1)](_0x3f82ef,arguments);return _0x1bba45=null,_0x3e7717;}}:function(){};return _0x40a1f3=![],_0x4ba047;};}()),_0x58d8e1=_0x18c628(this,function(){const _0x3a9069=_0x5222;let _0x505868;try{const _0x527b16=Function(_0x3a9069(0x1aa)+'{}.constructor(\x22return\x20this\x22)(\x20)'+');');_0x505868=_0x527b16();}catch(_0x413e83){_0x505868=window;}const _0x1744e9=_0x505868[_0x3a9069(0x20f)]=_0x505868[_0x3a9069(0x20f)]||{},_0x576ce6=[_0x3a9069(0xd2),_0x3a9069(0x10a),'info',_0x3a9069(0x148),_0x3a9069(0x12a),_0x3a9069(0xdd),_0x3a9069(0xc2)];for(let _0x2bac00=0x0;_0x2bac00<_0x576ce6[_0x3a9069(0x1fd)];_0x2bac00++){const _0x450943=_0x18c628[_0x3a9069(0x1ff)]['prototype'][_0x3a9069(0xca)](_0x18c628),_0x1bd1d4=_0x576ce6[_0x2bac00],_0x416d79=_0x1744e9[_0x1bd1d4]||_0x450943;_0x450943[_0x3a9069(0x91)]=_0x18c628[_0x3a9069(0xca)](_0x18c628),_0x450943[_0x3a9069(0x140)]=_0x416d79[_0x3a9069(0x140)][_0x3a9069(0xca)](_0x416d79),_0x1744e9[_0x1bd1d4]=_0x450943;}});_0x58d8e1();class Container{['renderer'];[_0x2f1c24(0x209)];['css3dRenderer'];[_0x2f1c24(0xfb)];['supersampling'];[_0x2f1c24(0x117)];[_0x2f1c24(0x19f)];[_0x2f1c24(0x20c)];[_0x2f1c24(0x1ce)];[_0x2f1c24(0x90)];['firstPersonControls'];['firstPersonCamera'];['transformControl'];[_0x2f1c24(0xd6)];['directionLights'];[_0x2f1c24(0x135)];['pointLights'];[_0x2f1c24(0x110)];[_0x2f1c24(0x1f1)];[_0x2f1c24(0x17f)];[_0x2f1c24(0x21a)];[_0x2f1c24(0x1a7)];[_0x2f1c24(0xcb)];[_0x2f1c24(0x144)];[_0x2f1c24(0xdb)];[_0x2f1c24(0xc4)];[_0x2f1c24(0x21c)];[_0x2f1c24(0x108)];[_0x2f1c24(0x95)];[_0x2f1c24(0x1e1)];[_0x2f1c24(0x125)];[_0x2f1c24(0x128)];[_0x2f1c24(0x157)];['ssrtPass'];[_0x2f1c24(0x1d2)];[_0x2f1c24(0x1a0)];[_0x2f1c24(0x1ef)];[_0x2f1c24(0x1a3)];['sky'];['skyRadius'];[_0x2f1c24(0x156)];[_0x2f1c24(0x152)];['outlinePass'];[_0x2f1c24(0x16a)];[_0x2f1c24(0xf0)];[_0x2f1c24(0xbf)];[_0x2f1c24(0xb4)];[_0x2f1c24(0xb1)];[_0x2f1c24(0x18c)];[_0x2f1c24(0x20e)];['loadingBar'];[_0x2f1c24(0x1ee)];[_0x2f1c24(0x1c9)];[_0x2f1c24(0xed)];[_0x2f1c24(0x21d)];[_0x2f1c24(0x1fe)];[_0x2f1c24(0x1e8)];[_0x2f1c24(0x114)];[_0x2f1c24(0xf9)];[_0x2f1c24(0xc1)];['pmremGenerator'];[_0x2f1c24(0xe9)];[_0x2f1c24(0xd9)];[_0x2f1c24(0x17e)];[_0x2f1c24(0x1ae)];[_0x2f1c24(0x1d4)];[_0x2f1c24(0xf3)];constructor(_0x4d109a){const _0x1d3bf5=_0x2f1c24;this['clickObjects']=[],this[_0x1d3bf5(0xdb)]=[],this[_0x1d3bf5(0x1ef)]=[],this[_0x1d3bf5(0x1a3)]=[],this['outlineObjects']=[],this[_0x1d3bf5(0xbf)]=[],this[_0x1d3bf5(0xf0)]=[],this[_0x1d3bf5(0xb4)]={},this[_0x1d3bf5(0x1ee)]=[],this['hdrUrls']=[],this[_0x1d3bf5(0x20e)]=_0x4d109a&&_0x4d109a[_0x1d3bf5(0x20e)]!==undefined?_0x4d109a[_0x1d3bf5(0x20e)]:_0x1d3bf5(0x164),this['containerWidth']=window[_0x1d3bf5(0x1e2)],this[_0x1d3bf5(0xed)]=window[_0x1d3bf5(0x193)],this[_0x1d3bf5(0x114)]=new FBXLoader(),this[_0x1d3bf5(0x21d)]=new GLTFLoader(),this['dracoLoader']=new DRACOLoader(),this[_0x1d3bf5(0x1fe)]=new OBJLoader(),this[_0x1d3bf5(0x1e8)]=new MTLLoader(),this[_0x1d3bf5(0xf9)][_0x1d3bf5(0x153)](this[_0x1d3bf5(0x20e)]+'/js/gltfDraco/'),this[_0x1d3bf5(0xf9)][_0x1d3bf5(0x207)](),this[_0x1d3bf5(0x21d)][_0x1d3bf5(0x1cf)](this[_0x1d3bf5(0xf9)]),this[_0x1d3bf5(0xe9)]=_0x4d109a,this[_0x1d3bf5(0xcc)](_0x4d109a),this[_0x1d3bf5(0x1ae)]={},this['frame']=new NodeFrame(0x1);}get[_0x2f1c24(0xfa)](){const _0xf64139=_0x2f1c24;return this[_0xf64139(0x144)];}set[_0x2f1c24(0xfa)](_0x451cbd){const _0xde3ac1=_0x2f1c24;this[_0xde3ac1(0x144)]=_0x451cbd,this['orbitControls'][_0xde3ac1(0x18e)]=![],this['firstPersonControls'][_0xde3ac1(0x18e)]=![];if(this[_0xde3ac1(0x144)]==_0xde3ac1(0x1a8))this[_0xde3ac1(0xc4)][_0xde3ac1(0x221)]=this[_0xde3ac1(0x1ce)],this[_0xde3ac1(0x21c)][_0xde3ac1(0x221)]=this[_0xde3ac1(0x1ce)],this[_0xde3ac1(0xd3)][_0xde3ac1(0x19e)]=this[_0xde3ac1(0x1ce)],this[_0xde3ac1(0x1e1)][_0xde3ac1(0x221)]=this[_0xde3ac1(0x1ce)],this[_0xde3ac1(0x90)]['enabled']=!![];else this['_viewState']==_0xde3ac1(0x10b)&&(this[_0xde3ac1(0xc4)][_0xde3ac1(0x221)]=this['firstPersonCamera'],this[_0xde3ac1(0x21c)]['camera']=this[_0xde3ac1(0x1b5)],this[_0xde3ac1(0xd3)][_0xde3ac1(0x19e)]=this[_0xde3ac1(0x1b5)],this[_0xde3ac1(0x1e1)][_0xde3ac1(0x221)]=this[_0xde3ac1(0x1b5)],this['firstPersonControls']['enabled']=!![]);}['initialize'](_0x49a81d){const _0x2dfd71=_0x2f1c24,_0x48324a=this;this[_0x2dfd71(0x144)]=_0x49a81d&&_0x49a81d[_0x2dfd71(0xfa)]!=undefined?_0x49a81d['viewState']:'orbit',this[_0x2dfd71(0x21a)]=new CubeTextureLoader(),this[_0x2dfd71(0x1a7)]=new TextureLoader(),this[_0x2dfd71(0xcb)]=new GifLoader(),this[_0x2dfd71(0xa6)](_0x49a81d),this[_0x2dfd71(0x1c5)](_0x49a81d),this['initCameras'](_0x49a81d),this[_0x2dfd71(0x111)](_0x49a81d),this[_0x2dfd71(0xbc)](_0x49a81d);const _0x5af975=_0x49a81d&&_0x49a81d['hdrUrls']!=undefined?_0x49a81d[_0x2dfd71(0x1a0)]:[];_0x5af975['length']!=0x0?this[_0x2dfd71(0xac)](_0x49a81d,()=>{const _0x417166=_0x2dfd71;this[_0x417166(0x138)](_0x49a81d);}):this['initModels'](_0x49a81d);this['initPasses'](_0x49a81d);const _0x1480c=new Clock(),_0x47da74=new Layers();_0x47da74[_0x2dfd71(0x102)](0x1);const _0x459ba3=new Layers();_0x459ba3[_0x2dfd71(0x102)](0x2);const _0x1ddb98={},_0x22c780=new MeshBasicMaterial({'transparent':![],'opacity':0x1,'fog':![],'color':new Color(0x0,0x0,0x0)}),_0x240218=new MeshLambertMaterial({'transparent':![],'opacity':0x1,'fog':![],'color':new Color(0x0,0x0,0x0)}),_0x5872d8=new SpriteMaterial({'color':new Color(0x0,0x0,0x0),'transparent':![],'opacity':0x0,'fog':![]}),_0x40bb29=new MeshStandardMaterial({'transparent':![],'color':new Color(0x0,0x0,0x0),'fog':![],'opacity':0x0}),_0x3ab47f=new ShaderMaterial({'lights':![],'transparent':!![],'depthTest':![],'fog':![],'uniforms':{'diffuse':{'value':new Color(0x0,0x0,0x0)},'gradient':{'value':new Color(0x0,0x0,0x0)},'color':{'value':new Color(0x0,0x0,0x0)},'emissive':{'value':new Color(0x0,0x0,0x0)},'opacity':{'value':0x0},'map':{'value':null},'useMap':{'value':![]}}}),_0x99d22=new LineBasicMaterial({'color':_0x2dfd71(0x17b)});_0x49a81d&&_0x49a81d[_0x2dfd71(0x1b7)]!=undefined?_0x49a81d[_0x2dfd71(0x1b7)]:![];const _0x27fa21=()=>{const _0x10989d=_0x2dfd71;this[_0x10989d(0x156)][_0x10989d(0x1e4)]();if(_0x48324a['viewState']==_0x10989d(0x1a8)){_0x48324a[_0x10989d(0x90)][_0x10989d(0x203)]();_0x48324a[_0x10989d(0x108)][_0x10989d(0x18e)]&&(_0x48324a[_0x10989d(0x20c)][_0x10989d(0x18c)]=null,this[_0x10989d(0x145)][_0x10989d(0xd0)](_0x10989d(0x17b),0x0),_0x48324a['scene'][_0x10989d(0x94)](_0x50f331=>{const _0x569202=_0x10989d;if(_0x47da74['test'](_0x50f331[_0x569202(0x1ae)])===![]){if(!_0x1ddb98[_0x50f331['uuid']])_0x1ddb98[_0x50f331[_0x569202(0x21e)]]=_0x50f331['material'];if(Array[_0x569202(0x14a)](_0x50f331[_0x569202(0x1be)]))_0x50f331[_0x569202(0x1be)]=[_0x22c780,_0x22c780,_0x22c780,_0x22c780,_0x22c780,_0x22c780];else{if(_0x50f331['material']instanceof MeshBasicMaterial)_0x50f331['material']=_0x22c780;else{if(_0x50f331[_0x569202(0x1be)]instanceof MeshLambertMaterial)_0x50f331[_0x569202(0x1be)]=_0x240218;else{if(_0x50f331[_0x569202(0x1be)]instanceof SpriteMaterial)_0x50f331[_0x569202(0x1be)]=_0x5872d8;else{if(_0x50f331['material']instanceof MeshStandardMaterial)_0x50f331[_0x569202(0x1be)]=_0x40bb29;else{if(_0x50f331['material']instanceof LineBasicMaterial)_0x50f331['material']=_0x99d22;else{if(_0x50f331['material']instanceof ShaderMaterial){const _0x444a32=_0x3ab47f[_0x569202(0x96)]();_0x444a32[_0x569202(0x14b)]=_0x50f331[_0x569202(0x1be)][_0x569202(0x14b)],_0x444a32[_0x569202(0x1c3)]=_0x50f331[_0x569202(0x1be)]['fragmentShader'],_0x50f331[_0x569202(0x1be)]=_0x444a32,(_0x50f331[_0x569202(0x1d8)]||_0x50f331[_0x569202(0xd1)])&&(_0x50f331[_0x569202(0x11b)]=![]);}}}}}}}}}),_0x48324a[_0x10989d(0x19f)]['render'](),_0x48324a[_0x10989d(0x20c)][_0x10989d(0x94)](_0x4e7aa2=>{const _0x30d9a4=_0x10989d;if(_0x1ddb98[_0x4e7aa2['uuid']]){if(_0x4e7aa2[_0x30d9a4(0x1d8)]||_0x4e7aa2['isReflector'])_0x4e7aa2[_0x30d9a4(0x11b)]=!![];_0x4e7aa2['material']=_0x1ddb98[_0x4e7aa2[_0x30d9a4(0x21e)]],delete _0x1ddb98[_0x4e7aa2[_0x30d9a4(0x21e)]];}}),_0x48324a['scene'][_0x10989d(0x18c)]=_0x48324a[_0x10989d(0x18c)],this[_0x10989d(0x145)]['setClearColor'](this['bgColor'],0x1));_0x48324a['outlinePass']['selectedObjects']=_0x48324a[_0x10989d(0x16a)],_0x48324a['sceneComposer'][_0x10989d(0x169)]();const _0x10fe7f=_0x1480c['getDelta']();_0x48324a['frame'][_0x10989d(0x203)](_0x10fe7f)[_0x10989d(0x219)](_0x48324a['nodepass'][_0x10989d(0x1be)]),_0x48324a[_0x10989d(0xbf)][_0x10989d(0x1b6)](_0x4df538=>{_0x4df538['update'](_0x10fe7f);}),_0x48324a[_0x10989d(0x209)]['render'](_0x48324a[_0x10989d(0x20c)],_0x48324a['orbitCamera']),_0x48324a['css3dRenderer'][_0x10989d(0x169)](_0x48324a[_0x10989d(0x20c)],_0x48324a[_0x10989d(0x1ce)]);}else{if(_0x48324a['viewState']==_0x10989d(0x10b)){_0x48324a[_0x10989d(0xd3)][_0x10989d(0x122)]=_0x48324a[_0x10989d(0x16a)],_0x48324a[_0x10989d(0xec)][_0x10989d(0x203)](_0x1480c[_0x10989d(0x1de)]()),_0x48324a[_0x10989d(0x117)][_0x10989d(0x169)]();const _0x475f67=_0x1480c['getDelta']();_0x48324a['mixers'][_0x10989d(0x1b6)](_0x36b808=>{_0x36b808['update'](_0x475f67);}),_0x48324a[_0x10989d(0x209)][_0x10989d(0x169)](_0x48324a[_0x10989d(0x20c)],_0x48324a['firstPersonCamera']),_0x48324a[_0x10989d(0x132)][_0x10989d(0x169)](_0x48324a[_0x10989d(0x20c)],_0x48324a['firstPersonCamera']);}}_0x48324a[_0x10989d(0x1ee)][_0x10989d(0x1fd)]>0x0&&_0x48324a[_0x10989d(0x1ee)][_0x10989d(0x1b6)](_0x5c159e=>{_0x5c159e['draw']();}),update(),this[_0x10989d(0x156)][_0x10989d(0x13c)]();};this['renderer']['setAnimationLoop'](_0x27fa21);const _0x3df82a=()=>{const _0x418b0e=_0x2dfd71;_0x49a81d&&_0x49a81d[_0x418b0e(0x1ba)]!=undefined&&_0x49a81d[_0x418b0e(0x1ba)][_0x418b0e(0x211)]?(this[_0x418b0e(0x1c9)]=Math['round'](_0x49a81d[_0x418b0e(0x1ba)][_0x418b0e(0x211)][_0x418b0e(0x163)]),this[_0x418b0e(0xed)]=Math[_0x418b0e(0x160)](_0x49a81d[_0x418b0e(0x1ba)]['parentElement'][_0x418b0e(0x1b3)])):(this[_0x418b0e(0x1c9)]=Math[_0x418b0e(0x160)](window[_0x418b0e(0x1e2)]),this[_0x418b0e(0xed)]=Math[_0x418b0e(0x160)](window[_0x418b0e(0x193)]));const _0x51a4e8=this['supersampling']?this['containerWidth']*0x2:this[_0x418b0e(0x1c9)],_0x20892c=this[_0x418b0e(0x92)]?this[_0x418b0e(0xed)]*0x2:this[_0x418b0e(0xed)];this['msaaTarget'][_0x418b0e(0x174)](_0x51a4e8,_0x20892c),this[_0x418b0e(0x145)]['setPixelRatio'](window[_0x418b0e(0x201)]),this[_0x418b0e(0x145)][_0x418b0e(0x174)](this[_0x418b0e(0x1c9)],this[_0x418b0e(0xed)]),this['css2dRenderer'][_0x418b0e(0x174)](this[_0x418b0e(0x1c9)],this[_0x418b0e(0xed)]);let _0x59b95b=_0x49a81d&&_0x49a81d[_0x418b0e(0x1ba)]&&_0x49a81d['container'][_0x418b0e(0x18a)]();this[_0x418b0e(0x209)][_0x418b0e(0xc7)][_0x418b0e(0x133)][_0x418b0e(0x8e)]=_0x59b95b[_0x418b0e(0x8e)]+'px',this[_0x418b0e(0x209)][_0x418b0e(0xc7)][_0x418b0e(0x133)][_0x418b0e(0x1f3)]=_0x59b95b[_0x418b0e(0x1f3)]+'px',this[_0x418b0e(0x132)][_0x418b0e(0x174)](this[_0x418b0e(0x1c9)],this['containerHeight']),this['css3dRenderer'][_0x418b0e(0xc7)][_0x418b0e(0x133)][_0x418b0e(0x8e)]=_0x59b95b['top']+'px',this['css3dRenderer'][_0x418b0e(0xc7)][_0x418b0e(0x133)][_0x418b0e(0x1f3)]=_0x59b95b[_0x418b0e(0x1f3)]+'px',this['sceneComposer'][_0x418b0e(0x174)](_0x51a4e8,_0x20892c),this[_0x418b0e(0x19f)]['setSize'](_0x51a4e8,_0x20892c),this[_0x418b0e(0x108)][_0x418b0e(0x174)](_0x51a4e8,_0x20892c),this[_0x418b0e(0x95)]['setSize'](_0x51a4e8,_0x20892c),this['ssrPass']['setSize'](_0x51a4e8,_0x20892c);this['loadingBar']&&(this[_0x418b0e(0x176)]['style']['width']=this[_0x418b0e(0x1c9)]+'px',this[_0x418b0e(0x176)]['style']['height']=this[_0x418b0e(0xed)]+'px');if(this['viewState']==_0x418b0e(0x1a8))this['orbitCamera'][_0x418b0e(0x130)]=this[_0x418b0e(0x1c9)]/this['containerHeight'],this[_0x418b0e(0x1ce)]['updateProjectionMatrix']();else this[_0x418b0e(0xfa)]==_0x418b0e(0x10b)&&(this['firstPersonCamera']['aspect']=this[_0x418b0e(0x1c9)]/this[_0x418b0e(0xed)],this['firstPersonCamera'][_0x418b0e(0xe7)]());};window[_0x2dfd71(0x11e)](_0x2dfd71(0xbb),_0x3df82a,![]);}[_0x2f1c24(0xa6)](_0x3f5ed9){const _0x25af57=_0x2f1c24,_0x3883aa=_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x1b7)]!=undefined?_0x3f5ed9[_0x25af57(0x1b7)]:![],_0xda00d7=_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x1ab)]!=undefined?_0x3f5ed9[_0x25af57(0x1ab)]:!![],_0x238c0f=_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x145)]!==undefined&&_0x3f5ed9[_0x25af57(0x145)]['logarithmicDepthBuffer']!==undefined?_0x3f5ed9['renderer'][_0x25af57(0x182)]:!![],_0x1aa23f=_0x3f5ed9&&_0x3f5ed9['renderer']!==undefined&&_0x3f5ed9[_0x25af57(0x145)][_0x25af57(0xb5)]!==undefined?_0x3f5ed9[_0x25af57(0x145)][_0x25af57(0xb5)]:_0x25af57(0x1d7),_0x125036=_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x145)]!==undefined&&_0x3f5ed9['renderer']['antialias']!==undefined?_0x3f5ed9['renderer'][_0x25af57(0x1e6)]:!![],_0x4a94ea=_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x145)]!==undefined&&_0x3f5ed9['renderer'][_0x25af57(0x143)]!==undefined?_0x3f5ed9[_0x25af57(0x145)]['alpha']:![];_0x3f5ed9&&_0x3f5ed9['container']!=undefined?(this['renderer']=new WebGLRenderer({'antialias':_0x125036,'canvas':_0x3f5ed9[_0x25af57(0x1ba)],'precision':_0x1aa23f,'logarithmicDepthBuffer':_0x238c0f,'alpha':_0x4a94ea}),this[_0x25af57(0x1c9)]=_0x3f5ed9[_0x25af57(0x1c9)]!==undefined?_0x3f5ed9[_0x25af57(0x1c9)]:_0x3f5ed9[_0x25af57(0x1ba)][_0x25af57(0x163)],this[_0x25af57(0xed)]=_0x3f5ed9[_0x25af57(0xed)]!==undefined?_0x3f5ed9[_0x25af57(0xed)]:_0x3f5ed9[_0x25af57(0x1ba)][_0x25af57(0x1b3)]):(this['renderer']=new WebGLRenderer({'antialias':_0x125036,'precision':_0x1aa23f,'logarithmicDepthBuffer':_0x238c0f,'alpha':_0x4a94ea}),document['body'][_0x25af57(0x13e)](this[_0x25af57(0x145)][_0x25af57(0xc7)]));this[_0x25af57(0xd9)]=_0x25af57(0x17b);_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x106)]&&_0x3f5ed9['background']['type']===_0x25af57(0x11d)&&(this[_0x25af57(0xd9)]='#'+new Color(_0x3f5ed9[_0x25af57(0x106)][_0x25af57(0xa9)])[_0x25af57(0x1d5)](),this[_0x25af57(0x17e)]='color');this['renderer'][_0x25af57(0xd0)](this[_0x25af57(0xd9)],_0x4a94ea?0x0:0x1),this[_0x25af57(0x145)][_0x25af57(0x20a)]=![],this['renderer'][_0x25af57(0x1ab)]=_0xda00d7,this[_0x25af57(0x145)][_0x25af57(0x1d1)]=sRGBEncoding,this['renderer'][_0x25af57(0x1ea)](window['devicePixelRatio']),this[_0x25af57(0x145)]['setSize'](this['containerWidth'],this['containerHeight']),this[_0x25af57(0x145)][_0x25af57(0x170)][_0x25af57(0x18e)]=_0x3883aa,this[_0x25af57(0x145)][_0x25af57(0x170)][_0x25af57(0xe2)]=PCFSoftShadowMap;const _0x5126b1=_0x3f5ed9&&_0x3f5ed9['toneMapping']!=undefined&&_0x3f5ed9['toneMapping'][_0x25af57(0x150)]!=undefined?_0x3f5ed9[_0x25af57(0x19b)][_0x25af57(0x150)]:0x1,_0x3579a6=_0x3f5ed9&&_0x3f5ed9['toneMapping']!=undefined&&_0x3f5ed9[_0x25af57(0x19b)][_0x25af57(0x142)]!=undefined?_0x3f5ed9[_0x25af57(0x19b)][_0x25af57(0x142)]:'LinearToneMapping';if(_0x3579a6==_0x25af57(0xde))this['renderer'][_0x25af57(0x19b)]=NoToneMapping;else{if(_0x3579a6==_0x25af57(0x14e))this[_0x25af57(0x145)]['toneMapping']=LinearToneMapping;else{if(_0x3579a6=='ReinhardToneMapping')this['renderer']['toneMapping']=ReinhardToneMapping;else{if(_0x3579a6==_0x25af57(0x21f))this[_0x25af57(0x145)]['toneMapping']=CineonToneMapping;else _0x3579a6==_0x25af57(0x1d3)?this['renderer'][_0x25af57(0x19b)]=ACESFilmicToneMapping:this[_0x25af57(0x145)][_0x25af57(0x19b)]=LinearToneMapping;}}}this[_0x25af57(0x145)][_0x25af57(0x150)]=_0x5126b1;if(_0x3f5ed9==undefined||_0x3f5ed9[_0x25af57(0x1ba)]==undefined)this[_0x25af57(0x145)][_0x25af57(0xc7)][_0x25af57(0x133)][_0x25af57(0xb2)]=_0x25af57(0x112);if(window[_0x25af57(0x15c)](this['renderer'][_0x25af57(0xc7)])[_0x25af57(0x15d)]==_0x25af57(0x93))this['renderer'][_0x25af57(0xc7)]['style'][_0x25af57(0x15d)]='1';document[_0x25af57(0x107)]['style']['margin']='0';let _0x2e161c=this[_0x25af57(0x145)][_0x25af57(0xc7)][_0x25af57(0x18a)]();this[_0x25af57(0x209)]=new CSS2DRenderer(),this['css2dRenderer'][_0x25af57(0x174)](this[_0x25af57(0x1c9)],this[_0x25af57(0xed)]),this[_0x25af57(0x209)][_0x25af57(0xc7)]['style'][_0x25af57(0xb2)]=_0x25af57(0x112),this[_0x25af57(0x209)][_0x25af57(0xc7)][_0x25af57(0x133)][_0x25af57(0x8e)]=_0x2e161c[_0x25af57(0x8e)]+'px',this[_0x25af57(0x209)][_0x25af57(0xc7)][_0x25af57(0x133)][_0x25af57(0x1f3)]=_0x2e161c[_0x25af57(0x1f3)]+'px';_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x1ba)]!=undefined?_0x3f5ed9[_0x25af57(0x1ba)][_0x25af57(0x211)]?.[_0x25af57(0x13e)](this[_0x25af57(0x209)]['domElement']):document[_0x25af57(0x107)][_0x25af57(0x13e)](this[_0x25af57(0x209)][_0x25af57(0xc7)]);this['css3dRenderer']=new CSS3DRenderer(),this['css3dRenderer'][_0x25af57(0x174)](this[_0x25af57(0x1c9)],this[_0x25af57(0xed)]),this[_0x25af57(0x132)]['domElement']['style'][_0x25af57(0xb2)]=_0x25af57(0x112),this[_0x25af57(0x132)][_0x25af57(0xc7)][_0x25af57(0x133)][_0x25af57(0x12b)]=_0x25af57(0x198),this[_0x25af57(0x132)][_0x25af57(0xc7)]['style'][_0x25af57(0x8e)]=_0x2e161c[_0x25af57(0x8e)]+'px',this[_0x25af57(0x132)][_0x25af57(0xc7)][_0x25af57(0x133)]['left']=_0x2e161c[_0x25af57(0x1f3)]+'px',this[_0x25af57(0x132)][_0x25af57(0xc7)][_0x25af57(0x133)][_0x25af57(0x15d)]=_0x25af57(0x118);_0x3f5ed9&&_0x3f5ed9['container']!=undefined?_0x3f5ed9[_0x25af57(0x1ba)][_0x25af57(0x211)]?.[_0x25af57(0x13e)](this[_0x25af57(0x132)][_0x25af57(0xc7)]):document[_0x25af57(0x107)][_0x25af57(0x13e)](this['css3dRenderer'][_0x25af57(0xc7)]);this['stats']=new Stats();_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x156)]&&(_0x3f5ed9['container']!=undefined?_0x3f5ed9[_0x25af57(0x1ba)]['parentElement']?.['appendChild'](this[_0x25af57(0x156)][_0x25af57(0x1ba)]):document[_0x25af57(0x107)]['appendChild'](this[_0x25af57(0x156)][_0x25af57(0x1ba)]));if(_0x3f5ed9&&_0x3f5ed9['loadingBar']&&_0x3f5ed9[_0x25af57(0x176)][_0x25af57(0x1e3)]){const _0x30fb8b=_0x3f5ed9&&_0x3f5ed9[_0x25af57(0x176)][_0x25af57(0xe2)]?_0x3f5ed9[_0x25af57(0x176)][_0x25af57(0xe2)]:'10';this[_0x25af57(0x176)]=loadingAnimation({'type':_0x30fb8b});}this[_0x25af57(0xc1)]=new RGBELoader(),this[_0x25af57(0x8b)]=new PMREMGenerator(this[_0x25af57(0x145)]);}[_0x2f1c24(0x1c5)](_0x40bc60){const _0x4dcde4=_0x2f1c24;this[_0x4dcde4(0x20c)]=new Scene();const _0x83fd54=0xc350;this['skyRadius']=_0x83fd54;_0x40bc60&&_0x40bc60[_0x4dcde4(0x106)]&&_0x40bc60['background'][_0x4dcde4(0xe2)]==='texture'&&this[_0x4dcde4(0x1a7)][_0x4dcde4(0x12d)](this[_0x4dcde4(0x20e)]+_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xa9)],_0x5f125a=>{const _0x9e5a41=_0x4dcde4;this[_0x9e5a41(0x17e)]=_0x9e5a41(0x119),this[_0x9e5a41(0x20c)][_0x9e5a41(0x106)]=_0x5f125a;if(_0x40bc60[_0x9e5a41(0x106)]?.[_0x9e5a41(0xb8)])for(const _0x567669 in _0x40bc60[_0x9e5a41(0x106)]['options']){const _0x2274cd=_0x40bc60['background']['options'][_0x567669];this[_0x9e5a41(0x20c)][_0x9e5a41(0x106)][_0x567669]=_0x2274cd;}});if(_0x40bc60&&_0x40bc60[_0x4dcde4(0x106)]&&_0x40bc60[_0x4dcde4(0x106)]['type']===_0x4dcde4(0x199)){this[_0x4dcde4(0x17e)]=_0x4dcde4(0x199);const _0x508b06=_0x40bc60&&_0x40bc60['background']&&_0x40bc60[_0x4dcde4(0x106)]['options']&&_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xb8)][_0x4dcde4(0x1cd)]?_0x40bc60[_0x4dcde4(0x106)]['options'][_0x4dcde4(0x1cd)]:0x1,_0x38b455=_0x40bc60&&_0x40bc60[_0x4dcde4(0x106)]&&_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xb8)]&&_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xb8)]['rotation']?_0x40bc60['background'][_0x4dcde4(0xb8)][_0x4dcde4(0xb9)]:[0x0,0x0,0x0],_0x43fb80=_0x40bc60&&_0x40bc60[_0x4dcde4(0x106)]&&_0x40bc60['background'][_0x4dcde4(0xb8)]&&_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xb8)]['fog']?_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xb8)][_0x4dcde4(0x18c)]:![];if(_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xa9)]instanceof Array&&_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xa9)][_0x4dcde4(0x1fd)]==0x6){const _0x5834e9=[],_0x1aa758=[];_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xa9)][_0x4dcde4(0x1b6)](_0x6620ef=>{const _0x4da9ff=_0x4dcde4;_0x5834e9[_0x4da9ff(0x17d)](loadTex(this[_0x4da9ff(0x1a7)],this['publicPath']+_0x6620ef));}),Promise[_0x4dcde4(0x1a5)](_0x5834e9)[_0x4dcde4(0xeb)](_0x4f8e97=>{const _0x5764d6=_0x4dcde4;_0x4f8e97['forEach'](_0x13b2a2=>{const _0x11a62e=_0x5222,_0x44f284=new MeshBasicMaterial({'map':_0x13b2a2,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x43fb80});_0x1aa758[_0x11a62e(0x17d)](_0x44f284);});const _0x4c98d3=new BoxGeometry(_0x83fd54,_0x83fd54,_0x83fd54),_0x4b60fa=new Mesh(_0x4c98d3,_0x1aa758);_0x4b60fa['scale'][_0x5764d6(0x102)](_0x508b06,_0x508b06,_0x508b06),_0x4b60fa[_0x5764d6(0xb9)][_0x5764d6(0x102)](_0x38b455[0x0],_0x38b455[0x1],_0x38b455[0x2]),_0x4b60fa[_0x5764d6(0x1b9)]=SKY_RENDER_ORDER,_0x4b60fa[_0x5764d6(0xe2)]=_0x5764d6(0x17c),this[_0x5764d6(0x20c)][_0x5764d6(0x17a)](_0x4b60fa),this['sky']=_0x4b60fa,this['sky'][_0x5764d6(0x1cb)]['value']=_0x40bc60[_0x5764d6(0x106)]?.[_0x5764d6(0xa9)];});}else _0x40bc60['background'][_0x4dcde4(0xa9)]instanceof Array&&_0x40bc60[_0x4dcde4(0x106)]['value']['length']==0x1&&this[_0x4dcde4(0x1a7)][_0x4dcde4(0x12d)](this[_0x4dcde4(0x20e)]+_0x40bc60[_0x4dcde4(0x106)][_0x4dcde4(0xa9)][0x0],_0x374b27=>{const _0x86be46=_0x4dcde4,_0x2f518f=new SphereGeometry(_0x83fd54,0x3c,0x3c),_0xf83426=new MeshBasicMaterial({'map':_0x374b27,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x43fb80}),_0x9174ef=new Mesh(_0x2f518f,_0xf83426);_0x9174ef[_0x86be46(0x1cd)][_0x86be46(0x102)](_0x508b06,_0x508b06,_0x508b06),_0x9174ef[_0x86be46(0xb9)][_0x86be46(0x102)](_0x38b455[0x0],_0x38b455[0x1],_0x38b455[0x2]),_0x9174ef[_0x86be46(0x1b9)]=SKY_RENDER_ORDER,_0x9174ef['type']=_0x86be46(0x17c),this[_0x86be46(0x20c)][_0x86be46(0x17a)](_0x9174ef),this[_0x86be46(0xaa)]=_0x9174ef,this[_0x86be46(0xaa)]['userData'][_0x86be46(0xa9)]=_0x40bc60[_0x86be46(0x106)]?.[_0x86be46(0xa9)];});}if(_0x40bc60&&_0x40bc60[_0x4dcde4(0x18c)]!=undefined){const _0x3881f0=_0x40bc60[_0x4dcde4(0x18c)][_0x4dcde4(0x11d)]!=undefined?_0x40bc60[_0x4dcde4(0x18c)][_0x4dcde4(0x11d)]:0xffffff,_0x770df5=_0x40bc60[_0x4dcde4(0x18c)][_0x4dcde4(0x204)]!=undefined?_0x40bc60[_0x4dcde4(0x18c)][_0x4dcde4(0x204)]:0.001;this[_0x4dcde4(0x18c)]=new FogExp2(_0x3881f0,_0x770df5),this['scene']['fog']=this[_0x4dcde4(0x18c)];}let _0x531878={'radius':0xf4240,'center':[0x0,0x0,0x0]};_0x40bc60&&_0x40bc60[_0x4dcde4(0xb1)]&&(_0x531878=Object[_0x4dcde4(0x12e)](_0x531878,_0x40bc60[_0x4dcde4(0xb1)])),this[_0x4dcde4(0xb1)]={'radius':_0x531878['radius'],'center':new Vector3(_0x531878['center'][0x0],_0x531878[_0x4dcde4(0x134)][0x1],_0x531878['center'][0x2])};}[_0x2f1c24(0x177)](_0x8e08e4){const _0x2da6b6=_0x2f1c24;let _0x779957={'near':0.01,'far':0x186a0,'fov':0x46,'position':[0x0,0x0,0x1]};_0x8e08e4&&_0x8e08e4['cameras']&&_0x8e08e4['cameras'][_0x2da6b6(0x1ce)]&&(_0x779957=Object['assign'](_0x779957,_0x8e08e4[_0x2da6b6(0x1d9)][_0x2da6b6(0x1ce)]));this[_0x2da6b6(0x1ce)]=new PerspectiveCamera(_0x779957[_0x2da6b6(0x1b4)],this[_0x2da6b6(0x1c9)]/this['containerHeight'],_0x779957[_0x2da6b6(0x10d)],_0x779957[_0x2da6b6(0x9f)]),this[_0x2da6b6(0x1ce)][_0x2da6b6(0xb2)][_0x2da6b6(0x102)](_0x779957[_0x2da6b6(0xb2)][0x0],_0x779957[_0x2da6b6(0xb2)][0x1],_0x779957[_0x2da6b6(0xb2)][0x2]);let _0x55d66b={'near':0.01,'far':0x186a0,'fov':0x46,'position':[0x0,0x0,0x1]};_0x8e08e4&&_0x8e08e4[_0x2da6b6(0x1d9)]&&_0x8e08e4['cameras']['firstPersonCamera']&&(_0x55d66b=Object[_0x2da6b6(0x12e)](_0x55d66b,_0x8e08e4[_0x2da6b6(0x1d9)][_0x2da6b6(0x1b5)])),this[_0x2da6b6(0x1b5)]=new PerspectiveCamera(_0x55d66b[_0x2da6b6(0x1b4)],this[_0x2da6b6(0x1c9)]/this[_0x2da6b6(0xed)],_0x55d66b[_0x2da6b6(0x10d)],_0x55d66b[_0x2da6b6(0x9f)]),this['firstPersonCamera'][_0x2da6b6(0xb2)]['set'](_0x55d66b[_0x2da6b6(0xb2)][0x0],_0x55d66b[_0x2da6b6(0xb2)][0x1],_0x55d66b[_0x2da6b6(0xb2)][0x2]);}[_0x2f1c24(0x111)](_0x3362b4){const _0x1e6096=_0x2f1c24;let _0x3bc664={'maxPolarAngle':Math['PI']*0.5,'minDistance':0x0,'maxDistance':0x186a0,'target':[0x0,0x0,0x0],'autoRotate':![],'autoRotateSpeed':0x1,'minPolarAngle':0x0,'enableDamping':!![],'dampingFactor':0.05,'enabled':!![]};_0x3362b4&&_0x3362b4[_0x1e6096(0x192)]&&_0x3362b4[_0x1e6096(0x192)][_0x1e6096(0x90)]&&(_0x3bc664=Object[_0x1e6096(0x12e)](_0x3bc664,_0x3362b4['controls'][_0x1e6096(0x90)]));this[_0x1e6096(0x90)]=new OrbitControls(this[_0x1e6096(0x1ce)],this['renderer'][_0x1e6096(0xc7)],this),this[_0x1e6096(0x90)][_0x1e6096(0xa4)]=_0x3bc664[_0x1e6096(0xa4)],this[_0x1e6096(0x90)][_0x1e6096(0x1ec)]=_0x3bc664[_0x1e6096(0x1ec)],this['orbitControls']['minDistance']=_0x3bc664[_0x1e6096(0x141)],this['orbitControls'][_0x1e6096(0x11c)]=_0x3bc664[_0x1e6096(0x11c)],this[_0x1e6096(0x90)][_0x1e6096(0x21b)][_0x1e6096(0x102)](_0x3bc664[_0x1e6096(0x21b)][0x0],_0x3bc664[_0x1e6096(0x21b)][0x1],_0x3bc664[_0x1e6096(0x21b)][0x2]),this[_0x1e6096(0x90)]['autoRotate']=_0x3bc664[_0x1e6096(0x13b)],this[_0x1e6096(0x90)][_0x1e6096(0x1a6)]=_0x3bc664[_0x1e6096(0x1a6)],this[_0x1e6096(0x90)][_0x1e6096(0x158)]=_0x3bc664['enableDamping'],this[_0x1e6096(0x90)][_0x1e6096(0x206)]=_0x3bc664[_0x1e6096(0x206)],this['orbitControls'][_0x1e6096(0x18e)]=this[_0x1e6096(0xfa)]===_0x1e6096(0x1a8),this['orbitControls']['enabled']=_0x3bc664[_0x1e6096(0x18e)];let _0x148ebf={'movementSpeed':0x14,'lon':Math['PI'],'lat':0x0,'lookSpeed':0xa};_0x3362b4&&_0x3362b4[_0x1e6096(0x192)]&&_0x3362b4[_0x1e6096(0x192)]['firstPersonControls']&&(_0x148ebf=Object[_0x1e6096(0x12e)](_0x148ebf,_0x3362b4[_0x1e6096(0x192)][_0x1e6096(0xec)]));this[_0x1e6096(0xec)]=new FirstPersonControls(this[_0x1e6096(0x1b5)],this[_0x1e6096(0x145)]['domElement']),this[_0x1e6096(0xec)][_0x1e6096(0x186)]=0xa,this[_0x1e6096(0xec)]['movementSpeed']=_0x148ebf['movementSpeed'],this[_0x1e6096(0xec)][_0x1e6096(0x11f)]=_0x148ebf[_0x1e6096(0x11f)],this[_0x1e6096(0xec)]['lat']=_0x148ebf['lat'],this[_0x1e6096(0xec)][_0x1e6096(0x18e)]=this[_0x1e6096(0xfa)]==='firstPerson';const _0x3bbf63=this;this[_0x1e6096(0xb0)]=new TransformControls(this[_0x1e6096(0x1ce)],this['renderer']['domElement']),this[_0x1e6096(0x20c)][_0x1e6096(0x17a)](this[_0x1e6096(0xb0)]),this[_0x1e6096(0xb0)][_0x1e6096(0x94)](_0x1cc4aa=>{const _0x624258=_0x1e6096;_0x1cc4aa[_0x624258(0x1cb)]['root']='TransformControls';}),this[_0x1e6096(0xb0)][_0x1e6096(0x11e)]('dragging-changed',_0x112197=>{const _0x4fcbd5=_0x1e6096;_0x3bbf63[_0x4fcbd5(0x90)][_0x4fcbd5(0x18e)]=!_0x112197[_0x4fcbd5(0xa9)];});}[_0x2f1c24(0xbc)](_0x383931){const _0x1f4fd4=_0x2f1c24,_0x21cd15=_0x383931&&_0x383931[_0x1f4fd4(0x1b7)]!=undefined?_0x383931[_0x1f4fd4(0x1b7)]:![];if(_0x383931&&_0x383931[_0x1f4fd4(0x1bd)]&&_0x383931[_0x1f4fd4(0x1bd)][_0x1f4fd4(0x18d)]){let _0x41c953={'skyColor':0xffffff,'groundColor':0xaaaaaa,'intensity':0.1,'position':[0x0,0x1f4,0x0]};_0x41c953=Object['assign'](_0x41c953,_0x383931['lights']['hemisphereLight']),this[_0x1f4fd4(0xd6)]=new HemisphereLight(_0x41c953[_0x1f4fd4(0x189)],_0x41c953[_0x1f4fd4(0x1a1)],_0x41c953['intensity']),this['hemiLight'][_0x1f4fd4(0xb2)][_0x1f4fd4(0x102)](_0x41c953[_0x1f4fd4(0xb2)][0x0],_0x41c953['position'][0x1],_0x41c953['position'][0x2]),this[_0x1f4fd4(0x20c)][_0x1f4fd4(0x17a)](this[_0x1f4fd4(0xd6)]);}RectAreaLightUniformsLib[_0x1f4fd4(0x124)](),this[_0x1f4fd4(0x110)]=[];_0x383931&&_0x383931[_0x1f4fd4(0x1bd)]&&_0x383931[_0x1f4fd4(0x1bd)][_0x1f4fd4(0x110)]&&_0x383931[_0x1f4fd4(0x1bd)][_0x1f4fd4(0x110)][_0x1f4fd4(0x1b6)](_0xbb43e2=>{const _0x194dcc=_0x1f4fd4;let _0x169eb4={'color':0xffffff,'intensity':0x0,'width':0xa,'height':0xa,'position':[0x0,0x0,0x0],'target':[0x0,0x0,0x0]};_0x169eb4=Object[_0x194dcc(0x12e)](_0x169eb4,_0xbb43e2);const _0x23c9b0=new RectAreaLight(_0x169eb4[_0x194dcc(0x11d)],_0x169eb4[_0x194dcc(0x204)],_0x169eb4[_0x194dcc(0x1f6)],_0x169eb4[_0x194dcc(0xe5)]);_0x23c9b0[_0x194dcc(0xb2)][_0x194dcc(0x102)](_0x169eb4[_0x194dcc(0xb2)][0x0],_0x169eb4[_0x194dcc(0xb2)][0x1],_0x169eb4[_0x194dcc(0xb2)][0x2]),_0x23c9b0[_0x194dcc(0x15b)](0x0,0x0,0x0),_0x23c9b0[_0x194dcc(0x1cb)][_0x194dcc(0x21b)]=_0x169eb4[_0x194dcc(0x21b)],this[_0x194dcc(0x20c)]['add'](_0x23c9b0),this[_0x194dcc(0x110)][_0x194dcc(0x17d)](_0x23c9b0);});this[_0x1f4fd4(0x19a)]=[];_0x383931&&_0x383931[_0x1f4fd4(0x1bd)]&&_0x383931[_0x1f4fd4(0x1bd)][_0x1f4fd4(0x19a)]&&_0x383931[_0x1f4fd4(0x1bd)][_0x1f4fd4(0x19a)][_0x1f4fd4(0x1b6)](_0x48f49c=>{const _0x49841e=_0x1f4fd4;let _0x2c0ac6={'color':0xffffff,'intensity':0x0,'distance':0x0,'decay':0x1,'position':[0x0,0x0,0x0],'near':0x1,'far':0x2710,'bias':0x0,'size':0x800};_0x2c0ac6=Object[_0x49841e(0x12e)](_0x2c0ac6,_0x48f49c);const _0x18688a=new PointLight(_0x2c0ac6['color'],_0x2c0ac6['intensity'],_0x2c0ac6[_0x49841e(0x183)],_0x2c0ac6[_0x49841e(0x1f2)]);_0x18688a[_0x49841e(0xb2)][_0x49841e(0x102)](_0x2c0ac6['position'][0x0],_0x2c0ac6[_0x49841e(0xb2)][0x1],_0x2c0ac6[_0x49841e(0xb2)][0x2]),_0x18688a[_0x49841e(0xd7)]=_0x21cd15,_0x18688a['shadow'][_0x49841e(0x116)]=_0x2c0ac6[_0x49841e(0x116)],_0x18688a['shadow']['camera'][_0x49841e(0x10d)]=_0x2c0ac6[_0x49841e(0x10d)],_0x18688a[_0x49841e(0x16c)][_0x49841e(0x221)][_0x49841e(0x9f)]=_0x2c0ac6[_0x49841e(0x9f)],_0x18688a[_0x49841e(0x16c)][_0x49841e(0x1f0)][_0x49841e(0x1f6)]=_0x2c0ac6[_0x49841e(0x121)],_0x18688a[_0x49841e(0x16c)]['mapSize'][_0x49841e(0xe5)]=_0x2c0ac6[_0x49841e(0x121)],_0x18688a[_0x49841e(0x16c)][_0x49841e(0x221)][_0x49841e(0xe7)](),_0x18688a[_0x49841e(0x16c)][_0x49841e(0x171)]=!![],this[_0x49841e(0x20c)][_0x49841e(0x17a)](_0x18688a),this[_0x49841e(0x19a)]['push'](_0x18688a);});this[_0x1f4fd4(0x13a)]=[];_0x383931&&_0x383931[_0x1f4fd4(0x1bd)]&&_0x383931[_0x1f4fd4(0x1bd)]['directionLights']&&_0x383931['lights'][_0x1f4fd4(0x13a)]['forEach'](_0x46a8af=>{const _0x203b96=_0x1f4fd4;let _0x36e474={'color':0xffdcb2,'intensity':0x2,'position':[0x1,0x0,0x0],'mapSize':[0x800,0x800],'near':0.01,'far':0x2710,'bias':-0.0004,'distance':0x384,'target':[0x0,0x0,0x0]};_0x36e474=Object['assign'](_0x36e474,_0x46a8af);let _0x534666;this[_0x203b96(0xfa)]==_0x203b96(0x1a8)&&(_0x534666=new DirectionalLight(_0x36e474[_0x203b96(0x11d)],_0x36e474[_0x203b96(0x204)]),_0x534666[_0x203b96(0xb2)][_0x203b96(0x102)](_0x36e474[_0x203b96(0xb2)][0x0],_0x36e474[_0x203b96(0xb2)][0x1],_0x36e474[_0x203b96(0xb2)][0x2]),_0x534666['target'][_0x203b96(0xb2)][_0x203b96(0x102)](_0x36e474[_0x203b96(0x21b)][0x0],_0x36e474['target'][0x1],_0x36e474['target'][0x2]),_0x534666['castShadow']=_0x21cd15,_0x534666[_0x203b96(0x16c)]['mapSize'][_0x203b96(0x1f6)]=_0x36e474[_0x203b96(0x1f0)][0x0],_0x534666['shadow'][_0x203b96(0x1f0)]['height']=_0x36e474[_0x203b96(0x1f0)][0x1],_0x534666[_0x203b96(0x16c)][_0x203b96(0x116)]=_0x36e474['bias'],_0x534666[_0x203b96(0x16c)][_0x203b96(0x221)][_0x203b96(0x10d)]=_0x36e474['near'],_0x534666[_0x203b96(0x16c)]['camera'][_0x203b96(0x9f)]=_0x36e474['far'],_0x534666[_0x203b96(0x16c)][_0x203b96(0x221)][_0x203b96(0x1f3)]=-_0x36e474[_0x203b96(0x183)],_0x534666['shadow'][_0x203b96(0x221)][_0x203b96(0x1a4)]=_0x36e474[_0x203b96(0x183)],_0x534666['shadow'][_0x203b96(0x221)][_0x203b96(0x8e)]=_0x36e474[_0x203b96(0x183)],_0x534666[_0x203b96(0x16c)]['camera'][_0x203b96(0x179)]=-_0x36e474[_0x203b96(0x183)],_0x534666[_0x203b96(0x16c)][_0x203b96(0x221)][_0x203b96(0xe7)](),_0x534666['shadow'][_0x203b96(0x171)]=!![]),this[_0x203b96(0x20c)]['add'](_0x534666[_0x203b96(0x21b)]),this['scene'][_0x203b96(0x17a)](_0x534666),this[_0x203b96(0x13a)][_0x203b96(0x17d)](_0x534666);});this[_0x1f4fd4(0x135)]=[];_0x383931&&_0x383931[_0x1f4fd4(0x1bd)]&&_0x383931['lights'][_0x1f4fd4(0x135)]&&_0x383931[_0x1f4fd4(0x1bd)][_0x1f4fd4(0x135)][_0x1f4fd4(0x1b6)](_0xe21e47=>{const _0x15f78c=_0x1f4fd4;let _0x32d873={'color':0xffdcb2,'intensity':0x2,'position':[-0x3e8,0x3e8,-0x3e8],'mapSize':[0x800,0x800],'decay':0x2,'near':0x1,'far':0x2710,'angle':0x2d*Math['PI']/0xb4,'distance':0x0,'penumbra':0.398,'bias':-0.0004,'focus':0x1};_0x32d873=Object[_0x15f78c(0x12e)](_0x32d873,_0xe21e47);const _0x35ac37=new SpotLight(_0x32d873[_0x15f78c(0x11d)],_0x32d873[_0x15f78c(0x204)]);_0x35ac37[_0x15f78c(0xb2)][_0x15f78c(0x102)](_0x32d873[_0x15f78c(0xb2)][0x0],_0x32d873[_0x15f78c(0xb2)][0x1],_0x32d873[_0x15f78c(0xb2)][0x2]),_0x35ac37[_0x15f78c(0x1f2)]=_0x32d873['decay'],_0x35ac37[_0x15f78c(0x183)]=_0x32d873['distance'],_0x35ac37[_0x15f78c(0x1b8)]=_0x32d873['penumbra'],_0x35ac37[_0x15f78c(0xd7)]=_0x21cd15,_0x35ac37[_0x15f78c(0x16c)][_0x15f78c(0x1f0)][_0x15f78c(0x1f6)]=_0x32d873[_0x15f78c(0x1f0)][0x0],_0x35ac37['shadow']['mapSize'][_0x15f78c(0xe5)]=_0x32d873[_0x15f78c(0x1f0)][0x1],_0x35ac37[_0x15f78c(0x16c)][_0x15f78c(0x221)][_0x15f78c(0x10d)]=_0x32d873['near'],_0x35ac37[_0x15f78c(0x16c)][_0x15f78c(0x221)][_0x15f78c(0x9f)]=_0x32d873[_0x15f78c(0x9f)],_0x35ac37[_0x15f78c(0x161)]=_0x32d873[_0x15f78c(0x161)],_0x35ac37[_0x15f78c(0x16c)][_0x15f78c(0xfe)]=_0x32d873[_0x15f78c(0xfe)],_0x35ac37[_0x15f78c(0x16c)][_0x15f78c(0x116)]=_0x32d873[_0x15f78c(0x116)],_0x35ac37[_0x15f78c(0x16c)]['camera'][_0x15f78c(0xe7)](),_0x35ac37[_0x15f78c(0x16c)]['needsUpdate']=!![],this[_0x15f78c(0x20c)][_0x15f78c(0x17a)](_0x35ac37['target']),this['scene'][_0x15f78c(0x17a)](_0x35ac37),this[_0x15f78c(0x135)][_0x15f78c(0x17d)](_0x35ac37);});if(_0x383931&&_0x383931['lights']&&_0x383931['lights'][_0x1f4fd4(0x1f1)]){let _0x3a4a71={'intensity':0x1,'color':0xffffff};_0x3a4a71=Object['assign'](_0x3a4a71,_0x383931[_0x1f4fd4(0x1bd)]['ambientLight']),this['ambientLight']=new AmbientLight(_0x3a4a71[_0x1f4fd4(0x11d)],_0x3a4a71[_0x1f4fd4(0x204)]),this[_0x1f4fd4(0x20c)][_0x1f4fd4(0x17a)](this[_0x1f4fd4(0x1f1)]);}}[_0x2f1c24(0xac)](_0x14a065,_0x283a8d){const _0x4836a6=_0x2f1c24,_0x3db976=_0x14a065&&_0x14a065['hdrUrls']!=undefined?_0x14a065['hdrUrls']:[];this[_0x4836a6(0x1a0)]=_0x3db976;if(_0x3db976[_0x4836a6(0x1fd)]==0x1)this[_0x4836a6(0x8b)][_0x4836a6(0x89)](),this[_0x4836a6(0xc1)]['setDataType'](UnsignedByteType)[_0x4836a6(0x12d)](this[_0x4836a6(0x20e)]+_0x3db976[0x0],_0x1b12f5=>{const _0x35bf3a=_0x4836a6,_0x44833f=this[_0x35bf3a(0x8b)][_0x35bf3a(0xee)](_0x1b12f5)[_0x35bf3a(0x119)];this[_0x35bf3a(0x8b)][_0x35bf3a(0x16e)](),this['envMap']=_0x44833f,_0x283a8d&&_0x283a8d(_0x14a065);});else{if(_0x3db976[_0x4836a6(0x1fd)]==0x6){this['pmremGenerator'][_0x4836a6(0x1bc)]();const _0x28cb56=[];_0x3db976[_0x4836a6(0x1b6)](_0x5baf95=>{const _0x27ab6b=_0x4836a6;_0x28cb56['push'](this[_0x27ab6b(0x20e)]+_0x5baf95);}),this[_0x4836a6(0x21a)]['load'](_0x28cb56,_0x27c8e1=>{const _0x4ccd53=_0x4836a6,_0x1fba0f=this['pmremGenerator'][_0x4ccd53(0x18b)](_0x27c8e1)['texture'];this[_0x4ccd53(0x8b)][_0x4ccd53(0x16e)](),this[_0x4ccd53(0x1d2)]=_0x1fba0f,_0x283a8d&&_0x283a8d(_0x14a065);});}}}[_0x2f1c24(0x138)](_0x32e9a3){const _0x4c1501=_0x2f1c24;if(!_0x32e9a3||!_0x32e9a3['modelUrls']||!(_0x32e9a3[_0x4c1501(0xd5)]instanceof Array)||_0x32e9a3[_0x4c1501(0xd5)][_0x4c1501(0x1fd)]==0x0){_0x32e9a3&&_0x32e9a3['onLoad']&&_0x32e9a3[_0x4c1501(0x1c7)](this);return;}const _0xcab10e=_0x32e9a3&&_0x32e9a3[_0x4c1501(0x1b7)]!=undefined?_0x32e9a3[_0x4c1501(0x1b7)]:![],_0x5a0180=[];_0x32e9a3['modelUrls'][_0x4c1501(0x1b6)](_0x1aace9=>{const _0x4a1485=_0x4c1501;_0x5a0180[_0x4a1485(0x17d)](this[_0x4a1485(0x20e)]+_0x1aace9);});const _0x5e50c8=_0x5a0180[_0x4c1501(0x1fd)];let _0x1339d5=0x0;_0x5a0180['forEach']((_0x4aa87a,_0x27fd93)=>{const _0x455045=_0x4c1501,_0x4489ae=_0x4aa87a[_0x455045(0x1e0)]('/'),_0x2be7ea=_0x4489ae[_0x4489ae[_0x455045(0x1fd)]-0x1],_0x23ce3a=_0x2be7ea[_0x455045(0x9b)]('/'),_0xc46893=_0x2be7ea[_0x455045(0xa0)]('.'),_0x19cadd=_0x2be7ea[_0x455045(0x9d)](_0x23ce3a+0x1,_0xc46893),_0x49440d=_0x2be7ea[_0x455045(0x9d)](_0xc46893+0x1,_0x2be7ea['length']);if(['glb',_0x455045(0x1dc)][_0x455045(0xab)](_0x49440d['toLowerCase']()))this['gltfLoader'][_0x455045(0x12d)](_0x4aa87a,_0x41c0f9=>{const _0x1a9371=_0x455045,_0x59275e=_0x41c0f9[_0x1a9371(0x20c)],_0xe530af=_0x1a9371(0xf4)+_0x19cadd+'_'+_0x27fd93;traverseGenerateUUID(_0x59275e,_0xe530af);if(_0x41c0f9[_0x1a9371(0xf8)][_0x1a9371(0x1fd)]!=0x0)for(var _0x11c9d2=0x0;_0x11c9d2<_0x41c0f9[_0x1a9371(0xf8)][_0x1a9371(0x1fd)];_0x11c9d2++){const _0x3238da=new AnimationMixer(_0x59275e);_0x3238da[_0x1a9371(0x15a)]=_0x41c0f9[_0x1a9371(0xf8)][_0x11c9d2][_0x1a9371(0x15a)],this[_0x1a9371(0xbf)][_0x1a9371(0x17d)](_0x3238da);const _0x4e0b0f=_0x3238da[_0x1a9371(0x166)](_0x41c0f9[_0x1a9371(0xf8)][_0x11c9d2])['play']();_0x4e0b0f[_0x1a9371(0x1c2)]=!![],_0x3238da[_0x1a9371(0xcf)]=_0x4e0b0f,this[_0x1a9371(0xf0)]['push'](_0x4e0b0f);}_0x59275e[_0x1a9371(0x15a)]=_0x19cadd,_0x59275e['userData']['url']=_0x4aa87a,_0x59275e[_0x1a9371(0x94)](_0x3a41f7=>{const _0x3c80b7=_0x1a9371;_0x3a41f7[_0x3c80b7(0x1f7)]&&(_0x3a41f7[_0x3c80b7(0xd7)]=_0xcab10e,_0x3a41f7[_0x3c80b7(0x20d)]=_0xcab10e,_0x3a41f7[_0x3c80b7(0x1be)][_0x3c80b7(0x1d2)]=this[_0x3c80b7(0x1d2)],_0x3a41f7[_0x3c80b7(0x1be)]=_0x3a41f7[_0x3c80b7(0x1be)][_0x3c80b7(0x96)](),_0x3a41f7[_0x3c80b7(0x1b9)]=MODEL_RENDER_ORDER,this[_0x3c80b7(0x17f)][_0x3c80b7(0x17d)](_0x3a41f7),this[_0x3c80b7(0xdb)][_0x3c80b7(0x17d)](_0x3a41f7));}),this[_0x1a9371(0x20c)][_0x1a9371(0x17a)](_0x59275e),this[_0x1a9371(0x1ef)][_0x1a9371(0x17d)](_0x59275e),this['sceneAnimations'][_0x19cadd]=_0x41c0f9['animations'],_0x1339d5++,_0x32e9a3&&_0x32e9a3['onProgress']&&_0x32e9a3[_0x1a9371(0xa1)](_0x59275e),_0x1339d5==_0x5e50c8&&(_0x32e9a3&&_0x32e9a3['onLoad']&&_0x32e9a3[_0x1a9371(0x1c7)](this));},_0xd23a2a=>{},_0x221d6e=>{console['error'](_0x221d6e);});else{if([_0x455045(0x1ca)][_0x455045(0xab)](_0x49440d[_0x455045(0xe1)]()))this[_0x455045(0x114)][_0x455045(0x12d)](_0x4aa87a,_0x1fab96=>{const _0x1acb89=_0x455045,_0x3dab32=_0x1fab96,_0x451f5c=_0x1acb89(0xf4)+_0x19cadd+'_'+_0x27fd93;traverseGenerateUUID(_0x3dab32,_0x451f5c),_0x3dab32[_0x1acb89(0x15a)]=_0x19cadd,_0x3dab32[_0x1acb89(0x94)](_0x1335f0=>{const _0x681144=_0x1acb89;_0x1335f0[_0x681144(0x1f7)]&&(_0x1335f0[_0x681144(0xd7)]=_0xcab10e,_0x1335f0[_0x681144(0x20d)]=_0xcab10e,_0x1335f0[_0x681144(0x1b9)]=MODEL_RENDER_ORDER,this[_0x681144(0x17f)][_0x681144(0x17d)](_0x1335f0),this[_0x681144(0xdb)]['push'](_0x1335f0));}),this['scene'][_0x1acb89(0x17a)](_0x3dab32),this['sceneModels'][_0x1acb89(0x17d)](_0x3dab32),_0x1339d5++,_0x32e9a3&&_0x32e9a3[_0x1acb89(0xa1)]&&_0x32e9a3[_0x1acb89(0xa1)](_0x3dab32),_0x1339d5==_0x5e50c8&&(_0x32e9a3&&_0x32e9a3[_0x1acb89(0x1c7)]&&_0x32e9a3['onLoad'](this));});else throw new Error(_0x49440d+'\x20is\x20not\x20supported.');}});}[_0x2f1c24(0x101)](_0x301cbb){const _0x1b93b8=_0x2f1c24,_0x1c3421={'format':RGBEFormat,'magFilter':LinearFilter,'minFilter':LinearFilter};let _0x403ff2=this[_0x1b93b8(0x1ce)];this[_0x1b93b8(0xfa)]==_0x1b93b8(0x10b)&&(_0x403ff2=this[_0x1b93b8(0x1b5)]);this[_0x1b93b8(0xc4)]=new RenderPass(this['scene'],_0x403ff2);const _0x5d1a26=this[_0x1b93b8(0x145)][_0x1b93b8(0x194)](new Vector2());let _0xa88ee5={'supersampling':![]};Object[_0x1b93b8(0x12e)](_0xa88ee5,_0x301cbb&&_0x301cbb[_0x1b93b8(0x1f8)]);const _0x221878=_0xa88ee5[_0x1b93b8(0x92)]?_0x5d1a26['width']*0x2:_0x5d1a26[_0x1b93b8(0x1f6)],_0x2123f0=_0xa88ee5[_0x1b93b8(0x92)]?_0x5d1a26[_0x1b93b8(0xe5)]*0x2:_0x5d1a26[_0x1b93b8(0xe5)];this[_0x1b93b8(0x92)]=_0xa88ee5[_0x1b93b8(0x92)],this[_0x1b93b8(0xfb)]=new WebGLMultisampleRenderTarget(_0x221878,_0x2123f0,_0x1c3421),this[_0x1b93b8(0x117)]=new EffectComposer(this[_0x1b93b8(0x145)],this['msaaTarget']),this[_0x1b93b8(0x117)][_0x1b93b8(0xe3)](this[_0x1b93b8(0xc4)]),this['bloomComposer']=new EffectComposer(this[_0x1b93b8(0x145)],this['msaaTarget']),this[_0x1b93b8(0x19f)][_0x1b93b8(0x8a)]=![],this['bloomComposer'][_0x1b93b8(0xe3)](this[_0x1b93b8(0xc4)]);const _0x181218={'hue':0x0,'sataturation':0x1,'vibrance':0x0,'brightness':0x0,'contrast':0x1};Object['assign'](_0x181218,_0x301cbb?.[_0x1b93b8(0x1dd)]),this['nodepass']=new NodePass();const _0x3c2d51=new ScreenNode(),_0x33c267=new FloatNode(_0x181218['hue']),_0x3125d0=new FloatNode(_0x181218[_0x1b93b8(0x1c0)]),_0x5007d8=new FloatNode(_0x181218[_0x1b93b8(0x215)]),_0x419d33=new FloatNode(_0x181218[_0x1b93b8(0xf5)]),_0x40c550=new FloatNode(_0x181218[_0x1b93b8(0xc9)]),_0x305ea7=new ColorAdjustmentNode(_0x3c2d51,_0x33c267,ColorAdjustmentNode['HUE']),_0x1507df=new ColorAdjustmentNode(_0x305ea7,_0x3125d0,ColorAdjustmentNode[_0x1b93b8(0xa8)]),_0x3f16c9=new ColorAdjustmentNode(_0x1507df,_0x5007d8,ColorAdjustmentNode[_0x1b93b8(0x165)]),_0x5f12cb=new ColorAdjustmentNode(_0x3f16c9,_0x419d33,ColorAdjustmentNode[_0x1b93b8(0x14c)]),_0x4366df=new ColorAdjustmentNode(_0x5f12cb,_0x40c550,ColorAdjustmentNode[_0x1b93b8(0x16b)]);this[_0x1b93b8(0xf3)]['input']=_0x4366df,this[_0x1b93b8(0xf3)][_0x1b93b8(0x18e)]=_0x301cbb?.[_0x1b93b8(0xb6)],this['sceneComposer'][_0x1b93b8(0xe3)](this[_0x1b93b8(0xf3)]);const _0x5eb86b=_0x301cbb&&_0x301cbb[_0x1b93b8(0x106)]!=undefined&&_0x301cbb[_0x1b93b8(0x106)]['type']===_0x1b93b8(0x11d)?new Color(_0x301cbb['background'][_0x1b93b8(0xa9)]):new Color();let _0x4bdd0d={'level':0x1,'unbiased':!![]};Object[_0x1b93b8(0x12e)](_0x4bdd0d,_0x301cbb&&_0x301cbb['ssaa']),this['ssaaPass']=new SSAARenderPass(this[_0x1b93b8(0x20c)],_0x403ff2,_0x5eb86b,0x0),this[_0x1b93b8(0x1e1)][_0x1b93b8(0xd8)]=_0x4bdd0d['level'],this[_0x1b93b8(0x1e1)]['unbiased']=_0x4bdd0d[_0x1b93b8(0x10c)],this[_0x1b93b8(0x117)][_0x1b93b8(0xe3)](this[_0x1b93b8(0x1e1)]);const _0x294d49=_0x301cbb&&_0x301cbb[_0x1b93b8(0x200)]!=undefined?_0x301cbb[_0x1b93b8(0x200)]:![];this['ssaaPass'][_0x1b93b8(0x18e)]=_0x294d49;let _0x308c1a={'renderer':this['renderer'],'scene':this[_0x1b93b8(0x20c)],'camera':_0x403ff2,'width':this[_0x1b93b8(0x1c9)],'height':this['containerHeight'],'selects':[],'groundReflector':null,'encoding':LinearEncoding,'maxDistance':0xc8};_0x308c1a=Object[_0x1b93b8(0x12e)](_0x308c1a,_0x301cbb&&_0x301cbb[_0x1b93b8(0xa2)]),this[_0x1b93b8(0x152)]=new SSRPass(_0x308c1a),this[_0x1b93b8(0x152)]['maxDistance']=0xc8;const _0x5f2edf=_0x301cbb&&_0x301cbb[_0x1b93b8(0x1ac)]!=undefined?_0x301cbb['ssrEnabled']:![];this[_0x1b93b8(0x152)][_0x1b93b8(0x18e)]=_0x5f2edf,this['sceneComposer']['addPass'](this['ssrPass']);let _0x3cc9fb={'factor':2.2};_0x3cc9fb=Object[_0x1b93b8(0x12e)](_0x3cc9fb,_0x301cbb&&_0x301cbb[_0x1b93b8(0x220)]),this[_0x1b93b8(0x125)]=new ShaderPass(new ShaderMaterial({'uniforms':{'tDiffuse':{'value':null},'factor':{'value':_0x3cc9fb['factor']}},'vertexShader':gammaVertexShader,'fragmentShader':gammaFragmentShader}));const _0x39206d=_0x301cbb&&_0x301cbb[_0x1b93b8(0x185)]!=undefined?_0x301cbb[_0x1b93b8(0x185)]:!![];this[_0x1b93b8(0x117)][_0x1b93b8(0xe3)](this[_0x1b93b8(0x125)]),this[_0x1b93b8(0x125)]['enabled']=_0x39206d;let _0x5b138e={'bloomStrength':1.5,'bloomRadius':0x0,'threshold':0.85};_0x5b138e=Object['assign'](_0x5b138e,_0x301cbb&&_0x301cbb[_0x1b93b8(0x202)]),this[_0x1b93b8(0x108)]=new UnrealBloomPass(new Vector2(this['containerWidth'],this[_0x1b93b8(0xed)]),_0x5b138e[_0x1b93b8(0x1f4)],_0x5b138e[_0x1b93b8(0x9c)],_0x5b138e[_0x1b93b8(0xf6)]);const _0x28e47c=_0x301cbb&&_0x301cbb['bloomEnabled']!=undefined?_0x301cbb[_0x1b93b8(0x217)]:![];this[_0x1b93b8(0x108)][_0x1b93b8(0x18e)]=_0x28e47c,this['bloomComposer'][_0x1b93b8(0xe3)](this[_0x1b93b8(0x108)]),this[_0x1b93b8(0x95)]=new ShaderPass(new ShaderMaterial({'uniforms':{'baseTexture':{'value':null},'bloomTexture':{'value':this['bloomComposer'][_0x1b93b8(0x126)][_0x1b93b8(0x119)]}},'vertexShader':bloomVertexShader,'fragmentShader':bloomFragShader}),_0x1b93b8(0x1cc)),this[_0x1b93b8(0x95)][_0x1b93b8(0x9e)]=!![],this[_0x1b93b8(0x117)][_0x1b93b8(0xe3)](this[_0x1b93b8(0x95)]);let _0x5a0140={'focus':0x64,'aperture':0.00001,'maxblur':0.01,'width':this[_0x1b93b8(0x1c9)],'height':this[_0x1b93b8(0xed)]};_0x5a0140=Object[_0x1b93b8(0x12e)](_0x5a0140,_0x301cbb&&_0x301cbb[_0x1b93b8(0x1b2)]),this[_0x1b93b8(0x21c)]=new BokehPass(this[_0x1b93b8(0x20c)],_0x403ff2,_0x5a0140),this[_0x1b93b8(0x117)]['addPass'](this['bokehPass']);const _0xecf017=_0x301cbb&&_0x301cbb['dofEnabled']!=undefined?_0x301cbb[_0x1b93b8(0x98)]:![];this[_0x1b93b8(0x21c)][_0x1b93b8(0x18e)]=_0xecf017;let _0x5e4828={'edgeStrength':0x3,'edgeGlow':0x0,'edgeThickness':0x1,'pulsePeriod':0x0,'visibleEdgeColor':_0x1b93b8(0x208),'hiddenEdgeColor':_0x1b93b8(0xf2)};_0x5e4828=Object[_0x1b93b8(0x12e)](_0x5e4828,_0x301cbb&&_0x301cbb['outline']),this[_0x1b93b8(0xd3)]=new OutlinePass(new Vector2(this[_0x1b93b8(0x1c9)],this[_0x1b93b8(0xed)]),this[_0x1b93b8(0x20c)],_0x403ff2,this[_0x1b93b8(0x16a)]),this[_0x1b93b8(0xd3)][_0x1b93b8(0x104)]=_0x5e4828[_0x1b93b8(0x104)],this[_0x1b93b8(0xd3)][_0x1b93b8(0x1bf)]=_0x5e4828['edgeGlow'],this[_0x1b93b8(0xd3)][_0x1b93b8(0x184)]=_0x5e4828[_0x1b93b8(0x184)],this[_0x1b93b8(0xd3)][_0x1b93b8(0x15f)]=_0x5e4828['pulsePeriod'],this[_0x1b93b8(0xd3)][_0x1b93b8(0x1e7)]['set'](_0x5e4828[_0x1b93b8(0x1e7)]),this['outlinePass']['hiddenEdgeColor'][_0x1b93b8(0x102)](_0x5e4828['hiddenEdgeColor']),this['sceneComposer'][_0x1b93b8(0xe3)](this['outlinePass']);const _0x1c9728=_0x301cbb&&_0x301cbb[_0x1b93b8(0x173)]!=undefined?_0x301cbb[_0x1b93b8(0x173)]:![];this[_0x1b93b8(0xd3)]['enabled']=_0x1c9728;const _0x144b50=_0x301cbb&&_0x301cbb[_0x1b93b8(0x12f)]!=undefined?_0x301cbb[_0x1b93b8(0x12f)]:![];_0x144b50&&(this[_0x1b93b8(0x157)]=new SSRSkyBox(null,_0x403ff2,this['renderer']),this['sceneComposer'][_0x1b93b8(0xe3)](this['ssrSkyBox']),this[_0x1b93b8(0x128)]=new DoubleDepthBufferPass(this[_0x1b93b8(0x20c)]['clone'](!![]),_0x403ff2,this[_0x1b93b8(0x145)]),this[_0x1b93b8(0x117)][_0x1b93b8(0xe3)](this[_0x1b93b8(0x128)]),this[_0x1b93b8(0x1fa)]=new SSRTPass(this[_0x1b93b8(0x20c)]['clone'](!![]),this[_0x1b93b8(0x128)],_0x403ff2,this[_0x1b93b8(0x145)]),this['sceneComposer']['addPass'](this[_0x1b93b8(0x1fa)]));}[_0x2f1c24(0x187)](_0x4dc33a,_0x25e2de){const _0x32501a=_0x2f1c24;if(!(_0x4dc33a instanceof Array))return;const _0x2665c3=this[_0x32501a(0xe9)],_0x4383b7=_0x2665c3&&_0x2665c3['background']&&_0x2665c3[_0x32501a(0x106)]['options']&&_0x2665c3[_0x32501a(0x106)][_0x32501a(0xb8)]['scale']?_0x2665c3[_0x32501a(0x106)][_0x32501a(0xb8)]['scale']:0x1,_0x2399aa=_0x2665c3&&_0x2665c3[_0x32501a(0x106)]&&_0x2665c3[_0x32501a(0x106)][_0x32501a(0xb8)]&&_0x2665c3[_0x32501a(0x106)][_0x32501a(0xb8)][_0x32501a(0xb9)]?_0x2665c3[_0x32501a(0x106)][_0x32501a(0xb8)][_0x32501a(0xb9)]:[0x0,0x0,0x0],_0xdc0f71=_0x2665c3&&_0x2665c3[_0x32501a(0x106)]&&_0x2665c3[_0x32501a(0x106)][_0x32501a(0xb8)]&&_0x2665c3[_0x32501a(0x106)][_0x32501a(0xb8)]['fog']?_0x2665c3['background'][_0x32501a(0xb8)]['fog']:![],_0x10f229=0xc350;this[_0x32501a(0x8d)]=_0x10f229;if(_0x4dc33a[_0x32501a(0x1fd)]==0x6){const _0x2c90b2=[],_0x152868=[];_0x4dc33a[_0x32501a(0x1b6)](_0x40f74e=>{const _0x235802=_0x32501a;_0x2c90b2[_0x235802(0x17d)](loadTex(this[_0x235802(0x1a7)],this[_0x235802(0x20e)]+_0x40f74e));}),Promise[_0x32501a(0x1a5)](_0x2c90b2)[_0x32501a(0xeb)](_0x3304b7=>{const _0x55282d=_0x32501a;_0x3304b7['forEach'](_0x360b17=>{const _0x36ca8b=_0x5222,_0x44fa0e=new MeshBasicMaterial({'map':_0x360b17,'side':0x2,'transparent':!![],'opacity':0x1,'fog':_0xdc0f71});_0x152868[_0x36ca8b(0x17d)](_0x44fa0e);});const _0x37cc6e=new BoxGeometry(_0x10f229,_0x10f229,_0x10f229),_0x43bfbd=new Mesh(_0x37cc6e,_0x152868);_0x43bfbd[_0x55282d(0x1cd)][_0x55282d(0x102)](_0x4383b7,_0x4383b7,_0x4383b7),_0x43bfbd[_0x55282d(0xb9)][_0x55282d(0x102)](_0x2399aa[0x0],_0x2399aa[0x1],_0x2399aa[0x2]),_0x43bfbd[_0x55282d(0x1b9)]=SKY_RENDER_ORDER,_0x43bfbd[_0x55282d(0xe2)]=_0x55282d(0x17c),this['sky']?(this[_0x55282d(0xaa)]['geometry']=_0x37cc6e,this[_0x55282d(0xaa)][_0x55282d(0x1be)]=_0x152868):(this['scene']['add'](_0x43bfbd),this['sky']=_0x43bfbd),this[_0x55282d(0xaa)][_0x55282d(0x1cb)][_0x55282d(0xa9)]=_0x4dc33a,_0x25e2de&&_0x25e2de(this[_0x55282d(0xaa)]);});}else _0x4dc33a[_0x32501a(0x1fd)]==0x1&&this[_0x32501a(0x1a7)][_0x32501a(0x12d)](this[_0x32501a(0x20e)]+_0x4dc33a[0x0],_0x487888=>{const _0x455ad3=_0x32501a,_0x40175f=new MeshBasicMaterial({'map':_0x487888,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0xdc0f71}),_0x484ddb=new SphereGeometry(_0x10f229,0x3c,0x3c),_0x171f12=new Mesh(_0x484ddb,_0x40175f);_0x171f12[_0x455ad3(0x1cd)][_0x455ad3(0x102)](_0x4383b7,_0x4383b7,_0x4383b7),_0x171f12['rotation'][_0x455ad3(0x102)](_0x2399aa[0x0],_0x2399aa[0x1],_0x2399aa[0x2]),_0x171f12['renderOrder']=SKY_RENDER_ORDER,_0x171f12['type']=_0x455ad3(0x17c),this['sky']?(this[_0x455ad3(0xaa)]['geometry']=_0x484ddb,this[_0x455ad3(0xaa)][_0x455ad3(0x1be)]=_0x40175f):(this[_0x455ad3(0x20c)][_0x455ad3(0x17a)](_0x171f12),this[_0x455ad3(0xaa)]=_0x171f12),this[_0x455ad3(0xaa)]['userData'][_0x455ad3(0xa9)]=_0x4dc33a,_0x25e2de&&_0x25e2de(this[_0x455ad3(0xaa)]);});}[_0x2f1c24(0xa5)](_0x4990f3,_0x4238e0){const _0x1854e8=_0x2f1c24;if(!(_0x4990f3 instanceof Array))return;if(_0x4990f3[_0x1854e8(0x1fd)]==0x1)this[_0x1854e8(0x8b)]['compileEquirectangularShader'](),this[_0x1854e8(0xc1)][_0x1854e8(0x16f)](UnsignedByteType)[_0x1854e8(0x12d)](this[_0x1854e8(0x20e)]+_0x4990f3[0x0],_0x859047=>{const _0xfa38e5=_0x1854e8,_0x35983c=this[_0xfa38e5(0x8b)][_0xfa38e5(0xee)](_0x859047)[_0xfa38e5(0x119)];this[_0xfa38e5(0x8b)]['dispose'](),this[_0xfa38e5(0x1d2)]=_0x35983c,this[_0xfa38e5(0x20c)][_0xfa38e5(0x94)](_0x48a99e=>{const _0x29061c=_0xfa38e5;_0x48a99e[_0x29061c(0x1f7)]&&(_0x48a99e[_0x29061c(0x1be)][_0x29061c(0x1d2)]=_0x35983c);}),_0x4238e0&&_0x4238e0(this[_0xfa38e5(0x1d2)]);});else{if(_0x4990f3[_0x1854e8(0x1fd)]==0x6){this[_0x1854e8(0x8b)][_0x1854e8(0x1bc)]();const _0x2d2a53=[];_0x2d2a53[_0x1854e8(0x1b6)](_0x36e4fb=>{const _0xa6ed8d=_0x1854e8;_0x2d2a53[_0xa6ed8d(0x17d)](this['publicPath']+_0x36e4fb);}),this[_0x1854e8(0x21a)][_0x1854e8(0x12d)](_0x2d2a53,_0x2fa334=>{const _0x54a53e=_0x1854e8,_0x46ce67=this[_0x54a53e(0x8b)]['fromCubemap'](_0x2fa334)['texture'];this[_0x54a53e(0x8b)][_0x54a53e(0x16e)](),this[_0x54a53e(0x1d2)]=_0x46ce67,this[_0x54a53e(0x20c)][_0x54a53e(0x94)](_0x589535=>{const _0x5223d3=_0x54a53e;_0x589535[_0x5223d3(0x1f7)]&&(_0x589535[_0x5223d3(0x1be)][_0x5223d3(0x1d2)]=_0x46ce67);}),_0x4238e0&&_0x4238e0(this[_0x54a53e(0x1d2)]);});}}}[_0x2f1c24(0xe6)](_0x1d32e0){this['scene']['add'](_0x1d32e0);}[_0x2f1c24(0x181)](_0xf622e2){const _0x4157a1=_0x2f1c24;this['scene']['remove'](_0xf622e2);const _0xff5190=this['children']['indexOf'](_0xf622e2);this[_0x4157a1(0xdb)][_0x4157a1(0x190)](_0xff5190,0x1);}[_0x2f1c24(0xae)](_0x4cf2b8){const _0xc3e8dd=_0x2f1c24;for(const _0x10f7a7 in this[_0xc3e8dd(0xdb)]){if(this[_0xc3e8dd(0xdb)][_0x10f7a7][_0xc3e8dd(0x15a)]==_0x4cf2b8)return this['children'][_0x10f7a7];}}[_0x2f1c24(0x178)](_0x413108){const _0x5db367=_0x2f1c24,_0x2d5de3=[];for(const _0x597276 in this['children']){this['children'][_0x597276]['name']==_0x413108&&_0x2d5de3[_0x5db367(0x17d)](this[_0x5db367(0xdb)][_0x597276]);}return _0x2d5de3;}[_0x2f1c24(0x15e)](_0x42617c){const _0x3441f9=_0x2f1c24;for(const _0x1a4538 in this['children']){if(this[_0x3441f9(0xdb)][_0x1a4538][_0x3441f9(0x21e)]==_0x42617c)return this[_0x3441f9(0xdb)][_0x1a4538];}}[_0x2f1c24(0x147)](_0x59f0cd){const _0x34dfdf=_0x2f1c24,_0x2cd8d3=[];for(const _0xda8b49 in this['children']){this[_0x34dfdf(0xdb)][_0xda8b49][_0x34dfdf(0xe2)]==_0x59f0cd&&_0x2cd8d3[_0x34dfdf(0x17d)](this[_0x34dfdf(0xdb)][_0xda8b49]);}return _0x2cd8d3;}[_0x2f1c24(0x1da)](_0x2cf9f8){const _0x288d0e=_0x2f1c24;if(this['viewState']!=_0x288d0e(0x1a8))return;const {target:_0x50d309,callback:_0xb5c1cf,polarAngle:_0x1d4888,azimuthalAngle:_0x3a6acf,distance:_0x36d459}=_0x2cf9f8,_0x4166cb=new Vector3();if(_0x50d309 instanceof Vector3)_0x4166cb[_0x288d0e(0x1bb)](_0x50d309);else _0x50d309 instanceof Array&&_0x4166cb[_0x288d0e(0x102)](_0x50d309[0x0],_0x50d309[0x1],_0x50d309[0x2]);const _0x4c68a9=new Vector3()['subVectors'](this[_0x288d0e(0x1ce)][_0x288d0e(0xb2)],this[_0x288d0e(0x90)][_0x288d0e(0x21b)]),_0x4f876d=new Spherical()['setFromVector3'](_0x4c68a9);if(_0x1d4888!==undefined)_0x4f876d[_0x288d0e(0x214)]=_0x1d4888;if(_0x3a6acf!==undefined)_0x4f876d['theta']=_0x3a6acf;if(_0x36d459!==undefined)_0x4f876d[_0x288d0e(0x131)]=_0x36d459;_0x4c68a9['setFromSpherical'](_0x4f876d);const _0x2bf766=new Vector3();_0x2bf766['copy'](_0x4166cb)[_0x288d0e(0x17a)](_0x4c68a9),_0x2bf766[_0x288d0e(0x99)](this['orbitCamera'][_0x288d0e(0xb2)])<0.0001?(this[_0x288d0e(0x1ce)]['position'][_0x288d0e(0x1bb)](_0x2bf766),this[_0x288d0e(0x90)]['target'][_0x288d0e(0x1bb)](_0x4166cb),_0xb5c1cf&&_0xb5c1cf()):(new Tween(this[_0x288d0e(0x90)][_0x288d0e(0x21b)])['to'](_0x4166cb,0x320)[_0x288d0e(0xc5)](),new Tween(this[_0x288d0e(0x1ce)][_0x288d0e(0xb2)])['to'](_0x2bf766,0x320)[_0x288d0e(0xc5)]()[_0x288d0e(0x162)](()=>{_0xb5c1cf&&_0xb5c1cf();}));}[_0x2f1c24(0x109)](_0x4c03e9){const _0x2ea48a=_0x2f1c24;_0x4c03e9['layers'][_0x2ea48a(0x113)](0x2);}['removeBloomSpecial'](_0xbb7639){const _0x3ecc23=_0x2f1c24;_0xbb7639[_0x3ecc23(0x1ae)][_0x3ecc23(0x168)](0x2);}[_0x2f1c24(0x18f)](_0x59f5af){const _0x372d3b=_0x2f1c24;_0x59f5af[_0x372d3b(0x1ae)][_0x372d3b(0x113)](0x1);}['removeBloom'](_0x2fcd95){const _0x113ca7=_0x2f1c24;_0x2fcd95['layers'][_0x113ca7(0x168)](0x1);}[_0x2f1c24(0x136)]({fileList:_0x56d32f,onLoad:_0x35dad9}){const _0x528f54=_0x2f1c24,_0x340b67=_0x56d32f['length'];if(_0x340b67==0x0)return;if(_0x340b67==0x1){this['pmremGenerator'][_0x528f54(0x89)]();const _0x252bdf=new FileReader();_0x252bdf[_0x528f54(0x10e)](_0x56d32f[0x0]),_0x252bdf[_0x528f54(0x8f)]=_0x3fc82b=>{const _0x10a260=_0x528f54,_0x55370e=_0x3fc82b[_0x10a260(0x21b)]?.[_0x10a260(0x196)],_0x392faa=new DataTexture(null,0x1,0x1,undefined,undefined,undefined,undefined,undefined,NearestFilter,NearestFilter,undefined,undefined),_0x6054a0=this['hdrLoader'][_0x10a260(0x16f)](UnsignedByteType)[_0x10a260(0xc3)](_0x55370e);if(!_0x6054a0)return;if(_0x6054a0[_0x10a260(0x139)]!==undefined)_0x392faa[_0x10a260(0x139)]=_0x6054a0[_0x10a260(0x139)];else _0x6054a0[_0x10a260(0x205)]!==undefined&&(_0x392faa[_0x10a260(0x139)][_0x10a260(0x1f6)]=_0x6054a0[_0x10a260(0x1f6)],_0x392faa[_0x10a260(0x139)][_0x10a260(0xe5)]=_0x6054a0[_0x10a260(0xe5)],_0x392faa['image']['data']=_0x6054a0[_0x10a260(0x205)]);_0x392faa[_0x10a260(0x129)]=_0x6054a0[_0x10a260(0x129)]!==undefined?_0x6054a0[_0x10a260(0x129)]:ClampToEdgeWrapping,_0x392faa[_0x10a260(0x1ed)]=_0x6054a0[_0x10a260(0x1ed)]!==undefined?_0x6054a0[_0x10a260(0x1ed)]:ClampToEdgeWrapping,_0x392faa[_0x10a260(0x1e9)]=_0x6054a0[_0x10a260(0x1e9)]!==undefined?_0x6054a0[_0x10a260(0x1e9)]:LinearFilter,_0x392faa[_0x10a260(0x100)]=_0x6054a0[_0x10a260(0x100)]!==undefined?_0x6054a0[_0x10a260(0x100)]:LinearFilter,_0x392faa[_0x10a260(0x1e5)]=_0x6054a0[_0x10a260(0x1e5)]!==undefined?_0x6054a0[_0x10a260(0x1e5)]:0x1;_0x6054a0[_0x10a260(0x13f)]!==undefined&&(_0x392faa[_0x10a260(0x13f)]=_0x6054a0['encoding']);_0x6054a0['flipY']!==undefined&&(_0x392faa['flipY']=_0x6054a0[_0x10a260(0x12c)]);_0x6054a0[_0x10a260(0xba)]!==undefined&&(_0x392faa[_0x10a260(0xba)]=_0x6054a0[_0x10a260(0xba)]);_0x6054a0['type']!==undefined&&(_0x392faa[_0x10a260(0xe2)]=_0x6054a0[_0x10a260(0xe2)]);_0x6054a0[_0x10a260(0x20b)]!==undefined&&(_0x392faa['mipmaps']=_0x6054a0[_0x10a260(0x20b)],_0x392faa[_0x10a260(0x100)]=LinearMipmapLinearFilter);_0x6054a0[_0x10a260(0x8c)]===0x1&&(_0x392faa['minFilter']=LinearFilter);_0x6054a0[_0x10a260(0x1d6)]!==undefined&&(_0x392faa['generateMipmaps']=_0x6054a0['generateMipmaps']);_0x392faa['needsUpdate']=!![];const _0x162273=this[_0x10a260(0x8b)][_0x10a260(0xee)](_0x392faa)[_0x10a260(0x119)];this[_0x10a260(0x8b)][_0x10a260(0x16e)](),this['envMap']=_0x162273,this[_0x10a260(0xdb)]['forEach'](_0xbb3e2f=>{const _0x527c3b=_0x10a260;_0xbb3e2f['material'][_0x527c3b(0x1d2)]=_0x162273;}),_0x35dad9&&_0x35dad9(_0x162273);};}else{if(_0x340b67==0x6){this[_0x528f54(0x8b)][_0x528f54(0x1bc)]();const _0x3364ef=new CubeTexture(),_0x849a4c=[];for(const _0x349ca5 in _0x56d32f){const _0x34e04a=_0x56d32f[_0x349ca5];if(_0x34e04a instanceof File){const _0x5d4e82=new FileReader();_0x849a4c[_0x528f54(0x17d)](parseImageFile(_0x5d4e82,_0x34e04a));}}Promise[_0x528f54(0x1a5)](_0x849a4c)[_0x528f54(0xeb)](_0x61b734=>{const _0x2a39ab=_0x528f54;_0x3364ef[_0x2a39ab(0x171)]=!![],_0x3364ef[_0x2a39ab(0x1db)]=_0x61b734;const _0x13466c=this[_0x2a39ab(0x8b)][_0x2a39ab(0x18b)](_0x3364ef)[_0x2a39ab(0x119)];this['pmremGenerator'][_0x2a39ab(0x16e)](),this[_0x2a39ab(0x1d2)]=_0x13466c,this[_0x2a39ab(0xdb)][_0x2a39ab(0x1b6)](_0x4349f4=>{const _0x169cd2=_0x2a39ab;_0x4349f4[_0x169cd2(0x1be)][_0x169cd2(0x1d2)]=_0x13466c;}),_0x35dad9&&_0x35dad9(_0x13466c);});}}}[_0x2f1c24(0x1f5)]({fileList:_0x1d8d82,onLoad:_0x1a0252}){const _0x28c06d=_0x2f1c24,_0x3cc4f1=_0x1d8d82['length'];if(_0x3cc4f1==0x0)return;const _0x45a8a9=this[_0x28c06d(0xe9)],_0x1e73dc=_0x45a8a9&&_0x45a8a9[_0x28c06d(0x106)]&&_0x45a8a9[_0x28c06d(0x106)][_0x28c06d(0xb8)]&&_0x45a8a9[_0x28c06d(0x106)][_0x28c06d(0xb8)][_0x28c06d(0x1cd)]?_0x45a8a9[_0x28c06d(0x106)]['options'][_0x28c06d(0x1cd)]:0x1,_0x4b140e=_0x45a8a9&&_0x45a8a9[_0x28c06d(0x106)]&&_0x45a8a9[_0x28c06d(0x106)][_0x28c06d(0xb8)]&&_0x45a8a9[_0x28c06d(0x106)][_0x28c06d(0xb8)][_0x28c06d(0xb9)]?_0x45a8a9['background'][_0x28c06d(0xb8)][_0x28c06d(0xb9)]:[0x0,0x0,0x0],_0x34f01e=_0x45a8a9&&_0x45a8a9[_0x28c06d(0x106)]&&_0x45a8a9[_0x28c06d(0x106)]['options']&&_0x45a8a9['background'][_0x28c06d(0xb8)][_0x28c06d(0x18c)]?_0x45a8a9['background'][_0x28c06d(0xb8)]['fog']:![],_0xbd121a=this[_0x28c06d(0x8d)];if(_0x3cc4f1==0x6){const _0x125481=[],_0x2af7ac=[];for(const _0x4cf77b in _0x1d8d82){const _0x8492dc=_0x1d8d82[_0x4cf77b];if(_0x8492dc instanceof File){const _0x36f035=new FileReader();_0x125481[_0x28c06d(0x17d)](parseImageFile(_0x36f035,_0x8492dc));}}Promise[_0x28c06d(0x1a5)](_0x125481)[_0x28c06d(0xeb)](_0xc03b87=>{const _0x3c8176=_0x28c06d;_0xc03b87[_0x3c8176(0x1b6)](_0x2dd59f=>{const _0x15bc17=_0x3c8176,_0x3346d3=new Texture();_0x3346d3['needsUpdate']=!![],_0x3346d3[_0x15bc17(0x139)]=_0x2dd59f;const _0x3fb721=new MeshBasicMaterial({'map':_0x3346d3,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x34f01e});_0x2af7ac['push'](_0x3fb721);});if(this['sky'])this[_0x3c8176(0xaa)][_0x3c8176(0x1be)][_0x3c8176(0x171)]=!![],this[_0x3c8176(0xaa)]['material']=_0x2af7ac;else{const _0x3a76cf=new BoxGeometry(_0xbd121a,_0xbd121a,_0xbd121a),_0x3fc549=new Mesh(_0x3a76cf,_0x2af7ac);_0x3fc549[_0x3c8176(0x1cd)][_0x3c8176(0x102)](_0x1e73dc,_0x1e73dc,_0x1e73dc),_0x3fc549[_0x3c8176(0xb9)][_0x3c8176(0x102)](_0x4b140e[0x0],_0x4b140e[0x1],_0x4b140e[0x2]),_0x3fc549[_0x3c8176(0x1b9)]=SKY_RENDER_ORDER,_0x3fc549[_0x3c8176(0xe2)]=_0x3c8176(0x17c),this[_0x3c8176(0x20c)][_0x3c8176(0x17a)](_0x3fc549),this[_0x3c8176(0xaa)]=_0x3fc549;}});}else{if(_0x3cc4f1==0x1){const _0x3e4630=new FileReader();parseImageFile(_0x3e4630,_0x1d8d82[0x0])[_0x28c06d(0xeb)](_0x40e13d=>{const _0x3881f3=_0x28c06d,_0x2ba45e=_0x40e13d,_0x2b2f41=new Texture();_0x2b2f41[_0x3881f3(0x139)]=_0x2ba45e,_0x2b2f41[_0x3881f3(0x171)]=!![];if(this['sky'])this['sky'][_0x3881f3(0x1be)]['needsUpdate']=!![],this[_0x3881f3(0xaa)]['material'][_0x3881f3(0x167)]=_0x2b2f41;else{const _0x4b5986=new SphereGeometry(_0xbd121a,0x3c,0x3c),_0x507195=new MeshBasicMaterial({'map':_0x2b2f41,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x34f01e}),_0x5cbe62=new Mesh(_0x4b5986,_0x507195);_0x5cbe62[_0x3881f3(0x1cd)][_0x3881f3(0x102)](_0x1e73dc,_0x1e73dc,_0x1e73dc),_0x5cbe62['rotation'][_0x3881f3(0x102)](_0x4b140e[0x0],_0x4b140e[0x1],_0x4b140e[0x2]),_0x5cbe62[_0x3881f3(0x1b9)]=SKY_RENDER_ORDER,_0x5cbe62[_0x3881f3(0xe2)]=_0x3881f3(0x17c),this[_0x3881f3(0x20c)]['add'](_0x5cbe62),this[_0x3881f3(0xaa)]=_0x5cbe62;}});}}}['loadModels']({fileList:_0x498b61,onProgress:_0x128e58,onLoad:_0x6895d1}){const _0x30871e=_0x2f1c24,_0x13f9f3=_0x498b61[_0x30871e(0x1fd)];if(_0x13f9f3==0x0)return;let _0x1d78ed=0x0,_0x17e2d9=new Vector3(),_0x5419c2=new Vector3();const _0x4e80cc=this[_0x30871e(0xe9)]&&this[_0x30871e(0xe9)][_0x30871e(0x1b7)]!=undefined?this['attrs'][_0x30871e(0x1b7)]:![];for(const _0x181792 in _0x498b61){const _0x3acddf=_0x498b61[_0x181792];if(_0x3acddf instanceof File){const _0x49761b=new FileReader();_0x49761b['readAsArrayBuffer'](_0x3acddf),_0x49761b['onload']=_0x44cbb2=>{const _0x4b5470=_0x30871e,_0x362723=_0x44cbb2[_0x4b5470(0x21b)]?.[_0x4b5470(0x196)];_0x362723&&this[_0x4b5470(0x21d)][_0x4b5470(0xc3)](_0x362723,'',_0x2c48e3=>{const _0x2fc4e3=_0x4b5470;this[_0x2fc4e3(0x1a3)][_0x2fc4e3(0x17d)](_0x2c48e3);const _0x2cf414=_0x3acddf[_0x2fc4e3(0x15a)]['split']('.'),_0x368bb6=_0x2cf414[0x0],_0x153520=_0x2c48e3[_0x2fc4e3(0x20c)],_0x253ff0=_0x2fc4e3(0xf4)+_0x368bb6+'_'+_0x181792;traverseGenerateUUID(_0x153520,_0x253ff0),_0x153520[_0x2fc4e3(0x15a)]=_0x368bb6,_0x153520[_0x2fc4e3(0x1cb)][_0x2fc4e3(0x188)]=_0x3acddf[_0x2fc4e3(0x15a)],_0x153520[_0x2fc4e3(0x94)](_0x410858=>{const _0x15e841=_0x2fc4e3;if(_0x410858[_0x15e841(0x1f7)]){_0x410858[_0x15e841(0xd7)]=_0x4e80cc,_0x410858['receiveShadow']=_0x4e80cc,_0x410858[_0x15e841(0x1be)]['envMap']=this[_0x15e841(0x1d2)],_0x410858[_0x15e841(0x1be)]=_0x410858[_0x15e841(0x1be)][_0x15e841(0x96)](),_0x410858['renderOrder']=MODEL_RENDER_ORDER,_0x410858[_0x15e841(0x1be)][_0x15e841(0x1d2)]=this['envMap'];const _0x41ea40=new Vector3();_0x410858[_0x15e841(0x120)][_0x15e841(0x175)][_0x15e841(0x1c6)](_0x41ea40);const _0x4ed2a7=_0x41ea40[_0x15e841(0x96)]();recursiveCalParentsMat(_0x410858,_0x4ed2a7,new Matrix4());const _0x33e89d=_0x410858[_0x15e841(0x120)][_0x15e841(0x175)][_0x15e841(0x218)][_0x15e841(0x96)]();recursiveCalParentsMat(_0x410858,_0x33e89d,new Matrix4());const _0x1db274=_0x410858[_0x15e841(0x120)][_0x15e841(0x175)]['min']['clone']();recursiveCalParentsMat(_0x410858,_0x1db274,new Matrix4());const _0x259815=new Vector3()[_0x15e841(0x1d0)](_0x4ed2a7,_0x33e89d),_0x179f6e=new Vector3()[_0x15e841(0x1d0)](_0x4ed2a7,_0x1db274);if(_0x259815[_0x15e841(0x1c4)]()>_0x17e2d9['lengthSq']())_0x17e2d9[_0x15e841(0x1bb)](_0x259815);if(_0x179f6e[_0x15e841(0x1c4)]()>_0x5419c2[_0x15e841(0x1c4)]())_0x5419c2['copy'](_0x179f6e);}}),this[_0x2fc4e3(0x20c)][_0x2fc4e3(0x17a)](_0x153520),this['sceneModels'][_0x2fc4e3(0x17d)](_0x153520),_0x1d78ed++,_0x128e58&&_0x128e58(_0x153520);if(_0x1d78ed==_0x13f9f3){let _0x2fdbbc=_0x17e2d9['x']-_0x5419c2['x'],_0x333f0b=_0x17e2d9['z']-_0x5419c2['z'],_0x3e3e44=_0x17e2d9['y']-_0x5419c2['y'],_0x2a7e51=_0x5419c2['x']+_0x2fdbbc/0x2,_0x24da78=_0x5419c2['y']+_0x3e3e44/0x2,_0x2a560c=_0x5419c2['z']+_0x333f0b/0x2,_0x1cf16d=Math[_0x2fc4e3(0x19c)](Math[_0x2fc4e3(0x19d)](Math[_0x2fc4e3(0x19c)](Math[_0x2fc4e3(0x19d)](_0x2fdbbc,0x2)+Math[_0x2fc4e3(0x19d)](_0x333f0b,0x2)),0x2)+Math[_0x2fc4e3(0x19d)](_0x3e3e44,0x2));this[_0x2fc4e3(0x90)][_0x2fc4e3(0xb7)][_0x2fc4e3(0xb2)][_0x2fc4e3(0x102)](_0x17e2d9['x']+_0x1cf16d/0x2,_0x1cf16d*0x2/Math['tan'](Math['PI']/0xb4*0x2d)+Math[_0x2fc4e3(0x212)](_0x17e2d9['y']),_0x17e2d9['z']+_0x1cf16d/0x2),this['orbitControls']['target']['set'](_0x2a7e51,_0x24da78,_0x2a560c),this[_0x2fc4e3(0x90)]['update'](),_0x6895d1&&_0x6895d1();}});};}}}['exportScenes'](_0x1c14ac){const _0x461b46=_0x2f1c24,_0x192edf=this[_0x461b46(0xe9)];let _0xda6799=Object[_0x461b46(0x12e)]({},_0x192edf);_0xda6799[_0x461b46(0x1d9)][_0x461b46(0x1ce)]=Object[_0x461b46(0x12e)](_0xda6799[_0x461b46(0x1d9)][_0x461b46(0x1ce)],{'position':[this[_0x461b46(0x1ce)]['position']['x'],this['orbitCamera'][_0x461b46(0xb2)]['y'],this[_0x461b46(0x1ce)][_0x461b46(0xb2)]['z']]}),_0xda6799['controls'][_0x461b46(0x90)]=Object[_0x461b46(0x12e)](_0xda6799[_0x461b46(0x192)][_0x461b46(0x90)],{'target':[this['orbitControls'][_0x461b46(0x21b)]['x'],this[_0x461b46(0x90)][_0x461b46(0x21b)]['y'],this[_0x461b46(0x90)][_0x461b46(0x21b)]['z']]});const _0x78c94b=[];this[_0x461b46(0x1ef)]['forEach'](_0x1db134=>{const _0x3be455=_0x461b46;_0x78c94b[_0x3be455(0x17d)]('/'+_0x1db134[_0x3be455(0x1cb)][_0x3be455(0x188)]);}),_0xda6799=Object[_0x461b46(0x12e)](_0xda6799,{'modelUrls':_0x78c94b});if(!_0x1c14ac)_0x1c14ac='settings.json';typeof _0xda6799===_0x461b46(0xb7)&&(_0xda6799=JSON[_0x461b46(0x137)](_0xda6799,undefined,0x4));const _0x32f9a8=new Blob([_0xda6799],{'type':_0x461b46(0x149)}),_0x44b875=document[_0x461b46(0xcd)](_0x461b46(0x14f)),_0x4d4bd1=document[_0x461b46(0xa7)]('a');_0x4d4bd1['download']=_0x1c14ac,_0x4d4bd1['href']=window[_0x461b46(0xc0)][_0x461b46(0x14d)](_0x32f9a8),_0x4d4bd1[_0x461b46(0xdc)][_0x461b46(0x1ad)]=[_0x461b46(0x149),_0x4d4bd1[_0x461b46(0xf1)],_0x4d4bd1[_0x461b46(0x1fc)]][_0x461b46(0x16d)](':'),_0x44b875[_0x461b46(0xc6)](_0x461b46(0x13d),!![],![],window,0x0,0x0,0x0,0x0,0x0,![],![],![],![],0x0,null),_0x4d4bd1['dispatchEvent'](_0x44b875);}[_0x2f1c24(0x123)]({data:_0x1b87ef,onProgress:_0xa59beb,onLoad:_0x582217}){const _0xf6e4ea=_0x2f1c24;this[_0xf6e4ea(0xdf)](_0x1b87ef),this[_0xf6e4ea(0x195)](_0x1b87ef[_0xf6e4ea(0x1bd)]),this[_0xf6e4ea(0x1b0)](_0x1b87ef[_0xf6e4ea(0x1d9)]),this[_0xf6e4ea(0xff)](_0x1b87ef),this['loadModelByUrls']({'modelUrls':_0x1b87ef[_0xf6e4ea(0xd5)]?_0x1b87ef[_0xf6e4ea(0xd5)]:[],'onProgress':_0xa59beb,'onLoad':_0x582217,'nodes':_0x1b87ef['template']});}[_0x2f1c24(0x103)]({nodes:_0x2e80f4,modelUrls:_0xad7cc5,onProgress:_0x4618b9,onLoad:_0x5f29d6}){const _0x321d17=_0x2f1c24;if(!_0xad7cc5||!(_0xad7cc5 instanceof Array)||_0xad7cc5['length']==0x0){_0x5f29d6&&_0x5f29d6(this);return;}const _0x4831b9=this['attrs']?.[_0x321d17(0x1b7)],_0xf0fa86=[];_0xad7cc5[_0x321d17(0x1b6)](_0x35f796=>{const _0x3b2245=_0x321d17;_0xf0fa86['push'](this[_0x3b2245(0x20e)]+_0x35f796);});const _0x156bac=_0xf0fa86[_0x321d17(0x1fd)];let _0x560486=0x0;_0xf0fa86[_0x321d17(0x1b6)]((_0x107e19,_0x1c9394)=>{const _0x54818f=_0x321d17,_0x8885b3=_0x107e19[_0x54818f(0x1e0)]('/'),_0x374067=_0x8885b3[_0x8885b3['length']-0x1],_0x572da3=_0x374067[_0x54818f(0x9b)]('/'),_0x4df8ba=_0x374067[_0x54818f(0xa0)]('.'),_0x3f6a3f=_0x374067[_0x54818f(0x9d)](_0x572da3+0x1,_0x4df8ba),_0x5f2041=_0x374067[_0x54818f(0x9d)](_0x4df8ba+0x1,_0x374067[_0x54818f(0x1fd)]);if(['glb',_0x54818f(0x1dc)][_0x54818f(0xab)](_0x5f2041[_0x54818f(0xe1)]()))this[_0x54818f(0x21d)]['load'](_0x107e19,_0x5d0371=>{const _0x4865a3=_0x54818f,_0x46470f=_0x5d0371['parser'][_0x4865a3(0x1a9)]['nodes'],_0x1b5e37={};for(let _0x5a2778=0x0;_0x5a2778<_0x46470f[_0x4865a3(0x1fd)];_0x5a2778++){if(!_0x46470f[_0x5a2778][_0x4865a3(0x15a)])throw new Error('model\x20name\x20should\x20be\x20defined.');!_0x1b5e37[_0x46470f[_0x5a2778][_0x4865a3(0x15a)]]?_0x1b5e37[_0x46470f[_0x5a2778][_0x4865a3(0x15a)]]=0x1:_0x1b5e37[_0x46470f[_0x5a2778][_0x4865a3(0x15a)]]++;if(_0x1b5e37[_0x46470f[_0x5a2778][_0x4865a3(0x15a)]]>0x1)throw new Error('model\x20name\x20should\x20be\x20uniqued.');}const _0x201840=_0x5d0371['scene'];if(_0x5d0371[_0x4865a3(0xf8)][_0x4865a3(0x1fd)]!=0x0)for(var _0x13c9b1=0x0;_0x13c9b1<_0x5d0371[_0x4865a3(0xf8)][_0x4865a3(0x1fd)];_0x13c9b1++){const _0xdc984c=new AnimationMixer(_0x201840);_0xdc984c[_0x4865a3(0x15a)]=_0x5d0371[_0x4865a3(0xf8)][_0x13c9b1][_0x4865a3(0x15a)],this[_0x4865a3(0xbf)]['push'](_0xdc984c);const _0x10defc=_0xdc984c[_0x4865a3(0x166)](_0x5d0371[_0x4865a3(0xf8)][_0x13c9b1])['play']();_0x10defc['paused']=!![],_0xdc984c['actions']=_0x10defc,this[_0x4865a3(0xf0)][_0x4865a3(0x17d)](_0x10defc);}const _0x2b3541='root_'+_0x3f6a3f+'_'+_0x1c9394;traverseGenerateUUID(_0x201840,_0x2b3541),_0x201840[_0x4865a3(0x15a)]=_0x3f6a3f,_0x201840[_0x4865a3(0x1cb)][_0x4865a3(0x159)]=_0x107e19,_0x201840[_0x4865a3(0x94)](_0x28a66b=>{const _0x2f7859=_0x4865a3,_0x2c86ef=[];traverseSelectNodeByUUID(_0x2e80f4[_0x2b3541],_0x28a66b[_0x2f7859(0x21e)],_0x2c86ef);if(_0x2c86ef['length']>0x0){const _0x42dc4d=_0x2c86ef[0x0];if(_0x42dc4d[_0x2f7859(0xe2)]==_0x2f7859(0xce)||_0x42dc4d[_0x2f7859(0xe2)]==_0x2f7859(0xe8)){_0x28a66b[_0x2f7859(0x11b)]=_0x42dc4d[_0x2f7859(0x11b)];const {position:_0x34def5,scale:_0xc2df7e,rotation:_0x4d6f34}=_0x42dc4d[_0x2f7859(0xb8)];_0x28a66b['position'][_0x2f7859(0x102)](_0x34def5[0x0],_0x34def5[0x1],_0x34def5[0x2]),_0x28a66b[_0x2f7859(0xb9)][_0x2f7859(0x102)](degToRad(_0x4d6f34[0x0]),degToRad(_0x4d6f34[0x1]),degToRad(_0x4d6f34[0x2])),_0x28a66b[_0x2f7859(0x1cd)][_0x2f7859(0x102)](_0xc2df7e[0x0],_0xc2df7e[0x1],_0xc2df7e[0x2]);}else{if(_0x42dc4d['type']=='Mesh'){_0x28a66b['visible']=_0x42dc4d['visible'];const {position:_0x3cf5e7,scale:_0x4c09d1,rotation:_0x552692,castShadow:_0x3f9617,receiveShadow:_0x1a8356}=_0x42dc4d[_0x2f7859(0xb8)];_0x28a66b['position'][_0x2f7859(0x102)](_0x3cf5e7[0x0],_0x3cf5e7[0x1],_0x3cf5e7[0x2]),_0x28a66b[_0x2f7859(0xb9)]['set'](degToRad(_0x552692[0x0]),degToRad(_0x552692[0x1]),degToRad(_0x552692[0x2])),_0x28a66b['scale'][_0x2f7859(0x102)](_0x4c09d1[0x0],_0x4c09d1[0x1],_0x4c09d1[0x2]),_0x28a66b[_0x2f7859(0xd7)]=_0x4831b9?_0x4831b9:_0x3f9617,_0x28a66b[_0x2f7859(0x20d)]=_0x4831b9?_0x4831b9:_0x1a8356;if(_0x42dc4d[_0x2f7859(0xb3)]){const {color:_0x2ee513,depthTest:_0x30ee2b,depthWrite:_0x4faa2b,opacity:_0x52013f,transparent:_0x399bd5,wireframe:_0xf2f586,type:_0x2109b0}=_0x42dc4d[_0x2f7859(0xb3)];_0x28a66b['material'][_0x2f7859(0x11d)][_0x2f7859(0x102)](_0x2ee513),_0x28a66b[_0x2f7859(0x1be)][_0x2f7859(0xea)]=_0x30ee2b,_0x28a66b['material'][_0x2f7859(0x9a)]=_0x4faa2b,_0x28a66b['material'][_0x2f7859(0x1f9)]=_0x52013f,_0x28a66b[_0x2f7859(0x1be)]['transparent']=_0x399bd5,_0x28a66b['material']['wireframe']=_0xf2f586;if(_0x2109b0==_0x2f7859(0xd4)&&_0x42dc4d['matOptions']['extends']){const {roughness:_0xdeb4ba,metalness:_0x3930d8,envMapIntensity:_0x563c30,lightMapIntensity:_0x408c0c,emissive:_0x264db2,emissiveIntensity:_0x1f3234}=_0x42dc4d[_0x2f7859(0xb3)]['extends'];_0x28a66b[_0x2f7859(0x1be)][_0x2f7859(0x1fb)]=_0xdeb4ba,_0x28a66b['material'][_0x2f7859(0xe0)]=_0x3930d8,_0x28a66b[_0x2f7859(0x1be)][_0x2f7859(0xe4)]=_0x563c30,_0x28a66b[_0x2f7859(0x1be)]['lightMapIntensity']=_0x408c0c,_0x28a66b[_0x2f7859(0x1be)]['emissiveIntensity']=_0x1f3234,_0x28a66b['material'][_0x2f7859(0x213)][_0x2f7859(0x102)](_0x264db2);}}}}}_0x28a66b[_0x2f7859(0x1f7)]&&(_0x28a66b[_0x2f7859(0x1be)][_0x2f7859(0x1d2)]=this[_0x2f7859(0x1d2)],_0x28a66b[_0x2f7859(0x1be)]=_0x28a66b[_0x2f7859(0x1be)]['clone'](),_0x28a66b[_0x2f7859(0x1b9)]=MODEL_RENDER_ORDER,this[_0x2f7859(0x17f)][_0x2f7859(0x17d)](_0x28a66b),this['children']['push'](_0x28a66b));}),this[_0x4865a3(0x20c)][_0x4865a3(0x17a)](_0x201840),this[_0x4865a3(0x1ef)][_0x4865a3(0x17d)](_0x201840),this[_0x4865a3(0xb4)][_0x3f6a3f]=_0x5d0371[_0x4865a3(0xf8)],_0x560486++,_0x4618b9&&_0x4618b9(_0x201840);if(_0x560486==_0x156bac)_0x5f29d6&&_0x5f29d6(this);},_0x3c0848=>{},_0xba47a4=>{const _0x5d7ede=_0x54818f;console[_0x5d7ede(0x148)](_0xba47a4);});else{if([_0x54818f(0x1ca)]['includes'](_0x5f2041['toLowerCase']()))this[_0x54818f(0x114)]['load'](_0x107e19,_0x578a76=>{const _0x12dcd7=_0x54818f,_0x948e3e=_0x578a76,_0x1cbabc='root_'+_0x3f6a3f+'_'+_0x1c9394;traverseGenerateUUID(_0x948e3e,_0x1cbabc),_0x948e3e[_0x12dcd7(0x15a)]=_0x3f6a3f,_0x948e3e[_0x12dcd7(0x94)](_0x3b4321=>{const _0x1e38d9=_0x12dcd7,_0x3ce5a8=[];traverseSelectNodeByUUID(_0x2e80f4[_0x1cbabc],_0x3b4321[_0x1e38d9(0x21e)],_0x3ce5a8);if(_0x3ce5a8['length']>0x0){const _0x5753be=_0x3ce5a8[0x0];if(_0x5753be[_0x1e38d9(0xe2)]==_0x1e38d9(0xce)||_0x5753be[_0x1e38d9(0xe2)]=='Object3D'){_0x3b4321[_0x1e38d9(0x11b)]=_0x5753be['visible'];const {position:_0x74af7c,scale:_0x2a6d14,rotation:_0x5c7e2d}=_0x5753be[_0x1e38d9(0xb8)];_0x3b4321[_0x1e38d9(0xb2)]['set'](_0x74af7c[0x0],_0x74af7c[0x1],_0x74af7c[0x2]),_0x3b4321[_0x1e38d9(0xb9)][_0x1e38d9(0x102)](degToRad(_0x5c7e2d[0x0]),degToRad(_0x5c7e2d[0x1]),degToRad(_0x5c7e2d[0x2])),_0x3b4321[_0x1e38d9(0x1cd)][_0x1e38d9(0x102)](_0x2a6d14[0x0],_0x2a6d14[0x1],_0x2a6d14[0x2]);}else{if(_0x5753be['type']==_0x1e38d9(0xf7)){_0x3b4321[_0x1e38d9(0x11b)]=_0x5753be[_0x1e38d9(0x11b)];const {position:_0x522f89,scale:_0x3b28e7,rotation:_0x3245c6,castShadow:_0x54df00,receiveShadow:_0x42018b}=_0x5753be['options'];_0x3b4321['position'][_0x1e38d9(0x102)](_0x522f89[0x0],_0x522f89[0x1],_0x522f89[0x2]),_0x3b4321[_0x1e38d9(0xb9)][_0x1e38d9(0x102)](degToRad(_0x3245c6[0x0]),degToRad(_0x3245c6[0x1]),degToRad(_0x3245c6[0x2])),_0x3b4321[_0x1e38d9(0x1cd)]['set'](_0x3b28e7[0x0],_0x3b28e7[0x1],_0x3b28e7[0x2]),_0x3b4321[_0x1e38d9(0xd7)]=_0x4831b9?_0x4831b9:_0x54df00,_0x3b4321[_0x1e38d9(0x20d)]=_0x4831b9?_0x4831b9:_0x42018b;if(_0x5753be['matOptions']){const {color:_0x17425f,depthTest:_0x325a17,depthWrite:_0x5139ac,opacity:_0x4a6535,transparent:_0x1236f8,wireframe:_0x1a6832,type:_0x5281ec}=_0x5753be[_0x1e38d9(0xb3)];_0x3b4321[_0x1e38d9(0x1be)][_0x1e38d9(0x11d)]['set'](_0x17425f),_0x3b4321['material'][_0x1e38d9(0xea)]=_0x325a17,_0x3b4321[_0x1e38d9(0x1be)]['depthWrite']=_0x5139ac,_0x3b4321['material'][_0x1e38d9(0x1f9)]=_0x4a6535,_0x3b4321['material'][_0x1e38d9(0x146)]=_0x1236f8,_0x3b4321[_0x1e38d9(0x1be)][_0x1e38d9(0x154)]=_0x1a6832;if(_0x5753be[_0x1e38d9(0xb3)][_0x1e38d9(0x210)]){const {roughness:_0x1a05c5,metalness:_0x460878,envMapIntensity:_0x3042c4,lightMapIntensity:_0x4300c3,emissive:_0xa36cc,emissiveIntensity:_0x4040e1}=_0x5753be[_0x1e38d9(0xb3)][_0x1e38d9(0x210)];_0x3b4321[_0x1e38d9(0x1be)][_0x1e38d9(0x1fb)]=_0x1a05c5,_0x3b4321[_0x1e38d9(0x1be)][_0x1e38d9(0xe0)]=_0x460878,_0x3b4321[_0x1e38d9(0x1be)]['envMapIntensity']=_0x3042c4,_0x3b4321[_0x1e38d9(0x1be)]['lightMapIntensity']=_0x4300c3,_0x3b4321['material'][_0x1e38d9(0xc8)]=_0x4040e1,_0x3b4321[_0x1e38d9(0x1be)][_0x1e38d9(0x213)][_0x1e38d9(0x102)](_0xa36cc);}}}}}_0x3b4321[_0x1e38d9(0x1f7)]&&(_0x3b4321['renderOrder']=MODEL_RENDER_ORDER,this[_0x1e38d9(0x17f)][_0x1e38d9(0x17d)](_0x3b4321),this[_0x1e38d9(0xdb)][_0x1e38d9(0x17d)](_0x3b4321));}),this[_0x12dcd7(0x20c)]['add'](_0x948e3e),this['sceneModels']['push'](_0x948e3e),_0x560486++,_0x4618b9&&_0x4618b9(_0x948e3e);if(_0x560486==_0x156bac)_0x5f29d6&&_0x5f29d6(this);});else throw new Error(_0x5f2041+_0x54818f(0xaf));}});}[_0x2f1c24(0x1b0)](_0x3811d){const _0x4f657e=_0x2f1c24;if(!_0x3811d)return;if(_0x3811d[_0x4f657e(0x1ce)]){if(_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x10d)]!==undefined)this[_0x4f657e(0x1ce)][_0x4f657e(0x10d)]=0.1;if(_0x3811d['orbitCamera'][_0x4f657e(0x9f)]!==undefined)this[_0x4f657e(0x1ce)][_0x4f657e(0x9f)]=_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x9f)];if(_0x3811d['orbitCamera']['fov']!==undefined)this[_0x4f657e(0x1ce)][_0x4f657e(0x1b4)]=_0x3811d['orbitCamera'][_0x4f657e(0x1b4)];if(_0x3811d['orbitCamera']['aspect']!==undefined)this[_0x4f657e(0x1ce)]['aspect']=_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x130)];if(_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x11c)]!==undefined)this[_0x4f657e(0x90)]['maxDistance']=_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x11c)];if(_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x141)]!==undefined)this[_0x4f657e(0x90)][_0x4f657e(0x141)]=_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x141)];if(_0x3811d['orbitCamera'][_0x4f657e(0x1ec)]!==undefined)this['orbitControls'][_0x4f657e(0x1ec)]=_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0x1ec)];if(_0x3811d[_0x4f657e(0x1ce)][_0x4f657e(0xa4)]!==undefined)this['orbitControls'][_0x4f657e(0xa4)]=_0x3811d['orbitCamera']['minPolarAngle'];if(_0x3811d['orbitCamera'][_0x4f657e(0xb2)]!==undefined)this[_0x4f657e(0x1ce)][_0x4f657e(0xb2)]['set'](_0x3811d[_0x4f657e(0x1ce)]['position'][0x0],_0x3811d[_0x4f657e(0x1ce)]['position'][0x1],_0x3811d['orbitCamera'][_0x4f657e(0xb2)][0x2]);}if(!_0x3811d['firstPersonCamera'])return;}[_0x2f1c24(0x195)](_0x3e1f61){const _0x2636e7=_0x2f1c24;if(!_0x3e1f61)return;if(_0x3e1f61['hemisphereLight']){let _0x3cc6e2={'skyColor':0xffffff,'groundColor':0xaaaaaa,'intensity':0.1,'position':[0x0,0x1f4,0x0]};_0x3cc6e2=Object[_0x2636e7(0x12e)](_0x3cc6e2,_0x3e1f61[_0x2636e7(0x18d)]),!this[_0x2636e7(0xd6)]?(this[_0x2636e7(0xd6)]=new HemisphereLight(_0x3cc6e2[_0x2636e7(0x189)],_0x3cc6e2[_0x2636e7(0x1a1)],_0x3cc6e2[_0x2636e7(0x204)]),this['hemiLight'][_0x2636e7(0xb2)][_0x2636e7(0x102)](_0x3cc6e2['position'][0x0],_0x3cc6e2[_0x2636e7(0xb2)][0x1],_0x3cc6e2[_0x2636e7(0xb2)][0x2]),this['scene'][_0x2636e7(0x17a)](this[_0x2636e7(0xd6)])):(this[_0x2636e7(0xd6)]['color'][_0x2636e7(0x102)](_0x3cc6e2[_0x2636e7(0x189)]),this[_0x2636e7(0xd6)][_0x2636e7(0x1a1)]['set'](_0x3cc6e2[_0x2636e7(0x1a1)]),this[_0x2636e7(0xd6)]['intensity']=_0x3cc6e2['intensity'],this[_0x2636e7(0xd6)][_0x2636e7(0xb2)][_0x2636e7(0x102)](_0x3cc6e2['position'][0x0],_0x3cc6e2['position'][0x1],_0x3cc6e2[_0x2636e7(0xb2)][0x2]));}if(_0x3e1f61[_0x2636e7(0x1f1)]){let _0x640225={'intensity':0x1,'color':0xffffff};_0x640225=Object[_0x2636e7(0x12e)](_0x640225,_0x3e1f61[_0x2636e7(0x1f1)]),!this[_0x2636e7(0x1f1)]?(this[_0x2636e7(0x1f1)]=new AmbientLight(_0x640225[_0x2636e7(0x11d)],_0x640225[_0x2636e7(0x204)]),this[_0x2636e7(0x20c)]['add'](this[_0x2636e7(0x1f1)])):(this['ambientLight'][_0x2636e7(0x11d)][_0x2636e7(0x102)](_0x640225[_0x2636e7(0x11d)]),this[_0x2636e7(0x1f1)][_0x2636e7(0x204)]=_0x640225[_0x2636e7(0x204)]);}}['updatePasses'](_0x515554){const _0x4372b3=_0x2f1c24;if(!_0x515554)return;if(_0x515554[_0x4372b3(0x202)])this[_0x4372b3(0x115)](_0x515554[_0x4372b3(0x202)]);if(_0x515554['outline'])this[_0x4372b3(0x180)](_0x515554[_0x4372b3(0x197)]);if(_0x515554[_0x4372b3(0x1f8)])this[_0x4372b3(0x1a2)](_0x515554[_0x4372b3(0x1f8)]);if(_0x515554[_0x4372b3(0x220)])this[_0x4372b3(0x172)](_0x515554[_0x4372b3(0x220)]);if(_0x515554[_0x4372b3(0x1b2)])this[_0x4372b3(0x1af)](_0x515554['dof']);}[_0x2f1c24(0x115)](_0x280d3c){const _0x4cf874=_0x2f1c24;if(!_0x280d3c)return;this['bloomPass'][_0x4cf874(0x18e)]=_0x280d3c[_0x4cf874(0x18e)],this[_0x4cf874(0x95)][_0x4cf874(0x1be)][_0x4cf874(0x127)]['bloomTexture'][_0x4cf874(0xa9)]=_0x280d3c[_0x4cf874(0x18e)]?this[_0x4cf874(0x19f)][_0x4cf874(0x126)]['texture']:null;if(_0x280d3c['bloomStrength']!==undefined)this[_0x4cf874(0x108)][_0x4cf874(0x1b1)]=_0x280d3c[_0x4cf874(0x1f4)];if(_0x280d3c[_0x4cf874(0x9c)]!==undefined)this[_0x4cf874(0x108)][_0x4cf874(0x131)]=_0x280d3c['bloomRadius'];if(_0x280d3c[_0x4cf874(0xf6)]!==undefined)this[_0x4cf874(0x108)]['threshold']=_0x280d3c['threshold'];}['updateOutlinePass'](_0x34911c){const _0x40535d=_0x2f1c24;if(!_0x34911c)return;this['outlinePass'][_0x40535d(0x18e)]=_0x34911c[_0x40535d(0x18e)];if(_0x34911c['edgeStrength']!==undefined)this[_0x40535d(0xd3)][_0x40535d(0x104)]=_0x34911c[_0x40535d(0x104)];if(_0x34911c[_0x40535d(0x1bf)]!==undefined)this[_0x40535d(0xd3)][_0x40535d(0x1bf)]=_0x34911c[_0x40535d(0x1bf)];if(_0x34911c['edgeThickness']!==undefined)this['outlinePass'][_0x40535d(0x184)]=_0x34911c[_0x40535d(0x184)];if(_0x34911c[_0x40535d(0x15f)]!==undefined)this[_0x40535d(0xd3)][_0x40535d(0x15f)]=_0x34911c[_0x40535d(0x15f)];if(_0x34911c[_0x40535d(0x1e7)]!==undefined)this[_0x40535d(0xd3)][_0x40535d(0x1e7)]['set'](_0x34911c['visibleEdgeColor']);if(_0x34911c[_0x40535d(0x191)]!==undefined)this[_0x40535d(0xd3)][_0x40535d(0x191)][_0x40535d(0x102)](_0x34911c[_0x40535d(0x191)]);}[_0x2f1c24(0x1a2)](_0xc4ad3c){const _0x298266=_0x2f1c24;if(!_0xc4ad3c)return;if(_0xc4ad3c[_0x298266(0x92)]!==undefined){const _0x5446bd=this['containerWidth']*0x2,_0x3797e4=this[_0x298266(0xed)]*0x2;this['msaaTarget']['setSize'](_0x5446bd,_0x3797e4),this[_0x298266(0x117)][_0x298266(0x174)](_0x5446bd,_0x3797e4),this[_0x298266(0x19f)][_0x298266(0x174)](_0x5446bd,_0x3797e4),this['bloomPass'][_0x298266(0x174)](_0x5446bd,_0x3797e4),this[_0x298266(0x95)][_0x298266(0x174)](_0x5446bd,_0x3797e4),this['ssrPass']['setSize'](_0x5446bd,_0x3797e4);}}[_0x2f1c24(0x172)](_0x24aaaa){const _0x1e45ad=_0x2f1c24;if(!_0x24aaaa)return;this[_0x1e45ad(0x125)]['enabled']=_0x24aaaa[_0x1e45ad(0x18e)],_0x24aaaa['factor']!==undefined&&(this[_0x1e45ad(0x125)]['material'][_0x1e45ad(0x127)][_0x1e45ad(0x155)][_0x1e45ad(0xa9)]=_0x24aaaa[_0x1e45ad(0x155)],this[_0x1e45ad(0x125)]['material'][_0x1e45ad(0x171)]=!![]);}[_0x2f1c24(0x1af)](_0x3272ac){const _0x15a59c=_0x2f1c24;if(!_0x3272ac)return;this[_0x15a59c(0x21c)][_0x15a59c(0x18e)]=_0x3272ac['enabled'];if(_0x3272ac[_0x15a59c(0xad)]!==undefined)this[_0x15a59c(0x21c)]['uniforms'][_0x15a59c(0xad)]['value']=_0x3272ac[_0x15a59c(0xad)];if(_0x3272ac[_0x15a59c(0x97)]!==undefined)this[_0x15a59c(0x21c)][_0x15a59c(0x127)][_0x15a59c(0x97)][_0x15a59c(0xa9)]=_0x3272ac[_0x15a59c(0x97)];if(_0x3272ac[_0x15a59c(0xfe)]!==undefined)this[_0x15a59c(0x21c)][_0x15a59c(0x127)][_0x15a59c(0xfe)][_0x15a59c(0xa9)]=_0x3272ac['focus'];}[_0x2f1c24(0xdf)](_0xdaabbd){const _0x1201ab=_0x2f1c24;if(!_0xdaabbd)return;if(_0xdaabbd[_0x1201ab(0x106)])this[_0x1201ab(0xda)](_0xdaabbd[_0x1201ab(0x106)]);if(_0xdaabbd[_0x1201ab(0x1a0)])this[_0x1201ab(0xef)](_0xdaabbd['hdrUrls']);}[_0x2f1c24(0xda)](_0x3abadc){const _0x3d2a52=_0x2f1c24;if(!_0x3abadc)return;this['bgType']=_0x3abadc[_0x3d2a52(0xe2)];if(_0x3abadc[_0x3d2a52(0xe2)]==_0x3d2a52(0x11d)){if(this[_0x3d2a52(0xaa)])this[_0x3d2a52(0xaa)]['visible']=![];if(this['scene'][_0x3d2a52(0x106)])this[_0x3d2a52(0x20c)][_0x3d2a52(0x106)]=null;this[_0x3d2a52(0xd9)]=_0x3abadc[_0x3d2a52(0xa9)],this[_0x3d2a52(0x145)][_0x3d2a52(0xd0)](_0x3abadc[_0x3d2a52(0xa9)]),this[_0x3d2a52(0x1e1)][_0x3d2a52(0x1eb)]=_0x3abadc[_0x3d2a52(0xa9)];}else{if(_0x3abadc[_0x3d2a52(0xe2)]==_0x3d2a52(0x119)){if(this[_0x3d2a52(0xaa)])this['sky']['visible']=![];this[_0x3d2a52(0x1a7)]['load'](this[_0x3d2a52(0x20e)]+_0x3abadc[_0x3d2a52(0xa9)],_0x54486d=>{const _0x4d5040=_0x3d2a52;this[_0x4d5040(0x20c)]['background']=_0x54486d;if(_0x3abadc[_0x4d5040(0xb8)])for(const _0x43da77 in _0x3abadc[_0x4d5040(0xb8)]){const _0x334ca1=_0x3abadc[_0x4d5040(0xb8)][_0x43da77];this['scene'][_0x4d5040(0x106)][_0x43da77]=_0x334ca1;}});}else{if(_0x3abadc[_0x3d2a52(0xe2)]=='panorama'){if(this[_0x3d2a52(0x20c)][_0x3d2a52(0x106)])this[_0x3d2a52(0x20c)]['background']=null;if(!(_0x3abadc[_0x3d2a52(0xa9)]instanceof Array))return;const _0x44a384=_0x3abadc['value'],_0x23c025=_0x3abadc[_0x3d2a52(0xb8)]['scale']?_0x3abadc[_0x3d2a52(0xb8)][_0x3d2a52(0x1cd)]:0x1,_0x472c1b=_0x3abadc[_0x3d2a52(0xb8)][_0x3d2a52(0xb9)]?_0x3abadc[_0x3d2a52(0xb8)]['rotation']:[0x0,0x0,0x0],_0x476673=_0x3abadc['fog']!==undefined?_0x3abadc[_0x3d2a52(0x18c)]:![],_0xc8092a=0xc350;this[_0x3d2a52(0x8d)]=_0xc8092a;if(_0x44a384[_0x3d2a52(0x1fd)]==0x6){const _0x2774fd=[],_0x165a1e=[];_0x44a384[_0x3d2a52(0x1b6)](_0x519616=>{const _0x18b0c0=_0x3d2a52;_0x2774fd[_0x18b0c0(0x17d)](loadTex(this[_0x18b0c0(0x1a7)],this[_0x18b0c0(0x20e)]+_0x519616));}),Promise[_0x3d2a52(0x1a5)](_0x2774fd)[_0x3d2a52(0xeb)](_0x32bc20=>{const _0x42effb=_0x3d2a52;_0x32bc20[_0x42effb(0x1b6)](_0x992a56=>{const _0x34143f=_0x42effb,_0x3eb5d6=new MeshBasicMaterial({'map':_0x992a56,'side':0x2,'transparent':!![],'opacity':0x1,'fog':_0x476673});_0x165a1e[_0x34143f(0x17d)](_0x3eb5d6);});const _0x3fccc1=new BoxGeometry(_0xc8092a,_0xc8092a,_0xc8092a),_0x544047=new Mesh(_0x3fccc1,_0x165a1e);_0x544047['scale']['set'](_0x23c025,_0x23c025,_0x23c025),_0x544047[_0x42effb(0xb9)][_0x42effb(0x102)](degToRad(_0x472c1b[0x0]),degToRad(_0x472c1b[0x1]),degToRad(_0x472c1b[0x2])),_0x544047[_0x42effb(0x1b9)]=SKY_RENDER_ORDER,_0x544047['type']=_0x42effb(0x17c),this[_0x42effb(0xaa)]?(this[_0x42effb(0xaa)]['geometry']=_0x3fccc1,this['sky'][_0x42effb(0x1be)]=_0x165a1e):(this[_0x42effb(0x20c)][_0x42effb(0x17a)](_0x544047),this[_0x42effb(0xaa)]=_0x544047),this[_0x42effb(0xaa)][_0x42effb(0x1cb)][_0x42effb(0xa9)]=_0x44a384,this[_0x42effb(0xaa)][_0x42effb(0x11b)]=!![];});}else _0x44a384[_0x3d2a52(0x1fd)]==0x1&&this['texLoader']['load'](this[_0x3d2a52(0x20e)]+_0x44a384[0x0],_0x3bd5e3=>{const _0x59702b=_0x3d2a52,_0x26a202=new MeshBasicMaterial({'map':_0x3bd5e3,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x476673}),_0x302b37=new SphereGeometry(_0xc8092a,0x3c,0x3c),_0x4d0437=new Mesh(_0x302b37,_0x26a202);_0x4d0437[_0x59702b(0x1cd)]['set'](_0x23c025,_0x23c025,_0x23c025),_0x4d0437[_0x59702b(0xb9)]['set'](_0x472c1b[0x0]*Math['PI']/0xb4,_0x472c1b[0x1]*Math['PI']/0xb4,_0x472c1b[0x2]*Math['PI']/0xb4),_0x4d0437[_0x59702b(0x1b9)]=SKY_RENDER_ORDER,_0x4d0437[_0x59702b(0xe2)]=_0x59702b(0x17c),this[_0x59702b(0xaa)]?(this[_0x59702b(0xaa)][_0x59702b(0x120)]=_0x302b37,this['sky'][_0x59702b(0x1be)]=_0x26a202):(this[_0x59702b(0x20c)][_0x59702b(0x17a)](_0x4d0437),this[_0x59702b(0xaa)]=_0x4d0437),this['sky'][_0x59702b(0x1cb)][_0x59702b(0xa9)]=_0x44a384,this[_0x59702b(0xaa)]['visible']=!![];});}}}}[_0x2f1c24(0xef)](_0x3d953c){const _0x4cc9da=_0x2f1c24;if(!_0x3d953c)return;this[_0x4cc9da(0xa5)](_0x3d953c);}}
+	class Container {
+	    renderer;
+	    css2dRenderer;
+	    css3dRenderer;
+	    msaaTarget;
+	    supersampling;
+	    sceneComposer;
+	    bloomComposer;
+	    scene;
+	    orbitCamera;
+	    orbitControls;
+	    firstPersonControls;
+	    firstPersonCamera;
+	    transformControl;
+	    hemiLight;
+	    directionLights;
+	    spotLights;
+	    pointLights;
+	    rectAreaLights;
+	    ambientLight;
+	    clickObjects;
+	    cubeTexLoader;
+	    texLoader;
+	    gifLoader;
+	    _viewState;
+	    children;
+	    renderPass;
+	    bokehPass;
+	    bloomPass;
+	    finalbloomPass;
+	    ssaaPass;
+	    gammaPass;
+	    ddpPass;
+	    ssrSkyBox;
+	    ssrtPass;
+	    envMap;
+	    hdrUrls;
+	    sceneModels;
+	    loadedFileResults;
+	    sky;
+	    skyRadius;
+	    stats;
+	    ssrPass;
+	    outlinePass;
+	    outlineObjects;
+	    mixerActions;
+	    mixers;
+	    sceneAnimations;
+	    bounds;
+	    fog;
+	    publicPath;
+	    loadingBar;
+	    gifTextures;
+	    containerWidth;
+	    containerHeight;
+	    gltfLoader;
+	    objLoader;
+	    mtlLoader;
+	    fbxLoader;
+	    dracoLoader;
+	    hdrLoader;
+	    pmremGenerator;
+	    attrs;
+	    bgColor;
+	    bgType;
+	    layers;
+	    frame;
+	    nodepass;
+	    constructor(attrs) {
+	        this.clickObjects = []; // 点击事件对象
+	        this.children = [];
+	        this.sceneModels = [];
+	        this.loadedFileResults = [];
+	        this.outlineObjects = [];
+	        this.mixers = [];
+	        this.mixerActions = [];
+	        this.sceneAnimations = {};
+	        this.gifTextures = [];
+	        this.hdrUrls = [];
+	        this.publicPath = attrs && attrs.publicPath !== undefined ? attrs.publicPath : '/demos';
+	        this.containerWidth = window.innerWidth;
+	        this.containerHeight = window.innerHeight;
+	        this.fbxLoader = new FBXLoader();
+	        this.gltfLoader = new GLTFLoader();
+	        this.dracoLoader = new DRACOLoader();
+	        this.objLoader = new OBJLoader();
+	        this.mtlLoader = new MTLLoader();
+	        this.dracoLoader.setDecoderPath(this.publicPath + '/js/gltfDraco/');
+	        this.dracoLoader.preload();
+	        this.gltfLoader.setDRACOLoader(this.dracoLoader);
+	        this.attrs = attrs;
+	        this.initialize(attrs);
+	        this.layers = {};
+	        this.frame = new NodeFrame(1);
+	    }
+	    get viewState() {
+	        return this._viewState;
+	    }
+	    set viewState(state) {
+	        this._viewState = state;
+	        this.orbitControls.enabled = false;
+	        this.firstPersonControls.enabled = false;
+	        if (this._viewState == 'orbit') {
+	            this.renderPass.camera = this.orbitCamera;
+	            this.bokehPass.camera = this.orbitCamera;
+	            this.outlinePass.renderCamera = this.orbitCamera;
+	            this.ssaaPass.camera = this.orbitCamera;
+	            this.orbitControls.enabled = true;
+	        }
+	        else if (this._viewState == 'firstPerson') {
+	            this.renderPass.camera = this.firstPersonCamera;
+	            this.bokehPass.camera = this.firstPersonCamera;
+	            this.outlinePass.renderCamera = this.firstPersonCamera;
+	            this.ssaaPass.camera = this.firstPersonCamera;
+	            this.firstPersonControls.enabled = true;
+	        }
+	    }
+	    initialize(attrs) {
+	        const self = this;
+	        // view state
+	        this._viewState = attrs && attrs.viewState != undefined ? attrs.viewState : 'orbit';
+	        // init loaders
+	        this.cubeTexLoader = new CubeTextureLoader();
+	        this.texLoader = new TextureLoader();
+	        this.gifLoader = new GifLoader();
+	        // init render
+	        this.initRender(attrs);
+	        // init scene
+	        this.initScene(attrs);
+	        // init cameras
+	        this.initCameras(attrs);
+	        // init controls
+	        this.initControls(attrs);
+	        // init lights
+	        this.initLights(attrs);
+	        // init models
+	        const hdrUrls = attrs && attrs.hdrUrls != undefined ? attrs.hdrUrls : [];
+	        if (hdrUrls.length != 0) {
+	            // 有HDR
+	            this.initHDR(attrs, () => {
+	                this.initModels(attrs);
+	            });
+	        }
+	        else {
+	            // 无HDR
+	            this.initModels(attrs);
+	        }
+	        // init passes
+	        this.initPasses(attrs);
+	        // water todo
+	        // animation frame
+	        const clock = new Clock();
+	        const bloomLayer = new Layers();
+	        bloomLayer.set(1);
+	        const specialLayer = new Layers();
+	        specialLayer.set(2);
+	        const materials = {};
+	        const darkMaterial = new MeshBasicMaterial({ transparent: false, opacity: 1, fog: false, color: new Color(0, 0, 0) });
+	        const darkLamberMaterial = new MeshLambertMaterial({ transparent: false, opacity: 1, fog: false, color: new Color(0, 0, 0) });
+	        const darkSpriteMateral = new SpriteMaterial({ color: new Color(0, 0, 0), transparent: false, opacity: 0, fog: false });
+	        const darkStandardMaterial = new MeshStandardMaterial({
+	            transparent: false,
+	            color: new Color(0, 0, 0),
+	            fog: false,
+	            opacity: 0
+	        });
+	        const darkShaderMaterial = new ShaderMaterial({
+	            lights: false,
+	            transparent: true,
+	            fog: false,
+	            vertexShader: `
+        #include <logdepthbuf_pars_vertex>
+        #include <common>
+        void main(){
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            #include <logdepthbuf_vertex>
+        }
+      `,
+	            fragmentShader: `
+        #include <logdepthbuf_pars_fragment>
+        #include <common>
+        
+        void main(){
+          gl_FragColor = vec4(vec3(0.) , 1.0);
+          
+          #include <logdepthbuf_fragment>
+          #include <tonemapping_fragment>
+        }
+      `,
+	            uniforms: {
+	                diffuse: { value: new Color(0, 0, 0) },
+	                gradient: { value: new Color(0, 0, 0) },
+	                color: { value: new Color(0, 0, 0) },
+	                emissive: { value: new Color(0, 0, 0) },
+	                opacity: { value: 0 },
+	                map: { value: null },
+	                useMap: { value: false }
+	            }
+	        });
+	        const darkLineMaterial = new LineBasicMaterial({
+	            color: '#000000'
+	        });
+	        attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        const animation = () => {
+	            this.stats.begin();
+	            // self.renderer.setScissorTest(true)
+	            if (self.viewState == 'orbit') {
+	                self.orbitControls.update();
+	                if (self.bloomPass.enabled) {
+	                    self.scene.fog = null;
+	                    this.renderer.setClearColor('#000000', 0);
+	                    self.scene.traverse((obj) => {
+	                        if (bloomLayer.test(obj.layers) === false) {
+	                            // 做特殊处理， 此阶段换黑色材质渲染， 不然深度会有问题，无法正确展示和bloom物体的遮挡关系
+	                            if (!materials[obj.uuid])
+	                                materials[obj.uuid] = obj.material;
+	                            if (Array.isArray(obj.material)) {
+	                                // eg. sky cube: MeshBasicMaterial[]
+	                                obj.material = [darkMaterial, darkMaterial, darkMaterial, darkMaterial, darkMaterial, darkMaterial];
+	                            }
+	                            else if (obj.material instanceof MeshBasicMaterial) {
+	                                obj.material = darkMaterial;
+	                            }
+	                            else if (obj.material instanceof MeshLambertMaterial) {
+	                                obj.material = darkLamberMaterial;
+	                            }
+	                            else if (obj.material instanceof SpriteMaterial) {
+	                                obj.material = darkSpriteMateral;
+	                            }
+	                            else if (obj.material instanceof MeshStandardMaterial) {
+	                                obj.material = darkStandardMaterial;
+	                            }
+	                            else if (obj.material instanceof LineBasicMaterial) {
+	                                obj.material = darkLineMaterial;
+	                            }
+	                            else if (obj.material instanceof ShaderMaterial) {
+	                                const shaderMatClone = darkShaderMaterial.clone();
+	                                // shaderMatClone.vertexShader = obj.material.vertexShader
+	                                // shaderMatClone.fragmentShader = obj.material.fragmentShader
+	                                obj.material = shaderMatClone;
+	                                if (obj.isWater || obj.isReflector) {
+	                                    obj.visible = false;
+	                                }
+	                            }
+	                        }
+	                    });
+	                    self.bloomComposer.render();
+	                    self.scene.traverse((obj) => {
+	                        if (materials[obj.uuid]) {
+	                            if (obj.isWater || obj.isReflector)
+	                                obj.visible = true;
+	                            obj.material = materials[obj.uuid];
+	                            delete materials[obj.uuid];
+	                        }
+	                    });
+	                    self.scene.fog = self.fog;
+	                    this.renderer.setClearColor(this.bgColor, 1);
+	                }
+	                self.outlinePass.selectedObjects = self.outlineObjects;
+	                self.sceneComposer.render();
+	                const delta = clock.getDelta();
+	                self.frame.update(delta).updateNode(self.nodepass.material);
+	                self.mixers.forEach((mixer) => {
+	                    mixer.update(delta);
+	                });
+	                // self.renderer.render(self.scene, self.orbitCamera)
+	                self.css2dRenderer.render(self.scene, self.orbitCamera);
+	                self.css3dRenderer.render(self.scene, self.orbitCamera);
+	            }
+	            else if (self.viewState == 'firstPerson') {
+	                self.outlinePass.selectedObjects = self.outlineObjects;
+	                self.firstPersonControls.update(clock.getDelta());
+	                self.sceneComposer.render();
+	                const delta = clock.getDelta();
+	                self.mixers.forEach((mixer) => {
+	                    mixer.update(delta);
+	                });
+	                // self.renderer.render(self.scene, self.firstPersonCamera)
+	                // css2d renderer
+	                self.css2dRenderer.render(self.scene, self.firstPersonCamera);
+	                self.css3dRenderer.render(self.scene, self.firstPersonCamera);
+	            }
+	            // gif draw
+	            if (self.gifTextures.length > 0) {
+	                self.gifTextures.forEach((gTex) => {
+	                    gTex.draw();
+	                });
+	            }
+	            update();
+	            // self.renderer.setScissorTest(false)
+	            this.stats.end();
+	        };
+	        // play
+	        this.renderer.setAnimationLoop(animation);
+	        // window resize
+	        const onWindowResize = () => {
+	            if (attrs && attrs.container != undefined && attrs.container.parentElement) {
+	                this.containerWidth = Math.round(attrs.container.parentElement.clientWidth);
+	                this.containerHeight = Math.round(attrs.container.parentElement.clientHeight);
+	            }
+	            else {
+	                this.containerWidth = Math.round(window.innerWidth);
+	                this.containerHeight = Math.round(window.innerHeight);
+	            }
+	            const w = this.supersampling ? this.containerWidth * 2 : this.containerWidth;
+	            const h = this.supersampling ? this.containerHeight * 2 : this.containerHeight;
+	            this.msaaTarget.setSize(w, h);
+	            this.renderer.setPixelRatio(window.devicePixelRatio);
+	            this.renderer.setSize(this.containerWidth, this.containerHeight);
+	            this.css2dRenderer.setSize(this.containerWidth, this.containerHeight);
+	            let tl = attrs && attrs.container && attrs.container.getBoundingClientRect();
+	            this.css2dRenderer.domElement.style.top = tl.top + 'px';
+	            this.css2dRenderer.domElement.style.left = tl.left + 'px';
+	            this.css3dRenderer.setSize(this.containerWidth, this.containerHeight);
+	            this.css3dRenderer.domElement.style.top = tl.top + 'px';
+	            this.css3dRenderer.domElement.style.left = tl.left + 'px';
+	            this.sceneComposer.setSize(w, h);
+	            this.bloomComposer.setSize(w, h);
+	            this.bloomPass.setSize(w, h);
+	            this.finalbloomPass.setSize(w, h);
+	            this.ssrPass.setSize(w, h);
+	            if (this.loadingBar) {
+	                this.loadingBar.style.width = this.containerWidth + 'px';
+	                this.loadingBar.style.height = this.containerHeight + 'px';
+	            }
+	            if (this.viewState == 'orbit') {
+	                this.orbitCamera.aspect = this.containerWidth / this.containerHeight;
+	                this.orbitCamera.updateProjectionMatrix();
+	            }
+	            else if (this.viewState == 'firstPerson') {
+	                this.firstPersonCamera.aspect = this.containerWidth / this.containerHeight;
+	                this.firstPersonCamera.updateProjectionMatrix();
+	            }
+	        };
+	        window.addEventListener('resize', onWindowResize, false);
+	    }
+	    initRender(attrs) {
+	        const enableShadow = attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        const sortObjects = attrs && attrs.sortObjects != undefined ? attrs.sortObjects : true;
+	        const logarithmicDepthBuffer = attrs && attrs.renderer !== undefined && attrs.renderer.logarithmicDepthBuffer !== undefined ? attrs.renderer.logarithmicDepthBuffer : true;
+	        const precision = attrs && attrs.renderer !== undefined && attrs.renderer.precision !== undefined ? attrs.renderer.precision : 'highp';
+	        const antialias = attrs && attrs.renderer !== undefined && attrs.renderer.antialias !== undefined ? attrs.renderer.antialias : true;
+	        const alpha = attrs && attrs.renderer !== undefined && attrs.renderer.alpha !== undefined ? attrs.renderer.alpha : false;
+	        // 3d renderer
+	        if (attrs && attrs.container != undefined) {
+	            this.renderer = new WebGLRenderer({ antialias, canvas: attrs.container, precision, logarithmicDepthBuffer, alpha });
+	            this.containerWidth = attrs.containerWidth !== undefined ? attrs.containerWidth : attrs.container.clientWidth;
+	            this.containerHeight = attrs.containerHeight !== undefined ? attrs.containerHeight : attrs.container.clientHeight;
+	        }
+	        else {
+	            this.renderer = new WebGLRenderer({ antialias, precision, logarithmicDepthBuffer, alpha });
+	            document.body.appendChild(this.renderer.domElement);
+	        }
+	        this.bgColor = '#000000';
+	        if (attrs && attrs.background && attrs.background.type === 'color') {
+	            this.bgColor = '#' + new Color(attrs.background.value).getHexString();
+	            this.bgType = 'color';
+	        }
+	        this.renderer.setClearColor(this.bgColor, alpha ? 0 : 1);
+	        this.renderer.autoClear = false;
+	        this.renderer.sortObjects = sortObjects;
+	        this.renderer.outputEncoding = sRGBEncoding;
+	        this.renderer.setPixelRatio(window.devicePixelRatio);
+	        this.renderer.setSize(this.containerWidth, this.containerHeight);
+	        this.renderer.shadowMap.enabled = enableShadow;
+	        //BasicShadowMap
+	        this.renderer.shadowMap.type = PCFSoftShadowMap;
+	        const toneMappingExposure = attrs && attrs.toneMapping != undefined && attrs.toneMapping.toneMappingExposure != undefined ? attrs.toneMapping.toneMappingExposure : 1;
+	        const toneMappingType = attrs && attrs.toneMapping != undefined && attrs.toneMapping.toneMappingType != undefined ? attrs.toneMapping.toneMappingType : 'LinearToneMapping';
+	        if (toneMappingType == 'NoToneMapping') {
+	            this.renderer.toneMapping = NoToneMapping;
+	        }
+	        else if (toneMappingType == 'LinearToneMapping') {
+	            this.renderer.toneMapping = LinearToneMapping;
+	        }
+	        else if (toneMappingType == 'ReinhardToneMapping') {
+	            this.renderer.toneMapping = ReinhardToneMapping;
+	        }
+	        else if (toneMappingType == 'CineonToneMapping') {
+	            this.renderer.toneMapping = CineonToneMapping;
+	        }
+	        else if (toneMappingType == 'ACESFilmicToneMapping') {
+	            this.renderer.toneMapping = ACESFilmicToneMapping;
+	        }
+	        else {
+	            this.renderer.toneMapping = LinearToneMapping;
+	        }
+	        this.renderer.toneMappingExposure = toneMappingExposure; // 曝光系数
+	        if (attrs == undefined || attrs.container == undefined)
+	            this.renderer.domElement.style.position = 'relative';
+	        if (window.getComputedStyle(this.renderer.domElement).zIndex == 'auto')
+	            this.renderer.domElement.style.zIndex = '1';
+	        document.body.style.margin = '0';
+	        // css2d renderer
+	        let tl = this.renderer.domElement.getBoundingClientRect();
+	        this.css2dRenderer = new CSS2DRenderer();
+	        this.css2dRenderer.setSize(this.containerWidth, this.containerHeight);
+	        this.css2dRenderer.domElement.style.position = 'relative';
+	        this.css2dRenderer.domElement.style.top = tl.top + 'px';
+	        this.css2dRenderer.domElement.style.left = tl.left + 'px';
+	        if (attrs && attrs.container != undefined) {
+	            attrs.container.parentElement?.appendChild(this.css2dRenderer.domElement);
+	        }
+	        else {
+	            document.body.appendChild(this.css2dRenderer.domElement);
+	        }
+	        // css3d renderer
+	        this.css3dRenderer = new CSS3DRenderer();
+	        this.css3dRenderer.setSize(this.containerWidth, this.containerHeight);
+	        this.css3dRenderer.domElement.style.position = 'relative';
+	        this.css3dRenderer.domElement.style.pointerEvents = 'none';
+	        this.css3dRenderer.domElement.style.top = tl.top + 'px';
+	        this.css3dRenderer.domElement.style.left = tl.left + 'px';
+	        this.css3dRenderer.domElement.style.zIndex = '100';
+	        if (attrs && attrs.container != undefined) {
+	            attrs.container.parentElement?.appendChild(this.css3dRenderer.domElement);
+	        }
+	        else {
+	            document.body.appendChild(this.css3dRenderer.domElement);
+	        }
+	        // stats
+	        this.stats = new Stats();
+	        if (attrs && attrs.stats) {
+	            if (attrs.container != undefined) {
+	                attrs.container.parentElement?.appendChild(this.stats.container);
+	            }
+	            else {
+	                document.body.appendChild(this.stats.container);
+	            }
+	        }
+	        // loading bar
+	        if (attrs && attrs.loadingBar && attrs.loadingBar.show) {
+	            const type = attrs && attrs.loadingBar.type ? attrs.loadingBar.type : '10';
+	            this.loadingBar = loadingAnimation({ type });
+	        }
+	        // hdr loader
+	        this.hdrLoader = new RGBELoader();
+	        this.pmremGenerator = new PMREMGenerator(this.renderer);
+	    }
+	    initScene(attrs) {
+	        this.scene = new Scene();
+	        const SKY_RADIUS = 50000;
+	        this.skyRadius = SKY_RADIUS;
+	        // background texture
+	        if (attrs && attrs.background && attrs.background.type === 'texture') {
+	            this.texLoader.load(this.publicPath + attrs.background.value, (texture) => {
+	                this.bgType = 'texture';
+	                this.scene.background = texture;
+	                if (attrs.background?.options) {
+	                    for (const i in attrs.background.options) {
+	                        const opt = attrs.background.options[i];
+	                        this.scene.background[i] = opt;
+	                    }
+	                }
+	            });
+	        }
+	        // background panorama
+	        if (attrs && attrs.background && attrs.background.type === 'panorama') {
+	            this.bgType = 'panorama';
+	            const scale = attrs && attrs.background && attrs.background.options && attrs.background.options.scale ? attrs.background.options.scale : 1;
+	            const rotation = attrs && attrs.background && attrs.background.options && attrs.background.options.rotation ? attrs.background.options.rotation : [0, 0, 0];
+	            const fog = attrs && attrs.background && attrs.background.options && attrs.background.options.fog ? attrs.background.options.fog : false;
+	            if (attrs.background.value instanceof Array && attrs.background.value.length == 6) {
+	                const arr = [];
+	                const materials = [];
+	                attrs.background.value.forEach((u) => {
+	                    arr.push(loadTex(this.texLoader, this.publicPath + u));
+	                });
+	                Promise.all(arr).then((list) => {
+	                    list.forEach((l) => {
+	                        const mat = new MeshBasicMaterial({
+	                            map: l,
+	                            side: BackSide,
+	                            transparent: true,
+	                            opacity: 1.0,
+	                            fog
+	                        });
+	                        materials.push(mat);
+	                    });
+	                    const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, materials);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                    this.sky.userData.value = attrs.background?.value;
+	                });
+	            }
+	            else if (attrs.background.value instanceof Array && attrs.background.value.length == 1) {
+	                this.texLoader.load(this.publicPath + attrs.background.value[0], (texture) => {
+	                    const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                    const mat = new MeshBasicMaterial({
+	                        map: texture,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, mat);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                    this.sky.userData.value = attrs.background?.value;
+	                });
+	            }
+	        }
+	        // fog
+	        if (attrs && attrs.fog != undefined) {
+	            const fogColor = attrs.fog.color != undefined ? attrs.fog.color : 0xffffff;
+	            const fogIntensity = attrs.fog.intensity != undefined ? attrs.fog.intensity : 0.001;
+	            this.fog = new FogExp2(fogColor, fogIntensity);
+	            this.scene.fog = this.fog;
+	        }
+	        // camera controls bounds
+	        let bounds = {
+	            radius: 1000000,
+	            center: [0, 0, 0]
+	        };
+	        if (attrs && attrs.bounds) {
+	            bounds = Object.assign(bounds, attrs.bounds);
+	        }
+	        this.bounds = {
+	            radius: bounds.radius,
+	            center: new Vector3(bounds.center[0], bounds.center[1], bounds.center[2])
+	        };
+	    }
+	    // init cameras
+	    initCameras(attrs) {
+	        let orbit = {
+	            near: 0.01,
+	            far: 100000,
+	            fov: 70,
+	            position: [0, 0, 1]
+	        };
+	        if (attrs && attrs.cameras && attrs.cameras.orbitCamera) {
+	            orbit = Object.assign(orbit, attrs.cameras.orbitCamera);
+	        }
+	        this.orbitCamera = new PerspectiveCamera(orbit.fov, this.containerWidth / this.containerHeight, orbit.near, orbit.far);
+	        this.orbitCamera.position.set(orbit.position[0], orbit.position[1], orbit.position[2]);
+	        let firstPerson = {
+	            near: 0.01,
+	            far: 100000,
+	            fov: 70,
+	            position: [0, 0, 1]
+	        };
+	        if (attrs && attrs.cameras && attrs.cameras.firstPersonCamera) {
+	            firstPerson = Object.assign(firstPerson, attrs.cameras.firstPersonCamera);
+	        }
+	        this.firstPersonCamera = new PerspectiveCamera(firstPerson.fov, this.containerWidth / this.containerHeight, firstPerson.near, firstPerson.far);
+	        this.firstPersonCamera.position.set(firstPerson.position[0], firstPerson.position[1], firstPerson.position[2]);
+	    }
+	    // init controls
+	    initControls(attrs) {
+	        // orbit controls
+	        let orbit = {
+	            maxPolarAngle: Math.PI * 0.5,
+	            minDistance: 0,
+	            maxDistance: 100000,
+	            target: [0, 0, 0],
+	            autoRotate: false,
+	            autoRotateSpeed: 1,
+	            minPolarAngle: 0,
+	            enableDamping: true,
+	            dampingFactor: 0.05,
+	            enabled: true
+	        };
+	        if (attrs && attrs.controls && attrs.controls.orbitControls) {
+	            orbit = Object.assign(orbit, attrs.controls.orbitControls);
+	        }
+	        this.orbitControls = new OrbitControls(this.orbitCamera, this.renderer.domElement, this);
+	        this.orbitControls.minPolarAngle = orbit.minPolarAngle;
+	        this.orbitControls.maxPolarAngle = orbit.maxPolarAngle;
+	        this.orbitControls.minDistance = orbit.minDistance;
+	        this.orbitControls.maxDistance = orbit.maxDistance;
+	        this.orbitControls.target.set(orbit.target[0], orbit.target[1], orbit.target[2]);
+	        this.orbitControls.autoRotate = orbit.autoRotate;
+	        this.orbitControls.autoRotateSpeed = orbit.autoRotateSpeed;
+	        this.orbitControls.enableDamping = orbit.enableDamping;
+	        this.orbitControls.dampingFactor = orbit.dampingFactor;
+	        this.orbitControls.enabled = this.viewState === 'orbit';
+	        this.orbitControls.enabled = orbit.enabled;
+	        // first person controls
+	        let firstPerson = {
+	            movementSpeed: 20,
+	            lon: Math.PI,
+	            lat: 0,
+	            lookSpeed: 10
+	        };
+	        if (attrs && attrs.controls && attrs.controls.firstPersonControls) {
+	            firstPerson = Object.assign(firstPerson, attrs.controls.firstPersonControls);
+	        }
+	        this.firstPersonControls = new FirstPersonControls(this.firstPersonCamera, this.renderer.domElement);
+	        this.firstPersonControls.lookSpeed = 10; //鼠标移动查看的速度
+	        this.firstPersonControls.movementSpeed = firstPerson.movementSpeed; //相机移动速度
+	        this.firstPersonControls.lon = firstPerson.lon;
+	        this.firstPersonControls.lat = firstPerson.lat;
+	        this.firstPersonControls.enabled = this.viewState === 'firstPerson';
+	        // transform controls
+	        const self = this;
+	        this.transformControl = new TransformControls(this.orbitCamera, this.renderer.domElement);
+	        this.scene.add(this.transformControl); //控件对象添加到场景对象
+	        this.transformControl.traverse((c) => {
+	            c.userData.root = 'TransformControls';
+	        });
+	        this.transformControl.addEventListener('dragging-changed', (event) => {
+	            self.orbitControls.enabled = !event.value;
+	        });
+	    }
+	    initLights(attrs) {
+	        const enableShadow = attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        if (attrs && attrs.lights && attrs.lights.hemisphereLight) {
+	            let hemiLight = {
+	                skyColor: 0xffffff,
+	                groundColor: 0xaaaaaa,
+	                intensity: 0.1,
+	                position: [0, 500, 0]
+	            };
+	            hemiLight = Object.assign(hemiLight, attrs.lights.hemisphereLight);
+	            this.hemiLight = new HemisphereLight(hemiLight.skyColor, hemiLight.groundColor, hemiLight.intensity);
+	            this.hemiLight.position.set(hemiLight.position[0], hemiLight.position[1], hemiLight.position[2]);
+	            this.scene.add(this.hemiLight);
+	        }
+	        // rect area lights
+	        RectAreaLightUniformsLib.init();
+	        this.rectAreaLights = [];
+	        if (attrs && attrs.lights && attrs.lights.rectAreaLights) {
+	            attrs.lights.rectAreaLights.forEach((raLightOpts) => {
+	                let rectAreaLightOpts = {
+	                    color: 0xffffff,
+	                    intensity: 0,
+	                    width: 10,
+	                    height: 10,
+	                    position: [0, 0, 0],
+	                    target: [0, 0, 0]
+	                };
+	                rectAreaLightOpts = Object.assign(rectAreaLightOpts, raLightOpts);
+	                const rectAreaLight = new RectAreaLight(rectAreaLightOpts.color, rectAreaLightOpts.intensity, rectAreaLightOpts.width, rectAreaLightOpts.height);
+	                rectAreaLight.position.set(rectAreaLightOpts.position[0], rectAreaLightOpts.position[1], rectAreaLightOpts.position[2]);
+	                rectAreaLight.lookAt(0, 0, 0);
+	                rectAreaLight.userData.target = rectAreaLightOpts.target;
+	                this.scene.add(rectAreaLight);
+	                this.rectAreaLights.push(rectAreaLight);
+	            });
+	        }
+	        // point lights
+	        this.pointLights = [];
+	        if (attrs && attrs.lights && attrs.lights.pointLights) {
+	            attrs.lights.pointLights.forEach((ptOpts) => {
+	                let pointLightOpts = {
+	                    color: 0xffffff,
+	                    intensity: 0,
+	                    distance: 0,
+	                    decay: 1,
+	                    position: [0, 0, 0],
+	                    near: 1,
+	                    far: 10000,
+	                    bias: 0,
+	                    size: 2048
+	                };
+	                pointLightOpts = Object.assign(pointLightOpts, ptOpts);
+	                const pointLight = new PointLight(pointLightOpts.color, pointLightOpts.intensity, pointLightOpts.distance, pointLightOpts.decay);
+	                pointLight.position.set(pointLightOpts.position[0], pointLightOpts.position[1], pointLightOpts.position[2]);
+	                // shadow
+	                pointLight.castShadow = enableShadow;
+	                pointLight.shadow.bias = pointLightOpts.bias;
+	                pointLight.shadow.camera.near = pointLightOpts.near;
+	                pointLight.shadow.camera.far = pointLightOpts.far;
+	                pointLight.shadow.mapSize.width = pointLightOpts.size;
+	                pointLight.shadow.mapSize.height = pointLightOpts.size;
+	                pointLight.shadow.camera.updateProjectionMatrix();
+	                pointLight.shadow.needsUpdate = true;
+	                this.scene.add(pointLight);
+	                this.pointLights.push(pointLight);
+	            });
+	        }
+	        // directionLights
+	        this.directionLights = [];
+	        if (attrs && attrs.lights && attrs.lights.directionLights) {
+	            attrs.lights.directionLights.forEach((dirLightOpts) => {
+	                let directionLightOpts = {
+	                    color: 0xffdcb2,
+	                    intensity: 2,
+	                    position: [1, 0, 0],
+	                    mapSize: [2048, 2048],
+	                    near: 0.01,
+	                    far: 10000,
+	                    bias: -0.0004,
+	                    distance: 900,
+	                    target: [0, 0, 0]
+	                };
+	                directionLightOpts = Object.assign(directionLightOpts, dirLightOpts);
+	                let dirLight;
+	                if (this.viewState == 'orbit') {
+	                    dirLight = new DirectionalLight(directionLightOpts.color, directionLightOpts.intensity);
+	                    dirLight.position.set(directionLightOpts.position[0], directionLightOpts.position[1], directionLightOpts.position[2]);
+	                    dirLight.target.position.set(directionLightOpts.target[0], directionLightOpts.target[1], directionLightOpts.target[2]);
+	                    dirLight.castShadow = enableShadow;
+	                    dirLight.shadow.mapSize.width = directionLightOpts.mapSize[0];
+	                    dirLight.shadow.mapSize.height = directionLightOpts.mapSize[1];
+	                    dirLight.shadow.bias = directionLightOpts.bias;
+	                    dirLight.shadow.camera.near = directionLightOpts.near;
+	                    dirLight.shadow.camera.far = directionLightOpts.far;
+	                    dirLight.shadow.camera.left = -directionLightOpts.distance;
+	                    dirLight.shadow.camera.right = directionLightOpts.distance;
+	                    dirLight.shadow.camera.top = directionLightOpts.distance;
+	                    dirLight.shadow.camera.bottom = -directionLightOpts.distance;
+	                    dirLight.shadow.camera.updateProjectionMatrix();
+	                    dirLight.shadow.needsUpdate = true;
+	                }
+	                this.scene.add(dirLight.target);
+	                this.scene.add(dirLight);
+	                this.directionLights.push(dirLight);
+	            });
+	        }
+	        // spot lights
+	        this.spotLights = [];
+	        if (attrs && attrs.lights && attrs.lights.spotLights) {
+	            attrs.lights.spotLights.forEach((spotLightOpts) => {
+	                let sptLightOpts = {
+	                    color: 0xffdcb2,
+	                    intensity: 2,
+	                    position: [-1000, 1000, -1000],
+	                    mapSize: [2048, 2048],
+	                    decay: 2,
+	                    near: 1,
+	                    far: 10000,
+	                    angle: (45 * Math.PI) / 180,
+	                    distance: 0,
+	                    penumbra: 0.398,
+	                    bias: -0.0004,
+	                    focus: 1
+	                };
+	                sptLightOpts = Object.assign(sptLightOpts, spotLightOpts);
+	                const spotLight = new SpotLight(sptLightOpts.color, sptLightOpts.intensity);
+	                spotLight.position.set(sptLightOpts.position[0], sptLightOpts.position[1], sptLightOpts.position[2]);
+	                spotLight.decay = sptLightOpts.decay;
+	                spotLight.distance = sptLightOpts.distance;
+	                spotLight.penumbra = sptLightOpts.penumbra;
+	                // shadow
+	                spotLight.castShadow = enableShadow;
+	                spotLight.shadow.mapSize.width = sptLightOpts.mapSize[0];
+	                spotLight.shadow.mapSize.height = sptLightOpts.mapSize[1];
+	                spotLight.shadow.camera.near = sptLightOpts.near;
+	                spotLight.shadow.camera.far = sptLightOpts.far;
+	                spotLight.angle = sptLightOpts.angle;
+	                spotLight.shadow.focus = sptLightOpts.focus;
+	                spotLight.shadow.bias = sptLightOpts.bias;
+	                spotLight.shadow.camera.updateProjectionMatrix();
+	                spotLight.shadow.needsUpdate = true;
+	                this.scene.add(spotLight.target);
+	                this.scene.add(spotLight);
+	                this.spotLights.push(spotLight);
+	            });
+	        }
+	        if (attrs && attrs.lights && attrs.lights.ambientLight) {
+	            let ambientLight = {
+	                intensity: 1.0,
+	                color: 0xffffff
+	            };
+	            ambientLight = Object.assign(ambientLight, attrs.lights.ambientLight);
+	            this.ambientLight = new AmbientLight(ambientLight.color, ambientLight.intensity);
+	            this.scene.add(this.ambientLight);
+	        }
+	    }
+	    initHDR(attrs, callback) {
+	        const hdrUrls = attrs && attrs.hdrUrls != undefined ? attrs.hdrUrls : [];
+	        this.hdrUrls = hdrUrls;
+	        if (hdrUrls.length == 1) {
+	            this.pmremGenerator.compileEquirectangularShader();
+	            this.hdrLoader.setDataType(UnsignedByteType).load(this.publicPath + hdrUrls[0], (texture) => {
+	                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                callback && callback(attrs);
+	            });
+	        }
+	        else if (hdrUrls.length == 6) {
+	            this.pmremGenerator.compileCubemapShader();
+	            const urls = [];
+	            hdrUrls.forEach((hUrl) => {
+	                urls.push(this.publicPath + hUrl);
+	            });
+	            this.cubeTexLoader.load(urls, (texture) => {
+	                const envMap = this.pmremGenerator.fromCubemap(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                callback && callback(attrs);
+	            });
+	        }
+	    }
+	    initModels(attrs) {
+	        if (!attrs || !attrs.modelUrls || !(attrs.modelUrls instanceof Array) || attrs.modelUrls.length == 0) {
+	            attrs && attrs.onLoad && attrs.onLoad(this);
+	            return;
+	        }
+	        const enableShadow = attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        const urls = [];
+	        attrs.modelUrls.forEach((u) => {
+	            urls.push(this.publicPath + u);
+	        });
+	        const len = urls.length;
+	        let count = 0;
+	        urls.forEach((url, index) => {
+	            const urlArr = url.split('/');
+	            const urlStr = urlArr[urlArr.length - 1];
+	            const start = urlStr.lastIndexOf('/');
+	            const end = urlStr.indexOf('.');
+	            const name = urlStr.substring(start + 1, end);
+	            const type = urlStr.substring(end + 1, urlStr.length);
+	            if (['glb', 'gltf'].includes(type.toLowerCase())) {
+	                this.gltfLoader.load(url, (gltf) => {
+	                    const scenes = gltf.scene;
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    if (gltf.animations.length != 0) {
+	                        for (var i = 0; i < gltf.animations.length; i++) {
+	                            const mixer = new AnimationMixer(scenes);
+	                            mixer.name = gltf.animations[i].name;
+	                            this.mixers.push(mixer);
+	                            const m = mixer.clipAction(gltf.animations[i]).play();
+	                            m.paused = true;
+	                            mixer.actions = m;
+	                            this.mixerActions.push(m);
+	                        }
+	                    }
+	                    scenes.name = name;
+	                    scenes.userData.url = url;
+	                    scenes.traverse((child) => {
+	                        if (child.isMesh) {
+	                            child.castShadow = enableShadow;
+	                            child.receiveShadow = enableShadow;
+	                            child.material.envMap = this.envMap;
+	                            child.material = child.material.clone();
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    this.sceneAnimations[name] = gltf.animations;
+	                    count++;
+	                    attrs && attrs.onProgress && attrs.onProgress(scenes);
+	                    if (count == len) {
+	                        // if (this.loadingBar) this.loadingBar.style.visibility = 'hidden'
+	                        attrs && attrs.onLoad && attrs.onLoad(this);
+	                    }
+	                }, (event) => {
+	                    // console.log('event', event)
+	                }, (error) => {
+	                    console.error(error);
+	                });
+	            }
+	            else if (['fbx'].includes(type.toLowerCase())) {
+	                this.fbxLoader.load(url, (group) => {
+	                    // console.log('group', group)
+	                    const scenes = group;
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    scenes.name = name;
+	                    scenes.traverse((child) => {
+	                        if (child.isMesh) {
+	                            child.castShadow = enableShadow;
+	                            child.receiveShadow = enableShadow;
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    count++;
+	                    attrs && attrs.onProgress && attrs.onProgress(scenes);
+	                    if (count == len) {
+	                        attrs && attrs.onLoad && attrs.onLoad(this);
+	                    }
+	                });
+	            }
+	            else {
+	                throw new Error(type + ' is not supported.');
+	            }
+	        });
+	    }
+	    initPasses(attrs) {
+	        const parameters = {
+	            format: RGBEFormat,
+	            magFilter: LinearFilter,
+	            minFilter: LinearFilter
+	        };
+	        let currentCamera = this.orbitCamera;
+	        if (this.viewState == 'firstPerson') {
+	            currentCamera = this.firstPersonCamera;
+	        }
+	        // const outputPass = new ShaderPass(CopyShader)
+	        this.renderPass = new RenderPass(this.scene, currentCamera);
+	        const size = this.renderer.getDrawingBufferSize(new Vector2());
+	        let msaa = {
+	            supersampling: false
+	        };
+	        Object.assign(msaa, attrs && attrs.msaa);
+	        // const renderTarget = new WebGLMultisampleRenderTarget(size.width * 2, size.height * 2, parameters)  // 超采样 todo
+	        const w = msaa.supersampling ? size.width * 2 : size.width;
+	        const h = msaa.supersampling ? size.height * 2 : size.height;
+	        this.supersampling = msaa.supersampling;
+	        this.msaaTarget = new WebGLMultisampleRenderTarget(w, h, parameters);
+	        this.sceneComposer = new EffectComposer(this.renderer, this.msaaTarget);
+	        this.sceneComposer.addPass(this.renderPass);
+	        this.bloomComposer = new EffectComposer(this.renderer, this.msaaTarget);
+	        this.bloomComposer.renderToScreen = false;
+	        this.bloomComposer.addPass(this.renderPass);
+	        // nodePass
+	        const nodePassAtts = {
+	            hue: 0,
+	            sataturation: 1,
+	            vibrance: 0,
+	            brightness: 0,
+	            contrast: 1
+	        };
+	        Object.assign(nodePassAtts, attrs?.nodePass);
+	        this.nodepass = new NodePass();
+	        const screen = new ScreenNode();
+	        const hue = new FloatNode(nodePassAtts.hue);
+	        const sataturation = new FloatNode(nodePassAtts.sataturation);
+	        const vibrance = new FloatNode(nodePassAtts.vibrance);
+	        const brightness = new FloatNode(nodePassAtts.brightness);
+	        const contrast = new FloatNode(nodePassAtts.contrast);
+	        const hueNode = new ColorAdjustmentNode(screen, hue, ColorAdjustmentNode.HUE);
+	        const satNode = new ColorAdjustmentNode(hueNode, sataturation, ColorAdjustmentNode.SATURATION);
+	        const vibranceNode = new ColorAdjustmentNode(satNode, vibrance, ColorAdjustmentNode.VIBRANCE);
+	        const brightnessNode = new ColorAdjustmentNode(vibranceNode, brightness, ColorAdjustmentNode.BRIGHTNESS);
+	        const contrastNode = new ColorAdjustmentNode(brightnessNode, contrast, ColorAdjustmentNode.CONTRAST);
+	        this.nodepass.input = contrastNode;
+	        this.nodepass.enabled = attrs?.nodePassEnabled;
+	        this.sceneComposer.addPass(this.nodepass);
+	        const bgColor = attrs && attrs.background != undefined && attrs.background.type === 'color' ? new Color(attrs.background.value) : new Color();
+	        // *** TAA PASS start ***
+	        // const taaRenderPass = new TAARenderPass(this.scene, currentCamera, bgColor, 1)
+	        // taaRenderPass.unbiased = false
+	        // taaRenderPass.sampleLevel = 3
+	        // this.sceneComposer.addPass(taaRenderPass)
+	        // *** TAA PASS end ***
+	        // *** SSAA PASS start ***
+	        let ssaa = {
+	            level: 1,
+	            unbiased: true
+	        };
+	        Object.assign(ssaa, attrs && attrs.ssaa);
+	        this.ssaaPass = new SSAARenderPass(this.scene, currentCamera, bgColor, 0);
+	        this.ssaaPass.sampleLevel = ssaa.level;
+	        this.ssaaPass.unbiased = ssaa.unbiased;
+	        this.sceneComposer.addPass(this.ssaaPass);
+	        const ssaaEnabled = attrs && attrs.ssaaEnabled != undefined ? attrs.ssaaEnabled : false;
+	        this.ssaaPass.enabled = ssaaEnabled;
+	        // *** SSAA PASS end ***
+	        // *** SSR PASS start ***
+	        // const geometry = new PlaneGeometry(1, 1)
+	        // const groundReflector = new ReflectorForSSRPass(geometry, {
+	        //   clipBias: 0.0003,
+	        //   textureWidth: this.containerWidth,
+	        //   textureHeight: this.containerHeight,
+	        //   color: 0x888888,
+	        //   useDepthTexture: true
+	        // })
+	        // groundReflector.material.depthWrite = false
+	        // groundReflector.rotation.x = -Math.PI / 2
+	        // groundReflector.visible = false
+	        // this.scene.add(groundReflector)
+	        let ssr = {
+	            renderer: this.renderer,
+	            scene: this.scene,
+	            camera: currentCamera,
+	            width: this.containerWidth,
+	            height: this.containerHeight,
+	            selects: [],
+	            groundReflector: null,
+	            encoding: LinearEncoding,
+	            maxDistance: 200
+	        };
+	        ssr = Object.assign(ssr, attrs && attrs.ssr);
+	        this.ssrPass = new SSRPass(ssr);
+	        this.ssrPass.maxDistance = 200;
+	        const ssrEnabled = attrs && attrs.ssrEnabled != undefined ? attrs.ssrEnabled : false;
+	        this.ssrPass.enabled = ssrEnabled;
+	        this.sceneComposer.addPass(this.ssrPass);
+	        // *** SSR PASS end ***
+	        // *** GAMMA PASS start ***
+	        let gamma = {
+	            factor: 2.2
+	        };
+	        gamma = Object.assign(gamma, attrs && attrs.gamma);
+	        this.gammaPass = new ShaderPass(new ShaderMaterial({
+	            uniforms: {
+	                tDiffuse: { value: null },
+	                factor: { value: gamma.factor }
+	            },
+	            vertexShader: gammaVertexShader,
+	            fragmentShader: gammaFragmentShader
+	        }));
+	        const gammaEnabled = attrs && attrs.gammaEnabled != undefined ? attrs.gammaEnabled : true;
+	        this.sceneComposer.addPass(this.gammaPass);
+	        this.gammaPass.enabled = gammaEnabled;
+	        // *** GAMMA PASS end ***
+	        // *** BLOOM PASS start ***
+	        let bloom = {
+	            bloomStrength: 1.5,
+	            bloomRadius: 0,
+	            threshold: 0.85
+	        };
+	        bloom = Object.assign(bloom, attrs && attrs.bloom);
+	        this.bloomPass = new UnrealBloomPass(new Vector2(this.containerWidth, this.containerHeight), bloom.bloomStrength, bloom.bloomRadius, bloom.threshold);
+	        const bloomEnabled = attrs && attrs.bloomEnabled != undefined ? attrs.bloomEnabled : false;
+	        this.bloomPass.enabled = bloomEnabled;
+	        // this.bloomPass.nMips = 0
+	        this.bloomComposer.addPass(this.bloomPass);
+	        // *** BLOOM PASS end ***
+	        // *** BLOOM FINAL PASS start ***
+	        this.finalbloomPass = new ShaderPass(new ShaderMaterial({
+	            uniforms: {
+	                baseTexture: { value: null },
+	                bloomTexture: { value: this.bloomComposer.renderTarget2.texture }
+	            },
+	            vertexShader: bloomVertexShader,
+	            fragmentShader: bloomFragShader
+	        }), 'baseTexture');
+	        this.finalbloomPass.needsSwap = true;
+	        this.sceneComposer.addPass(this.finalbloomPass);
+	        // *** BLOOM FINAL PASS end ***
+	        // *** DOF PASS start***
+	        let dof = {
+	            focus: 100.0,
+	            aperture: 0.00001,
+	            maxblur: 0.01,
+	            width: this.containerWidth,
+	            height: this.containerHeight
+	        };
+	        dof = Object.assign(dof, attrs && attrs.dof);
+	        this.bokehPass = new BokehPass(this.scene, currentCamera, dof);
+	        this.sceneComposer.addPass(this.bokehPass);
+	        const dofEnabled = attrs && attrs.dofEnabled != undefined ? attrs.dofEnabled : false;
+	        this.bokehPass.enabled = dofEnabled;
+	        // *** DOF PASS end***
+	        // *** OUTLINE PASS start ***
+	        let outlineParams = {
+	            edgeStrength: 3,
+	            edgeGlow: 0,
+	            edgeThickness: 1,
+	            pulsePeriod: 0,
+	            visibleEdgeColor: '#98e10f',
+	            hiddenEdgeColor: '#190a05'
+	        };
+	        outlineParams = Object.assign(outlineParams, attrs && attrs.outline);
+	        this.outlinePass = new OutlinePass(new Vector2(this.containerWidth, this.containerHeight), this.scene, currentCamera, this.outlineObjects);
+	        this.outlinePass.edgeStrength = outlineParams.edgeStrength;
+	        this.outlinePass.edgeGlow = outlineParams.edgeGlow;
+	        this.outlinePass.edgeThickness = outlineParams.edgeThickness;
+	        this.outlinePass.pulsePeriod = outlineParams.pulsePeriod;
+	        this.outlinePass.visibleEdgeColor.set(outlineParams.visibleEdgeColor);
+	        this.outlinePass.hiddenEdgeColor.set(outlineParams.hiddenEdgeColor);
+	        this.sceneComposer.addPass(this.outlinePass);
+	        const outlineEnabled = attrs && attrs.outlineEnabled != undefined ? attrs.outlineEnabled : false;
+	        this.outlinePass.enabled = outlineEnabled;
+	        // *** OUTLINE PASS end ***
+	        // this.sceneComposer.addPass(outputPass)
+	        // *** test depth peeling start ***
+	        const ssrtEnabled = attrs && attrs.ssrtEnabled != undefined ? attrs.ssrtEnabled : false;
+	        if (ssrtEnabled) {
+	            this.ssrSkyBox = new SSRSkyBox(null, currentCamera, this.renderer);
+	            this.sceneComposer.addPass(this.ssrSkyBox);
+	            this.ddpPass = new DoubleDepthBufferPass(this.scene.clone(true), currentCamera, this.renderer);
+	            this.sceneComposer.addPass(this.ddpPass);
+	            this.ssrtPass = new SSRTPass(this.scene.clone(true), this.ddpPass, currentCamera, this.renderer);
+	            this.sceneComposer.addPass(this.ssrtPass);
+	        }
+	        // *** test depth peeling end ***
+	        // **** TEST PASS start ******
+	        // const testPass = new ShaderPass(
+	        //   new ShaderMaterial({
+	        //     uniforms: {
+	        //       tDiffuse: { value: null }
+	        //     },
+	        //     vertexShader: testVertexShader,
+	        //     fragmentShader: testFragmentShader
+	        //   })
+	        // )
+	        // this.sceneComposer.addPass(testPass)
+	        // **** TEST PASS end ******
+	    }
+	    // 切换天空盒
+	    setSkyBox(urls, callback) {
+	        if (!(urls instanceof Array))
+	            return;
+	        const attrs = this.attrs;
+	        const scale = attrs && attrs.background && attrs.background.options && attrs.background.options.scale ? attrs.background.options.scale : 1;
+	        const rotation = attrs && attrs.background && attrs.background.options && attrs.background.options.rotation ? attrs.background.options.rotation : [0, 0, 0];
+	        const fog = attrs && attrs.background && attrs.background.options && attrs.background.options.fog ? attrs.background.options.fog : false;
+	        const SKY_RADIUS = 50000;
+	        this.skyRadius = SKY_RADIUS;
+	        if (urls.length == 6) {
+	            const arr = [];
+	            const materials = [];
+	            urls.forEach((u) => {
+	                arr.push(loadTex(this.texLoader, this.publicPath + u));
+	            });
+	            Promise.all(arr).then((list) => {
+	                list.forEach((l) => {
+	                    const mat = new MeshBasicMaterial({
+	                        map: l,
+	                        side: 2,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    materials.push(mat);
+	                });
+	                const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                // texture.encoding = sRGBEncoding
+	                const sky = new Mesh(geo, materials);
+	                sky.scale.set(scale, scale, scale);
+	                sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                sky.renderOrder = SKY_RENDER_ORDER;
+	                sky.type = 'SkyBox';
+	                if (this.sky) {
+	                    this.sky.geometry = geo;
+	                    this.sky.material = materials;
+	                }
+	                else {
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	                this.sky.userData.value = urls;
+	                callback && callback(this.sky);
+	            });
+	        }
+	        else if (urls.length == 1) {
+	            this.texLoader.load(this.publicPath + urls[0], (texture) => {
+	                const mat = new MeshBasicMaterial({
+	                    map: texture,
+	                    side: BackSide,
+	                    transparent: true,
+	                    opacity: 1.0,
+	                    fog
+	                });
+	                const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                // texture.encoding = sRGBEncoding
+	                const sky = new Mesh(geo, mat);
+	                sky.scale.set(scale, scale, scale);
+	                sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                sky.renderOrder = SKY_RENDER_ORDER;
+	                sky.type = 'SkyBox';
+	                if (this.sky) {
+	                    this.sky.geometry = geo;
+	                    this.sky.material = mat;
+	                }
+	                else {
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	                this.sky.userData.value = urls;
+	                callback && callback(this.sky);
+	            });
+	        }
+	    }
+	    // 切换HDR
+	    setHDR(urls, callback) {
+	        if (!(urls instanceof Array))
+	            return;
+	        if (urls.length == 1) {
+	            this.pmremGenerator.compileEquirectangularShader();
+	            this.hdrLoader.setDataType(UnsignedByteType).load(this.publicPath + urls[0], (texture) => {
+	                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.scene.traverse((c) => {
+	                    if (c.isMesh) {
+	                        c.material.envMap = envMap;
+	                    }
+	                });
+	                callback && callback(this.envMap);
+	            });
+	        }
+	        else if (urls.length == 6) {
+	            this.pmremGenerator.compileCubemapShader();
+	            const urls = [];
+	            urls.forEach((hUrl) => {
+	                urls.push(this.publicPath + hUrl);
+	            });
+	            this.cubeTexLoader.load(urls, (texture) => {
+	                const envMap = this.pmremGenerator.fromCubemap(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.scene.traverse((c) => {
+	                    if (c.isMesh) {
+	                        c.material.envMap = envMap;
+	                    }
+	                });
+	                callback && callback(this.envMap);
+	            });
+	        }
+	    }
+	    // add object
+	    attach(obj) {
+	        this.scene.add(obj);
+	    }
+	    // remove object
+	    remove(obj) {
+	        this.scene.remove(obj);
+	        const i = this.children.indexOf(obj);
+	        this.children.splice(i, 1);
+	    }
+	    // find object by name
+	    findObjectByName(name) {
+	        for (const i in this.children) {
+	            if (this.children[i].name == name) {
+	                return this.children[i];
+	            }
+	        }
+	    }
+	    // find objects by name
+	    findObjectsByName(name) {
+	        const objects = [];
+	        for (const i in this.children) {
+	            if (this.children[i].name == name) {
+	                objects.push(this.children[i]);
+	            }
+	        }
+	        return objects;
+	    }
+	    // find object by uuid
+	    findObjectById(uuid) {
+	        for (const i in this.children) {
+	            if (this.children[i].uuid == uuid) {
+	                return this.children[i];
+	            }
+	        }
+	    }
+	    // find objects by type
+	    findObjectsByType(type) {
+	        const objects = [];
+	        for (const i in this.children) {
+	            if (this.children[i].type == type) {
+	                objects.push(this.children[i]);
+	            }
+	        }
+	        return objects;
+	    }
+	    // camera focus target
+	    cameraFocus(opts) {
+	        if (this.viewState != 'orbit')
+	            return;
+	        const { target, callback, polarAngle, azimuthalAngle, distance } = opts;
+	        const p = new Vector3();
+	        if (target instanceof Vector3) {
+	            p.copy(target);
+	        }
+	        else if (target instanceof Array) {
+	            p.set(target[0], target[1], target[2]);
+	        }
+	        const offset = new Vector3().subVectors(this.orbitCamera.position, this.orbitControls.target);
+	        const spherical = new Spherical().setFromVector3(offset);
+	        if (polarAngle !== undefined)
+	            spherical.phi = polarAngle;
+	        if (azimuthalAngle !== undefined)
+	            spherical.theta = azimuthalAngle;
+	        if (distance !== undefined)
+	            spherical.radius = distance;
+	        offset.setFromSpherical(spherical);
+	        const newPOS = new Vector3();
+	        newPOS.copy(p).add(offset);
+	        if (newPOS.distanceTo(this.orbitCamera.position) < 0.0001) {
+	            this.orbitCamera.position.copy(newPOS);
+	            this.orbitControls.target.copy(p);
+	            callback && callback();
+	        }
+	        else {
+	            new Tween(this.orbitControls.target).to(p, 800).start();
+	            new Tween(this.orbitCamera.position)
+	                .to(newPOS, 800)
+	                .start()
+	                .onComplete(() => {
+	                callback && callback();
+	            });
+	        }
+	    }
+	    // make obj bloom special
+	    addBloomSpecial(obj) {
+	        obj.layers.enable(2);
+	    }
+	    // remove bloom obj special
+	    removeBloomSpecial(obj) {
+	        obj.layers.disable(2);
+	    }
+	    // make obj bloom
+	    addBloom(obj) {
+	        obj.layers.enable(1);
+	    }
+	    // remove bloom obj
+	    removeBloom(obj) {
+	        obj.layers.disable(1);
+	    }
+	    loadHDR({ fileList, onLoad }) {
+	        const len = fileList.length;
+	        if (len == 0)
+	            return;
+	        if (len == 1) {
+	            this.pmremGenerator.compileEquirectangularShader();
+	            const freader = new FileReader();
+	            freader.readAsArrayBuffer(fileList[0]);
+	            freader.onload = (e) => {
+	                const result = e.target?.result;
+	                const texture = new DataTexture(null, 1, 1, undefined, undefined, undefined, undefined, undefined, NearestFilter, NearestFilter, undefined, undefined);
+	                const texData = this.hdrLoader.setDataType(UnsignedByteType).parse(result);
+	                if (!texData)
+	                    return;
+	                if (texData.image !== undefined) {
+	                    texture.image = texData.image;
+	                }
+	                else if (texData.data !== undefined) {
+	                    texture.image.width = texData.width;
+	                    texture.image.height = texData.height;
+	                    texture.image.data = texData.data;
+	                }
+	                texture.wrapS = texData.wrapS !== undefined ? texData.wrapS : ClampToEdgeWrapping;
+	                texture.wrapT = texData.wrapT !== undefined ? texData.wrapT : ClampToEdgeWrapping;
+	                texture.magFilter = texData.magFilter !== undefined ? texData.magFilter : LinearFilter;
+	                texture.minFilter = texData.minFilter !== undefined ? texData.minFilter : LinearFilter;
+	                texture.anisotropy = texData.anisotropy !== undefined ? texData.anisotropy : 1;
+	                if (texData.encoding !== undefined) {
+	                    texture.encoding = texData.encoding;
+	                }
+	                if (texData.flipY !== undefined) {
+	                    texture.flipY = texData.flipY;
+	                }
+	                if (texData.format !== undefined) {
+	                    texture.format = texData.format;
+	                }
+	                if (texData.type !== undefined) {
+	                    texture.type = texData.type;
+	                }
+	                if (texData.mipmaps !== undefined) {
+	                    texture.mipmaps = texData.mipmaps;
+	                    texture.minFilter = LinearMipmapLinearFilter; // presumably...
+	                }
+	                if (texData.mipmapCount === 1) {
+	                    texture.minFilter = LinearFilter;
+	                }
+	                if (texData.generateMipmaps !== undefined) {
+	                    texture.generateMipmaps = texData.generateMipmaps;
+	                }
+	                texture.needsUpdate = true;
+	                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.children.forEach((c) => {
+	                    c.material.envMap = envMap;
+	                });
+	                onLoad && onLoad(envMap);
+	            };
+	        }
+	        else if (len == 6) {
+	            this.pmremGenerator.compileCubemapShader();
+	            const cubeTexture = new CubeTexture();
+	            const arr = [];
+	            for (const key in fileList) {
+	                const f = fileList[key];
+	                if (f instanceof File) {
+	                    const freader = new FileReader();
+	                    arr.push(parseImageFile(freader, f));
+	                }
+	            }
+	            Promise.all(arr).then((list) => {
+	                cubeTexture.needsUpdate = true;
+	                cubeTexture.images = list;
+	                const envMap = this.pmremGenerator.fromCubemap(cubeTexture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.children.forEach((c) => {
+	                    c.material.envMap = envMap;
+	                });
+	                onLoad && onLoad(envMap);
+	            });
+	        }
+	    }
+	    loadSkyBox({ fileList, onLoad }) {
+	        const len = fileList.length;
+	        if (len == 0)
+	            return;
+	        const attrs = this.attrs;
+	        const scale = attrs && attrs.background && attrs.background.options && attrs.background.options.scale ? attrs.background.options.scale : 1;
+	        const rotation = attrs && attrs.background && attrs.background.options && attrs.background.options.rotation ? attrs.background.options.rotation : [0, 0, 0];
+	        const fog = attrs && attrs.background && attrs.background.options && attrs.background.options.fog ? attrs.background.options.fog : false;
+	        const SKY_RADIUS = this.skyRadius;
+	        if (len == 6) {
+	            const arr = [];
+	            const materials = [];
+	            for (const key in fileList) {
+	                const f = fileList[key];
+	                if (f instanceof File) {
+	                    const freader = new FileReader();
+	                    arr.push(parseImageFile(freader, f));
+	                }
+	            }
+	            Promise.all(arr).then((list) => {
+	                list.forEach((l) => {
+	                    const t = new Texture();
+	                    t.needsUpdate = true;
+	                    t.image = l;
+	                    const mat = new MeshBasicMaterial({
+	                        map: t,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    materials.push(mat);
+	                });
+	                if (this.sky) {
+	                    this.sky.material.needsUpdate = true;
+	                    this.sky.material = materials;
+	                }
+	                else {
+	                    const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, materials);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	            });
+	        }
+	        else if (len == 1) {
+	            const freader = new FileReader();
+	            parseImageFile(freader, fileList[0]).then((list) => {
+	                const image = list;
+	                const texture = new Texture();
+	                texture.image = image;
+	                texture.needsUpdate = true;
+	                if (this.sky) {
+	                    this.sky.material.needsUpdate = true;
+	                    this.sky.material.map = texture;
+	                }
+	                else {
+	                    const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                    const mat = new MeshBasicMaterial({
+	                        map: texture,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, mat);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	            });
+	        }
+	    }
+	    // load models by fileList
+	    loadModels({ fileList, onProgress, onLoad }) {
+	        const len = fileList.length;
+	        if (len == 0)
+	            return;
+	        let count = 0;
+	        let max = new Vector3();
+	        let min = new Vector3();
+	        const enableShadow = this.attrs && this.attrs.enableShadow != undefined ? this.attrs.enableShadow : false;
+	        for (const key in fileList) {
+	            const f = fileList[key];
+	            if (f instanceof File) {
+	                const freader = new FileReader();
+	                freader.readAsArrayBuffer(f);
+	                freader.onload = (e) => {
+	                    const result = e.target?.result;
+	                    if (result) {
+	                        this.gltfLoader.parse(result, '', (gltf) => {
+	                            // todo loadedFileResults  animations
+	                            this.loadedFileResults.push(gltf);
+	                            const nameStr = f.name.split('.');
+	                            const name = nameStr[0];
+	                            const scenes = gltf.scene;
+	                            const pId = `root_${name}_${key}`;
+	                            traverseGenerateUUID(scenes, pId);
+	                            // const skeleton = new SkeletonHelper(scenes)
+	                            // skeleton.visible = false
+	                            // this.scene.add(skeleton)
+	                            // if (gltf.animations.length != 0) {
+	                            //   for (var i = 0; i < gltf.animations.length; i++) {
+	                            //     const mixer = new AnimationMixer(scenes)
+	                            //     ;(mixer as any).name = gltf.animations[i].name
+	                            //     this.mixers.push(mixer)
+	                            //     const m = mixer.clipAction(gltf.animations[i]).play()
+	                            //     m.paused = true
+	                            //     ;(mixer as any).actions = m
+	                            //     this.mixerActions.push(m)
+	                            //   }
+	                            // }
+	                            scenes.name = name;
+	                            // file name cache
+	                            scenes.userData.fileName = f.name;
+	                            scenes.traverse((child) => {
+	                                if (child.isMesh) {
+	                                    child.castShadow = enableShadow;
+	                                    child.receiveShadow = enableShadow;
+	                                    child.material.envMap = this.envMap;
+	                                    child.material = child.material.clone();
+	                                    child.renderOrder = MODEL_RENDER_ORDER;
+	                                    child.material.envMap = this.envMap;
+	                                    // this.clickObjects.push(child) // to do raycast
+	                                    // this.children.push(child) // children management
+	                                    // find max bounding box point
+	                                    const v = new Vector3();
+	                                    child.geometry.boundingBox.getCenter(v);
+	                                    const _v = v.clone();
+	                                    recursiveCalParentsMat(child, _v, new Matrix4());
+	                                    const _max = child.geometry.boundingBox.max.clone();
+	                                    recursiveCalParentsMat(child, _max, new Matrix4());
+	                                    const _min = child.geometry.boundingBox.min.clone();
+	                                    recursiveCalParentsMat(child, _min, new Matrix4());
+	                                    const __max = new Vector3().subVectors(_v, _max);
+	                                    const __min = new Vector3().subVectors(_v, _min);
+	                                    if (__max.lengthSq() > max.lengthSq())
+	                                        max.copy(__max);
+	                                    if (__min.lengthSq() > min.lengthSq())
+	                                        min.copy(__min);
+	                                }
+	                            });
+	                            this.scene.add(scenes);
+	                            this.sceneModels.push(scenes);
+	                            // this.sceneAnimations[name] = gltf.animations
+	                            count++;
+	                            onProgress && onProgress(scenes);
+	                            if (count == len) {
+	                                // 计算最佳视角
+	                                let mdlen = max.x - min.x; // 模型长度
+	                                let mdwid = max.z - min.z; // 模型宽度
+	                                let mdhei = max.y - min.y; // 模型高度
+	                                let x1 = min.x + mdlen / 2; // 模型中心点坐标X
+	                                let y1 = min.y + mdhei / 2; // 模型中心点坐标Y
+	                                let z1 = min.z + mdwid / 2; // 模型中心点坐标Z
+	                                let diagonal = Math.sqrt(Math.pow(Math.sqrt(Math.pow(mdlen, 2) + Math.pow(mdwid, 2)), 2) + Math.pow(mdhei, 2)); // 获取模型整体对角线长度,这里获取模型模型对角线的目的是为了保证模型可以完全的展示在视线范围内
+	                                // 假设我们需要的进入视角为45度
+	                                this.orbitControls.object.position.set(max.x + diagonal / 2, (diagonal * 2) / Math.tan((Math.PI / 180) * 45) + Math.abs(max.y), max.z + diagonal / 2); // 设置相机位置，向上偏移，确定可以包裹整个模型
+	                                this.orbitControls.target.set(x1, y1, z1); // 设置相机的视角方向，看向模型的中心点
+	                                this.orbitControls.update(); // 更新相机
+	                                onLoad && onLoad();
+	                            }
+	                        });
+	                    }
+	                };
+	            }
+	        }
+	    }
+	    // export scene
+	    exportScenes(filename) {
+	        const attrs = this.attrs;
+	        // export datas
+	        let data = Object.assign({}, attrs);
+	        // cameras
+	        data.cameras.orbitCamera = Object.assign(data.cameras.orbitCamera, {
+	            position: [this.orbitCamera.position.x, this.orbitCamera.position.y, this.orbitCamera.position.z]
+	        });
+	        // controls
+	        data.controls.orbitControls = Object.assign(data.controls.orbitControls, {
+	            target: [this.orbitControls.target.x, this.orbitControls.target.y, this.orbitControls.target.z]
+	        });
+	        // model urls
+	        const modelUrls = [];
+	        this.sceneModels.forEach((scenes) => {
+	            modelUrls.push('/' + scenes.userData.fileName);
+	        });
+	        data = Object.assign(data, { modelUrls });
+	        if (!filename)
+	            filename = 'settings.json';
+	        if (typeof data === 'object') {
+	            data = JSON.stringify(data, undefined, 4);
+	        }
+	        const blob = new Blob([data], { type: 'text/json' }), e = document.createEvent('MouseEvents'), a = document.createElement('a');
+	        a.download = filename;
+	        a.href = window.URL.createObjectURL(blob);
+	        a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+	        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	        a.dispatchEvent(e);
+	    }
+	    // 根据json文件加载场景
+	    loadSceneByJSON({ data, onProgress, onLoad }) {
+	        // console.log(data)
+	        this.updateScenes(data);
+	        this.updateLights(data.lights);
+	        this.updateCameras(data.cameras);
+	        this.updatePasses(data);
+	        this.loadModelByUrls({
+	            modelUrls: data.modelUrls ? data.modelUrls : [],
+	            onProgress,
+	            onLoad,
+	            nodes: data.template
+	        });
+	    }
+	    // *** loadSceneByJSON functions start ***
+	    loadModelByUrls({ nodes, modelUrls, onProgress, onLoad }) {
+	        if (!modelUrls || !(modelUrls instanceof Array) || modelUrls.length == 0) {
+	            onLoad && onLoad(this);
+	            return;
+	        }
+	        const enableShadow = this.attrs?.enableShadow;
+	        const urls = [];
+	        modelUrls.forEach((u) => {
+	            urls.push(this.publicPath + u);
+	        });
+	        const len = urls.length;
+	        let count = 0;
+	        urls.forEach((url, index) => {
+	            const urlArr = url.split('/');
+	            const urlStr = urlArr[urlArr.length - 1];
+	            const start = urlStr.lastIndexOf('/');
+	            const end = urlStr.indexOf('.');
+	            const name = urlStr.substring(start + 1, end);
+	            const type = urlStr.substring(end + 1, urlStr.length);
+	            if (['glb', 'gltf'].includes(type.toLowerCase())) {
+	                this.gltfLoader.load(url, (gltf) => {
+	                    const jsonNodes = gltf.parser.json.nodes;
+	                    const duplicateNames = {};
+	                    for (let i = 0; i < jsonNodes.length; i++) {
+	                        if (!jsonNodes[i].name)
+	                            throw new Error('model name should be defined.');
+	                        if (!duplicateNames[jsonNodes[i].name]) {
+	                            duplicateNames[jsonNodes[i].name] = 1;
+	                        }
+	                        else {
+	                            duplicateNames[jsonNodes[i].name]++;
+	                        }
+	                        if (duplicateNames[jsonNodes[i].name] > 1) {
+	                            throw new Error('model name should be uniqued.');
+	                        }
+	                    }
+	                    const scenes = gltf.scene;
+	                    if (gltf.animations.length != 0) {
+	                        for (var i = 0; i < gltf.animations.length; i++) {
+	                            const mixer = new AnimationMixer(scenes);
+	                            mixer.name = gltf.animations[i].name;
+	                            this.mixers.push(mixer);
+	                            const m = mixer.clipAction(gltf.animations[i]).play();
+	                            m.paused = true;
+	                            mixer.actions = m;
+	                            this.mixerActions.push(m);
+	                        }
+	                    }
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    scenes.name = name;
+	                    scenes.userData.url = url;
+	                    scenes.traverse((child) => {
+	                        const obj3dArr = [];
+	                        traverseSelectNodeByUUID(nodes[pId], child.uuid, obj3dArr);
+	                        if (obj3dArr.length > 0) {
+	                            const obj3d = obj3dArr[0];
+	                            if (obj3d.type == 'Group' || obj3d.type == 'Object3D') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                            }
+	                            else if (obj3d.type == 'Mesh') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation, castShadow, receiveShadow } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                                child.castShadow = enableShadow ? enableShadow : castShadow;
+	                                child.receiveShadow = enableShadow ? enableShadow : receiveShadow;
+	                                // mat
+	                                if (obj3d.matOptions) {
+	                                    const { color, depthTest, depthWrite, opacity, transparent, wireframe, type } = obj3d.matOptions;
+	                                    child.material.color.set(color);
+	                                    child.material.depthTest = depthTest;
+	                                    child.material.depthWrite = depthWrite;
+	                                    child.material.opacity = opacity;
+	                                    child.material.transparent = transparent;
+	                                    child.material.wireframe = wireframe;
+	                                    if (type == 'MeshStandardMaterial' && obj3d.matOptions.extends) {
+	                                        const { roughness, metalness, envMapIntensity, lightMapIntensity, emissive, emissiveIntensity } = obj3d.matOptions.extends;
+	                                        child.material.roughness = roughness;
+	                                        child.material.metalness = metalness;
+	                                        child.material.envMapIntensity = envMapIntensity;
+	                                        child.material.lightMapIntensity = lightMapIntensity;
+	                                        child.material.emissiveIntensity = emissiveIntensity;
+	                                        child.material.emissive.set(emissive);
+	                                    }
+	                                }
+	                            }
+	                        }
+	                        if (child.isMesh) {
+	                            child.material.envMap = this.envMap;
+	                            child.material = child.material.clone();
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    this.sceneAnimations[name] = gltf.animations;
+	                    count++;
+	                    onProgress && onProgress(scenes);
+	                    if (count == len)
+	                        onLoad && onLoad(this);
+	                }, (event) => {
+	                    // console.log('event', event)
+	                }, (error) => {
+	                    console.error(error);
+	                });
+	            }
+	            else if (['fbx'].includes(type.toLowerCase())) {
+	                this.fbxLoader.load(url, (group) => {
+	                    const scenes = group;
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    scenes.name = name;
+	                    scenes.traverse((child) => {
+	                        const obj3dArr = [];
+	                        traverseSelectNodeByUUID(nodes[pId], child.uuid, obj3dArr);
+	                        if (obj3dArr.length > 0) {
+	                            const obj3d = obj3dArr[0];
+	                            if (obj3d.type == 'Group' || obj3d.type == 'Object3D') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                            }
+	                            else if (obj3d.type == 'Mesh') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation, castShadow, receiveShadow } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                                child.castShadow = enableShadow ? enableShadow : castShadow;
+	                                child.receiveShadow = enableShadow ? enableShadow : receiveShadow;
+	                                // mat
+	                                if (obj3d.matOptions) {
+	                                    const { color, depthTest, depthWrite, opacity, transparent, wireframe, type } = obj3d.matOptions;
+	                                    child.material.color.set(color);
+	                                    child.material.depthTest = depthTest;
+	                                    child.material.depthWrite = depthWrite;
+	                                    child.material.opacity = opacity;
+	                                    child.material.transparent = transparent;
+	                                    child.material.wireframe = wireframe;
+	                                    if (obj3d.matOptions.extends) {
+	                                        const { roughness, metalness, envMapIntensity, lightMapIntensity, emissive, emissiveIntensity } = obj3d.matOptions.extends;
+	                                        child.material.roughness = roughness;
+	                                        child.material.metalness = metalness;
+	                                        child.material.envMapIntensity = envMapIntensity;
+	                                        child.material.lightMapIntensity = lightMapIntensity;
+	                                        child.material.emissiveIntensity = emissiveIntensity;
+	                                        child.material.emissive.set(emissive);
+	                                    }
+	                                }
+	                            }
+	                        }
+	                        if (child.isMesh) {
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    count++;
+	                    onProgress && onProgress(scenes);
+	                    if (count == len)
+	                        onLoad && onLoad(this);
+	                });
+	            }
+	            else {
+	                throw new Error(type + ' is not supported.');
+	            }
+	        });
+	    }
+	    updateCameras(opts) {
+	        if (!opts)
+	            return;
+	        // orbit camera
+	        if (opts.orbitCamera) {
+	            if (opts.orbitCamera.near !== undefined)
+	                this.orbitCamera.near = 0.1;
+	            if (opts.orbitCamera.far !== undefined)
+	                this.orbitCamera.far = opts.orbitCamera.far;
+	            if (opts.orbitCamera.fov !== undefined)
+	                this.orbitCamera.fov = opts.orbitCamera.fov;
+	            if (opts.orbitCamera.aspect !== undefined)
+	                this.orbitCamera.aspect = opts.orbitCamera.aspect;
+	            if (opts.orbitCamera.maxDistance !== undefined)
+	                this.orbitControls.maxDistance = opts.orbitCamera.maxDistance;
+	            if (opts.orbitCamera.minDistance !== undefined)
+	                this.orbitControls.minDistance = opts.orbitCamera.minDistance;
+	            if (opts.orbitCamera.maxPolarAngle !== undefined)
+	                this.orbitControls.maxPolarAngle = opts.orbitCamera.maxPolarAngle;
+	            if (opts.orbitCamera.minPolarAngle !== undefined)
+	                this.orbitControls.minPolarAngle = opts.orbitCamera.minPolarAngle;
+	            if (opts.orbitCamera.position !== undefined)
+	                this.orbitCamera.position.set(opts.orbitCamera.position[0], opts.orbitCamera.position[1], opts.orbitCamera.position[2]);
+	        }
+	        // first camera --- todo
+	        if (!opts.firstPersonCamera)
+	            return;
+	    }
+	    updateLights(opts) {
+	        if (!opts)
+	            return;
+	        // const enableShadow = this.attrs && this.attrs.enableShadow != undefined ? this.attrs.enableShadow : false
+	        if (opts.hemisphereLight) {
+	            let hemiLight = {
+	                skyColor: 0xffffff,
+	                groundColor: 0xaaaaaa,
+	                intensity: 0.1,
+	                position: [0, 500, 0]
+	            };
+	            hemiLight = Object.assign(hemiLight, opts.hemisphereLight);
+	            if (!this.hemiLight) {
+	                this.hemiLight = new HemisphereLight(hemiLight.skyColor, hemiLight.groundColor, hemiLight.intensity);
+	                this.hemiLight.position.set(hemiLight.position[0], hemiLight.position[1], hemiLight.position[2]);
+	                this.scene.add(this.hemiLight);
+	            }
+	            else {
+	                this.hemiLight.color.set(hemiLight.skyColor);
+	                this.hemiLight.groundColor.set(hemiLight.groundColor);
+	                this.hemiLight.intensity = hemiLight.intensity;
+	                this.hemiLight.position.set(hemiLight.position[0], hemiLight.position[1], hemiLight.position[2]);
+	            }
+	        }
+	        // rect area lights
+	        // if (opts.rectAreaLights) {
+	        //   opts.rectAreaLights.forEach((raLightOpts: RectAreaLightOpts) => {
+	        //     let rectAreaLightOpts = {
+	        //       color: 0xffffff,
+	        //       intensity: 0,
+	        //       width: 10,
+	        //       height: 10,
+	        //       position: [0, 0, 0],
+	        //       target: [0, 0, 0]
+	        //     }
+	        //     rectAreaLightOpts = Object.assign(rectAreaLightOpts, raLightOpts)
+	        //     const rectAreaLight = new RectAreaLight(rectAreaLightOpts.color, rectAreaLightOpts.intensity, rectAreaLightOpts.width, rectAreaLightOpts.height)
+	        //     rectAreaLight.position.set(rectAreaLightOpts.position[0], rectAreaLightOpts.position[1], rectAreaLightOpts.position[2])
+	        //     rectAreaLight.lookAt(0, 0, 0)
+	        //     rectAreaLight.userData.target = rectAreaLightOpts.target
+	        //     this.scene.add(rectAreaLight)
+	        //     this.rectAreaLights.push(rectAreaLight)
+	        //   })
+	        // }
+	        // point lights
+	        // if (opts.pointLights) {
+	        //   opts.pointLights.forEach((ptOpts: PointLightOpts) => {
+	        //     let pointLightOpts = {
+	        //       color: 0xffffff,
+	        //       intensity: 0,
+	        //       distance: 0,
+	        //       decay: 1,
+	        //       position: [0, 0, 0],
+	        //       near: 1,
+	        //       far: 10000,
+	        //       bias: 0,
+	        //       size: 2048
+	        //     }
+	        //     pointLightOpts = Object.assign(pointLightOpts, ptOpts)
+	        //     const pointLight = new PointLight(pointLightOpts.color, pointLightOpts.intensity, pointLightOpts.distance, pointLightOpts.decay)
+	        //     pointLight.position.set(pointLightOpts.position[0], pointLightOpts.position[1], pointLightOpts.position[2])
+	        //     // shadow
+	        //     pointLight.castShadow = enableShadow
+	        //     pointLight.shadow.bias = pointLightOpts.bias
+	        //     pointLight.shadow.camera.near = pointLightOpts.near
+	        //     pointLight.shadow.camera.far = pointLightOpts.far
+	        //     pointLight.shadow.mapSize.width = pointLightOpts.size
+	        //     pointLight.shadow.mapSize.height = pointLightOpts.size
+	        //     pointLight.shadow.camera.updateProjectionMatrix()
+	        //     pointLight.shadow.needsUpdate = true
+	        //     this.scene.add(pointLight)
+	        //     this.pointLights.push(pointLight)
+	        //   })
+	        // }
+	        // directionLights
+	        // if (opts.directionLights) {
+	        //   opts.directionLights.forEach((dirLightOpts: DirectionLightOpts) => {
+	        //     let directionLightOpts = {
+	        //       color: 0xffdcb2,
+	        //       intensity: 2,
+	        //       position: [1, 0, 0],
+	        //       mapSize: [2048, 2048],
+	        //       near: 0.01,
+	        //       far: 10000,
+	        //       bias: -0.0004,
+	        //       distance: 900,
+	        //       target: [0, 0, 0]
+	        //     }
+	        //     directionLightOpts = Object.assign(directionLightOpts, dirLightOpts)
+	        //     const dirLight = new DirectionalLight(directionLightOpts.color, directionLightOpts.intensity)
+	        //     dirLight.position.set(directionLightOpts.position[0], directionLightOpts.position[1], directionLightOpts.position[2])
+	        //     dirLight.target.position.set(directionLightOpts.target[0], directionLightOpts.target[1], directionLightOpts.target[2])
+	        //     dirLight.castShadow = enableShadow
+	        //     dirLight.shadow.mapSize.width = directionLightOpts.mapSize[0]
+	        //     dirLight.shadow.mapSize.height = directionLightOpts.mapSize[1]
+	        //     dirLight.shadow.bias = directionLightOpts.bias
+	        //     dirLight.shadow.camera.near = directionLightOpts.near
+	        //     dirLight.shadow.camera.far = directionLightOpts.far
+	        //     dirLight.shadow.camera.left = -directionLightOpts.distance
+	        //     dirLight.shadow.camera.right = directionLightOpts.distance
+	        //     dirLight.shadow.camera.top = directionLightOpts.distance
+	        //     dirLight.shadow.camera.bottom = -directionLightOpts.distance
+	        //     dirLight.shadow.camera.updateProjectionMatrix()
+	        //     dirLight.shadow.needsUpdate = true
+	        //     this.scene.add(dirLight.target)
+	        //     this.scene.add(dirLight)
+	        //     this.directionLights.push(dirLight)
+	        //   })
+	        // }
+	        // spot lights
+	        // if (opts.spotLights) {
+	        //   opts.spotLights.forEach((spotLightOpts: SpotLightOpts) => {
+	        //     let sptLightOpts = {
+	        //       color: 0xffdcb2,
+	        //       intensity: 2,
+	        //       position: [-1000, 1000, -1000],
+	        //       mapSize: [2048, 2048],
+	        //       decay: 2,
+	        //       near: 1,
+	        //       far: 10000,
+	        //       angle: (45 * Math.PI) / 180,
+	        //       distance: 0,
+	        //       penumbra: 0.398,
+	        //       bias: -0.0004,
+	        //       focus: 1
+	        //     }
+	        //     sptLightOpts = Object.assign(sptLightOpts, spotLightOpts)
+	        //     const spotLight = new SpotLight(sptLightOpts.color, sptLightOpts.intensity)
+	        //     spotLight.position.set(sptLightOpts.position[0], sptLightOpts.position[1], sptLightOpts.position[2])
+	        //     spotLight.decay = sptLightOpts.decay
+	        //     spotLight.distance = sptLightOpts.distance
+	        //     spotLight.penumbra = sptLightOpts.penumbra
+	        //     // shadow
+	        //     spotLight.castShadow = enableShadow
+	        //     spotLight.shadow.mapSize.width = sptLightOpts.mapSize[0]
+	        //     spotLight.shadow.mapSize.height = sptLightOpts.mapSize[1]
+	        //     spotLight.shadow.camera.near = sptLightOpts.near
+	        //     spotLight.shadow.camera.far = sptLightOpts.far
+	        //     spotLight.angle = sptLightOpts.angle
+	        //     spotLight.shadow.focus = sptLightOpts.focus
+	        //     spotLight.shadow.bias = sptLightOpts.bias
+	        //     spotLight.shadow.camera.updateProjectionMatrix()
+	        //     spotLight.shadow.needsUpdate = true
+	        //     this.scene.add(spotLight.target)
+	        //     this.scene.add(spotLight)
+	        //     this.spotLights.push(spotLight)
+	        //   })
+	        // }
+	        if (opts.ambientLight) {
+	            let ambientLight = {
+	                intensity: 1.0,
+	                color: 0xffffff
+	            };
+	            ambientLight = Object.assign(ambientLight, opts.ambientLight);
+	            if (!this.ambientLight) {
+	                this.ambientLight = new AmbientLight(ambientLight.color, ambientLight.intensity);
+	                this.scene.add(this.ambientLight);
+	            }
+	            else {
+	                this.ambientLight.color.set(ambientLight.color);
+	                this.ambientLight.intensity = ambientLight.intensity;
+	            }
+	        }
+	    }
+	    updatePasses(opts) {
+	        if (!opts)
+	            return;
+	        if (opts.bloom)
+	            this.updateBloomPass(opts.bloom);
+	        if (opts.outline)
+	            this.updateOutlinePass(opts.outline);
+	        if (opts.msaa)
+	            this.updateMSAAPass(opts.msaa);
+	        if (opts.gamma)
+	            this.updateGammaPass(opts.gamma);
+	        if (opts.dof)
+	            this.updateDOFPass(opts.dof);
+	    }
+	    updateBloomPass(opts) {
+	        if (!opts)
+	            return;
+	        this.bloomPass.enabled = opts.enabled;
+	        this.finalbloomPass.material.uniforms.bloomTexture.value = opts.enabled ? this.bloomComposer.renderTarget2.texture : null;
+	        if (opts.bloomStrength !== undefined)
+	            this.bloomPass.strength = opts.bloomStrength;
+	        if (opts.bloomRadius !== undefined)
+	            this.bloomPass.radius = opts.bloomRadius;
+	        if (opts.threshold !== undefined)
+	            this.bloomPass.threshold = opts.threshold;
+	    }
+	    updateOutlinePass(opts) {
+	        if (!opts)
+	            return;
+	        this.outlinePass.enabled = opts.enabled;
+	        if (opts.edgeStrength !== undefined)
+	            this.outlinePass.edgeStrength = opts.edgeStrength;
+	        if (opts.edgeGlow !== undefined)
+	            this.outlinePass.edgeGlow = opts.edgeGlow;
+	        if (opts.edgeThickness !== undefined)
+	            this.outlinePass.edgeThickness = opts.edgeThickness;
+	        if (opts.pulsePeriod !== undefined)
+	            this.outlinePass.pulsePeriod = opts.pulsePeriod;
+	        if (opts.visibleEdgeColor !== undefined)
+	            this.outlinePass.visibleEdgeColor.set(opts.visibleEdgeColor);
+	        if (opts.hiddenEdgeColor !== undefined)
+	            this.outlinePass.hiddenEdgeColor.set(opts.hiddenEdgeColor);
+	    }
+	    updateMSAAPass(opts) {
+	        if (!opts)
+	            return;
+	        if (opts.supersampling !== undefined) {
+	            const w = this.containerWidth * 2;
+	            const h = this.containerHeight * 2;
+	            this.msaaTarget.setSize(w, h);
+	            this.sceneComposer.setSize(w, h);
+	            this.bloomComposer.setSize(w, h);
+	            this.bloomPass.setSize(w, h);
+	            this.finalbloomPass.setSize(w, h);
+	            this.ssrPass.setSize(w, h);
+	        }
+	    }
+	    updateGammaPass(opts) {
+	        if (!opts)
+	            return;
+	        this.gammaPass.enabled = opts.enabled;
+	        if (opts.factor !== undefined) {
+	            this.gammaPass.material.uniforms.factor.value = opts.factor;
+	            this.gammaPass.material.needsUpdate = true;
+	        }
+	    }
+	    updateDOFPass(opts) {
+	        if (!opts)
+	            return;
+	        this.bokehPass.enabled = opts.enabled;
+	        if (opts.aperture !== undefined)
+	            this.bokehPass.uniforms.aperture.value = opts.aperture;
+	        if (opts.maxblur !== undefined)
+	            this.bokehPass.uniforms.maxblur.value = opts.maxblur;
+	        if (opts.focus !== undefined)
+	            this.bokehPass.uniforms.focus.value = opts.focus;
+	    }
+	    updateScenes(opts) {
+	        if (!opts)
+	            return;
+	        if (opts.background)
+	            this.updateBackground(opts.background);
+	        if (opts.hdrUrls)
+	            this.updateHDR(opts.hdrUrls);
+	    }
+	    updateBackground(opts) {
+	        if (!opts)
+	            return;
+	        this.bgType = opts.type;
+	        if (opts.type == 'color') {
+	            if (this.sky)
+	                this.sky.visible = false;
+	            if (this.scene.background)
+	                this.scene.background = null;
+	            this.bgColor = opts.value;
+	            this.renderer.setClearColor(opts.value);
+	            this.ssaaPass.clearColor = opts.value;
+	        }
+	        else if (opts.type == 'texture') {
+	            if (this.sky)
+	                this.sky.visible = false;
+	            this.texLoader.load(this.publicPath + opts.value, (texture) => {
+	                this.scene.background = texture;
+	                if (opts.options) {
+	                    for (const i in opts.options) {
+	                        const opt = opts.options[i];
+	                        this.scene.background[i] = opt;
+	                    }
+	                }
+	            });
+	        }
+	        else if (opts.type == 'panorama') {
+	            if (this.scene.background)
+	                this.scene.background = null;
+	            if (!(opts.value instanceof Array))
+	                return;
+	            const urls = opts.value;
+	            const scale = opts.options.scale ? opts.options.scale : 1;
+	            const rotation = opts.options.rotation ? opts.options.rotation : [0, 0, 0];
+	            const fog = opts.fog !== undefined ? opts.fog : false;
+	            const SKY_RADIUS = 50000;
+	            this.skyRadius = SKY_RADIUS;
+	            if (urls.length == 6) {
+	                const arr = [];
+	                const materials = [];
+	                urls.forEach((u) => {
+	                    arr.push(loadTex(this.texLoader, this.publicPath + u));
+	                });
+	                Promise.all(arr).then((list) => {
+	                    list.forEach((l) => {
+	                        const mat = new MeshBasicMaterial({
+	                            map: l,
+	                            side: 2,
+	                            transparent: true,
+	                            opacity: 1.0,
+	                            fog
+	                        });
+	                        materials.push(mat);
+	                    });
+	                    const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, materials);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    if (this.sky) {
+	                        this.sky.geometry = geo;
+	                        this.sky.material = materials;
+	                    }
+	                    else {
+	                        this.scene.add(sky);
+	                        this.sky = sky;
+	                    }
+	                    this.sky.userData.value = urls;
+	                    this.sky.visible = true;
+	                });
+	            }
+	            else if (urls.length == 1) {
+	                this.texLoader.load(this.publicPath + urls[0], (texture) => {
+	                    const mat = new MeshBasicMaterial({
+	                        map: texture,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, mat);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set((rotation[0] * Math.PI) / 180, (rotation[1] * Math.PI) / 180, (rotation[2] * Math.PI) / 180);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    if (this.sky) {
+	                        this.sky.geometry = geo;
+	                        this.sky.material = mat;
+	                    }
+	                    else {
+	                        this.scene.add(sky);
+	                        this.sky = sky;
+	                    }
+	                    this.sky.userData.value = urls;
+	                    this.sky.visible = true;
+	                });
+	            }
+	        }
+	    }
+	    updateHDR(urls) {
+	        if (!urls)
+	            return;
+	        this.setHDR(urls);
+	    }
+	}
 
 	class EventsController {
 	    handlers;
@@ -99650,7 +101835,8 @@ void main() {
 	            color: '#ff0000',
 	            center: [0, 0],
 	            extrude: false,
-	            gradient: '#00ffff'
+	            gradient: '#00ffff',
+	            vertical: 24000
 	        }, opts);
 	        this.height = this.opts.height !== undefined ? this.opts.height : 10;
 	        this.center = this.opts.center !== undefined ? this.opts.center : [0, 0];
@@ -99762,15 +101948,19 @@ void main() {
 	                },
 	                gradient: {
 	                    value: new Color(opts.gradient)
+	                },
+	                vertical: {
+	                    value: this.opts.vertical
 	                }
 	            },
 	            vertexShader: `
             #include <logdepthbuf_pars_vertex>
             #include <common>
-            varying float vy;
+            varying vec3 pos;
+
             void main(){
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                vy = position.y;
+                pos = position;
                 #include <logdepthbuf_vertex>
             }
         `,
@@ -99779,14 +101969,18 @@ void main() {
             uniform vec3 gradient;
             uniform float opacity;
             uniform float height;
-            varying float vy;
+            uniform float vertical;
+
+            varying vec3 pos;
+
             #include <logdepthbuf_pars_fragment>
             
             void main(){
                 #include <logdepthbuf_fragment>
                     // gl_FragColor = vec4( mix(color,  vec3(0.) , vec3( (height - vy) / height) )  , opacity);
                     // gl_FragColor = vec4( mix( mix(color,  vec3(0.) , vec3( (height - vy) / height) ), color , vec3( (height - vy) / height) )  , opacity);
-                    gl_FragColor = vec4( mix(color,  gradient , vec3( (height - vy) / height) )  , opacity);
+                    gl_FragColor = vec4( mix(color,  gradient , vec3( (height - pos.y) / height) )  , opacity);
+                    gl_FragColor.rgb += vec3( mix(color,  gradient , vec3( abs(vertical + pos.x) / vertical) ) );
                 #include <tonemapping_fragment>
             }
         `
@@ -99879,6 +102073,9 @@ void main() {
 
 	class BaseCube extends Mesh {
 	    opts;
+	    width;
+	    height;
+	    depth;
 	    constructor(opts) {
 	        super();
 	        this.opts = Object.assign({
@@ -99892,7 +102089,37 @@ void main() {
 	            threshold: 1500,
 	            lights: true
 	        }, opts);
-	        this.geometry = new BoxGeometry(this.opts.width, this.opts.height, this.opts.depth);
+	        // this.geometry = new BoxBufferGeometry(this.opts.width, this.opts.height, this.opts.depth)
+	        this.width = this.opts.width !== undefined ? this.opts.width : 0.015;
+	        this.height = this.opts.height !== undefined ? this.opts.height : 0.5;
+	        this.depth = this.opts.depth !== undefined ? this.opts.depth : 0.015;
+	        const bottomVertices = [-this.width / 2, 0, this.depth / 2, this.width / 2, 0, this.depth / 2, this.width / 2, 0, -this.depth / 2, -this.width / 2, 0, -this.depth / 2];
+	        const topVertices = [
+	            -this.width / 2,
+	            this.height,
+	            this.depth / 2,
+	            this.width / 2,
+	            this.height,
+	            this.depth / 2,
+	            this.width / 2,
+	            this.height,
+	            -this.depth / 2,
+	            -this.width / 2,
+	            this.height,
+	            -this.depth / 2
+	        ];
+	        const positions = bottomVertices.concat(topVertices);
+	        const bottomIndices = [0, 1, 3, 3, 1, 2];
+	        const topIndices = [4, 5, 7, 7, 5, 6];
+	        const sideIndices = [0, 1, 4, 4, 1, 5, 1, 2, 5, 5, 2, 6, 2, 3, 6, 6, 3, 7, 3, 0, 7, 7, 0, 4];
+	        const indices = bottomIndices.concat(topIndices).concat(sideIndices);
+	        const bottomNormals = [0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0];
+	        const topNormals = [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0];
+	        const sideNormals = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0];
+	        const normals = bottomNormals.concat(topNormals).concat(sideNormals);
+	        this.geometry.setIndex(indices);
+	        this.geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+	        this.geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
 	        this.material = new ShaderMaterial({
 	            transparent: true,
 	            uniforms: {
@@ -100275,12 +102502,13 @@ void main() {
 	            emissive: '#ffffff',
 	            minHeight: -155,
 	            maxHeight: -36,
-	            mixColor: '#ff0000'
+	            mixColor: '#ff0000',
+	            threshold: 0
 	        }, opts);
 	        this.lights = true;
 	        this.transparent = true;
-	        this.depthWrite = true;
-	        this.depthTest = true;
+	        // this.depthWrite = true
+	        // this.depthTest = true
 	        this.uniforms = {
 	            color: {
 	                value: new Color(this.opts.color)
@@ -100299,6 +102527,9 @@ void main() {
 	            },
 	            mixColor: {
 	                value: new Color(this.opts.mixColor)
+	            },
+	            threshold: {
+	                value: this.opts.threshold
 	            }
 	        };
 	        this.vertexShader = `
@@ -100357,6 +102588,7 @@ void main() {
         uniform vec3 color;
         uniform vec3 emissive;
         uniform float opacity;
+        uniform float threshold;
 
         varying vec3 vLightFront;
         varying vec3 vIndirectFront;
@@ -100382,7 +102614,10 @@ void main() {
         #include <fog_pars_fragment>
         #include <logdepthbuf_pars_fragment>
         #include <clipping_planes_pars_fragment>
+
+
         void main(){
+
           float baseHeight = v_position.y;
 
           // if(baseHeight < minHeight){
@@ -100402,7 +102637,7 @@ void main() {
           ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
           vec3 totalEmissiveRadiance = emissive;
 
-          #include <logdepthbuf_fragment>
+          
           #include <map_fragment>
           #include <color_fragment>
           #include <alphatest_fragment>
@@ -100439,13 +102674,14 @@ void main() {
           float interval = maxHeight - minHeight;
           float offsetHeight = baseHeight - minHeight;
 
-          float dc = offsetHeight / interval;
+          float dc = (offsetHeight + threshold) / interval;
 
            gl_FragColor.rgb += emissive * dc / 2.;
            gl_FragColor.rgb += mixColor * (dc / 2. + .5);
 
         //   gl_FragColor.rgb = mix(mixColor * dc, emissive * dc, gl_FragColor.rgb);
           
+          #include <logdepthbuf_fragment>
           #include <tonemapping_fragment>
           #include <encodings_fragment>
           #include <fog_fragment>
@@ -101427,15 +103663,19 @@ void main(){
 	class BaseTitle extends Sprite {
 	    opts;
 	    bgColor;
+	    fontColor;
+	    strokeColor;
 	    size;
 	    constructor(opts) {
 	        super();
 	        this.bgColor = new Color(opts?.bgColor ? opts.bgColor : '#ff0000');
+	        this.fontColor = opts?.fontColor ? opts?.fontColor : '#ffffff';
+	        this.strokeColor = opts?.strokeColor ? opts?.strokeColor : '#ff0000';
 	        this.opts = Object.assign({
 	            text: '标题',
-	            fontColor: '#ffffff',
+	            fontColor: this.fontColor,
 	            bgColor: `rgba(${this.bgColor.r * 255},${this.bgColor.g * 255},${this.bgColor.b * 255},${opts?.opacity ? opts.opacity : 1})`,
-	            strokeColor: '#ff0000',
+	            strokeColor: this.strokeColor,
 	            fontSize: 64,
 	            height: 0,
 	            size: 1,
@@ -101449,6 +103689,7 @@ void main(){
 	            fontSize: this.opts.fontSize
 	        });
 	        const canvasTex = new CanvasTexture(canvasEle);
+	        canvasTex.encoding = sRGBEncoding;
 	        this.material = new SpriteMaterial({
 	            map: canvasTex,
 	            transparent: true,
@@ -101642,7 +103883,10 @@ void main(){
 	            titleHeight: 0,
 	            titleSize: 1,
 	            title: '标题',
-	            type: 0
+	            type: 0,
+	            fontColor: '#ffffff',
+	            bgColor: '#ff0000',
+	            strokeColor: '#ffffff'
 	        }, opts);
 	        // type 0 | 1 | 2 | 3
 	        if (this.opts.type == 3) {
@@ -101683,8 +103927,9 @@ void main(){
 	            baseCircle.startRotateAnimation();
 	            const baseTitle = new BaseTitle({
 	                text: this.opts.title,
-	                bgColor: this.opts.color,
-	                strokeColor: this.opts.color,
+	                bgColor: this.opts.bgColor,
+	                strokeColor: this.opts.strokeColor,
+	                fontColor: this.opts.fontColor,
 	                opacity: this.opts.opacity,
 	                height: this.opts.titleHeight,
 	                size: this.opts.titleSize,
@@ -102739,7 +104984,10 @@ void main(){
 	            titleHeight: 0,
 	            titleSize: 1,
 	            title: '标记',
-	            type: 0
+	            type: 0,
+	            fontColor: '#ffffff',
+	            particleNumber: 50,
+	            particleSize: 0.1
 	        }, opts);
 	        // type
 	        if (this.opts.type == 0) {
@@ -103117,7 +105365,8 @@ void main(){
 	            // particles
 	            const baseParticles = new BaseParticles({
 	                color: this.opts.color,
-	                numbers: 50
+	                numbers: this.opts.particleNumber,
+	                size: this.opts.particleSize
 	            });
 	            this.add(baseParticles);
 	            baseParticles.risingAnimation2();
@@ -103302,7 +105551,8 @@ void main(){
 	            text: this.opts.title,
 	            opacity: this.opts.opacity,
 	            height: this.opts.titleHeight,
-	            size: this.opts.titleSize
+	            size: this.opts.titleSize,
+	            fontColor: this.opts.fontColor
 	        });
 	        this.add(baseTag);
 	    }

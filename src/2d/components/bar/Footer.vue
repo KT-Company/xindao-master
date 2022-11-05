@@ -5,6 +5,7 @@ import { firstA,getWenhaoA } from "@/2d/utils/letters";
 
 import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
+import {CACHE} from '@/3d/CACHE';
 
 // const iframeRef = inject("iframeRef"); // 获取三维里的方法
 const router = useRouter();
@@ -21,9 +22,6 @@ const handleMenu = (item) => {
 const isShow = ref(true);
 const routerName = ref("/IndustrialEconomy");
 
-
-
-
 watch(
   () => router,
   () => {
@@ -33,12 +31,9 @@ watch(
     API.hideAll()
     // 根据路由名称调用三维方法
     if (routerName.value === "/IndustrialEconomy") {
-      // iframeRef.test1(); // 调用三维方法三维方法必须绑定在window上---test1() ......以下同理
+
       API.showIndustrialEconomy()
-      API._hideIcons()
-      API.hideModels()
-      API.hideTraffics2()
-      API.hideTpIcons()
+
       API.cameraAnimation({
         cameraState: STATE.industrialState,
         callback: () => {
@@ -47,68 +42,60 @@ watch(
       });
     }
     if (routerName.value === "/Transportation") {
-      // iframeRef.test2();
-      API.showTraffics()
+      
       API.showIcons()
       API.showModels()
-      API.hideTraffics()
-      API.hideTpIcons()
-      API.showTraffics2()
+      
       API.cameraAnimation({
         cameraState: STATE.trafficState,
         callback:()=>{
+          API.showRoutes()
+          API.showTraffics()
         }
       });
     }
     if (routerName.value === "/Environmental") {
-      // iframeRef.test3();
-      API.showIndustrialEconomy()
-      API.showEnvironments()
-      API._hideIcons()
-      API.hideTpIcons()
-      API.hideModels()
-      API.hideTraffics()
-      API.hideTraffics2()
-      // API.showIcons()
+
+      for(const i in CACHE.completeBoundrays){
+        const d = CACHE.completeBoundrays[i]
+        if(d.name == 'environment') d.visible = true
+      }
+
       API.cameraAnimation({
-        cameraState: STATE.popState,
+        cameraState: STATE.environmentState,
         callback:()=>{
+          API.showEnvironments()
+          API.beforeEnvironmentAniamtion()
           API.animateEnvironment()
         }
       });
     }
     if (routerName.value === "/Education") {
-      // iframeRef.test4();
-      API.showIndustrialEconomy()
-      API.showEducations()
-      API._hideIcons()
-      API.hideModels()
-      API.hideTraffics()
-      API.hideTraffics2()
-      API.hideTpIcons()
-      // API.showIcons()
+       for(const i in CACHE.completeBoundrays){
+        const d = CACHE.completeBoundrays[i]
+        if(d.name == 'education') d.visible = true
+      }
+      
       API.cameraAnimation({
         cameraState: STATE.educationState,
         callback:()=>{
+          API.showEducations()
+          API.beforeEducationAniamtion()
           API.animateEducation()
         }
       });
     }
     if (routerName.value === "/Energy") {
-      // iframeRef.test5();
-      API.showEnergy()
-      API._hideIcons()
-      API.hideModels()
-      API.hideTraffics()
-      API.hideTraffics2()
-      API.showTpIcons()
-      API.hideAreaIcons()
       API.cameraAnimation({
-        cameraState: STATE.industrialState
+        cameraState: STATE.industrialState,
+        callback: () => {
+          API.showEnergyIcons()
+          API.showEnergy()
+        }
       });
-      API.showIndustrialEconomy();
     }
     if (routerName.value === "/Area") {
+      
     }
   },
   { deep: true }

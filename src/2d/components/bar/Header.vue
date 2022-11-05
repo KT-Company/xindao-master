@@ -10,17 +10,18 @@ const title = ref("AIE智境-数智商业综合实践平台");
 const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
 const back = () => {
-  router.go(-1);
+  router.push('/Transportation');
 
-  API.hideAll();
+  // API.hideAll();
 
-  API.cameraAnimation({
-    cameraState: STATE.initialState,
-    callback: () => {
-      API.hidePlates();
-      API.showIcons();
-    },
-  });
+  // API.cameraAnimation({
+  //   cameraState: STATE.initialState,
+  //   callback: () => {
+      // API.hidePlates();
+      // API.showIcons();
+      // API.showModels()
+  //   },
+  // });
 };
 
 setInterval(() => {

@@ -1,7 +1,6 @@
 import { DATA } from './DATA.js'
 import { CACHE } from './CACHE.js'
 import { STATE } from './STATE.js'
-import store from '../2d/store/index.js'
 
 function loadIcons() {
   for (const data of DATA.iconsData) {
@@ -12,19 +11,24 @@ function loadIcons() {
       title: data.name
     })
     CACHE.container.scene.add(icon)
-    console.log('icon.children===>',icon.children)
     icon.children[0].material.color = new Bol3D.Color('#EBA216')
     icon.children[0].material.transparent = true
     icon.children[0].material.opacity = .8
-    icon.scale.set(3000, 3000, 3000)
+    icon.scale.set(4000, 4000, 4000)
     icon.renderOrder = 100
     icon.position.copy(data.position)
     icon.name = data.name
-    CACHE.container.addBloom(icon.children[0])
-    CACHE.container.addBloom(icon.children[1])
-    CACHE.container.addBloom(icon.children[2])
-    CACHE.container.addBloom(icon.children[3])
 
+    icon.children[0].traverse( child  => {
+      if(child.isMesh)CACHE.container.addBloom(child)
+    })
+    icon.children[1].traverse( child  => {
+      if(child.isMesh)CACHE.container.addBloom(child)
+    })
+    icon.children[2].traverse( child  => {
+      if(child.isMesh) child.material.transparent = false
+    })
+    
     icon.traverse(d => {
       if (d.isMesh || d.isSprite) {
         d.name = data.name
@@ -60,6 +64,13 @@ function loadPlates() {
     icon.visible = false
 
     CACHE.plates.push(icon)
+
+    icon.traverse(d => {
+      if (d.isMesh|| d.isSprite) {
+        d.name = data.name
+        CACHE.container.clickObjects.push(d)
+      }
+    })
   }
 }
 
@@ -78,13 +89,6 @@ function animate(){
 } 
 
 function hideIcons(){ // 进入区域层
-  store.commit('jumpPage','/Area')
-  CACHE.icons.forEach( ic => {
-    ic.visible = false
-  })
-}
-
-function _hideIcons(){
   CACHE.icons.forEach( ic => {
     ic.visible = false
   })
@@ -172,50 +176,62 @@ function loadIndustrialEconomy() {
     .then((result) => {
       const boundrays = result.features
 
+      let index = 0
+
       for (const feature of boundrays) {
         const coordinates = feature.geometry.coordinates[0][0]
 
         const extrudeShape = new Bol3D.Primitives.BaseExtrudeShape({
           points: coordinates,
-          color: '#0E368E',
-          gradient: Math.random() * 555555,
-          height: 1200,
-          center: [120.76, 30.75],
-          extrude: true
+          color: '#671c91' ,
+          gradient: '#003a64' ,
+          height: index * 100 +  200,
+          center: [116.41,39.90],
+          extrude: true,
+          vertical: 83000
         })
 
-        extrudeShape.position.set(0, Math.random() * 1000 + 1000, 0)
+        extrudeShape.position.set(-2000, index * 50 + 1000, -10000)
 
-        extrudeShape.scale.set(1.3, 2.4, 1.8)
+        extrudeShape.scale.set(.25, 1, .25)
         extrudeShape.visible = false
         CACHE.container.scene.add(extrudeShape)
 
+        extrudeShape.name = feature.properties.name
+
         CACHE.industries.push(extrudeShape)
         extrudeShape.visible = false
+
+        // CACHE.container.clickObjects.push(extrudeShape)
+
+        index++
       }
+
 
       for (const data of DATA.areaIconsData) {
         const icon = new Bol3D.CompositeIconTitle({
           titleHeight: 0.5,
-          color: Math.random() * 555555,
+          color: '#00ffff',
           type: 2,
-          title: data.name
+          title: data.name,
+          bgColor: '#000000',
+          strokeColor: '#000000',
+          fontColor: '#ffffff'
         })
-        
         CACHE.container.scene.add(icon)
-        icon.scale.set(12000, 12000, 12000)
+        icon.scale.set(2000, 2000, 2000)
         icon.renderOrder = 100
         icon.position.copy(data.position)
+        icon.position.y += 10
         icon.name = data.name
-        icon.children[0].visible = false
         CACHE.container.addBloom(icon.children[0])
     
-        icon.traverse(d => {
-          if (d.isMesh || d.isSprite) {
-            d.name = data.name
-            CACHE.container.clickObjects.push(d)
-          }
-        })
+        // icon.traverse(d => {
+        //   if (d.isMesh || d.isSprite) {
+        //     d.name = data.name
+        //     CACHE.container.clickObjects.push(d)
+        //   }
+        // })
     
         CACHE.areaIcons.push(icon)
         icon.visible = false
@@ -235,7 +251,7 @@ function loadEnergy() {
     })
     .then((result) => {
       const boundrays = result.features
-      const colors = ['#03a9f4','#c61818','#2196f3','#00bcd4','#f44336','#4caf50','#3f51b5']
+      const colors = ['#03a9f4','#c61818','#2196f3','#00bcd4','#f44336','#4caf50','#3f51b5','#03a9f4','#c61818','#2196f3','#00bcd4','#f44336','#4caf50','#3f51b5','#03a9f4','#c61818','#2196f3','#00bcd4','#f44336','#4caf50','#3f51b5']
 
       for (let i = 0; i < boundrays.length; i++) {
         const coordinates = boundrays[i].geometry.coordinates[0][0];
@@ -244,12 +260,12 @@ function loadEnergy() {
           color: colors[i],
           // gradient: Math.random() * 555555,
           height: 400 + Math.random() * 20,
-          center: [120.76, 30.75],
+          center: [116.41,39.90],
           opacity: .1
         })
 
-        extrudeShape.position.set(0, 1000, 0)
-        extrudeShape.scale.set(1.3, 2.4, 1.8)
+        extrudeShape.position.set(-2000, 1000, -10000)
+        extrudeShape.scale.set(.25, 1, .25)
         extrudeShape.visible = false
         CACHE.energy.push(extrudeShape)
 
@@ -260,56 +276,113 @@ function loadEnergy() {
       }
     })
 
-    for (const data of DATA.tpIconsData) {
-      const icon = new Bol3D.CompositeIconTitle({
-        titleHeight: 0.5,
-        color: Math.random() * 555555,
-        type: 2,
-        title: data.name
+    for (const data of DATA.energyIconsData) {
+      const tag = new Bol3D.CompositeIconTag({
+        titleHeight: 0.8,
+        color: '#00A2FF',
+        type: 10,
+        title: data.name,
+        particleSize: 300,
+        particleNumber: 100
       })
-      CACHE.container.scene.add(icon)
-      icon.scale.set(12000, 12000, 12000)
-      icon.renderOrder = 100
-      icon.position.copy(data.position)
-      icon.name = data.name
-      icon.children[0].visible = false
-      // icon.children[1].visible = false
-      // icon.children[2].visible = false
-      // icon.children[3].visible = false
-      // CACHE.container.addBloom(icon.children[0])
-  
-      icon.traverse(d => {
-        if (d.isMesh || d.isSprite) {
-          d.name = data.name
-          CACHE.container.clickObjects.push(d)
-        }
+      CACHE.container.scene.add(tag)
+      tag.children[0].traverse((ci11) => {
+        if (ci11.isMesh) CACHE.container.addBloom(ci11)
       })
+      tag.children[1].traverse((ci11) => {
+        if (ci11.isMesh) CACHE.container.addBloom(ci11)
+      })
+      tag.children[2].traverse((ci11) => {
+        if (ci11.isMesh) CACHE.container.addBloom(ci11)
+      })
+      CACHE.container.addBloom(tag.children[4])
+      tag.renderOrder = 100
+      tag.position.copy(data.position)
+      tag.position.y += 10
+      tag.scale.set(3000, 3000, 3000)
   
-      CACHE.tpIcons.push(icon)
-      icon.visible = false
+      CACHE.energyIcons.push(tag)
+      tag.visible = false
     }
 }
 
+/**
+ * 加载环境/教育板块
+ */
+function loadCompeleteBoundrays(){
+  fetch(STATE.boundrayAllGeojson)
+  .then((value) => {
+    return value.json()
+  })
+  .then((result) => {
+    const boundrays = result.features
+
+    for (const feature of boundrays) {
+      const coordinates = feature.geometry.coordinates[0][0]
+
+      const extrudeShape = new Bol3D.Primitives.BaseExtrudeShape({
+        points: coordinates,
+        color: '#181e72' ,
+        gradient: '#437478' ,
+        height:   200,
+        center: [116.41,39.90],
+        extrude: true,
+        vertical: 113000
+      })
+
+      extrudeShape.position.set(-2000,  1000, -10000)
+      extrudeShape.scale.set(.25, 1, .25)
+      extrudeShape.visible = false
+      CACHE.completeBoundrays.environment = extrudeShape
+      CACHE.container.scene.add(extrudeShape)
+      extrudeShape.name = 'environment'
+
+
+      const extrudeShape2 = new Bol3D.Primitives.BaseExtrudeShape({
+        points: coordinates,
+        color: '#7c1e31' ,
+        gradient: '#5e79ad' ,
+        height:   200,
+        center: [116.41,39.90],
+        extrude: true,
+        vertical: 92000
+      })
+
+      extrudeShape2.position.set(-2000,  1000, -10000)
+      extrudeShape2.scale.set(.25, 1, .25)
+      extrudeShape2.visible = false
+      CACHE.completeBoundrays.education = extrudeShape2
+      CACHE.container.scene.add(extrudeShape2)
+      extrudeShape2.name = 'education'
+
+      // CACHE.container.clickObjects.push(extrudeShape2)
+    }
+  })
+}
 
 /**
  * 环境人口
  */
 function loadHeatMap() {
   // 改成柱状图
-  fetch(STATE.educationGeojson)
+  fetch(STATE.environmentJson)
   .then((value) => {
     return value.json()
   })
   .then((result) => {
 
-    const educations = result.poi
-    educations.forEach((d)=>{
+    const environment = result
+
+    environment.forEach((d)=>{
 
       let { options, position, renderOrder } = d
   
-      console.log(options)
+      // console.log(options)
       options = Object.assign(options, {
-        threshold: -1500
+        threshold: -900,
+        color: '#000000',
+        mixColor: '#005f93',
+        mixColor2: '#151548'
       })
   
       const baseCube = new Bol3D.Primitives.BaseCube(options)
@@ -318,6 +391,7 @@ function loadHeatMap() {
       baseCube.position.set(position.x, position.y, position.z)
       baseCube.renderOrder = renderOrder
       baseCube.visible = false
+      baseCube.userData.speed = Math.random() * .05 + .015
       CACHE.container.addBloom(baseCube)
   
       CACHE.environment.push(baseCube)
@@ -329,10 +403,24 @@ function loadHeatMap() {
  * 环境人口->柱状图动画
  */
  function animateEnvironment() {
-  requestAnimationFrame(animateEnvironment)
-  CACHE.environment.forEach((l) => {
-    if(l.position.y <= (l.opts.height / 2 + 1200)) l.position.y += 50
-  })
+  CACHE.environmentAnimateIndex = requestAnimationFrame(animateEnvironment)
+
+  const length = CACHE.environment
+  let count = 0
+
+  for(let l of CACHE.environment){
+    if(l.scale.y == 1) continue
+
+    if(l.scale.y < 1) {
+      l.scale.y += l.userData.speed
+    }else{
+      l.scale.y = 1
+      count++
+    }
+  }
+
+  if(length == count) cancelAnimationFrame(CACHE.environmentAnimateIndex)
+
 }
 
 
@@ -345,32 +433,13 @@ function loadTraffic() {
   const animate = () => {
     requestAnimationFrame(animate)
     CACHE.lines.forEach((l) => {
-      l.material.dashOffset -= (1 * l.totalDistance) / (Math.random() * 5000)
+      l.material.dashOffset -= (l.userData.speed * l.totalDistance) / 100
       l.material.dashOffset %= l.totalDistance
     })
   }
 
   animate()
 }
-
-
-/**
- * 交通
- */
- function loadTraffic2() {
-  loadByJson2()
-
-  const animate = () => {
-    requestAnimationFrame(animate)
-    CACHE.lines2.forEach((l) => {
-      l.material.dashOffset -= (1 * l.totalDistance) / (Math.random() * 5000)
-      l.material.dashOffset %= l.totalDistance
-    })
-  }
-
-  animate()
-}
-
 
 
 /**
@@ -383,46 +452,33 @@ function loadEducation() {
   })
   .then((result) => {
 
-    console.log(result, 'result')
+    const education = result
 
-    const educations = result.poi
-    educations.forEach(d=>{
-      const { options,position,renderOrder } = d
-      options.height = 1200 + Math.random() * 20000
+    education.forEach((d)=>{
 
+      let { options, position, renderOrder } = d
+  
+      // console.log(options)
+      options = Object.assign(options, {
+        threshold: -800,
+        color: '#720000',
+        mixColor: '#78591a',
+        mixColor2: '#090037'
+      })
+  
       const baseCube = new Bol3D.Primitives.BaseCube(options)
+  
       CACHE.container.scene.add(baseCube)
-      baseCube.position.set(position.x,0,position.z)
+      baseCube.position.set(position.x, position.y, position.z)
       baseCube.renderOrder = renderOrder
       baseCube.visible = false
-      // CACHE.container.addBloom(baseCube)
-
+      baseCube.userData.speed = Math.random() * .05 + .015
+      CACHE.container.addBloom(baseCube)
+  
       CACHE.education.push(baseCube)
     })
   })
 
-  fetch(STATE.education2Geojson)
-  .then((value) => {
-    return value.json()
-  })
-  .then((result) => {
-
-    const educations = result.poi
-    educations.forEach(d=>{
-      const { options,position,renderOrder } = d
-      options.height = 1200 + Math.random() * 10000
-
-
-      const baseCube = new Bol3D.Primitives.BaseCube(options)
-      CACHE.container.scene.add(baseCube)
-      baseCube.position.set(position.x,0,position.z)
-      baseCube.renderOrder = renderOrder
-      baseCube.visible = false
-      // CACHE.container.addBloom(baseCube)
-
-      CACHE.education.push(baseCube)
-    })
-  })
 }
 
 
@@ -430,16 +486,28 @@ function loadEducation() {
  * 教育医疗->柱状图动画
  */
 function animateEducation() {
-  requestAnimationFrame(animateEducation)
-  CACHE.education.forEach((l) => {
-    if(l.position.y <= (l.opts.height / 2 + 1200)) l.position.y += 50
-  })
+  CACHE.educationAnimateIndex = requestAnimationFrame(animateEducation)
+
+  const length = CACHE.education
+  let count = 0
+
+  for(let l of CACHE.education){
+    if(l.material.uniforms.opacity.value == 1) continue
+
+    if(l.material.uniforms.opacity.value < 1) {
+      l.material.uniforms.opacity.value += l.userData.speed
+    }else{
+      l.material.uniforms.opacity.value = 1
+      count++
+    }
+  }
+
+  if(length == count) cancelAnimationFrame(CACHE.educationAnimateIndex)
 }
 
 
-
 // 道路
-function loadByJson(data) {
+function loadByJson() {
 
   fetch(STATE.roadsjson)
     .then((value) => {
@@ -449,99 +517,39 @@ function loadByJson(data) {
       result.road.forEach((d) => {
         const le = new Bol3D.Primitives.BaseLine({
           lineWidth: 2,
-          color: '#0c2351',
-          // dashOffset: 1,
-          // dashSize: 1,
-          // gapSize: 1,
-          // gapOffset: 1
+          color: '#ed6565',
+          attenuation: 1
         })
         le.setPositions(d)
+        le.position.set(0,5,0)
+        le.renderOrder = 100
         CACHE.container.scene.add(le)
         CACHE.container.addBloom(le)
-        CACHE.lines.push(le)
-        CACHE.linePoints.push(d)
-        // le.visible = false
-      })
-    })
+        CACHE.linesBottom.push(le)
 
-    fetch(STATE.roadsjson)
-    .then((value) => {
-      return value.json()
-    })
-    .then((result) => {
-      result.road.forEach((d) => {
-        const le = new Bol3D.Primitives.BaseLine({
+        const le2 = new Bol3D.Primitives.BaseLine({
           lineWidth: 2,
-          color: '#ff9800',
-          dashOffset: 10,
+          color: '#ffad00',
+          dashOffset: 3,
           dashSize: 1,
           gapSize: 1,
           gapOffset: 1,
           attenuation: 0
         })
-        le.material.uniforms.opacity.value = .5
-        le.position.set(0,3,0)
-        le.setPositions(d)
-        CACHE.container.scene.add(le)
-        CACHE.container.addBloom(le)
-        CACHE.lines.push(le)
-        CACHE.linePoints.push(d)
-        // le.visible = false
+        le2.renderOrder = 100
+        le2.setPositions(d)
+        le2.position.set(0,20,0)
+        le2.userData.speed = Math.random() + .15
+        CACHE.container.scene.add(le2)
+        CACHE.container.addBloom(le2)
+        CACHE.lines.push(le2)
+        le2.visible = false
       })
-    })
-}
 
-// 交通道路
-function loadByJson2(data) {
-
-  fetch(STATE.roads2json)
-    .then((value) => {
-      return value.json()
-    })
-    .then((result) => {
-      result.road.forEach((d) => {
-        const le = new Bol3D.Primitives.BaseLine({
-          lineWidth: 2,
-          color: '#0c2351',
-          // dashOffset: 1,
-          // dashSize: 1,
-          // gapSize: 1,
-          // gapOffset: 1
-        })
-        le.setPositions(d)
-        CACHE.container.scene.add(le)
-        CACHE.container.addBloom(le)
-        CACHE.lines2.push(le)
-        CACHE.linePoints.push(d)
-        le.visible = false
-      })
+    
     })
 
-    fetch(STATE.roads2json)
-    .then((value) => {
-      return value.json()
-    })
-    .then((result) => {
-      result.road.forEach((d) => {
-        const le = new Bol3D.Primitives.BaseLine({
-          lineWidth: 4,
-          color: '#f44336',
-          dashOffset: 10,
-          dashSize: 1,
-          gapSize: 1,
-          gapOffset: 1,
-          attenuation: 0
-        })
-        le.material.uniforms.opacity.value = .5
-        le.position.set(0,3,0)
-        le.setPositions(d)
-        CACHE.container.scene.add(le)
-        CACHE.container.addBloom(le)
-        CACHE.lines2.push(le)
-        CACHE.linePoints.push(d)
-        le.visible = false
-      })
-    })
+     
 }
 
 
@@ -550,21 +558,24 @@ function hideAll() {
   hideEducations()
   hideEnergy()
   hideEnvironments()
-  // hideTraffics()
+  hideTraffics()
+  hideRoutes()
   hideAreaIcons()
+  hideModels()
+  hideEnergyIcons()
+  hideIcons()
+  hideCompleteBoundrays()
+  hidePlates()
 }
 
-// function hide
-
-
-function showTpIcons(){
-  CACHE.tpIcons.forEach(e=>{
+function showEnergyIcons(){
+  CACHE.energyIcons.forEach(e=>{
     e.visible = true
   })
 }
 
-function hideTpIcons(){
-  CACHE.tpIcons.forEach(e=>{
+function hideEnergyIcons(){
+  CACHE.energyIcons.forEach(e=>{
     e.visible = false
   })
 }
@@ -605,15 +616,15 @@ function hideTraffics() {
   })
 }
 
-function showTraffics2() {
-  CACHE.lines2.forEach(traf => {
-    traf.visible = true
+function showRoutes(){
+  CACHE.linesBottom.forEach( rt => {
+    rt.visible = true
   })
 }
 
-function hideTraffics2() {
-  CACHE.lines2.forEach(traf => {
-    traf.visible = false
+function hideRoutes(){
+  CACHE.linesBottom.forEach( rt => {
+    rt.visible = false
   })
 }
 
@@ -623,15 +634,40 @@ function showEnvironments() {
   })
 }
 
+function beforeEnvironmentAniamtion() {
+  CACHE.environment.forEach(env => {
+    env.scale.y = 0
+  })
+}
+
 function hideEnvironments() {
   CACHE.environment.forEach(env => {
     env.visible = false
   })
 }
 
+function showCompleteBoundrays(){
+  for(const d in CACHE.completeBoundrays){
+    CACHE.completeBoundrays[d].visible = true
+  }
+}
+
+function hideCompleteBoundrays(){
+  for(const d in CACHE.completeBoundrays){
+    CACHE.completeBoundrays[d].visible = false
+  }
+}
+
+
 function showEducations() {
   CACHE.education.forEach(edu => {
     edu.visible = true
+  })
+}
+
+function beforeEducationAniamtion() {
+  CACHE.education.forEach(edu => {
+    edu.material.uniforms.opacity.value = 0
   })
 }
 
@@ -672,18 +708,19 @@ export const API = {
   loadEnergy,
   loadHeatMap,
   loadTraffic,
-  loadTraffic2,
   loadEducation,
   hideAll,
   showIndustrialEconomy,
   hideIndustrialEconomy,
   showTraffics,
   hideTraffics,
-  showTraffics2,
-  hideTraffics2,
+  showRoutes,
+  hideRoutes,
   showEnvironments,
+  beforeEnvironmentAniamtion,
   hideEnvironments,
   showEducations,
+  beforeEducationAniamtion,
   hideEducations,
   showEnergy,
   hideEnergy,
@@ -692,15 +729,17 @@ export const API = {
   hidePlates,
   showIcons,
   hideIcons,
-  _hideIcons,
   showAreaIcons,
   hideAreaIcons,
-  showTpIcons,
-  hideTpIcons,
+  showEnergyIcons,
+  hideEnergyIcons,
   animate,
   loadByJson,
   animateEducation,
   animateEnvironment,
   showModels,
-  hideModels
+  hideModels,
+  showCompleteBoundrays,
+  hideCompleteBoundrays,
+  loadCompeleteBoundrays
 }
