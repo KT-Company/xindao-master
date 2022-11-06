@@ -10,6 +10,7 @@ const title = ref("AIE智境-数智商业综合实践平台");
 const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
 const back = () => {
+  if(STATE.LEVEL == 0) return
   router.push('/Transportation');
   // window.location.href='/aie_web'
 

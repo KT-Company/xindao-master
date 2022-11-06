@@ -1,7 +1,6 @@
 import { API } from './API.js'
 import { STATE } from './STATE.js'
 import { CACHE } from './CACHE.js'
-import { createEarth } from './utils/createEarth'
 
 export const sceneOnLoad = ({ domElement, callback }) => {
   CACHE.container = new Bol3D.Container({
@@ -30,7 +29,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     // },
     cameras: {
       orbitCamera: {
-        position: [  -22127.06565369117,   5621.439437571587,   24205.299948474756],
+        position: [STATE.earthState.position.x, STATE.earthState.position.y, STATE.earthState.position.z],
         near: 0.001,
         far: 400000,
         fov: 60
@@ -40,11 +39,11 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       orbitControls: {
         autoRotate: false,
         autoRotateSpeed: 1,
-        target: [1656.3432304127095, 0, 9800.149326543074],
+        target: [STATE.earthState.target.x, STATE.earthState.target.y, STATE.earthState.target.z],
         minDistance: 1000,
-        maxDistance: 45000,
-        maxPolarAngle: Math.PI * 0.44,
-        minPolarAngle: Math.PI * 0.05,
+        maxDistance: 1000000,
+        // maxPolarAngle: Math.PI * 0.44,
+        // minPolarAngle: Math.PI * 0.05,
         enableDamping: true,
         dampingFactor: 0.05,
       }
@@ -97,15 +96,15 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
     gammaEnabled: false,
     stats: false,
-    // loadingBar: {
-    //   show: true,
-    //   type: 10
-    // }
+    loadingBar: {
+      show: true,
+      type: 5
+    },
     onProgress: (model) => {
 
       model.scale.set(2, 3.8, 2)
 
-      if(model.name.includes('beijing')){
+      if (model.name.includes('beijing')) {
         model.traverse((m) => {
           if (m.isMesh) {
             // m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
@@ -115,7 +114,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             //   maxHeight: -27
             // })
             // CACHE.container.addBloom(m)
-  
+
             m.material = new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
               color: '#1a2199',
               emissive: '#ff004b',
@@ -124,12 +123,12 @@ export const sceneOnLoad = ({ domElement, callback }) => {
               threshold: STATE.modelExclude.includes(model.name) ? STATE.modelThreshold[model.name] : 0,
               mixColor: '#512c2c'
             })
-  
+
           }
         })
-      }else{
-        model.children.forEach( m => {
-          if(m.isMesh){
+      } else {
+        model.children.forEach(m => {
+          if (m.isMesh) {
             m.material = new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
               color: '#1a2199',
               emissive: '#ff004b',
@@ -142,7 +141,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         })
       }
 
-      
+
 
       CACHE.models.push(model)
 
@@ -158,6 +157,8 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
       console.log(evt.sceneModels)
 
+
+
       // ************** init icons start **************
       API.loadIcons()
       API.loadPlates()
@@ -171,19 +172,27 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       API.loadEducation()
       API.loadEnergy()
 
-      // 地球
-      // console.log(evt)
-      // const {group,flowMaterial} = createEarth(evt.scene)
-      // CACHE.earth.push(group)
-      // API.cameraAnimation({
-      //   cameraState: STATE.earthState,
-      //   callback:()=>{
-      //     API.animate()
-      //   }
-      // });
+      API.hideAll()
+
+      // 地球模块
+      API.loadEarth(() => {
+        API.hideFloor()
+        API.hideSkyBox()
+        // earth load finish
+        API.cameraAnimation({
+          duration: 0,
+          cameraState: STATE.earthState,
+          callback: () => {
+            API.earthRotateAnimation()
+            API.startEarthLineAnimation()
+            
+            if (CACHE.container.loadingBar) CACHE.container.loadingBar.style.visibility = 'hidden'
+          }
+        })
+      })
 
       // floor
-      const floorGeo = new Bol3D.CircleBufferGeometry(80000, 64)
+      const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64)
       floorGeo.rotateX(-Math.PI / 2)
       const floorMat = new Bol3D.MeshLambertMaterial({
         color: '#000056',
@@ -191,14 +200,11 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         opacity: 0.697,
       })
       const floor = new Bol3D.Mesh(floorGeo, floorMat)
+      CACHE.floor = floor
       // floor.receiveShadow = true
       // evt.clickObjects = [floor]
       // evt.clickObjects.push(floor)
       evt.scene.add(floor)
-
-      // CACHE.models.forEach(e => {
-      //   evt.clickObjects.push(e)
-      // })
 
       // mirror
       const mirrorGeo = new Bol3D.CircleBufferGeometry(50000, 64)
@@ -210,14 +216,17 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       })
       groundMirror.position.y = -1
       groundMirror.rotateX(-Math.PI / 2)
+      CACHE.floorMirror = groundMirror
       evt.scene.add(groundMirror)
 
+     
+     
       // ********************** gui start **********************
       // const gui = new dat.GUI()
       // // scenes
       // const scenesFolder = gui.addFolder('场景')
       // // floor
-      // const defaults = {vertical: 24000, shapeColor: '#ffffff', shapeExtrude: '#ffffff', lineBottom: '#ffffff', line: '#ffffff', floorOpacity: 1, floorColor: '#101119', buildingColor: '#ffffff', fogColor: '#111472', skySize: 2, minHeight: -155, maxHeight: -36, city1Color: '#0000ff', city1StripeColor: '#00ffff', city1MixColor: '#ff0000' }
+      // const defaults = { vertical: 24000, shapeColor: '#ffffff', shapeExtrude: '#ffffff', lineBottom: '#ffffff', line: '#ffffff', floorOpacity: 1, floorColor: '#101119', buildingColor: '#ffffff', fogColor: '#111472', skySize: 2, minHeight: -155, maxHeight: -36, city1Color: '#0000ff', city1StripeColor: '#00ffff', city1MixColor: '#ff0000' }
 
       // scenesFolder
       //   .add(defaults, 'vertical')
@@ -228,17 +237,17 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       //     })
       //   })
 
-      //   scenesFolder.addColor(defaults, 'shapeColor').onChange((val) => {
-      //     CACHE.industries.forEach((c, index) => {
-      //       c.material.uniforms.color.value.set(val)
-      //     })
+      // scenesFolder.addColor(defaults, 'shapeColor').onChange((val) => {
+      //   CACHE.industries.forEach((c, index) => {
+      //     c.material.uniforms.color.value.set(val)
       //   })
+      // })
 
-      //   scenesFolder.addColor(defaults, 'shapeExtrude').onChange((val) => {
-      //     CACHE.industries.forEach((c) => {
-      //       c.material.uniforms.gradient.value.set(val)
-      //     })
+      // scenesFolder.addColor(defaults, 'shapeExtrude').onChange((val) => {
+      //   CACHE.industries.forEach((c) => {
+      //     c.material.uniforms.gradient.value.set(val)
       //   })
+      // })
 
       // scenesFolder.addColor(defaults, 'city1Color').onChange((val) => {
       //   CACHE.models.forEach(d => {
@@ -333,41 +342,53 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
       // scenesFolder.addColor(defaults, 'line').name('line').onChange((val) => {
 
-      //   CACHE.lines.forEach(l => {
+      //   // CACHE.lines.forEach(l => {
+      //   //   l.material.color.set(val)
+      //   // })
+
+      //   CACHE.earthLines.forEach(l => {
       //     l.material.color.set(val)
       //   })
 
       // })
       // scenesFolder.addColor(defaults, 'lineBottom').name('lineBottom').onChange((val) => {
 
-      //   CACHE.linesBottom.forEach(l => {
+      //   // CACHE.linesBottom.forEach(l => {
+      //   //   l.material.color.set(val)
+      //   // })
+
+      //   CACHE.earthLinesBottom.forEach(l => {
       //     l.material.color.set(val)
       //   })
 
       // })
 
 
+      // const earthG = {rotation:{x:0,y:0,z:0},}
+      // scenesFolder.add(earthG.rotation, 'y').step(.1).name('Y')
+      //   .onChange(val => {
+      //     CACHE.earthGroup.rotation.y = val * Math.PI / 180
+      //   })
 
+      // // const nodePass = {
+      // //   hue: 6.3, // 色调
+      // //   sataturation: 1.2, // 饱和度
+      // //   vibrance: 0, //
+      // //   brightness: -0.01, // 亮度
+      // //   contrast: 0.9, //  对比度
+      // // }
 
-      // const nodePass = {
-      //   hue: 6.3, // 色调
-      //   sataturation: 1.2, // 饱和度
-      //   vibrance: 0, //
-      //   brightness: -0.01, // 亮度
-      //   contrast: 0.9, //  对比度
-      // }
+      // // scenesFolder.add(nodePass, 'hue').step(0.001).min(0).name('hue').onChange( () => {
 
-      // scenesFolder.add(nodePass, 'hue').step(0.001).min(0).name('hue').onChange( () => {
+      // // })
 
-      // })
-
-      // scenesFolder.add(nodePass, 'sataturation').step(0.001).min(0).name('sataturation')
-      // scenesFolder.add(nodePass, 'vibrance').name('vibrance')
-      // scenesFolder.add(nodePass, 'brightness').name('brightness')
-      // .onChange(val => {
-      //   CACHE.container.nodepass
-      // })
-      // scenesFolder.add(nodePass, 'contrast').name('contrast')
+      // // scenesFolder.add(nodePass, 'sataturation').step(0.001).min(0).name('sataturation')
+      // // scenesFolder.add(nodePass, 'vibrance').name('vibrance')
+      // // scenesFolder.add(nodePass, 'brightness').name('brightness')
+      // // .onChange(val => {
+      // //   CACHE.container.nodepass
+      // // })
+      // // scenesFolder.add(nodePass, 'contrast').name('contrast')
 
 
       // ********************** gui end **********************
@@ -383,28 +404,27 @@ export const sceneOnLoad = ({ domElement, callback }) => {
   events.ondbclick = (e) => {
     // console.log('e', e)
 
-    console.log(e, e.objects[0].point , e.objects[0].object.name)
+    // console.log(e, e.objects[0].point , e.objects[0].object.name)
 
     // e.objects[0].object.visible = false
-    //       const icon = new Bol3D.CompositeIconTitle({
-    //       titleHeight: 0.5,
-    //       color: Math.random() * 555555,
-    //       type: 2,
-    //       title: e.objects[0].object.name
-    //     })
+    // const icon = new Bol3D.CompositeIconTitle({
+    //   titleHeight: 0.5,
+    //   color: Math.random() * 555555,
+    //   type: 2,
+    //   title: e.objects[0].object.name
+    // })
 
-        
-
-    //     icon.position.copy(e.objects[0].point)
-
-    //     CACHE.container.scene.add(icon)
-    //     icon.scale.set(3000, 3000, 3000)
+    // icon.position.copy(e.objects[0].point)
+    // CACHE.container.scene.attach(icon)
+    // icon.scale.set(3000, 3000, 3000)
 
 
-    if (e.objects.length > 0 ) {
+
+
+    if (e.objects.length > 0) {
 
       const name = e.objects[0].object.name
-      if(name == '海景区'){
+      if (name == '海景区') {
         API.cameraAnimation({
           cameraState: {
             position: { x: -10468.392443444347, y: 7503.154099941362, z: 2470.1723962172264 },
@@ -415,16 +435,46 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             API.hideIcons()
           }
         })
-      }else if(STATE.platesNames.includes(name)){
+      } else if (STATE.platesNames.includes(name)) {
         API.cameraAnimation({
           cameraState: {
             position: STATE.platesViewStates[name].position,
             target: STATE.platesViewStates[name].target
           },
         })
+      } else if (name == '深圳') {
+        // console.log('下钻')
+
+        API.showModels()
+        API.showIcons()
+        
+
+        API.cameraAnimation({
+          cameraState: STATE.earthState,
+          callback: () => {
+            API.cameraAnimation({
+              delayTime: 0,
+              cameraState: STATE.earthState2,
+              callback: () => {
+
+                STATE.LEVEL = 1
+                CACHE.container.orbitControls.maxDistance = 48000
+                CACHE.container.orbitControls.minPolarAngle = Math.PI * 0.05
+                CACHE.container.orbitControls.maxPolarAngle =  Math.PI * 0.44
+                CACHE.container.orbitCamera.far = 100000
+
+                API.hideEarth()
+                API.showFloor()
+                API.showSkyBox()
+
+                
+              }
+            })
+          }
+        })
       }
 
-      
+
     }
 
   }

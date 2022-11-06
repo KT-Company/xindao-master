@@ -17,6 +17,7 @@ const menus = ref([
   { id: 5, name: "能源碳排放", path: "/Energy" },
 ]);
 const handleMenu = (item) => {
+  if(STATE.LEVEL == 0) return 
   router.push(item.path);
 };
 const isShow = ref(true);

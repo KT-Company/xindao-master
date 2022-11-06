@@ -16,6 +16,13 @@ const lines = []
 const linesBottom = []
 const models = []
 const energyIcons = []
+let floor = null
+let floorMirror = null
+const earthGroup = new Bol3D.Group()
+const earthLines = []
+const earthLinesBottom = []
+const earthIcons = []
+let earthAnimationIndex = -1
 
 export const CACHE = {
   container,
@@ -34,5 +41,12 @@ export const CACHE = {
   models,
   energyIcons,
   linesBottom,
-  completeBoundrays
+  completeBoundrays,
+  floor,
+  floorMirror,
+  earthGroup,
+  earthLinesBottom,
+  earthLines,
+  earthAnimationIndex,
+  earthIcons
 }
