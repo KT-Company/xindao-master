@@ -1,11 +1,11 @@
 <script setup>
 import { reactive, ref, watch, inject } from "vue";
 import { useRouter } from "vue-router";
-import { firstA,getWenhaoA } from "@/2d/utils/letters";
+import { firstA, getWenhaoA } from "@/2d/utils/letters";
 
 import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
-import {CACHE} from '@/3d/CACHE';
+import { CACHE } from "@/3d/CACHE";
 
 // const iframeRef = inject("iframeRef"); // 获取三维里的方法
 const router = useRouter();
@@ -17,8 +17,10 @@ const menus = ref([
   { id: 5, name: "能源碳排放", path: "/Energy" },
 ]);
 const handleMenu = (item) => {
-  if(STATE.LEVEL == 0) return 
-  router.push(item.path);
+  if (STATE.LEVEL == 0) return;
+  const currRouter = firstA(router.currentRoute.value.fullPath);
+  if (currRouter === item.path) router.replace("/Replace");
+  else router.push(item.path);
 };
 const isShow = ref(true);
 const routerName = ref("/IndustrialEconomy");
@@ -26,77 +28,79 @@ const routerName = ref("/IndustrialEconomy");
 watch(
   () => router,
   () => {
-    routerName.value = getWenhaoA(firstA(router.options.history.state.current))
-    isShow.value = ["/IndustrialEconomy","/Transportation","/Environmental","/Education","/Energy"].includes(routerName.value);
+    routerName.value = getWenhaoA(firstA(router.options.history.state.current));
+    isShow.value = [
+      "/IndustrialEconomy",
+      "/Transportation",
+      "/Environmental",
+      "/Education",
+      "/Energy",
+    ].includes(routerName.value);
 
-    API.hideAll()
+    API.hideAll();
     // 根据路由名称调用三维方法
     if (routerName.value === "/IndustrialEconomy") {
-
-      API.showIndustrialEconomy()
+      API.showIndustrialEconomy();
 
       API.cameraAnimation({
         cameraState: STATE.industrialState,
         callback: () => {
-          API.showAreaIcons()
+          API.showAreaIcons();
         },
       });
     }
     if (routerName.value === "/Transportation") {
-      
-      API.showIcons()
-      API.showModels()
-      
+      API.showIcons();
+      API.showModels();
+
       API.cameraAnimation({
         cameraState: STATE.trafficState,
-        callback:()=>{
-          API.showRoutes()
-          API.showTraffics()
-        }
+        callback: () => {
+          API.showRoutes();
+          API.showTraffics();
+        },
       });
     }
     if (routerName.value === "/Environmental") {
-
-      for(const i in CACHE.completeBoundrays){
-        const d = CACHE.completeBoundrays[i]
-        if(d.name == 'environment') d.visible = true
+      for (const i in CACHE.completeBoundrays) {
+        const d = CACHE.completeBoundrays[i];
+        if (d.name == "environment") d.visible = true;
       }
 
       API.cameraAnimation({
         cameraState: STATE.environmentState,
-        callback:()=>{
-          API.showEnvironments()
-          API.beforeEnvironmentAniamtion()
-          API.animateEnvironment()
-        }
+        callback: () => {
+          API.showEnvironments();
+          API.beforeEnvironmentAniamtion();
+          API.animateEnvironment();
+        },
       });
     }
     if (routerName.value === "/Education") {
-       for(const i in CACHE.completeBoundrays){
-        const d = CACHE.completeBoundrays[i]
-        if(d.name == 'education') d.visible = true
+      for (const i in CACHE.completeBoundrays) {
+        const d = CACHE.completeBoundrays[i];
+        if (d.name == "education") d.visible = true;
       }
-      
+
       API.cameraAnimation({
         cameraState: STATE.educationState,
-        callback:()=>{
-          API.showEducations()
-          API.beforeEducationAniamtion()
-          API.animateEducation()
-        }
+        callback: () => {
+          API.showEducations();
+          API.beforeEducationAniamtion();
+          API.animateEducation();
+        },
       });
     }
     if (routerName.value === "/Energy") {
       API.cameraAnimation({
         cameraState: STATE.industrialState,
         callback: () => {
-          API.showEnergyIcons()
-          API.showEnergy()
-        }
+          API.showEnergyIcons();
+          API.showEnergy();
+        },
       });
     }
     if (routerName.value === "/Area") {
-      
     }
   },
   { deep: true }
@@ -106,7 +110,10 @@ watch(
 <template>
   <div class="footer">
     <div class="footer-main">
-      <ul class="button-box" v-if="isShow">
+      <ul
+        class="button-box"
+        v-if="isShow"
+      >
         <li
           v-for="item in menus"
           :key="item.id"

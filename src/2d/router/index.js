@@ -4,6 +4,14 @@ const routes = [
     path: '/',
     redirect: '/IndustrialEconomy'
   },
+  { // 空白页
+    path: "/Replace",
+    name: "Replace",
+    component: () => import("@/2d/views/Replace.vue"),
+    meta: {
+      title: '用于同路由刷新'
+    }
+  },
   { // 产业经济
     path: "/IndustrialEconomy",
     name: "IndustrialEconomy",

@@ -750,11 +750,11 @@ function loadEarth(cb) {
       const radius = 55000
 
       let loadCount = 0
-      const map = loader.load('/assets/png/earth/earth.jpg', t => {
+      const map = loader.load(`${window.publicPath}/assets/png/earth/earth.jpg`, t => {
         loadCount++
         if (loadCount == 2) cb && cb()
       })
-      const normalMap = loader.load('/assets/png/earth/normal.png', t => {
+      const normalMap = loader.load(`${window.publicPath}/assets/png/earth/normal.png`, t => {
         loadCount++
         if (loadCount == 2) cb && cb()
       })

@@ -4,13 +4,15 @@ import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
+import { useStore } from "vuex";
+const store = useStore();
 
 const router = useRouter();
 const title = ref("AIE智境-数智商业综合实践平台");
 const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
 const back = () => {
-  if(STATE.LEVEL == 0) return
+  if (STATE.LEVEL == 0) return
   router.push('/Transportation');
   // window.location.href='/aie_web'
 
@@ -35,7 +37,7 @@ setInterval(() => {
   <div class="header">
     <h1 class="title num-jianbian-lan">{{ title }}</h1>
     <p class="time">
-      <span>数据统计时间： 2021年</span>
+      <span>数据统计时间： {{store.state.year}}年</span>
     </p>
     <p class="info">
       <span

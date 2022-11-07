@@ -164,17 +164,17 @@ onMounted(() => {
   logisticsTransportation.value = [
     {
       id: 0,
-      value: "3122",
+      value: "",
       name: "物流企业总数(家)",
     },
     {
       id: 1,
-      value: "32",
+      value: "",
       name: "物流运输总量(件)",
     },
     {
       id: 2,
-      value: "78",
+      value: "",
       name: "货运量(吨)",
     },
   ];

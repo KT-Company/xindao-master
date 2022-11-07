@@ -173,9 +173,9 @@ onMounted(() => {
     &:nth-child(1) p:nth-child(1) {
       background: url("@/2d/assets/images/guanghuan-lan.png") no-repeat center
         bottom / 75% 75%;
-        span{
-          animation: downUp 1s infinite alternate-reverse
-        }
+      span {
+        animation: downUp 1s infinite alternate-reverse;
+      }
     }
     &:nth-child(2) p:nth-child(1) {
       background: url("@/2d/assets/images/guanghuan-huang.png") no-repeat center
@@ -237,8 +237,8 @@ onMounted(() => {
   height: calc(45% - var(--titleH));
 }
 
-.animation-downUp{
-  animation: downUp 1s infinite alternate-reverse
+.animation-downUp {
+  animation: downUp 1s infinite alternate-reverse;
 }
 
 @keyframes downUp {

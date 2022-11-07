@@ -71,57 +71,6 @@ onMounted(() => {
     console.log('nytpfy: ', res);
 
     const data = res.data.formInfoList;
-    // const data = (base.data = [
-    //   {
-    //     year: 2019,
-    //     szxs: '北京',
-    //     mtzyly: 2019,
-    //     hlfdzly: 2019,
-    //     ydl: 2019,
-    //     trqxfl: 2019,
-    //     yhsyqgyzl: 2019,
-    //     jsydgyzl: 2019,
-    //     szyzl: 2019,
-    //     rjtpfl: 2019,
-    //     pflzl: 2019,
-    //     qgrjtpfl: 2019,
-    //     qgtpfzl: 2019,
-    //     pflzlzqgb: 2019,
-    //   },
-    //   {
-    //     year: 2020,
-    //     szxs: '重庆',
-    //     mtzyly: 2019,
-    //     hlfdzly: 2019,
-    //     ydl: 2019,
-    //     trqxfl: 2019,
-    //     yhsyqgyzl: 2019,
-    //     jsydgyzl: 2019,
-    //     szyzl: 2019,
-    //     rjtpfl: 2019,
-    //     pflzl: 2019,
-    //     qgrjtpfl: 2019,
-    //     qgtpfzl: 2019,
-    //     pflzlzqgb: 2019,
-    //   },
-    //   {
-    //     year: 2021,
-    //     szxs: '北京',
-    //     mtzyly: 2019,
-    //     hlfdzly: 2019,
-    //     ydl: 2019,
-    //     trqxfl: 2019,
-    //     yhsyqgyzl: 2019,
-    //     jsydgyzl: 2019,
-    //     szyzl: 2019,
-    //     rjtpfl: 2019,
-    //     pflzl: 2019,
-    //     qgrjtpfl: 2019,
-    //     qgtpfzl: 2019,
-    //     pflzlzqgb: 2019,
-    //   },
-    // ]);
-
     // 寻找某个省份某年的数据
     base.data = data.find((item) => item.year == store.state.year && item.szxs == store.state.szxs);
     // 寻找某个省份近几年的数据 
