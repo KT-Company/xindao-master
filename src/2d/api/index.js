@@ -3,33 +3,33 @@ import store from '@/2d/store'
 // const url = 'https://dapi.seentao.com/custom-form/customForm.formInfos.get?caseVersionId=82347900509093947&enterpriseId=82441349728567340&userName=18871870420&userId=74791556441702461&userType=PLATFORM&userToken=a23defc6acd8954460b543d23bcfee2d&memberId=74791556450091021&orgType=SCHOOL&orgId=100678506119168&schoolId=100678506119168&sceneId=portal_logo&sysCode='
 const p = store.state.urlParam
 // https://dapi.seentao.com/custom-form/customForm.formInfos.get
-// const url = `${window.publicUrl}?
-// caseVersionId=${p.caseVersionId}
-// &enterpriseId=${p.enterpriseId}
-// &userName=${p.userName}
-// &userId=${p.userId}
-// &userType=${p.userType}
-// &userToken=${p.userToken}
-// &memberId=${p.memberId}
-// &orgType=${p.orgType}
-// &orgId=${p.orgId}
-// &schoolId=${p.schoolId}
-// &sceneId=${p.sceneId}
-// &sysCode=`
-
-const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
-caseVersionId=82347900509093947
-&enterpriseId=82441349728567340
-&userName=15178904534
-&userId=85566304814628903
-&userType=PLATFORM
-&userToken=6f92a803ac9b492b55aa42fd48cd9471
-&memberId=85566304824590394
-&orgType=SCHOOL
-&orgId=31978613954314240
-&schoolId=31978613954314240
-&sceneId=portal_logo
+const url = `${window.publicUrl}?
+caseVersionId=${p.caseVersionId}
+&enterpriseId=${p.enterpriseId}
+&userName=${p.userName}
+&userId=${p.userId}
+&userType=${p.userType}
+&userToken=${p.userToken}
+&memberId=${p.memberId}
+&orgType=${p.orgType}
+&orgId=${p.orgId}
+&schoolId=${p.schoolId}
+&sceneId=${p.sceneId}
 &sysCode=`
+
+// const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+// caseVersionId=82347900509093947
+// &enterpriseId=82441349728567340
+// &userName=15178904534
+// &userId=85566304814628903
+// &userType=PLATFORM
+// &userToken=6f92a803ac9b492b55aa42fd48cd9471
+// &memberId=85566304824590394
+// &orgType=SCHOOL
+// &orgId=31978613954314240
+// &schoolId=31978613954314240
+// &sceneId=portal_logo
+// &sysCode=`
 
 // // get
 // export function get(params) {

@@ -10,8 +10,8 @@ const store = createStore({
                 xLine: '#8098CD'
             },
             viewType: 1, // 当前显示的页面类型  默认1，2：区域层
-            year: 2021, // 全局年份
-            szxs: '北京' // 全局省/直辖市
+            year: window.publicParams.year, // 全局年份
+            szxs: window.publicParams.szxs, // 全局省/直辖市
         }
     },
     mutations: {
