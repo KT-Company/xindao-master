@@ -20,10 +20,10 @@ const base = reactive({
 // const baseList = ref([]);
 
 const schoolChartData = ref([
-  { name: "学前教育", y: 0, h: 0, selected: true },
+  { name: "高等院校", y: 0, h: 0, selected: true },
   { name: "中等教育", y: 0, h: 0, selected: true },
   { name: "小学教育", y: 0, h: 0, selected: true },
-  { name: "高等院校", y: 0, h: 0, selected: true },
+  { name: "学前教育", y: 0, h: 0, selected: true },
 ]);
 const medicalChartData = ref([
   { name: "医疗卫生机构", value: 0, unit: "家" },
@@ -70,10 +70,10 @@ onMounted(() => {
     } catch (error) {}
 
     try {
-      schoolChartData.value[0].y = base.data.gdyxs;
+      schoolChartData.value[0].y = base.data.xqjyyxs;
       schoolChartData.value[1].y = base.data.zdyxs;
       schoolChartData.value[2].y = base.data.xxjyyxs;
-      schoolChartData.value[3].y = base.data.xqjyyxs;
+      schoolChartData.value[3].y = base.data.gdyxs;
     } catch (error) {}
 
     try {

@@ -10,6 +10,12 @@ import { getcyjj } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
 const store = useStore();
+
+// 企业总量点击事件
+const handleCompany = (item) => {
+  console.log("item: ", item);
+};
+
 const cyzb = reactive({
   data: {},
 });
@@ -63,7 +69,7 @@ const taxChartData = ref([
 ]);
 onMounted(() => {
   getcyjj().then((res) => {
-    console.log('getcyjj: ', res);
+    console.log("getcyjj: ", res);
     const data = res.data.formInfoList;
     cyzb.data = data.find((item) => item.year == store.state.year);
     cyzbList.value = data.filter((item) => useYear(item));
@@ -75,10 +81,10 @@ onMounted(() => {
 
     totalAmountChartData.xData = cyzbList.value.map((item) => item.year);
     totalAmountChartData.data[0].value = cyzbList.value.map(
-      (item) => item.ckze || 0
+      (item) => item.jkze || 0
     );
     totalAmountChartData.data[1].value = cyzbList.value.map(
-      (item) => item.jkze || 0
+      (item) => item.ckze || 0
     );
 
     taxChartData.value[0].value = cyzb.data.sssr;
@@ -175,6 +181,7 @@ onMounted(() => {
       <li
         v-for="(item, index) in economicData"
         :key="index"
+        @click="handleCompany(item)"
       >
         <span>{{ item.name }}</span>
         <hr />
@@ -277,7 +284,12 @@ onMounted(() => {
     display: flex;
     align-items: center;
     flex: 1;
-
+    cursor: pointer;
+    &:hover {
+      span {
+        color: rgb(255, 255, 255) !important;
+      }
+    }
     & span:nth-child(1) {
       color: rgb(194, 194, 194);
     }

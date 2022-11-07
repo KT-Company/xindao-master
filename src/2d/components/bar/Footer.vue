@@ -18,9 +18,10 @@ const menus = ref([
 ]);
 const handleMenu = (item) => {
   if (STATE.LEVEL == 0) return;
-  const currRouter = firstA(router.currentRoute.value.fullPath);
-  if (currRouter === item.path) router.replace("/Replace");
-  else router.push(item.path);
+  // const currRouter = firstA(router.currentRoute.value.fullPath);
+  // if (currRouter === item.path) router.replace("/Replace");
+  // else router.push(item.path);
+  router.push(item.path)
 };
 const isShow = ref(true);
 const routerName = ref("/IndustrialEconomy");

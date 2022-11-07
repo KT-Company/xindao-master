@@ -127,11 +127,11 @@ export function setHistogramChartMore(res, num) {
             return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
               {
                 offset: 0,
-                color: `rgb(${color},0)`,
+                color: `rgba(${color},0)`,
               },
               {
                 offset: 1,
-                color: `rgb(${color})`,
+                color: `rgba(${color})`,
               },
             ])
           }

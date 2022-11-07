@@ -28,7 +28,7 @@ export function setSchoolChart(res, unit = '所') {
         beta: 0,
       },
     },
-    colors: ['rgb(29,115,255)', 'rgb(0,229,138)', 'rgb(197,198,39)', 'rgb(202,119,48)'],
+    colors: ['rgba(29,115,255)', 'rgba(0,229,138)', 'rgba(197,198,39)', 'rgba(202,119,48)'],
     title: null,
     legend: {
       useHTML: true, // 设置允许使用 html
@@ -196,11 +196,11 @@ export function setHistogramChartMore(res, num) {
             return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
               {
                 offset: 0,
-                color: `rgb(${color},0)`,
+                color: `rgba(${color},0)`,
               },
               {
                 offset: 1,
-                color: `rgb(${color})`,
+                color: `rgba(${color})`,
               },
             ])
           }
@@ -302,7 +302,7 @@ export function setColumnChart(res, params = {}) {
       },
       axisLabel: {
         interval: 0,
-        rotate: _obj.rotate ,
+        rotate: _obj.rotate,
         textStyle: {
           color: chart.fontColor
         },
@@ -361,7 +361,9 @@ export function setColumnChart(res, params = {}) {
             padding: [0, 0, -38, 0],
             width: obj.barImgW,
             height: obj.barImgH,
-            backgroundColor: { image: imgMap[index] },
+            backgroundColor: {
+              image: imgMap[index]
+            },
           },
         },
       },
@@ -369,10 +371,10 @@ export function setColumnChart(res, params = {}) {
         normal: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,
-            color: `rgb(${colorList[index]},1)` // 0% 处的颜色
+            color: `rgba(${colorList[index]},1)` // 0% 处的颜色
           }, {
             offset: 1,
-            color: `rgb(${colorList[index]},0)` // 100% 处的颜色
+            color: `rgba(${colorList[index]},0)` // 100% 处的颜色
           }]),
         }
       },

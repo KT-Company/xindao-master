@@ -4,7 +4,7 @@ const { chart } = store.state
 
 export function setStackedChart(res) {
   var option = {
-    color: ['rgb(0,214,78)', '#F4A419', '#3CBE89',],
+    color: ['rgba(0,214,78)', '#F4A419', '#3CBE89',],
     tooltip: {
       confine: true,
       trigger: 'axis',

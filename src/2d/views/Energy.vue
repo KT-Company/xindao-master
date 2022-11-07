@@ -157,7 +157,7 @@ onMounted(() => {
       </li>
       <li>
         <span class="other-title">水资源总量</span>
-        <p><span class="other-val num-jianbian-hui num-type">{{ base.data.szyzl }}</span><span class="other-unit">立方米</span></p>
+        <p><span class="other-val num-jianbian-hui num-type">{{ base.data.szyzl }}</span><span class="other-unit">亿立方米</span></p>
       </li>
     </ul>
 

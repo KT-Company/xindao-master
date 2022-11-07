@@ -519,21 +519,20 @@ export function setCarbonChart1(res) {
                 symbolSize: 8,
                 itemStyle: {
                     normal: {
-                        color: "rgb(0,235,224)",
+                        color: "rgba(0,235,224)",
                         lineStyle: {
-                            color: "rgb(0,235,224)",
+                            color: "rgba(0,235,224)",
                             width: 1,
                         },
                         areaStyle: {
-                            //color: '#94C9EC'
                             color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
                                 {
                                     offset: 0,
-                                    color: "rgb(0,235,224,0)",
+                                    color: "rgba(0,235,224,0)",
                                 },
                                 {
                                     offset: 1,
-                                    color: "rgb(0,235,224)",
+                                    color: "rgba(0,235,224)",
                                 },
                             ]),
                         },
@@ -691,20 +690,20 @@ export function setCarbonChart2(res) {
                 },
                 itemStyle: {
                     normal: {
-                        color: "rgb(0,155,249)",
+                        color: "rgba(0,155,249)",
                         lineStyle: {
-                            color: "rgb(0,155,249)",
+                            color: "rgba(0,155,249)",
                             width: 1,
                         },
                         areaStyle: {
                             color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
                                 {
                                     offset: 0,
-                                    color: "rgb(0,155,249,0)",
+                                    color: "rgba(0,155,249,0)",
                                 },
                                 {
                                     offset: 1,
-                                    color: "rgb(0,155,249)",
+                                    color: "rgba(0,155,249)",
                                 },
                             ]),
                         },
@@ -727,20 +726,20 @@ export function setCarbonChart2(res) {
                 },
                 itemStyle: {
                     normal: {
-                        color: "rgb(36,185,103)",
+                        color: "rgba(36,185,103)",
                         lineStyle: {
-                            color: "rgb(36,185,103)",
+                            color: "rgba(36,185,103)",
                             width: 1,
                         },
                         areaStyle: {
                             color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
                                 {
                                     offset: 0,
-                                    color: "rgb(36,185,103,0)",
+                                    color: "rgba(36,185,103,0)",
                                 },
                                 {
                                     offset: 1,
-                                    color: "rgb(36,185,103)",
+                                    color: "rgba(36,185,103)",
                                 },
                             ]),
                         },

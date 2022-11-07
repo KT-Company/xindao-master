@@ -3,6 +3,7 @@ import store from '@/2d/store'
 // const url = 'https://dapi.seentao.com/custom-form/customForm.formInfos.get?caseVersionId=82347900509093947&enterpriseId=82441349728567340&userName=18871870420&userId=74791556441702461&userType=PLATFORM&userToken=a23defc6acd8954460b543d23bcfee2d&memberId=74791556450091021&orgType=SCHOOL&orgId=100678506119168&schoolId=100678506119168&sceneId=portal_logo&sysCode='
 const p = store.state.urlParam
 // https://dapi.seentao.com/custom-form/customForm.formInfos.get
+// 部署环境 api 地址
 const url = `${window.publicUrl}?
 caseVersionId=${p.caseVersionId}
 &enterpriseId=${p.enterpriseId}
@@ -17,13 +18,14 @@ caseVersionId=${p.caseVersionId}
 &sceneId=${p.sceneId}
 &sysCode=`
 
+// 开发环境 api 地址（如果没有数据就替换 token -----》 获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：1234qwer!）
 // const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
 // caseVersionId=82347900509093947
 // &enterpriseId=82441349728567340
 // &userName=15178904534
 // &userId=85566304814628903
 // &userType=PLATFORM
-// &userToken=6e72304f9990de93a81a4b2e02ee590d
+// &userToken=9a8c5bf63f8587a19382670419cd05ba
 // &memberId=85566304824590394
 // &orgType=SCHOOL
 // &orgId=31978613954314240
@@ -94,6 +96,23 @@ export function getnytpfy() {
 export function getnyzxhm() {
     return request({
         url: `${url}nyzxhm`,
+        method: 'get',
+    })
+}
+
+
+// 区域产业经济
+export function getqycyjj(){
+    return request({
+        url: `${url}qycyjj`,
+        method: 'get',
+    })
+}
+
+// 区域企业信息
+export function getqyqyxx(){
+    return request({
+        url: `${url}qyqyxx`,
         method: 'get',
     })
 }
