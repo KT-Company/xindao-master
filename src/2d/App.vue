@@ -2,12 +2,10 @@
 import { nextTick, onMounted, provide, ref } from "vue";
 import * as echarts from "echarts";
 import { sceneOnLoad } from "@/3d/index.js";
+import { useStore } from "vuex";
+const store = useStore();
 provide("echarts", echarts);
-const isShow = ref(true);
 const canvas3d = ref(null);
-window.useShowView = (bool) => {
-  isShow.value = bool;
-};
 onMounted(() => {
     nextTick(() => {
       sceneOnLoad({
@@ -21,7 +19,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="main" v-if="isShow">
+  <div id="main" v-if="store.state.LEVEL > 0">
     <Header></Header>
     <router-view />
     <Footer></Footer>

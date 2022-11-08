@@ -13,6 +13,7 @@ const store = createStore({
             year: window.publicParams.year, // 全局年份
             szxs: window.publicParams.szxs, // 全局省/直辖市
             LEVEL: 0, // 3维层级： 0地球1城市2海景区3园区4企业5内部
+            enterpriseData: []  // 企业总量
         }
     },
     mutations: {
@@ -27,6 +28,9 @@ const store = createStore({
         },
         changeLevel(state,value){
             state.LEVEL = value
+        },
+        setEnterpriseData(state, value) {
+            state.enterpriseData = value
         }
     }
 })

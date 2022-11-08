@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
+import { CACHE } from "@/3d/CACHE";
 import { useStore } from "vuex";
 const store = useStore();
 
@@ -12,20 +13,49 @@ const title = ref("AIE智境-数智商业综合实践平台");
 const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
 const back = () => {
-  if (STATE.LEVEL == 0) return
-  router.push('/Transportation');
+  if (store.state.LEVEL > 0) {
+    store.commit("changeLevel", --store.state.LEVEL);
+
+    if (store.state.LEVEL == 0) {
+      CACHE.container.orbitControls.maxDistance = 1000000;
+      CACHE.container.orbitControls.minPolarAngle = 0;
+      CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
+      CACHE.container.orbitCamera.far = 1000000;
+      CACHE.container.bounds.radius = 1000000;
+
+      API.cameraAnimation({
+        cameraState: STATE.earthState2,
+        callback: () => {
+          API.hideSkyBox();
+          API.hideFloor();
+          API.hideAll();
+          API.showEarth();
+
+          API.cameraAnimation({
+            cameraState: STATE.earthState,
+            callback: () => {},
+          });
+        },
+      });
+    } else if (store.state.LEVEL == 1) {
+      API.cameraAnimation({
+        cameraState: STATE.industrialState,
+        callback: () => {
+          router.push("/IndustrialEconomy");
+        },
+      });
+
+      
+    } else if (store.state.LEVEL == 2) {
+      //
+    } else if (store.state.LEVEL == 3) {
+      //
+    } else if (store.state.LEVEL == 4) {
+      //
+    }
+  }
+
   // window.location.href='/aie_web'
-
-  // API.hideAll();
-
-  // API.cameraAnimation({
-  //   cameraState: STATE.initialState,
-  //   callback: () => {
-      // API.hidePlates();
-      // API.showIcons();
-      // API.showModels()
-  //   },
-  // });
 };
 
 setInterval(() => {
@@ -37,14 +67,10 @@ setInterval(() => {
   <div class="header">
     <h1 class="title num-jianbian-lan">{{ title }}</h1>
     <p class="time">
-      <span>数据统计时间： {{store.state.year}}年</span>
+      <span>数据统计时间： {{ store.state.year }}年</span>
     </p>
     <p class="info">
-      <span
-        class="back"
-        @click="back"
-        v-show="store.state.LEVEL > 0"
-      ></span>
+      <span class="back" @click="back" v-show="store.state.LEVEL > 0"></span>
     </p>
   </div>
 </template>

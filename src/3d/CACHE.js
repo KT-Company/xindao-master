@@ -1,28 +1,33 @@
-let container = null
+let container = null;
 
-const industries = []
-const traffics = []
-const environment = []
-let environmentAnimateIndex = -1
-const completeBoundrays = {}
-let educationAnimateIndex = -1
-const education = []
-const energy = []
-const plates = []
-const icons= []
-const areaIcons = []
-const earth = []
-const lines = []
-const linesBottom = []
-const models = []
-const energyIcons = []
-let floor = null
-let floorMirror = null
-const earthGroup = new Bol3D.Group()
-const earthLines = []
-const earthLinesBottom = []
-const earthIcons = []
-let earthAnimationIndex = -1
+const industries = [];
+const traffics = [];
+const environment = [];
+let environmentAnimateIndex = -1;
+const completeBoundrays = {};
+let educationAnimateIndex = -1;
+const education = [];
+const energy = [];
+const plates = [];
+const icons = [];
+const areaIcons = [];
+const earth = [];
+const lines = [];
+const linesBottom = [];
+const models = [];
+const energyIcons = [];
+let floor = null;
+let floorMirror = null;
+const earthGroup = new Bol3D.Group();
+const earthLines = [];
+const earthLinesBottom = [];
+const earthIcons = [];
+const earthTitles = [];
+const earthVics = [];
+const earthCircles = [];
+let earthAnimationIndex = -1;
+const cities = [];
+const cities2 = [];
 
 export const CACHE = {
   container,
@@ -48,5 +53,10 @@ export const CACHE = {
   earthLinesBottom,
   earthLines,
   earthAnimationIndex,
-  earthIcons
-}
+  earthIcons,
+  cities,
+  cities2,
+  earthTitles,
+  earthVics,
+  earthCircles,
+};

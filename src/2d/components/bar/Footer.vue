@@ -20,7 +20,6 @@ const menus = ref([
   { id: 5, name: "能源碳排放", path: "/Energy" },
 ]);
 const handleMenu = (item) => {
-  if (STATE.LEVEL == 0) return;
   // const currRouter = firstA(router.currentRoute.value.fullPath);
   // if (currRouter === item.path) router.replace("/Replace");
   // else router.push(item.path);
@@ -44,6 +43,7 @@ watch(
     API.hideAll();
     API.showIcons();
     API.showModels();
+    API.showRoutes()
     
     // 根据路由名称调用三维方法
     if (routerName.value === "/IndustrialEconomy") {
@@ -62,7 +62,6 @@ watch(
       API.cameraAnimation({
         cameraState: STATE.trafficState,
         callback: () => {
-          API.showRoutes();
           API.showTraffics();
         },
       });
@@ -107,6 +106,8 @@ watch(
       });
     }
     if (routerName.value === "/Area") {
+      API.showPlates()
+      API.hideIcons()
     }
   },
   { deep: true }
