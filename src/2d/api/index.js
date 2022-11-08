@@ -95,11 +95,19 @@ export function getnytpfy() {
 // 能源总消耗（月）
 export function getnyzxhm() {
     return request({
-        url: `${url}nyzxhm`,
+        url: `${url}nyzxhm1`,
         method: 'get',
     })
 }
 
+
+// 全国碳排放
+export function getqynytpfy(){
+    return request({
+        url: `${url}qynytpfy`,
+        method: 'get',
+    })
+}
 
 // 区域产业经济
 export function getqycyjj(){

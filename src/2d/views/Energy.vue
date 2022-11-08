@@ -13,34 +13,35 @@ import {
   setCarbonChart1,
   setCarbonChart2,
 } from "@/2d/viewCharts/Energy";
-import { getnyzxhm, getnytpfy } from "@/2d/api";
+import { getnyzxhm, getnytpfy, getqynytpfy } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
-import { getRandomList } from '@/2d/utils/myRandom'
+// import { getRandomList } from "@/2d/utils/myRandom";
 const store = useStore();
 const base = reactive({
   data: {},
 });
 const baseList = ref([]);
-const quanguoTan = ref([])
+const quanguoTan = ref([]);
+const quanguoArea = ref([]);
 
 const fireChart = reactive({
   xData: [
-    "1-2月",
-    "1-3月",
-    "1-4月",
-    "1-5月",
-    "1-6月",
-    "1-7月",
-    "1-8月",
-    "1-9月",
-    "1-10月",
-    "1-11月",
-    "1-12月",
+    // "1-2月",
+    // "1-3月",
+    // "1-4月",
+    // "1-5月",
+    // "1-6月",
+    // "1-7月",
+    // "1-8月",
+    // "1-9月",
+    // "1-10月",
+    // "1-11月",
+    // "1-12月",
   ],
   data: [
-    [199, 199, 50, 199, 199, 199, 199, 199, 199, 199, 199],
-    [99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99],
+    { name: store.state.year, value: [] },
+    { name: store.state.year - 1, value: [] },
   ],
 });
 
@@ -58,7 +59,7 @@ const renjun = reactive({
     { name: "北京人均碳排放量", value: [] },
     { name: "北京碳排放总量", value: [] },
   ],
-})
+});
 
 const option = reactive({
   data1: {},
@@ -66,37 +67,54 @@ const option = reactive({
   data3: {},
 });
 
+// const qynytpfy = reactive({data:{}})
+
 onMounted(() => {
   getnytpfy().then((res) => {
-    console.log('nytpfy: ', res);
+    console.log("nytpfy: ", res);
 
     const data = res.data.formInfoList;
     // 寻找某个省份某年的数据
-    base.data = data.find((item) => item.year == store.state.year && item.szxs == store.state.szxs);
-    // 寻找某个省份近几年的数据 
-    baseList.value = data.filter((item) => item.szxs == store.state.szxs).filter(item=>useYear(item, 11))
-    const quanguoList = data.filter((item) => item.year == store.state.year);
-    quanguoTan.value =  getRandomList(quanguoList,4)
-    
-    quanguo.xData = baseList.value.map(item=>item.year)
-    quanguo.data[0].value = baseList.value.map(item=>item.qgrjtpfl)
-    quanguo.data[1].value = baseList.value.map(item=>item.qgtpfzl)
+    base.data = data.find(
+      (item) => item.year == store.state.year && item.szxs == store.state.szxs
+    );
+    // 寻找某个省份近几年的数据
+    baseList.value = data
+      .filter((item) => item.szxs == store.state.szxs)
+      .filter((item) => useYear(item, 10));
+    quanguoTan.value = data.filter((item) => item.year == store.state.year);
+    // quanguoTan.value = getRandomList(quanguoList, 4);
 
-    renjun.xData = baseList.value.map(item=>item.year)
-    renjun.data[0].value = baseList.value.map(item=>item.rjtpfl)
-    renjun.data[1].value = baseList.value.map(item=>item.pflzl)
+    quanguo.xData = baseList.value.map((item) => item.year);
+    quanguo.data[0].value = baseList.value.map((item) => item.qgrjtpfl);
+    quanguo.data[1].value = baseList.value.map((item) => item.qgtpfzl);
 
-    option.data1 = setFireChart(fireChart);
+    renjun.xData = baseList.value.map((item) => item.year);
+    renjun.data[0].value = baseList.value.map((item) => item.rjtpfl);
+    renjun.data[1].value = baseList.value.map((item) => item.pflzl);
     option.data2 = setCarbonChart1(quanguo);
     option.data3 = setCarbonChart2(renjun);
   });
 
+  getnyzxhm().then((res) => {
+    console.log("getnyzxhm: ", res);
+    const data = res.data.formInfoList;
+    fireChart.data[0] = data
+      .filter((item) => item.year == store.state.year)
+      .map((item) => item.hlfdzlm);
+    fireChart.data[1] = data
+      .filter((item) => item.year == store.state.year - 1)
+      .map((item) => item.hlfdzlm);
+    fireChart.xData = data
+      .filter((item) => item.year == store.state.year)
+      .map((item) => item.month + "月");
+    option.data1 = setFireChart(fireChart);
+  });
 
-  getnyzxhm().then(res=>{
-    console.log('getnyzxhm: ', res);
-
-  })
-
+  getqynytpfy().then((res) => {
+    quanguoArea.value = res.data.formInfoList;
+    console.log("getqynytpfy: ", res);
+  });
 });
 </script>
 
@@ -107,17 +125,20 @@ onMounted(() => {
       <ul class="fire-box">
         <li class="fire-item">
           <span class="fire-title">煤炭总用量</span>
-          <p><span class="fire-val">{{ base.data.mtzyly }}</span><span class="fire-unit">万吨</span></p>
+          <p>
+            <span class="fire-val">{{ base.data.mtzyly }}</span
+            ><span class="fire-unit">万吨</span>
+          </p>
         </li>
         <li class="fire-item">
           <span class="fire-title">火力发电量</span>
-          <p><span class="fire-val">{{ base.data.hlfdzly }}</span><span class="fire-unit">亿千瓦小时</span></p>
+          <p>
+            <span class="fire-val">{{ base.data.hlfdzly }}</span
+            ><span class="fire-unit">亿千瓦小时</span>
+          </p>
         </li>
       </ul>
-      <Echart
-        :option="option.data1"
-        class="fire-chart"
-      ></Echart>
+      <Echart :option="option.data1" class="fire-chart"></Echart>
     </div>
     <Title>新能源</Title>
     <div class="new-energy">
@@ -153,23 +174,35 @@ onMounted(() => {
     <ul class="other">
       <li>
         <span class="other-title">建设用地供应总量</span>
-        <p><span class="other-val num-jianbian-hui num-type">{{ base.data.jsydgyzl }}</span><span class="other-unit">公顷</span></p>
+        <p>
+          <span class="other-val num-jianbian-hui num-type">{{
+            base.data.jsydgyzl
+          }}</span
+          ><span class="other-unit">公顷</span>
+        </p>
       </li>
       <li>
         <span class="other-title">水资源总量</span>
-        <p><span class="other-val num-jianbian-hui num-type">{{ base.data.szyzl }}</span><span class="other-unit">亿立方米</span></p>
+        <p>
+          <span class="other-val num-jianbian-hui num-type">{{
+            base.data.szyzl
+          }}</span
+          ><span class="other-unit">亿立方米</span>
+        </p>
       </li>
     </ul>
-
   </Left>
   <Right>
     <Title>全国碳排放</Title>
     <div class="carbon-emissions">
       <div class="box1">
         <ul class="box1-bg">
-          <li v-for="(item,index) in quanguoTan" :key="index">
-            <p><span class="val">{{item.pflzlzqgb || 0}}</span><span class="unit">%</span></p>
-            <span>{{item.szxs}}</span>
+          <li v-for="(item, index) in quanguoTan" :key="index">
+            <p>
+              <span class="val">{{ item.pflzlzqgb || 0 }}</span
+              ><span class="unit">%</span>
+            </p>
+            <span class="szxs-name">{{ item.szxs }}</span>
           </li>
           <!-- <li>
             <p><span class="val">5.38</span><span class="unit">%</span></p>
@@ -185,42 +218,33 @@ onMounted(() => {
           </li> -->
         </ul>
         <div class="box1-data">
-          <p>
-            <span>京津冀：</span><span>10.66 %</span>
+          <p v-for="(item, index) in quanguoArea" :key="index">
+            <span>{{ item.qy }}：</span>
+            <span>{{ item.qsqgtpfzl }} %</span>
           </p>
-          <p>
-            <span>长三角：</span><span>16.41 %</span>
-          </p>
-          <p>
-            <span>粤港澳：</span><span>5.38 %</span>
-          </p>
-          <p>
-            <span>其他省份：</span><span>40.62 %</span>
-          </p>
+          <!-- <p><span>长三角：</span><span>16.41 %</span></p>
+          <p><span>粤港澳：</span><span>5.38 %</span></p>
+          <p><span>其他省份：</span><span>40.62 %</span></p> -->
         </div>
       </div>
       <div class="box2">
         <div class="chart-box">
           <div class="chart-title"></div>
-          <Echart
-            :option="option.data2"
-            class="h-100"
-          ></Echart>
+          <Echart :option="option.data2" class="h-100"></Echart>
         </div>
         <div class="chart-box">
           <div class="chart-title"></div>
-          <Echart
-            :option="option.data3"
-            class="h-100"
-          ></Echart>
+          <Echart :option="option.data3" class="h-100"></Echart>
         </div>
       </div>
     </div>
-
   </Right>
 </template>
 
 <style lang="less" scoped>
+.szxs-name{
+  font-size: .55vw;
+}
 .fire-main {
   height: calc(50% - var(--titleH));
 }
@@ -340,8 +364,8 @@ onMounted(() => {
       display: flex;
       align-items: center;
       height: 100%;
-      background: url("@/2d/assets/images/gaoliang.png") no-repeat left
-          bottom 5% / 50% 20%;
+      background: url("@/2d/assets/images/gaoliang.png") no-repeat left bottom
+        5% / 50% 20%;
       .other-val {
         font-size: 1.45vw;
         text-align: center;
@@ -369,10 +393,19 @@ onMounted(() => {
   .box1 {
     height: 40%;
     .box1-bg {
-      background: url("@/2d/assets/images/fengwo.png") no-repeat center center /
-        cover;
-      height: 70%;
+      background: url("@/2d/assets/images/fengwo.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 74%;
+      width: 82%;
       position: relative;
+      background-position-y: 45%;
+      background-position-x: center;
+      left: 10%;
+      // background: url("@/2d/assets/images/fengwo.png") no-repeat center center /
+      //   cover;
+      // height: 70%;
+      // position: relative;
       li {
         display: flex;
         justify-content: center;
@@ -381,34 +414,110 @@ onMounted(() => {
         background: url("@/2d/assets/images/liubianxing-lv.png") no-repeat
           center center / 100% 100%;
         position: absolute;
-        width: 19%;
+        width: 18%;
         height: 40%;
         &:nth-child(1) {
-          left: 15%;
-          top: 27%;
-        }
-        &:nth-child(2) {
-          left: 46%;
-          top: 27%;
+          left: 6%;
+          top: 0%;
           background: url("@/2d/assets/images/liubianxing-lan.png") no-repeat
             center center / 100% 100%;
         }
-        &:nth-child(3) {
-          left: 78%;
-          top: 27%;
+        &:nth-child(2) {
+          left: 22%;
+          top: 0%;
           background: url("@/2d/assets/images/liubianxing-huang.png") no-repeat
             center center / 100% 100%;
         }
+        &:nth-child(3) {
+          left: 38%;
+          top: 0%;
+          background: url("@/2d/assets/images/liubianxing-ju.png") no-repeat
+            center center / 100% 100%;
+        }
         &:nth-child(4) {
-          left: 36.5%;
-          top: 57%;
+          left: 54%;
+          top: 0%;
+          background: url("@/2d/assets/images/liubianxing-lv.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(5) {
+          left: 70%;
+          top: 0%;
+          background: url("@/2d/assets/images/liubianxing-ju.png") no-repeat
+            center center / 100% 100%;
+        }
+        // *********************************************************************
+        &:nth-child(6) {
+          left: -1%;
+          top: 29.5%;
+          background: url("@/2d/assets/images/liubianxing-lv.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(7) {
+          left: 15%;
+          top: 29.5%;
+          background: url("@/2d/assets/images/liubianxing-ju.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(8) {
+          left: 31%;
+          top: 29.5%;
+          background: url("@/2d/assets/images/liubianxing-lan.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(9) {
+          left: 46.5%;
+          top: 29.5%;
+          background: url("@/2d/assets/images/liubianxing-huang.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(10) {
+          left: 62.5%;
+          top: 29.5%;
+          background: url("@/2d/assets/images/liubianxing-lan.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(11) {
+          left: 78.5%;
+          top: 29.5%;
+          background: url("@/2d/assets/images/liubianxing-huang.png") no-repeat
+            center center / 100% 100%;
+        }
+        // *********************************************************************
+        &:nth-child(12) {
+          left: 6%;
+          top: 59.5%;
+          background: url("@/2d/assets/images/liubianxing-lan.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(13) {
+          left: 22%;
+          top: 59.5%;
+          background: url("@/2d/assets/images/liubianxing-huang.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(14) {
+          left: 38%;
+          top: 59.5%;
+          background: url("@/2d/assets/images/liubianxing-lv.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(15) {
+          left: 54%;
+          top: 59.5%;
+          background: url("@/2d/assets/images/liubianxing-huang.png") no-repeat
+            center center / 100% 100%;
+        }
+        &:nth-child(16) {
+          left: 70%;
+          top: 59.5%;
           background: url("@/2d/assets/images/liubianxing-ju.png") no-repeat
             center center / 100% 100%;
         }
       }
     }
     .box1-data {
-      height: 30%;
+      height: 26%;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -416,7 +525,7 @@ onMounted(() => {
       p {
         font-size: 0.8vw;
         display: flex;
-        height: 40%;
+        height: 50%;
         width: 40%;
         padding-left: 3%;
         background: url("@/2d/assets/images/sibianx-lv.png") no-repeat center
@@ -449,7 +558,7 @@ onMounted(() => {
         width: 90%;
         left: 50%;
         transform: translateX(-50%);
-        top: 6%;
+        top: 5.5%;
         background: url("@/2d/assets/images/chart-title-lan-bg.png") no-repeat
           center center / 100% 100%;
       }
@@ -467,8 +576,8 @@ onMounted(() => {
   color: #427cffff;
 }
 
-.animation-downUp{
-  animation: downUp 1s infinite alternate-reverse
+.animation-downUp {
+  animation: downUp 1s infinite alternate-reverse;
 }
 
 @keyframes downUp {

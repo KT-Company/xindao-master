@@ -426,7 +426,7 @@ export function setCarbonChart1(res) {
         legend: {
             show: true,
             x: "center",
-            top: '9%',
+            top: '7%',
             icon: "circle",
             itemWidth: 10,
             itemHeight: 10,
@@ -591,7 +591,7 @@ export function setCarbonChart2(res) {
         legend: {
             show: true,
             x: "center",
-            top: '9%',
+            top: '7%',
             icon: "circle",
             itemWidth: 10,
             itemHeight: 10,
