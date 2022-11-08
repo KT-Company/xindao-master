@@ -1,20 +1,14 @@
 <script setup>
-import { useRouter } from "vue-router";
 import { nextTick, onMounted, provide, ref } from "vue";
 import * as echarts from "echarts";
 import { sceneOnLoad } from "@/3d/index.js";
 provide("echarts", echarts);
-const router = useRouter();
 const isShow = ref(true);
-// const iframeRef = ref(null)
 const canvas3d = ref(null);
 window.useShowView = (bool) => {
   isShow.value = bool;
 };
-// router.push("/Manufacture");
-// router.push("/");
 onMounted(() => {
-  // provide("iframeRef", iframeRef.value.contentWindow);
     nextTick(() => {
       sceneOnLoad({
         domElement: canvas3d.value,
@@ -27,12 +21,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- <iframe
-    src="./3d/index.html"
-    frameborder="0"
-    style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px;pointer-events: auto;"
-    ref="iframeRef"
-  ></iframe> -->
   <div id="main" v-if="isShow">
     <Header></Header>
     <router-view />

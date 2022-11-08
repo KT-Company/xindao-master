@@ -43,6 +43,7 @@ setInterval(() => {
       <span
         class="back"
         @click="back"
+        v-show="store.state.LEVEL > 0"
       ></span>
     </p>
   </div>

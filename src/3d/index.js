@@ -1,6 +1,8 @@
 import { API } from './API.js'
 import { STATE } from './STATE.js'
 import { CACHE } from './CACHE.js'
+import store from '@/2d/store'
+import router from '@/2d/router'
 
 export const sceneOnLoad = ({ domElement, callback }) => {
   CACHE.container = new Bol3D.Container({
@@ -444,6 +446,9 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         })
       } else if (name == '深圳') {
         // console.log('下钻')
+
+        store.commit('changeLevel', 1)
+        router.push('/IndustrialEconomy')
 
         API.showModels()
         API.showIcons()

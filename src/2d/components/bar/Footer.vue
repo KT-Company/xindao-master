@@ -2,6 +2,7 @@
 import { reactive, ref, watch, inject } from "vue";
 import { useRouter } from "vue-router";
 import { firstA, getWenhaoA } from "@/2d/utils/letters";
+import { useStore } from "vuex";
 
 import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
@@ -9,6 +10,8 @@ import { CACHE } from "@/3d/CACHE";
 
 // const iframeRef = inject("iframeRef"); // 获取三维里的方法
 const router = useRouter();
+const store = useStore();
+
 const menus = ref([
   { id: 1, name: "产业经济", path: "/IndustrialEconomy" },
   { id: 2, name: "交通出行", path: "/Transportation" },
@@ -39,20 +42,22 @@ watch(
     ].includes(routerName.value);
 
     API.hideAll();
+    API.showIcons();
+    API.showModels();
+    
     // 根据路由名称调用三维方法
     if (routerName.value === "/IndustrialEconomy") {
-      API.showIndustrialEconomy();
+      // API.showIndustrialEconomy();
 
       API.cameraAnimation({
         cameraState: STATE.industrialState,
         callback: () => {
-          API.showAreaIcons();
+          // API.showAreaIcons();
         },
       });
     }
     if (routerName.value === "/Transportation") {
-      API.showIcons();
-      API.showModels();
+      
 
       API.cameraAnimation({
         cameraState: STATE.trafficState,
@@ -63,32 +68,32 @@ watch(
       });
     }
     if (routerName.value === "/Environmental") {
-      for (const i in CACHE.completeBoundrays) {
-        const d = CACHE.completeBoundrays[i];
-        if (d.name == "environment") d.visible = true;
-      }
+      // for (const i in CACHE.completeBoundrays) {
+      //   const d = CACHE.completeBoundrays[i];
+      //   if (d.name == "environment") d.visible = true;
+      // }
 
       API.cameraAnimation({
         cameraState: STATE.environmentState,
         callback: () => {
-          API.showEnvironments();
-          API.beforeEnvironmentAniamtion();
-          API.animateEnvironment();
+          // API.showEnvironments();
+          // API.beforeEnvironmentAniamtion();
+          // API.animateEnvironment();
         },
       });
     }
     if (routerName.value === "/Education") {
-      for (const i in CACHE.completeBoundrays) {
-        const d = CACHE.completeBoundrays[i];
-        if (d.name == "education") d.visible = true;
-      }
+      // for (const i in CACHE.completeBoundrays) {
+      //   const d = CACHE.completeBoundrays[i];
+      //   if (d.name == "education") d.visible = true;
+      // }
 
       API.cameraAnimation({
         cameraState: STATE.educationState,
         callback: () => {
-          API.showEducations();
-          API.beforeEducationAniamtion();
-          API.animateEducation();
+          // API.showEducations();
+          // API.beforeEducationAniamtion();
+          // API.animateEducation();
         },
       });
     }
@@ -113,7 +118,7 @@ watch(
     <div class="footer-main">
       <ul
         class="button-box"
-        v-if="isShow"
+        v-if="isShow && store.state.LEVEL == 1"
       >
         <li
           v-for="item in menus"
