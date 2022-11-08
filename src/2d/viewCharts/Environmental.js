@@ -28,98 +28,172 @@ export function setYearManNumber(res) {
             bottom: '0%',
             containLabel: true
         },
-
-        xAxis: {
-            show: true,
-            type: 'category',
-            axisTick: {
-                show: false
-            },
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    color: '#2E415D ',
-                }
-            },
-            splitLine: {
-                show: false,
-            },
-            axisLabel: {
-                rotate: 0,
-                textStyle: {
-                    fontSize: '70%',
-                    color: '#FFFFFF '
-                },
-            },
-            data: dataX
+        tooltip:{
+          trogger:'axis',
         },
-        yAxis: [
-            {
-                show: true,
-                name: '万',
+        xAxis: [{
+          type: 'category',
+          boundaryGap: true,
+          axisLabel: {
+              textStyle: {
+                  color: '#ffffff',
+                  fontSize: 12,
+
+              }
+
+          },
+          axisLine: {
+              lineStyle: {
+                  type: 'solid',
+                  color: 'rgba(108, 166, 219, 1)'
+              }
+          },
+          axisTick: {
+              show: false
+          },
+          splitLine: {
+              show: true,
+              lineStyle: {
+                  color: 'rgba(108, 166, 219, 0.5)',
+                  type: 'dashed',
+              }
+          },
+          data: dataX
+      },
+      ],
+      yAxis: [{
+          type: 'value',
+                    name: '万',
                 nameTextStyle: {
                     color: "#FFFFFF"
                 },
-                axisTick: {
-                    show: false
-                },
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        type: "dashed",
-                        color: '#2E415D ',
-                    }
-                },
-                splitLine: {
-                    show: true,
-                    lineStyle: {
-                        type: "dashed",
-                        color: '#2E415D '
-                    }
-                },
-                axisLabel: {
-                    textStyle: {
-                        fontSize: '70%',
-                        color: '#FFFFFF '
-                    }
-                }
-            },
+          axisTick: {
+              show: false
+          },
+          splitLine: {
+              show: true,
+              lineStyle: {
+                  color: 'rgba(108, 166, 219, 0.5)',
+                  type: 'dashed',
+              },
+          },
+          axisLine: {
+              // show: true,
+              lineStyle: {
+                  color: 'rgba(149, 162, 170,.8)',
+                  type: 'dotted',
+                  width: 1
+              }
+          },
+          axisLabel: {
+              textStyle: {
+                  color: '#ffffff',
+                  fontSize: 12
+              }
+
+          },
+
+          splitArea: {
+              show: true,
+              areaStyle: {
+                  color: 'rgba(1, 147, 244,0.1)'
+              }
+          }
+      },
+
+      ],
+
+        // xAxis: {
+        //     show: true,
+        //     type: 'category',
+        //     axisTick: {
+        //         show: false
+        //     },
+        //     axisLine: {
+        //         show: true,
+        //         lineStyle: {
+        //             color: '#2E415D ',
+        //         }
+        //     },
+        //     splitLine: {
+        //         show: false,
+        //     },
+        //     axisLabel: {
+        //         rotate: 0,
+        //         textStyle: {
+        //             fontSize: '70%',
+        //             color: '#FFFFFF '
+        //         },
+        //     },
+        //     data: dataX
+        // },
+        // yAxis: [
+        //     {
+        //         show: true,
+        //         name: '万',
+        //         nameTextStyle: {
+        //             color: "#FFFFFF"
+        //         },
+        //         axisTick: {
+        //             show: false
+        //         },
+        //         axisLine: {
+        //             show: true,
+        //             lineStyle: {
+        //                 type: "dashed",
+        //                 color: '#2E415D ',
+        //             }
+        //         },
+        //         splitLine: {
+        //             show: true,
+        //             lineStyle: {
+        //                 type: "dashed",
+        //                 color: '#2E415D '
+        //             }
+        //         },
+        //         axisLabel: {
+        //             textStyle: {
+        //                 fontSize: '70%',
+        //                 color: '#FFFFFF '
+        //             }
+        //         }
+        //     },
 
 
-            {
-                show: true,
-                type: 'value',
-                splitNumber: 12,
-                axisTick: {
-                    show: false
-                },
-                axisLine: {
-                    show: true,
-                    lineStyle: {
-                        type: "dashed",
-                        color: '#2E415D ',
-                    }
-                },
-                splitLine: {
-                    show: true,
-                    lineStyle: {
-                        type: "dashed",
-                        color: '#2E415D '
-                    }
-                },
-                axisLabel: {
-                    textStyle: {
-                        fontSize: '70%',
-                        color: '#FFFFFF '
-                    }
-                }
-            }
-        ],
+        //     {
+        //         show: true,
+        //         type: 'value',
+        //         splitNumber: 12,
+        //         axisTick: {
+        //             show: false
+        //         },
+        //         axisLine: {
+        //             show: true,
+        //             lineStyle: {
+        //                 type: "dashed",
+        //                 color: '#2E415D ',
+        //             }
+        //         },
+        //         splitLine: {
+        //             show: true,
+        //             lineStyle: {
+        //                 type: "dashed",
+        //                 color: '#2E415D '
+        //             }
+        //         },
+        //         axisLabel: {
+        //             textStyle: {
+        //                 fontSize: '70%',
+        //                 color: '#FFFFFF '
+        //             }
+        //         }
+        //     }
+        // ],
         series: [
 
 
             {
-                name: '内部柱子',
+                name: '人口数据',
                 type: 'bar',
                 barWidth: 20,
                 z: 19,
@@ -153,7 +227,7 @@ export function setYearManNumber(res) {
                 type: 'pictorialBar',
                 silent: true,
                 symbolSize: [20, 10],
-                symbolOffset: [-18, -6],
+                symbolOffset: [0, -6],
                 symbolPosition: 'end',
                 z: 22,
                 color: '#FFA800',
@@ -164,32 +238,32 @@ export function setYearManNumber(res) {
                 type: 'pictorialBar',
                 silent: true,
                 symbolSize: [20, 10],
-                symbolOffset: [-18, 2],
+                symbolOffset: [0, 2],
                 z: 21,
                 itemStyle: {
                     color: '#FFA800'
                 },
                 data: dataY,
             },
-            {
-                type: 'pictorialBar',
-                name: '',
-                symbol: 'rect',
-                symbolSize: [1, 3],
-                symbolMargin: 1,
-                symbolRepeat: true,
-                barWidth: 1,
-                data: dataM,
-                itemStyle: {
-                    normal: {
-                        color: '#2E415D '
-                    },
-                    emphasis: {
-                        color: '#2E415D '
-                    }
-                },
-                z: 110
-            },
+            // {
+            //     type: 'pictorialBar',
+            //     name: '',
+            //     symbol: 'rect',
+            //     symbolSize: [1, 3],
+            //     symbolMargin: 1,
+            //     symbolRepeat: true,
+            //     barWidth: 1,
+            //     data: dataM,
+            //     itemStyle: {
+            //         normal: {
+            //             color: '#2E415D '
+            //         },
+            //         emphasis: {
+            //             color: '#2E415D '
+            //         }
+            //     },
+            //     z: 110
+            // },
         ]
     };
 
@@ -221,42 +295,46 @@ export function setConsumptionStatistics(res) {
             containLabel: true
         },
 
-        xAxis: {
-            show: true,
-            type: 'category',
-            axisTick: {
-                show: false
-            },
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    color: '#2E415D ',
-                }
-            },
-            splitLine: {
-                show: false,
-            },
-            axisLabel: {
-                rotate: 0,
-                interval: 0,
-                textStyle: {
-                    fontSize: '70%',
-                    color: '#FFFFFF ',
-                    fontSize: 14
-
-                },
-            },
-            data: dataX
+        tooltip:{
+          trogger:'axis',
         },
+        xAxis: [{
+          type: 'category',
+          boundaryGap: true,
+          axisLabel: {
+              textStyle: {
+                  color: '#ffffff',
+                  fontSize: 12,
+
+              }
+
+          },
+          axisLine: {
+              lineStyle: {
+                  type: 'solid',
+                  color: 'rgba(108, 166, 219, 1)'
+              }
+          },
+          axisTick: {
+              show: false
+          },
+          splitLine: {
+              show: true,
+              lineStyle: {
+                  color: 'rgba(108, 166, 219, 0.5)',
+                  type: 'dashed',
+              }
+          },
+          data: dataX
+      },
+      ],
         yAxis: [{
             type: 'value',
             name: '亿',
             nameTextStyle: {
                 fontSize: 14,
                 color: '#ffffff'
-            },
-            min: 0,
-            max: 500,
+            }, 
             splitNumber: 5,
             axisTick: {
                 show: false
@@ -339,7 +417,7 @@ export function setConsumptionStatistics(res) {
 
 
             {
-                name: '内部柱子',
+                name: '消费统计',
                 type: 'bar',
                 barWidth: 20,
                 z: 19,
@@ -368,35 +446,35 @@ export function setConsumptionStatistics(res) {
                 },
                 data: dataY,
             },
-            {
-                type: 'pictorialBar',
-                name: '',
-                symbol: 'rect',
-                symbolSize: [1, 3],
-                symbolMargin: 1,
-                symbolRepeat: true,
-                barWidth: 1,
-                data: dataM,
-                itemStyle: {
-                    normal: {
-                        color: '#2E415D '
-                    },
-                    emphasis: {
-                        color: '#2E415D '
-                    }
-                },
-                z: 110
-            },
-            {
-                type: "line",
-                zlevel: 3,
-                lineStyle: {
+            // {
+            //     type: 'pictorialBar',
+            //     name: '',
+            //     symbol: 'rect',
+            //     symbolSize: [1, 3],
+            //     symbolMargin: 1,
+            //     symbolRepeat: true,
+            //     barWidth: 1,
+            //     data: dataM,
+            //     itemStyle: {
+            //         normal: {
+            //             color: '#2E415D '
+            //         },
+            //         emphasis: {
+            //             color: '#2E415D '
+            //         }
+            //     },
+            //     z: 110
+            // },
+            // {
+            //     type: "line",
+            //     zlevel: 3,
+            //     lineStyle: {
 
-                    color: "#FFD800",
+            //         color: "#FFD800",
 
-                },
-                data: dataY
-            }
+            //     },
+            //     data: dataY
+            // }
         ]
     };
 
@@ -414,6 +492,9 @@ export function setXFTJ(res) {
             top: '10%',
             bottom: '0%',
             containLabel: true
+        },
+        tooltip:{
+          trogger:'axis',
         },
 
         xAxis: [{
@@ -490,7 +571,7 @@ export function setXFTJ(res) {
 
         ],
         series: [{
-            name: '', type: 'line', stack: '',
+            name: '物价指数', type: 'line', stack: '',
             // 修改的是线下区域的颜色
             areaStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -514,8 +595,7 @@ export function setXFTJ(res) {
                     shadowColor: 'rgba(65,127,255,0.3)',
                     shadowOffsetY: 30
                 }
-            },
-            symbol: 'none',
+            }, 
             data: yData,
 
         },

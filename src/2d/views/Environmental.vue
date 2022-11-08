@@ -5,7 +5,7 @@ import { gethjrk } from "@/2d/api";
 import {
   setYearManNumber,
   setConsumptionStatistics,
-  setXFTJ,
+  setXFTJ
 } from "@/2d/viewCharts/Environmental";
 import { setPublicTransport } from "@/2d/viewCharts/transportation";
 import { useYear } from "@/2d/hooks/useTime";
@@ -13,7 +13,7 @@ import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
 const store = useStore();
 const base = reactive({
-  data: {},
+  data: {}
 });
 
 const optionYearManNumber = reactive({ data: {} }); //历年人口数据
@@ -38,11 +38,15 @@ let ecologicalEnvironment = ref([
   { data: null },
   { data: null },
   { data: null },
-  { data: null },
+  { data: null }
 ]); //生态环境
 
 const optionXFTJ = reactive({ data: {} }); //消费统计
 let XFTJData = ref([]);
+// 社会消费品零售总额(亿元)
+let shxfplsze = ref();
+// 物价指数
+let jmxfjgzscpi = ref();
 
 onMounted(() => {
   var database = [];
@@ -64,7 +68,7 @@ onMounted(() => {
       rjgyldmj: 2019,
       wscll: 2019,
       xnycbyl: 2019,
-      jmxfjgzscpi: 89,
+      jmxfjgzscpi: 89
     });
   }
 
@@ -83,26 +87,26 @@ onMounted(() => {
       id: 0,
       name: "全年空气质量优良天数",
       value: "0",
-      unit: "天",
+      unit: "天"
     },
     {
       id: 1,
       name: "全年重污染日",
       value: "0",
-      unit: "天",
+      unit: "天"
     },
     {
       id: 2,
       name: "PM2.5年均浓度",
       value: "0",
-      unit: "微克/m³",
+      unit: "微克/m³"
     },
     {
       id: 3,
       name: "臭氧年均浓度",
       value: "0",
-      unit: "微克/m³",
-    },
+      unit: "微克/m³"
+    }
   ];
   //   urbanAirQuality.value.forEach((item, index) => {
   //     item.img = require(`@/2d/assets/images/uq-bg-${index + 1}.png`);
@@ -127,8 +131,8 @@ onMounted(() => {
       id: 0,
       name: "人均公园绿地面积",
       value: 0,
-      unit: "ml",
-      maxData: 345784,
+      unit: "m²",
+      maxData: 345784
     },
     { id: 1, name: "森林覆盖率达", value: 0, unit: "%", maxData: 100 },
     {
@@ -136,10 +140,10 @@ onMounted(() => {
       name: "新能源车保有量达",
       value: 0,
       unit: "万辆",
-      maxData: 100,
+      maxData: 100
     },
     { id: 3, name: "污水处理率达", value: 0, unit: "%", maxData: 100 },
-    { id: 4, name: "生态环境质量指数EI", value: 0, unit: "", maxData: 100 },
+    { id: 4, name: "生态环境质量指数EI", value: 0, unit: "", maxData: 100 }
   ];
 
   //   // 消费统计
@@ -160,7 +164,7 @@ onMounted(() => {
   // });
 
   gethjrk().then((res) => {
-    console.log('gethjrk: ', res);
+    console.log("gethjrk: ", res);
     const datas = res.data.formInfoList;
     base.data = datas.filter((item) => useYear(item));
     // 历练人口-------------------------------------------------
@@ -168,7 +172,7 @@ onMounted(() => {
       ymnData.value.push({
         id: index + 1,
         name: item.year,
-        value: item.zrksl,
+        value: item.zrksl
       });
     });
     let data = ymnData.value;
@@ -200,10 +204,11 @@ onMounted(() => {
 
     // 消费统计
     base.data.forEach((item, index) => {
+      shxfplsze.value = item.shxfplsze;
       ConsumptionStatisticsData.value.push({
         id: index + 1,
         name: item.year,
-        value: item.shxfplsze,
+        value: item.shxfplsze
       });
     });
     let dataConsumptionStatistics = ymnData.value;
@@ -240,7 +245,7 @@ onMounted(() => {
         case 0:
           (item.id = 0),
             (item.name = "人均公园绿地面积"),
-            (item.unit = "ml"),
+            (item.unit = "m²"),
             (item.maxData = 22222);
           item.value = datajson.data.rjgyldmj;
 
@@ -283,6 +288,7 @@ onMounted(() => {
     ecologicalEnvironment.value.forEach((item, index) => {
       item.data = setPublicTransport(
         item.value,
+        "",
         "#FFF5EE",
         require("@/2d/assets/images/pie-bg-w.png"),
         item.maxData
@@ -292,10 +298,11 @@ onMounted(() => {
     // 消费指标
 
     base.data.forEach((item, index) => {
+      jmxfjgzscpi.value = item.jmxfjgzscpi;
       XFTJData.value.push({
         id: index + 1,
         name: item.year,
-        value: item.jmxfjgzscpi,
+        value: item.jmxfjgzscpi
       });
     });
     console.log(JSON.parse(JSON.stringify(XFTJData.value)));
@@ -312,10 +319,7 @@ const message = ref("page2");
   <Left>
     <Title>历年人口数据</Title>
     <div id="fire-chart">
-      <Echart
-        :option="optionYearManNumber.data"
-        class="fire-chart"
-      ></Echart>
+      <Echart :option="optionYearManNumber.data" class="fire-chart"></Echart>
     </div>
     <Title>人口结构(北京常住人口年龄分布)</Title>
     <div class="left-box2">
@@ -331,7 +335,7 @@ const message = ref("page2");
       </div>
       <div class="lv">
         <div class="wrap dpy-column">
-          <div class="total">{{ 60 }}</div>
+          <div class="total">{{ num60 }}</div>
           <div class="period">60岁</div>
         </div>
         <div class="line-box">
@@ -340,7 +344,6 @@ const message = ref("page2");
         </div>
       </div>
       <div class="huang">
-
         <div class="wrap dpy-column">
           <div class="total">{{ num14 }}</div>
           <div class="period">0-14岁</div>
@@ -349,13 +352,12 @@ const message = ref("page2");
           <div class="span">{{ rate14 }} %</div>
           <div class="line"></div>
         </div>
-
       </div>
     </div>
     <Title>消费统计</Title>
     <div id="div-box3">
       <div class="title">
-        社会消费品零售总额(元)<span>321321</span>
+        社会消费品零售总额(元)<span>{{ shxfplsze }}</span>
       </div>
       <div id="chart2">
         <Echart
@@ -374,26 +376,27 @@ const message = ref("page2");
         :key="item.id"
       >
         <div
-          :style="{ background: `url(${item.img})`, 'background-size': '100% 100%' }"
+          :style="{
+            background: `url(${item.img})`,
+            'background-size': '100% 100%'
+          }"
           class="img"
         ></div>
         <div>
           <div class="title">{{ item.name }}</div>
-          <div :style="{ color: `${item.color}`, }">{{ item.value }}<span :style="{ color: `${item.color}`, }">{{
-              item.unit
-          }}</span></div>
+          <div :style="{ color: `${item.color}` }">
+            {{ item.value
+            }}<span :style="{ color: `${item.color}` }">{{ item.unit }}</span>
+          </div>
         </div>
       </div>
     </div>
     <Title>生态环境</Title>
-    <div
-      class="st-wrap dpy-row"
-      v-if="ecologicalEnvironment[0].data"
-    >
+    <div class="st-wrap dpy-row" v-if="ecologicalEnvironment[0].data">
       <div
         v-for="item in ecologicalEnvironment"
         :key="item.index"
-        class="dpy-row "
+        class="dpy-row"
         :class="item.id == 4 ? 'full' : 'half'"
       >
         <Echart
@@ -404,14 +407,16 @@ const message = ref("page2");
         </Echart>
         <div>
           <div class="name">{{ item.name }}</div>
-          <div class="value">{{ item.value }}<span class="span">{{ item.unit }}</span></div>
+          <div class="value">
+            {{ item.value }}<span class="span">{{ item.unit }}</span>
+          </div>
         </div>
       </div>
     </div>
     <Title>物价指数</Title>
     <div class="xftj-wrap">
       <div class="title">
-        居民消费价格指数CPI :<span>321321</span>
+        居民消费价格指数CPI :<span>{{ jmxfjgzscpi }}</span>
       </div>
       <Echart
         :option="optionXFTJ.data"
@@ -419,7 +424,6 @@ const message = ref("page2");
         class="echarts4"
       >
       </Echart>
-
     </div>
   </Right>
 </template>
@@ -507,7 +511,7 @@ const message = ref("page2");
     .line-box {
       position: absolute;
       top: 50%;
-      left: 90%;
+      left: 100%;
 
       .span {
         color: #49ffdf;

@@ -174,9 +174,26 @@ export function setTrafficMileage(tlzlc, res) {
 }
 
 // 公共交通
-export function setPublicTransport(res, color, img, maxData) {
+export function setPublicTransport(res,name, color, img, maxData) {
     let data = res;
     return {
+      // tooltip: {
+      //   trigger: 'axis',
+      //   // 设置浮层的 css 样式
+      //   extraCssText: 'width:80px;height:auto;background-color:rgba(255,255,255,0.5);color:#fff',
+      //   position:[60,35],
+      //   formatter: function (params) {
+      //     //params[0].name表示x轴数据
+      //     let str 
+      //     // =  name + '<br/>'
+      //     //params是数组格式
+         
+      //     //设置浮层图形的样式跟随图中展示的颜色
+      //       str = "<span style='display:inline-block;width:10px;height:10px;border-radius:10px;background-color:" + color + ";'></span>" + "\t"   + res
+          
+      //     return str
+      //   },
+      // }, 
         angleAxis: {
             max: '100',
             clockwise: true, // 逆时针
@@ -288,13 +305,32 @@ export function setPublicTransport(res, color, img, maxData) {
 import * as echarts from "echarts";
 export function setGoingOutData(res, color, img) {
     const xdata = res.map((v) => v.name);
-    console.log('xdata: ', xdata);
     const ydata = res.map((v) => v.value);
     const unitList = res.map(v=>v.unit)
-    console.log('ydata: ', ydata);
 
-    return {
-
+    return { 
+  //       tooltip: {
+  //         trigger: 'axis',
+  //         type:"shadow",
+  //         // 设置浮层的 css 样式
+  //         extraCssText: 'width:auto;height:auto;background-color:rgba(255,255,255,0.5);color:#fff',
+  //         formatter: function (params) {
+  //           //params[0].name表示x轴数据
+  //           let str 
+  //           // =  name + '<br/>'
+  //           //params是数组格式 
+  //          params.forEach(item=>{
+  // //设置浮层图形的样式跟随图中展示的颜色 
+  // str = "<span style='display:inline-block;width:10px;height:10px;border-radius:10px;background-color:" + color[2] +"'></span>" + "\t"   + item.name+"\t : "+item.value
+  // // str =`<span :style='display:inline-block;width:10px;height:10px;border-radius:10px;background-color:${color}'></span>\t${item.name}\t${item.value}`
+  //          }) 
+  //           return str
+  //         },
+  //       }, 
+  tooltip:{
+    trogger:'axis',
+  },
+     
         grid: {
             left: "6%",
             bottom: 0,
@@ -448,7 +484,7 @@ export function setGoingOutData(res, color, img) {
                 data: ydata,
                 z: 0,
                 symbol: `image://${require("@/2d/assets/images/t-pie-bg.png")}`,
-                symbolSize: [400, 300],
+                symbolSize: [400, 10],
                 symbolOffset: [0, 0],
                 itemStyle: {
                     color: 'rgba(255,255,255,1)',
