@@ -12,6 +12,8 @@ const store = createStore({
             viewType: 1, // 当前显示的页面类型  默认1，2：区域层
             year: window.publicParams.year, // 全局年份
             szxs: window.publicParams.szxs, // 全局省/直辖市
+            switchPage: false, // 是否显二维页面
+            enterpriseData: []  // 企业总量
         }
     },
     mutations: {
@@ -23,6 +25,12 @@ const store = createStore({
         },
         jumpPage(state, value) {
             router.push(`${value}`)
+        },
+        setSwitchPage(state, value) {
+            state.switchPage = value
+        },
+        setEnterpriseData(state, value) {
+            state.enterpriseData = value
         }
     }
 })
