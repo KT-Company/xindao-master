@@ -6,79 +6,88 @@
       <div class="wrap-tm dpy-row">
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.glzlcs }}&nbsp;公里</div>
-          <div>公路总里程数</div>
+          <div>公交总里程数</div>
         </div>
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.gsglzlc }}&nbsp;公里</div>
           <div>高速公路总里程</div>
         </div>
       </div>
-      <Echart
-        :option="optionTrafficMileage.data"
-        class="chart-box"
-      ></Echart>
+      <Echart :option="optionTrafficMileage.data" class="chart-box"></Echart>
       <div class="box-km">
-        城市轨道交通总公里：<span class="span">{{ base.data.csgdjtzlc }}&nbsp;公里</span>
+        城市轨道交通总公里：<span class="span"
+          >{{ base.data.csgdjtzlc }}&nbsp;公里</span
+        >
       </div>
     </div>
 
-    <Item
-      title="公共交通"
-      class="item-wrap-PT"
-    >
+    <Item title="公共交通" class="item-wrap-PT">
       <div class="pie-n bg-charts">
         <div class="charts-ctn">
           <Echart :option="optionPublicTransport0.data"></Echart>
         </div>
 
         <div class="dpy-row">
-          <div class="left ">
+          <div class="left">
             <p>公路总里程</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.gjzlc }}</span><span class="span2">{{ base.data.gjzlc !== undefined ?  '公里' : ''}}</span></div>
+          <div class="right">
+            <span class="span1">{{ base.data.gjzlc }}</span
+            ><span class="span2">{{
+              base.data.gjzlc !== undefined ? "公里" : ""
+            }}</span>
+          </div>
         </div>
-
       </div>
       <div class="pie-t bg-charts">
         <div class="charts-ctn">
           <Echart :option="optionPublicTransport1.data"></Echart>
-
         </div>
 
         <div class="dpy-row">
           <div class="left">
             <p>年客运量</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.nkyl }}</span><span class="span2">{{ base.data.nkyl !== undefined ?  '亿人次' : ''}}</span></div>
-
+          <div class="right">
+            <span class="span1">{{ base.data.nkyl }}</span
+            ><span class="span2">{{
+              base.data.nkyl !== undefined ? "亿人次" : ""
+            }}</span>
+          </div>
         </div>
-
       </div>
       <div class="pie-s bg-charts">
         <div class="charts-ctn">
           <Echart :option="optionPublicTransport2.data"></Echart>
-
         </div>
 
         <div class="dpy-row">
           <div class="left">
             <p>出租车保有量</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.czcbyl }}</span><span class="span2">{{ base.data.czcbyl !== undefined ?  '万辆' : ''}}</span></div>
+          <div class="right">
+            <span class="span1">{{ base.data.czcbyl }}</span
+            ><span class="span2">{{
+              base.data.czcbyl !== undefined ? "万辆" : ""
+            }}</span>
+          </div>
         </div>
-
       </div>
       <div class="pie-f bg-charts">
         <div class="charts-ctn">
           <Echart :option="optionPublicTransport3.data"></Echart>
-
         </div>
 
         <div class="dpy-row">
           <div class="left">
             <p>共享自行车投放量</p>
           </div>
-          <div class="right"><span class="span1">{{ base.data.gxzxctfl }}</span><span class="span2">{{ base.data.gxzxctfl !== undefined ?  '万辆' : ''}}</span></div>
+          <div class="right">
+            <span class="span1">{{ base.data.gxzxctfl }}</span
+            ><span class="span2">{{
+              base.data.gxzxctfl !== undefined ? "万辆" : ""
+            }}</span>
+          </div>
         </div>
       </div>
     </Item>
@@ -86,22 +95,30 @@
   <Right>
     <!-- 物流运输 -->
     <Title>物流运输</Title>
-    <div class="right-wl-o ">
-      <div class="dpy-row ">
+    <div class="right-wl-o">
+      <div class="dpy-row">
         <div
-          class="box-content  dpy-column"
+          class="box-content dpy-column"
           v-for="item in logisticsTransportation"
           :key="item.id"
         >
           <div
-            class="top  dpy-column"
-            :style="{ background: `url(${item.bg})`, 'background-size': '100% 100%' }"
+            class="top dpy-column"
+            :style="{
+              background: `url(${item.bg})`,
+              'background-size': '100% 100%'
+            }"
           >
-            <span class="animationData font-number-style">{{ item.value }}</span>
+            <span class="animationData font-number-style">{{
+              item.value
+            }}</span>
           </div>
           <div
             class="bottom"
-            :style="{ background: `url(${item.wrap})`, 'background-size': '100% 100%' }"
+            :style="{
+              background: `url(${item.wrap})`,
+              'background-size': '100% 100%'
+            }"
           >
             <span>{{ item.name }}</span>
           </div>
@@ -110,24 +127,14 @@
     </div>
 
     <!-- 出行数据 -->
-    <Title
-      class="right-go-out "
-    >出行数据</Title>
+    <Title class="right-go-out">出行数据</Title>
     <div class="bar-box">
-      <Echart
-        :option="optionGoingOutData.data"
-        :style="{ height: '220px' }"
-      ></Echart>
+      <Echart :option="optionGoingOutData.data"></Echart>
     </div>
     <!-- 智能交通 -->
-    <Title
-      class="right-go-out "
-    >智能交通</Title>
+    <Title class="right-go-out">智能交通</Title>
     <div class="bar-box">
-      <Echart
-        :option="optionIntelligentTransportation.data"
-        :style="{ height: '220px' }"
-      ></Echart>
+      <Echart :option="optionIntelligentTransportation.data"></Echart>
     </div>
   </Right>
 </template>
@@ -137,14 +144,14 @@ import { toRaw } from "@vue/reactivity";
 import {
   setTrafficMileage,
   setPublicTransport,
-  setGoingOutData,
+  setGoingOutData
 } from "@/2d/viewCharts/transportation";
-import {  getjtcx } from "@/2d/api";
+import { getjtcx } from "@/2d/api";
 import { useStore } from "vuex";
 import { Title } from "../components";
 const store = useStore();
 const base = reactive({
-  data: {},
+  data: {}
 });
 
 const optionTrafficMileage = reactive({ data: {} }); //交通里程
@@ -165,32 +172,31 @@ onMounted(() => {
     {
       id: 0,
       value: "",
-      name: "物流企业总数(家)",
+      name: "物流企业总数(家)"
     },
     {
       id: 1,
       value: "",
-      name: "物流运输总量(件)",
+      name: "物流运输总量(件)"
     },
     {
       id: 2,
       value: "",
-      name: "货运量(吨)",
-    },
+      name: "货运量(吨)"
+    }
   ];
-
 
   // 出行数据
   goingOutData.value = [
     { id: 0, value: "", name: "交通通信支出", unit: "元/年" },
-    { id: 1, value: "", name: "平均通勤时", unit: "分钟" },
-    { id: 2, value: "", name: "平均通勤距离", unit: "公里" },
+    { id: 1, value: "", name: "平均通勤时耗", unit: "分钟" },
+    { id: 2, value: "", name: "平均通勤距离", unit: "公里" }
   ];
   // 智能交通
   intelligentTransportation.value = [
-    { id: 3, value: "", name: "智能停车场", unit: "个" },
-    { id: 4, value: "", name: "智能图像采集终端", unit: "个" },
-    { id: 5, value: "", name: "智能信号灯", unit: "个" },
+    { id: 3, value: "", name: "智能图像采集终端", unit: "个" },
+    { id: 4, value: "", name: "智能停车场", unit: "个" },
+    { id: 5, value: "", name: "智能信号灯", unit: "个" }
   ];
 
   getjtcx().then((res) => {
@@ -203,14 +209,14 @@ onMounted(() => {
         id: 1,
         name: "高速铁路总里程",
         value: base.data.gstlzlc,
-        color: "rgba(18,78,251,.5)",
+        color: "rgba(18,78,251,.5)"
       },
       {
         id: 2,
         name: "普通铁路总里程",
         value: base.data.pttlzlc,
-        color: "rgba(255,175,21,.5)",
-      },
+        color: "rgba(255,175,21,.5)"
+      }
     ];
     optionTrafficMileage.data = setTrafficMileage(
       base.data.tlzlc,
@@ -219,24 +225,28 @@ onMounted(() => {
     // 公共交通
     optionPublicTransport0.data = setPublicTransport(
       base.data.gjzlc,
+      "公路总里程",
       "#7B68EE",
       require("@/2d/assets/images/pie-bg-b.png"),
       40000
     );
     optionPublicTransport1.data = setPublicTransport(
       base.data.nkyl,
+      "年客运量",
       "#00FA9A",
       require("@/2d/assets/images/pie-bg-g.png"),
       100
     );
     optionPublicTransport2.data = setPublicTransport(
       base.data.czcbyl,
+      "出租车保有量",
       "#FFA500",
       require("@/2d/assets/images/pie-bg-y.png"),
       100
     );
     optionPublicTransport3.data = setPublicTransport(
       base.data.gxzxctfl,
+      "共享自行车投放量",
       "#FFF5EE",
       require("@/2d/assets/images/pie-bg-w.png"),
       100
@@ -280,7 +290,7 @@ onMounted(() => {
       [
         " rgba(52,143,255,0.19)",
         "rgba(0,66,255,0.71)",
-        "rgba(133,165,255,0.99)",
+        "rgba(133,165,255,0.99)"
       ],
       require("@/2d/assets/images/blue-bar.png")
     );
@@ -304,7 +314,7 @@ onMounted(() => {
       [
         " rgba(255,175,21,0.19)",
         "rgba(255,175,21,0.71)",
-        "rgba(255,175,21,0.99)",
+        "rgba(255,175,21,0.99)"
       ],
       require("@/2d/assets/images/orange-bar.png")
     );
@@ -452,5 +462,6 @@ onMounted(() => {
 
 .bar-box {
   margin-top: 0.5rem;
+  height: 30%;
 }
 </style>

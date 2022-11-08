@@ -12,6 +12,8 @@ const router = useRouter();
 const title = ref("AIE智境-数智商业综合实践平台");
 const year = ref(dayjs().format("YYYY-MM-DD"));
 const time = ref(dayjs().format("HH:mm:ss"));
+
+// 返回
 const back = () => {
   if (store.state.LEVEL > 0) {
     store.commit("changeLevel", --store.state.LEVEL);
@@ -44,8 +46,6 @@ const back = () => {
           router.push("/IndustrialEconomy");
         },
       });
-
-      
     } else if (store.state.LEVEL == 2) {
       //
     } else if (store.state.LEVEL == 3) {
@@ -56,6 +56,31 @@ const back = () => {
   }
 
   // window.location.href='/aie_web'
+};
+
+const handleHome = () => {
+  store.commit("changeLevel", 0);
+
+  CACHE.container.orbitControls.maxDistance = 1000000;
+  CACHE.container.orbitControls.minPolarAngle = 0;
+  CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
+  CACHE.container.orbitCamera.far = 1000000;
+  CACHE.container.bounds.radius = 1000000;
+
+  API.cameraAnimation({
+    cameraState: STATE.earthState2,
+    callback: () => {
+      API.hideSkyBox();
+      API.hideFloor();
+      API.hideAll();
+      API.showEarth();
+
+      API.cameraAnimation({
+        cameraState: STATE.earthState,
+        callback: () => {},
+      });
+    },
+  });
 };
 
 setInterval(() => {
@@ -70,7 +95,18 @@ setInterval(() => {
       <span>数据统计时间： {{ store.state.year }}年</span>
     </p>
     <p class="info">
-      <span class="back" @click="back" v-show="store.state.LEVEL > 0"></span>
+      <img
+        src="../../assets/images/home.png"
+        class="home"
+        @click="handleHome"
+        v-show="store.state.LEVEL > 0"
+      />
+      <img
+        src="../../assets/images/btn-back.png"
+        class="back"
+        @click="back"
+        v-show="store.state.LEVEL > 0"
+      />
     </p>
   </div>
 </template>
@@ -96,21 +132,6 @@ setInterval(() => {
   font-size: 1.6vw;
   color: #ffffff;
 }
-
-.info {
-  position: absolute;
-  right: 2%;
-  top: 20%;
-  height: 22%;
-  width: 15%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  * {
-    padding: 0 8px;
-  }
-}
-
 .time {
   position: absolute;
   display: inline-block;
@@ -123,14 +144,26 @@ setInterval(() => {
     padding: 0 5px;
   }
 }
-
-.back {
-  background: url("@/2d/assets/images/btn-back.png") no-repeat center center /
-    100% 100%;
-  height: 100%;
-  width: 13%;
-  display: inline-block;
-  cursor: pointer;
+.info {
+  position: absolute;
+  right: 2%;
+  top: 20%;
+  height: 22%;
+  width: 15%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
   pointer-events: auto;
+  * {
+    padding: 0 8px;
+  }
+}
+.back {
+  height: 100%;
+  cursor: pointer;
+}
+.home {
+  height: 100%;
+  cursor: pointer;
 }
 </style>

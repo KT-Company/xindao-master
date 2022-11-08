@@ -12,7 +12,7 @@ export default function geturlparam() {
       obj[key] = value;
     }
   } catch (error) {
-    console.log('error: ', error);
+    // console.log('error: ', error);
   }
   return obj
 }
