@@ -1,6 +1,24 @@
 import { DATA } from './DATA.js'
 import { CACHE } from './CACHE.js'
 import { STATE } from './STATE.js'
+import store from '@/2d/store'
+
+
+// ******************************* 二维方法开始 *******************************
+
+// 获取企业总量
+function getEnterprise() {
+  return store.state.enterpriseData
+}
+
+/** 显示隐藏二维页面
+ * @param  {boolean}   isShow  // true 显示，false 隐藏（默认 true ）
+ * */ 
+function switchPage(isShow = true){
+  store.commit('setSwitchPage',isShow)
+}
+
+// ******************************* 二维方法结束 *******************************
 
 function loadIcons() {
   for (const data of DATA.iconsData) {
@@ -959,5 +977,7 @@ export const API = {
   earthRotateAnimation,
   stopEarthLineAnimation,
   startEarthLineAnimation,
-  hideEarth
+  hideEarth,
+  getEnterprise,
+  switchPage,
 }
