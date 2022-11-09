@@ -305,10 +305,7 @@ onMounted(() => {
         value: item.jmxfjgzscpi
       });
     });
-    console.log(JSON.parse(JSON.stringify(XFTJData.value)));
     let dataXFTJ = JSON.parse(JSON.stringify(XFTJData.value));
-    console.log("ymnData.value----------------------------------------------");
-    console.log(dataXFTJ);
     optionXFTJ.data = setXFTJ(dataXFTJ);
   });
 });
@@ -321,7 +318,7 @@ const message = ref("page2");
     <div id="fire-chart">
       <Echart :option="optionYearManNumber.data" class="fire-chart"></Echart>
     </div>
-    <Title>人口结构(北京常住人口年龄分布)</Title>
+    <Title>人口结构(常住人口年龄分布)</Title>
     <div class="left-box2">
       <div class="lan">
         <div class="line-box">

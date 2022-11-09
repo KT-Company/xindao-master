@@ -70,10 +70,10 @@ onMounted(() => {
     } catch (error) {}
 
     try {
-      schoolChartData.value[0].y = base.data.xqjyyxs;
+      schoolChartData.value[0].y = base.data.gdyxs;
       schoolChartData.value[1].y = base.data.zdyxs;
       schoolChartData.value[2].y = base.data.xxjyyxs;
-      schoolChartData.value[3].y = base.data.gdyxs;
+      schoolChartData.value[3].y = base.data.xqjyyxs;
     } catch (error) {}
 
     try {
@@ -111,7 +111,7 @@ onMounted(() => {
 
 <template>
   <Left>
-    <Title>{{store.state.year}}一一教育指标</Title>
+    <Title>教育概况{{store.state.year}}年</Title>
     <ul class="education-main">
       <li
         v-for="(item,index) in jiaoyuData"
