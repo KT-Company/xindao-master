@@ -43,10 +43,15 @@ const routes = [
     component: () => import("@/2d/views/Transportation.vue"),
   },
   // *************************************************************** 区域层 ***************************************************************
-  { // 区域层
-    path: "/Area",
-    name: "Area",
-    component: () => import("@/2d/views/Area.vue"),
+  // { // 区域层
+  //   path: "/Area",
+  //   name: "Area",
+  //   component: () => import("@/2d/views/Area.vue"),
+  // },
+  { // 区域层-改
+    path: "/AreaNew",
+    name: "AreaNew",
+    component: () => import("@/2d/views/AreaNew.vue"),
   },
   // *************************************************************** 企业层 ***************************************************************
   // { // 综合服务中心 

@@ -1,11 +1,4 @@
 <!-- 能源碳排放 -->
-<!-- 
-  数据对接情况：{
-    蜂窝图未对接
-    火力发电未对接
-    其他对接完成
-  }
- -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import {
@@ -107,7 +100,7 @@ onMounted(() => {
       .map((item) => item.hlfdzlm);
     fireChart.xData = data
       .filter((item) => item.year == store.state.year)
-      .map((item) => item.month + "月");
+      .map((item) => "1-" + item.month + "月");
     option.data1 = setFireChart(fireChart);
   });
 
@@ -183,7 +176,7 @@ onMounted(() => {
       </li>
       <li>
         <span class="other-title">水资源总量</span>
-        <p>
+        <p class="szyzl">
           <span class="other-val num-jianbian-hui num-type">{{
             base.data.szyzl
           }}</span
@@ -376,6 +369,10 @@ onMounted(() => {
         color: rgb(185, 206, 255);
         font-size: 0.6vw;
       }
+    }
+    .szyzl{
+      background: url("@/2d/assets/images/gaoliang.png") no-repeat left -18% bottom
+        5% / 50% 20%;
     }
   }
 }

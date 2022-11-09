@@ -25,7 +25,7 @@ caseVersionId=82347900509093947
 &userName=15178904534
 &userId=85566304814628903
 &userType=PLATFORM
-&userToken=f634c6e9f30389a26a5d3c7b597054e4
+&userToken=${window.myToken}
 &memberId=85566304824590394
 &orgType=SCHOOL
 &orgId=31978613954314240
@@ -33,22 +33,22 @@ caseVersionId=82347900509093947
 &sceneId=portal_logo
 &sysCode=`
 
-// get
-export function get(params) {
-    return request({
-        url: '/mock/data.json',
-        method: 'get',
-        params
-    })
-}
-// post
-export function post(data) {
-    return request({
-        url: '/mock/data.json',
-        method: 'post',
-        data
-    })
-}
+// // get
+// export function get(params) {
+//     return request({
+//         url: '/mock/data.json',
+//         method: 'get',
+//         params
+//     })
+// }
+// // post
+// export function post(data) {
+//     return request({
+//         url: '/mock/data.json',
+//         method: 'post',
+//         data
+//     })
+// }
 
 // ********************************************* 正式接口 *********************************************
 

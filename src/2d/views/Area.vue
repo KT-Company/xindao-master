@@ -5,7 +5,13 @@ import { setColumnChart } from "@/2d/viewCharts/Education";
 import { getIntinterval } from "@/2d/utils/myRandom";
 import { setSchoolChart } from "@/2d/viewCharts/Education";
 import Highchart from "@/2d/components/util/Highchart/Highchart.vue";
-import { setStackedChart, setLineCharts, setAddValue, setLineChartsQYJ } from '@/2d/viewCharts/Area'
+import {
+  setStackedChart,
+  setLineCharts,
+  setAddValue,
+  setLineChartsQYJ,
+} from "@/2d/viewCharts/Area";
+import { getqycyjj } from "@/2d/api";
 const option = reactive({
   data1: {},
   data2: {},
@@ -28,14 +34,18 @@ const areaAssetsChartData = ref([
 const gongyeChart = reactive({
   xData: [],
   data: [
-    { name: '工业增加值', value: [] },
-    { name: '中间投入', value: [] },
-    { name: '工业总产值', value: [] },
-    { name: '应交增值税', value: [] },
-  ]
-})
+    { name: "工业增加值", value: [] },
+    { name: "中间投入", value: [] },
+    { name: "工业总产值", value: [] },
+    { name: "应交增值税", value: [] },
+  ],
+});
 
 onMounted(() => {
+  getqycyjj().then((res) => {
+    console.log("getqycyjj: ", res);
+  });
+
   for (let index = 0; index < 12; index++) {
     fixedAssetsChartData.xData.push(`${index + 1}月`);
     gongyeChart.xData.push(`${index + 1}月`);
@@ -56,8 +66,8 @@ onMounted(() => {
       color: 1,
     });
   }
-  option.data2 = setSchoolChart(areaAssetsChartData, '%');
-  option.data3 = setStackedChart(gongyeChart)
+  option.data2 = setSchoolChart(areaAssetsChartData, "%");
+  option.data3 = setStackedChart(gongyeChart);
   var index = -1;
   setInterval(() => {
     index++;
@@ -66,77 +76,92 @@ onMounted(() => {
     areaAssetsChartData.value[index].h = 10;
   }, 1000);
 
-
   // 区域纳税总额度
-  let xftj = []
-  let month = 0
-  let xftjdata2 = []
+  let xftj = [];
+  let month = 0;
+  let xftjdata2 = [];
 
   for (let i = 0; i < 12; i++) {
     let sum = Math.floor(Math.random() * 3000 + 1);
-    month += 1
-    xftj.push(
-      { name: month + '月', value: sum }
-
-    )
+    month += 1;
+    xftj.push({ name: month + "月", value: sum });
     let sum2 = Math.floor(Math.random() * 2000 + 3000);
 
-    xftjdata2.push(sum2)
+    xftjdata2.push(sum2);
   }
 
-
-
-
-  option.data4 = setLineCharts(xftj, 'rgba(0, 7, 13, 1)', 'rgba(255, 186, 52,0.2)', 'rgba(255, 186, 52, .3)', 'rgba(255, 186, 52,1)', 6000
-    , '区域纳税额/亿');
-  option.data6 = setLineCharts(xftj, 'rgba(0, 7, 13, 1)', 'rgba(46,255,105,0.27)', 'rgba(46,255,105,0.27)', 'rgba(46,255,105,0.27)', 6000, '消费指数');
-  option.data7 = setLineChartsQYJ(xftj, 'rgba(0, 7, 13, 1)', 'rgba(255, 186, 52,0.2)', 'rgba(255, 186, 52, .3)', '#2860FF', 6000, xftjdata2,);
+  option.data4 = setLineCharts(
+    xftj,
+    "rgba(0, 7, 13, 1)",
+    "rgba(255, 186, 52,0.2)",
+    "rgba(255, 186, 52, .3)",
+    "rgba(255, 186, 52,1)",
+    6000,
+    "区域纳税额/亿"
+  );
+  option.data6 = setLineCharts(
+    xftj,
+    "rgba(0, 7, 13, 1)",
+    "rgba(46,255,105,0.27)",
+    "rgba(46,255,105,0.27)",
+    "rgba(46,255,105,0.27)",
+    6000,
+    "消费指数"
+  );
+  option.data7 = setLineChartsQYJ(
+    xftj,
+    "rgba(0, 7, 13, 1)",
+    "rgba(255, 186, 52,0.2)",
+    "rgba(255, 186, 52, .3)",
+    "#2860FF",
+    6000,
+    xftjdata2
+  );
 
   //  工业增加值
   let month2 = [];
   for (let i = 0; i < 12; i++) {
-
-    month += 1
-    month2.push(month + '月')
+    month += 1;
+    month2.push(month + "月");
   }
   let addValue2 = reactive({
     xData: month2,
     data: [
-      { name: '共工业增加值', value: [] },
-      { name: '中间投入', value: [] },
-      { name: '工业总产量', value: [] },
-      { name: '应交增值税', value: [] },
-    ]
-  })
+      { name: "共工业增加值", value: [] },
+      { name: "中间投入", value: [] },
+      { name: "工业总产量", value: [] },
+      { name: "应交增值税", value: [] },
+    ],
+  });
   for (let j = 0; j < 12; j++) {
     for (let i = 0; i < 4; i++) {
       addValue2.data[i].value.push(getIntinterval(2000, 0));
     }
   }
   let data2color = [
-    ['rgba(0,66,255, .8)', 'rgba(0,66,255, 0.2)'],
-    ['rgba(255,168,0, .8)', 'rgba(255,168,0, 0.2)'],
-    ['rgba(255,255,255, .8)', 'rgba(255,255,255, 0.2)'],
-    ['rgba(84,0,255, .8)', 'rgba(84,0,255, 0.2)'],
-  ]
+    ["rgba(0,66,255, .8)", "rgba(0,66,255, 0.2)"],
+    ["rgba(255,168,0, .8)", "rgba(255,168,0, 0.2)"],
+    ["rgba(255,255,255, .8)", "rgba(255,255,255, 0.2)"],
+    ["rgba(84,0,255, .8)", "rgba(84,0,255, 0.2)"],
+  ];
   option.data3 = setAddValue(addValue2, data2color);
   // 服务增加值
   const addValue = reactive({
     xData: [],
     data: [
-      { name: '中和服务中心', value: [] },
-      { name: '供应', value: [] },
-      { name: '经销', value: [] },
-      { name: '物流', value: [] },
-      { name: '政务', value: [] },
-      { name: '银行', value: [] },
-      { name: '销售', value: [] },
-    ]
-  })
-  let year = 2009
+      { name: "中和服务中心", value: [] },
+      { name: "供应", value: [] },
+      { name: "经销", value: [] },
+      { name: "物流", value: [] },
+      { name: "政务", value: [] },
+      { name: "银行", value: [] },
+      { name: "销售", value: [] },
+    ],
+  });
+  let year = 2009;
   for (let i = 0; i < 6; i++) {
-    year += 1
-    addValue.xData.push(year)
+    year += 1;
+    addValue.xData.push(year);
   }
   for (let j = 0; j < 6; j++) {
     for (let i = 0; i < 7; i++) {
@@ -144,97 +169,96 @@ onMounted(() => {
     }
   }
   let data5color = [
-    ['rgba(0,66,255, .8)', 'rgba(0,66,255, 0.2)'],
-    ['rgba(255,168,0, .8)', 'rgba(255,168,0, 0.2)'],
-    ['rgba(255,255,255, .8)', 'rgba(255,255,255, 0.2)'],
-    ['rgba(84,0,255, .8)', 'rgba(84,0,255, 0.2)'],
-    ['rgba(0,255,246, .8)', 'rgba(0,255,246, 0.2)'],
-    ['rgba(255,240,0, .8)', 'rgba(255,240,0, 0.2)'],
-    ['rgba(0,255,72, .8)', 'rgba(0,255,72, 0.2)'],
-  ]
+    ["rgba(0,66,255, .8)", "rgba(0,66,255, 0.2)"],
+    ["rgba(255,168,0, .8)", "rgba(255,168,0, 0.2)"],
+    ["rgba(255,255,255, .8)", "rgba(255,255,255, 0.2)"],
+    ["rgba(84,0,255, .8)", "rgba(84,0,255, 0.2)"],
+    ["rgba(0,255,246, .8)", "rgba(0,255,246, 0.2)"],
+    ["rgba(255,240,0, .8)", "rgba(255,240,0, 0.2)"],
+    ["rgba(0,255,72, .8)", "rgba(0,255,72, 0.2)"],
+  ];
   option.data5 = setAddValue(addValue, data5color);
-
 });
 
 // 中间列表类容
 let contentListBtn = ref([
-  { name: '三圈关系', id: 0, change: true },
-  { name: '资金流', id: 1, change: false },
-  { name: '信息流', id: 2, change: false },
-  { name: '物流', id: 3, change: false },
-])
-let contentListBtnId = ref(0)
+  { name: "三圈关系", id: 0, change: true },
+  { name: "资金流", id: 1, change: false },
+  { name: "信息流", id: 2, change: false },
+  { name: "物流", id: 3, change: false },
+]);
+let contentListBtnId = ref(0);
 const changData = (id) => {
-  contentListBtnId.value = id
-  contentListBtn.value.forEach(item => {
-    item.change = false
+  contentListBtnId.value = id;
+  contentListBtn.value.forEach((item) => {
+    item.change = false;
     if (item.id == id) {
-      item.change = true
+      item.change = true;
     }
-  })
-}
-let btnBoeeomData = ([
+  });
+};
+let btnBoeeomData = [
   {
     id: 0,
     title: "建筑基本信息",
     data: [
-      { title: '开发商:', value: '中建五局' },
-      { title: '物业名称:', value: '新都物业有限公司' },
-      { title: '详细地址:', value: '北京市' },
-      { title: '所属地块:', value: 'DK-01' },
-      { title: '占地面积:', value: '64123㎡' },
-      { title: '层数:', value: '25层' },
-      { title: '智能话设施:', value: '办公自动化系统' },
-      { title: 'LEED认证:', value: '是' },
-      { title: '外立面材料:', value: '单元式玻璃幕墙' },
-    ]
+      { title: "开发商:", value: "中建五局" },
+      { title: "物业名称:", value: "新都物业有限公司" },
+      { title: "详细地址:", value: "北京市" },
+      { title: "所属地块:", value: "DK-01" },
+      { title: "占地面积:", value: "64123㎡" },
+      { title: "层数:", value: "25层" },
+      { title: "智能话设施:", value: "办公自动化系统" },
+      { title: "LEED认证:", value: "是" },
+      { title: "外立面材料:", value: "单元式玻璃幕墙" },
+    ],
   },
   {
     id: 1,
     title: "建筑基本信息1",
     data: [
-      { title: '开发商:', value: '中建五局' },
-      { title: '物业名称:', value: '新都物业有限公司' },
-      { title: '详细地址:', value: '北京市' },
-      { title: '所属地块:', value: 'DK-01' },
-      { title: '占地面积:', value: '64123㎡' },
-      { title: '层数:', value: '25层' },
-      { title: '智能话设施:', value: '办公自动化系统' },
-      { title: 'LEED认证:', value: '是' },
-      { title: '外立面材料:', value: '单元式玻璃幕墙' },
-    ]
+      { title: "开发商:", value: "中建五局" },
+      { title: "物业名称:", value: "新都物业有限公司" },
+      { title: "详细地址:", value: "北京市" },
+      { title: "所属地块:", value: "DK-01" },
+      { title: "占地面积:", value: "64123㎡" },
+      { title: "层数:", value: "25层" },
+      { title: "智能话设施:", value: "办公自动化系统" },
+      { title: "LEED认证:", value: "是" },
+      { title: "外立面材料:", value: "单元式玻璃幕墙" },
+    ],
   },
   {
     id: 2,
     title: "建筑基本信息2",
     data: [
-      { title: '开发商:', value: '中建五局' },
-      { title: '物业名称:', value: '新都物业有限公司' },
-      { title: '详细地址:', value: '北京市' },
-      { title: '所属地块:', value: 'DK-01' },
-      { title: '占地面积:', value: '64123㎡' },
-      { title: '层数:', value: '25层' },
-      { title: '智能话设施:', value: '办公自动化系统' },
-      { title: 'LEED认证:', value: '是' },
-      { title: '外立面材料:', value: '单元式玻璃幕墙' },
-    ]
+      { title: "开发商:", value: "中建五局" },
+      { title: "物业名称:", value: "新都物业有限公司" },
+      { title: "详细地址:", value: "北京市" },
+      { title: "所属地块:", value: "DK-01" },
+      { title: "占地面积:", value: "64123㎡" },
+      { title: "层数:", value: "25层" },
+      { title: "智能话设施:", value: "办公自动化系统" },
+      { title: "LEED认证:", value: "是" },
+      { title: "外立面材料:", value: "单元式玻璃幕墙" },
+    ],
   },
   {
     id: 3,
     title: "建筑基本信息3",
     data: [
-      { title: '开发商:', value: '中建五局' },
-      { title: '物业名称:', value: '新都物业有限公司' },
-      { title: '详细地址:', value: '北京市' },
-      { title: '所属地块:', value: 'DK-01' },
-      { title: '占地面积:', value: '64123㎡' },
-      { title: '层数:', value: '25层' },
-      { title: '智能话设施:', value: '办公自动化系统' },
-      { title: 'LEED认证:', value: '是' },
-      { title: '外立面材料:', value: '单元式玻璃幕墙' },
-    ]
+      { title: "开发商:", value: "中建五局" },
+      { title: "物业名称:", value: "新都物业有限公司" },
+      { title: "详细地址:", value: "北京市" },
+      { title: "所属地块:", value: "DK-01" },
+      { title: "占地面积:", value: "64123㎡" },
+      { title: "层数:", value: "25层" },
+      { title: "智能话设施:", value: "办公自动化系统" },
+      { title: "LEED认证:", value: "是" },
+      { title: "外立面材料:", value: "单元式玻璃幕墙" },
+    ],
   },
-])
+];
 </script>
 
 <template>
@@ -246,28 +270,26 @@ let btnBoeeomData = ([
           <div class="percent">+58%</div>
           <div class="title">环比率</div>
         </div>
-        <div class="GDP-data ">
-          <div class="box1 ">
+        <div class="GDP-data">
+          <div class="box1">
             <div class="GDP-top dpy-row">
-              <div class="  icon"></div>
+              <div class="icon"></div>
               <div class="text">本月</div>
             </div>
             <div class="GDP-bottom dpy-row">
               <div class="text">￥</div>
               <div class="text">22,332,323,232.23</div>
             </div>
-
           </div>
           <div class="box2">
             <div class="GDP-top dpy-row">
-              <div class=" icon"></div>
+              <div class="icon"></div>
               <div class="text">环比</div>
             </div>
             <div class="GDP-bottom dpy-row">
               <div class="text">￥</div>
               <div class="text">22,332,323,232.23</div>
             </div>
-
           </div>
         </div>
       </div>
@@ -285,17 +307,14 @@ let btnBoeeomData = ([
     <Title>服务增加值</Title>
     <div class="main">
       <Echart :option="option.data5" class="h-100"></Echart>
-
     </div>
     <Title>消费价格指数</Title>
     <div class="main">
       <Echart :option="option.data6" class="h-100"></Echart>
-
     </div>
     <Title>企业数量及总资产</Title>
     <div class="main">
       <Echart :option="option.data7" class="h-100"></Echart>
-
     </div>
   </Right>
 
@@ -317,21 +336,28 @@ let btnBoeeomData = ([
 
   <div class="center-content">
     <div class="btn-list dpy-row">
-      <div v-for=" item in contentListBtn" :key="item.id" :class="item.change ? 'change' : 'unchange'" class="btn"
-        @click="changData(item.id)">
+      <div
+        v-for="item in contentListBtn"
+        :key="item.id"
+        :class="item.change ? 'change' : 'unchange'"
+        class="btn"
+        @click="changData(item.id)"
+      >
         <span>{{ item.name }}</span>
-
       </div>
     </div>
     <div class="center-bg" v-if="false">
       <div class="tetel">{{ btnBoeeomData[contentListBtnId].title }}</div>
       <div class="center-box">
-        <div v-for="item in btnBoeeomData[contentListBtnId].data" :key="item.id" class="center-list">
+        <div
+          v-for="item in btnBoeeomData[contentListBtnId].data"
+          :key="item.id"
+          class="center-list"
+        >
           <span class="span-title">{{ item.title }}</span>
           <span class="span-value">{{ item.value }}</span>
         </div>
       </div>
-
     </div>
 
     <div class="dong"></div>
@@ -379,7 +405,8 @@ let btnBoeeomData = ([
 
   .area-bg {
     position: absolute;
-    background: url("@/2d/assets/images/chart-yuanpan.png") no-repeat center center / 100% 100%;
+    background: url("@/2d/assets/images/chart-yuanpan.png") no-repeat center
+      center / 100% 100%;
     height: 75%;
     width: 80%;
     left: 50%;
@@ -387,7 +414,6 @@ let btnBoeeomData = ([
     bottom: -20%;
   }
 }
-
 
 .GDP-wrap {
   width: 100%;
@@ -405,7 +431,11 @@ let btnBoeeomData = ([
     .percent {
       font-family: DINCond-Bold;
       font-size: 3rem;
-      background-image: linear-gradient(0deg, rgba(155, 207, 255, 0.76) 0.9521484375%, #FFFFFF 100%);
+      background-image: linear-gradient(
+        0deg,
+        rgba(155, 207, 255, 0.76) 0.9521484375%,
+        #ffffff 100%
+      );
       -webkit-background-clip: text;
       color: transparent;
       // color: linear-gradient(0deg, rgba(155, 207, 255, 0.76) 0.9521484375%, #FFFFFF 100%);
@@ -414,7 +444,7 @@ let btnBoeeomData = ([
   }
 
   .GDP-data {
-    &>div {
+    & > div {
       margin: 1.5rem 0;
     }
 
@@ -426,12 +456,11 @@ let btnBoeeomData = ([
       width: 12px;
       height: 12px;
       border-radius: 2px;
-
     }
 
     .GDP-top {
       .text {
-        color: #FFFFFF;
+        color: #ffffff;
         opacity: 0.7;
         margin-left: 1rem;
       }
@@ -442,21 +471,20 @@ let btnBoeeomData = ([
         font-family: Microsoft YaHei;
         font-weight: 400;
         font-size: 1.3vw;
-        color: #FFFFFF;
+        color: #ffffff;
         opacity: 1;
-
       }
     }
 
     .box1 {
       .icon {
-        background: #0042FF;
+        background: #0042ff;
       }
     }
 
     .box2 {
       .icon {
-        background: #00FF00;
+        background: #00ff00;
       }
     }
   }
@@ -471,8 +499,6 @@ let btnBoeeomData = ([
   left: 50%;
   transform: translate(-50%);
 
-
-
   .btn {
     width: 17%;
     height: 2.7rem;
@@ -483,7 +509,7 @@ let btnBoeeomData = ([
   }
 
   .change {
-    color: #FFFFFF;
+    color: #ffffff;
     text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
 
     background: url("@/2d/assets/images/top-button-pick.png") no-repeat;
@@ -491,12 +517,14 @@ let btnBoeeomData = ([
 
     span {
       text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
-      background: linear-gradient(180deg, #E8EEFF 71.044921875%, #124EFB 99.5849609375%);
+      background: linear-gradient(
+        180deg,
+        #e8eeff 71.044921875%,
+        #124efb 99.5849609375%
+      );
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-
-
     }
   }
 
@@ -511,15 +539,16 @@ let btnBoeeomData = ([
 
     span {
       text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
-      background: linear-gradient(180deg, #E8EEFF 71.044921875%, #BFCAE8 99.5849609375%);
+      background: linear-gradient(
+        180deg,
+        #e8eeff 71.044921875%,
+        #bfcae8 99.5849609375%
+      );
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-
-
     }
   }
-
 
   .center-bg {
     width: 50%;
@@ -527,14 +556,17 @@ let btnBoeeomData = ([
     background: url("@/2d/assets/images/tanchuang-bg.png") no-repeat;
     background-size: 100% 100%;
 
-
     .tetel {
       padding: 1rem 0;
       font-size: 1.5rem;
       font-family: DINCond-Bold;
       font-weight: 700;
       text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
-      background: linear-gradient(180deg, #E8EEFF 71.044921875%, #BFCAE8 99.5849609375%);
+      background: linear-gradient(
+        180deg,
+        #e8eeff 71.044921875%,
+        #bfcae8 99.5849609375%
+      );
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -545,7 +577,7 @@ let btnBoeeomData = ([
       width: 100%;
 
       .center-list {
-        margin-top: .5rem;
+        margin-top: 0.5rem;
 
         .span-title {
           width: 50%;
@@ -553,19 +585,13 @@ let btnBoeeomData = ([
           text-align: right;
           padding-right: 1rem;
           font-size: 1rem;
-
-
         }
 
         .span-value {
           font-size: 1rem;
         }
       }
-
     }
-
   }
-
-
 }
 </style>

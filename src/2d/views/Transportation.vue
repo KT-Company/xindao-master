@@ -6,7 +6,7 @@
       <div class="wrap-tm dpy-row">
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.glzlcs }}&nbsp;公里</div>
-          <div>公交总里程数</div>
+          <div>公路总里程数</div>
         </div>
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.gsglzlc }}&nbsp;公里</div>
