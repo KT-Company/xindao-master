@@ -20,7 +20,7 @@ const menus = ref([
   { id: 5, name: "能源碳排放", path: "/Energy" },
 ]);
 const handleMenu = (item) => {
-  // const currRouter = firstA(router.currentRoute.value.fullPath);
+  // const currRouter = firstA(router.currentRoute.value.path);
   // if (currRouter === item.path) router.replace("/Replace");
   // else router.push(item.path);
   router.push(item.path)
@@ -117,10 +117,7 @@ watch(
 <template>
   <div class="footer">
     <div class="footer-main">
-      <ul
-        class="button-box"
-        v-if="isShow && store.state.LEVEL == 1"
-      >
+      <ul class="button-box" v-if="isShow && store.state.LEVEL == 1">
         <li
           v-for="item in menus"
           :key="item.id"

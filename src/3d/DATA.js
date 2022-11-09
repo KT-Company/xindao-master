@@ -311,8 +311,7 @@ const earthIcons = [
     active: false
   },
   {
-    // name:'金融服务中心',
-    name:'金融服务',
+    name:'金融服务中心',
     lnglat: [121.47,31.23],//上海
     active: false
   },

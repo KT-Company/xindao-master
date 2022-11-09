@@ -1,17 +1,11 @@
 <!-- 能源碳排放 -->
-<!-- 
-  数据对接情况：{
-    蜂窝图未对接
-    火力发电未对接
-    其他对接完成
-  }
- -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import {
   setFireChart,
   setCarbonChart1,
   setCarbonChart2,
+  setFireChartB,
 } from "@/2d/viewCharts/Energy";
 import { getnyzxhm, getnytpfy, getqynytpfy } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
@@ -40,8 +34,8 @@ const fireChart = reactive({
     // "1-12月",
   ],
   data: [
-    { name: store.state.year, value: [] },
     { name: store.state.year - 1, value: [] },
+    { name: store.state.year, value: [] },
   ],
 });
 
@@ -99,16 +93,16 @@ onMounted(() => {
   getnyzxhm().then((res) => {
     console.log("getnyzxhm: ", res);
     const data = res.data.formInfoList;
-    fireChart.data[0] = data
-      .filter((item) => item.year == store.state.year)
-      .map((item) => item.hlfdzlm);
-    fireChart.data[1] = data
+    fireChart.data[0].value = data
       .filter((item) => item.year == store.state.year - 1)
+      .map((item) => item.hlfdzlm);
+    fireChart.data[1].value = data
+      .filter((item) => item.year == store.state.year)
       .map((item) => item.hlfdzlm);
     fireChart.xData = data
       .filter((item) => item.year == store.state.year)
-      .map((item) => item.month + "月");
-    option.data1 = setFireChart(fireChart);
+      .map((item) => "1-" + item.month + "月");
+    option.data1 = window.publicParams.fireBackup ? setFireChartB(fireChart) : setFireChart(fireChart);
   });
 
   getqynytpfy().then((res) => {
@@ -183,7 +177,7 @@ onMounted(() => {
       </li>
       <li>
         <span class="other-title">水资源总量</span>
-        <p>
+        <p class="szyzl">
           <span class="other-val num-jianbian-hui num-type">{{
             base.data.szyzl
           }}</span
@@ -376,6 +370,10 @@ onMounted(() => {
         color: rgb(185, 206, 255);
         font-size: 0.6vw;
       }
+    }
+    .szyzl{
+      background: url("@/2d/assets/images/gaoliang.png") no-repeat left -18% bottom
+        5% / 50% 20%;
     }
   }
 }

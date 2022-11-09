@@ -43,6 +43,29 @@ li {
 .h-30 {
   height: 20% !important;
 }
+
+/* ************************************************** */
+.z-left {
+  border: 1px solid red;
+  position: absolute;
+  width: 20%;
+  min-width: 352px !important;
+  height: 88% !important;
+  top: 8% !important;
+  left: 0%;
+}
+
+.z-right {
+  border: 1px solid red;
+  position: absolute;
+  width: 20%;
+  min-width: 352px !important;
+  height: 88% !important;
+  top: 8% !important;
+  right: 0%;
+}
+
+
 /* ************************************************** */
 :root {
   --barMargin: 1vw;
@@ -102,8 +125,8 @@ li {
 
 }
 
-.hui{
-  color: rgb(165,168,175);
+.hui {
+  color: rgb(165, 168, 175);
 }
 
 .yuanxiao-val {
@@ -205,4 +228,3 @@ li {
   margin-top: .189vw;
   border-radius: .15vw;
 }
-

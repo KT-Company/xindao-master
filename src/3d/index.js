@@ -50,17 +50,17 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           STATE.earthState.target.y,
           STATE.earthState.target.z,
         ],
-        maxDistance: 48000,
-        maxPolarAngle: Math.PI * 0.44,
-        minPolarAngle: Math.PI * 0.05,
+        maxDistance: 1000000,
+        // maxPolarAngle: Math.PI * 0.44,
+        // minPolarAngle: Math.PI * 0.05,
         enableDamping: true,
         dampingFactor: 0.05,
       },
     },
-    bounds: {
-      radius: 48000,
-      center: [0, 0, 0]
-    },
+    // bounds: {
+    //   radius: 48000,
+    //   center: [0, 0, 0]
+    // },
     lights: {
       directionLights: [
         {
@@ -196,27 +196,25 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // API.loadEnergy()
 
 
-      if (CACHE.container.loadingBar)  CACHE.container.loadingBar.style.visibility = "hidden";
-
       // 地球模块
-      // API.loadEarth(() => {
-      //   API.hideFloor();
-      //   API.hideSkyBox();
-      //   // earth load finish
-      //   API.cameraAnimation({
-      //     duration: 0,
-      //     cameraState: STATE.earthState,
-      //     callback: () => {
-      //       API.earthRotateAnimation();
-      //       API.startEarthLineAnimation();
+      API.loadEarth(() => {
+        API.hideFloor();
+        API.hideSkyBox();
+        // earth load finish
+        API.cameraAnimation({
+          duration: 0,
+          cameraState: STATE.earthState,
+          callback: () => {
+            API.earthRotateAnimation();
+            API.startEarthLineAnimation();
 
-      //       if (CACHE.container.loadingBar)
-      //         CACHE.container.loadingBar.style.visibility = "hidden";
+            if (CACHE.container.loadingBar)
+              CACHE.container.loadingBar.style.visibility = "hidden";
 
-      //       API.hideAll();
-      //     },
-      //   });
-      // });
+            API.hideAll();
+          },
+        });
+      });
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);

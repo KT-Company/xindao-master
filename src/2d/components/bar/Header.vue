@@ -10,12 +10,12 @@ const store = useStore();
 
 const router = useRouter();
 const title = ref("AIE智境-数智商业综合实践平台");
-const year = ref(dayjs().format("YYYY-MM-DD"));
-const time = ref(dayjs().format("HH:mm:ss"));
+// const year = ref(dayjs().format("YYYY-MM-DD"));
+// const time = ref(dayjs().format("HH:mm:ss"));
 
 // 返回
 const back = () => {
-  if (store.state.LEVEL > 1) {
+  if (store.state.LEVEL > 0) {
     store.commit("changeLevel", --store.state.LEVEL);
 
     if (store.state.LEVEL == 0) {
@@ -55,46 +55,21 @@ const back = () => {
     }
   }
 
-  // window.location.href='/aie_web'
 };
 
 const handleHome = () => {
-  // store.commit("changeLevel", 0);
-
-  // CACHE.container.orbitControls.maxDistance = 1000000;
-  // CACHE.container.orbitControls.minPolarAngle = 0;
-  // CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
-  // CACHE.container.orbitCamera.far = 1000000;
-  // CACHE.container.bounds.radius = 1000000;
-
-  // API.cameraAnimation({
-  //   cameraState: STATE.earthState2,
-  //   callback: () => {
-  //     API.hideSkyBox();
-  //     API.hideFloor();
-  //     API.hideAll();
-  //     API.showEarth();
-
-  //     API.cameraAnimation({
-  //       cameraState: STATE.earthState,
-  //       callback: () => {},
-  //     });
-  //   },
-  // });
-
-
-  store.commit("changeLevel", 1);
-  router.push('/IndustrialEconomy')
+  window.location.href='/aie_web' // 返回用户 home 地址
 };
 
-setInterval(() => {
-  time.value = dayjs().format("HH:mm:ss");
-}, 1000);
+// setInterval(() => {
+//   time.value = dayjs().format("HH:mm:ss");
+// }, 1000);
 </script>
 
 <template>
   <div class="header">
-    <h1 class="title num-jianbian-lan">{{ title }}</h1>
+    <!-- <h1 class="title num-jianbian-lan">{{ title }}</h1> -->
+    <img class="title" src="../../assets/images/logo.png" alt="">
     <p class="time">
       <span>数据统计时间： {{ store.state.year }}年</span>
     </p>
@@ -132,8 +107,9 @@ setInterval(() => {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 6%;
+  top: 20%;
   font-size: 1.6vw;
+  width: 20%;
   color: #ffffff;
 }
 .time {

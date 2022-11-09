@@ -6,7 +6,7 @@
       <div class="wrap-tm dpy-row">
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.glzlcs }}&nbsp;公里</div>
-          <div>公交总里程数</div>
+          <div>公路总里程</div>
         </div>
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.gsglzlc }}&nbsp;公里</div>
@@ -15,7 +15,7 @@
       </div>
       <Echart :option="optionTrafficMileage.data" class="chart-box"></Echart>
       <div class="box-km">
-        城市轨道交通总公里：<span class="span"
+        城市轨道交通总里程：<span class="span"
           >{{ base.data.csgdjtzlc }}&nbsp;公里</span
         >
       </div>
@@ -29,7 +29,7 @@
 
         <div class="dpy-row">
           <div class="left">
-            <p>公路总里程</p>
+            <p>公交总里程</p>
           </div>
           <div class="right">
             <span class="span1">{{ base.data.gjzlc }}</span
@@ -225,7 +225,7 @@ onMounted(() => {
     // 公共交通
     optionPublicTransport0.data = setPublicTransport(
       base.data.gjzlc,
-      "公路总里程",
+      "公交总里程",
       "#7B68EE",
       require("@/2d/assets/images/pie-bg-b.png"),
       40000

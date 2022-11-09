@@ -296,7 +296,7 @@ export function setConsumptionStatistics(res) {
         },
 
         tooltip:{
-          trogger:'axis',
+          trigger:'axis',
         },
         xAxis: [{
           type: 'category',
@@ -492,11 +492,10 @@ export function setXFTJ(res) {
             top: '10%',
             bottom: '0%',
             containLabel: true
-        },
-        tooltip:{
-          trogger:'axis',
-        },
-
+        }, 
+        tooltip: {
+          trigger: "axis",
+      },
         xAxis: [{
             type: 'category',
             boundaryGap: true,

@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 const routes = [
   {
     path: '/',
-    redirect: '/IndustrialEconomy'
+    redirect: '/Home'
   },
   { // 空白页
     path: "/Home",
