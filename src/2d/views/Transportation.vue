@@ -29,7 +29,7 @@
 
         <div class="dpy-row">
           <div class="left">
-            <p>公路总里程</p>
+            <p>公交总里程数</p>
           </div>
           <div class="right">
             <span class="span1">{{ base.data.gjzlc }}</span
