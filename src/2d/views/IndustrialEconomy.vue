@@ -65,7 +65,7 @@ const taxChartData = ref([
   { name: "地方政府债券", value: 0, unit: "亿" },
   { name: "地方政府债务", value: 0, unit: "亿" },
   { name: "一般公共预算支出", value: 0, unit: "亿" },
-  { name: "社会消费品零售总额", value: 0, unit: "亿" },
+  // { name: "社会消费品零售总额", value: 0, unit: "亿" },
 ]);
 onMounted(() => {
   getcyjj().then((res) => {
@@ -94,7 +94,7 @@ onMounted(() => {
     taxChartData.value[4].value = cyzb.data.dfzfzq;
     taxChartData.value[5].value = cyzb.data.dfzfzw;
     taxChartData.value[6].value = cyzb.data.ybggyszc;
-    taxChartData.value[7].value = cyzb.data.shxfplsze;
+    // taxChartData.value[7].value = cyzb.data.shxfplsze;
 
     economicData[0].value = cyzb.data.gjjgxjsqyzs;
     economicData[1].value = cyzb.data.gjjkjbkjxzxqy;

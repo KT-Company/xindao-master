@@ -5,6 +5,7 @@ import {
   setFireChart,
   setCarbonChart1,
   setCarbonChart2,
+  setFireChartB,
 } from "@/2d/viewCharts/Energy";
 import { getnyzxhm, getnytpfy, getqynytpfy } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
@@ -33,8 +34,8 @@ const fireChart = reactive({
     // "1-12月",
   ],
   data: [
-    { name: store.state.year, value: [] },
     { name: store.state.year - 1, value: [] },
+    { name: store.state.year, value: [] },
   ],
 });
 
@@ -92,16 +93,16 @@ onMounted(() => {
   getnyzxhm().then((res) => {
     console.log("getnyzxhm: ", res);
     const data = res.data.formInfoList;
-    fireChart.data[1] = data
-      .filter((item) => item.year == store.state.year)
-      .map((item) => item.hlfdzlm);
-    fireChart.data[0] = data
+    fireChart.data[0].value = data
       .filter((item) => item.year == store.state.year - 1)
+      .map((item) => item.hlfdzlm);
+    fireChart.data[1].value = data
+      .filter((item) => item.year == store.state.year)
       .map((item) => item.hlfdzlm);
     fireChart.xData = data
       .filter((item) => item.year == store.state.year)
       .map((item) => "1-" + item.month + "月");
-    option.data1 = setFireChart(fireChart);
+    option.data1 = window.publicParams.fireBackup ? setFireChartB(fireChart) : setFireChart(fireChart);
   });
 
   getqynytpfy().then((res) => {

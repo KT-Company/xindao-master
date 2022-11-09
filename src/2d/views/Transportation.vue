@@ -6,7 +6,7 @@
       <div class="wrap-tm dpy-row">
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.glzlcs }}&nbsp;公里</div>
-          <div>公路总里程数</div>
+          <div>公路总里程</div>
         </div>
         <div class="bg-box dpy-column">
           <div class="title">{{ base.data.gsglzlc }}&nbsp;公里</div>
@@ -15,7 +15,7 @@
       </div>
       <Echart :option="optionTrafficMileage.data" class="chart-box"></Echart>
       <div class="box-km">
-        城市轨道交通总公里：<span class="span"
+        城市轨道交通总里程：<span class="span"
           >{{ base.data.csgdjtzlc }}&nbsp;公里</span
         >
       </div>

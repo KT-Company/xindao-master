@@ -21,7 +21,7 @@ const base = reactive({
 
 const schoolChartData = ref([
   { name: "高等院校", y: 0, h: 0, selected: true },
-  { name: "中等教育", y: 0, h: 0, selected: true },
+  { name: "中等院校", y: 0, h: 0, selected: true },
   { name: "小学教育", y: 0, h: 0, selected: true },
   { name: "学前教育", y: 0, h: 0, selected: true },
 ]);

@@ -206,7 +206,7 @@ export function setFireChart(res) {
             splitLine: {
                 show: true,
                 lineStyle: {
-                    color: "rgb(35,51,81)",
+                    color: "rgba(35,51,81)",
                     opacity: 0.2,
                     width: 1,
                 },
@@ -220,8 +220,8 @@ export function setFireChart(res) {
             itemWidth: 20,
             itemHeight: 20,
             data: [
-                { icon: 'image://' + require('@/2d/assets/images/zft-lan.png'), name: '2020' },
-                { icon: 'image://' + require('@/2d/assets/images/zft-ju.png'), name: '2021' },
+                { icon: 'image://' + require('@/2d/assets/images/zft-lan.png'), name: res.data[0].name },
+                { icon: 'image://' + require('@/2d/assets/images/zft-ju.png'), name: res.data[1].name },
             ],
             textStyle: {
                 color: chart.fontColor,
@@ -229,7 +229,7 @@ export function setFireChart(res) {
         },
         series: [
             {
-                name: "2020",
+                name: res.data[0].name,
                 stack: "1",
                 type: "custom",
                 renderItem: (params, api) => {
@@ -312,11 +312,11 @@ export function setFireChart(res) {
                         ],
                     };
                 },
-                color: "blue",
-                data: res.data[0],
+                color: "rgba(9,179,249)",
+                data: res.data[0].value,
             },
             {
-                name: "2021",
+                name: res.data[1].name,
                 stack: "2",
                 type: "custom",
                 renderItem: (params, api) => {
@@ -387,11 +387,11 @@ export function setFireChart(res) {
                                     fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                                         {
                                             offset: 0,
-                                            color: "rgb(255,133,28)",
+                                            color: "rgba(255,133,28)",
                                         },
                                         {
                                             offset: 1,
-                                            color: "rgb(255,133,28)",
+                                            color: "rgba(255,133,28)",
                                         },
                                     ]),
                                 },
@@ -399,8 +399,8 @@ export function setFireChart(res) {
                         ],
                     };
                 },
-                color: "blue",
-                data: res.data[1],
+                color: "rgba(255,133,28)",
+                data: res.data[1].value,
             },
         ],
     };
@@ -409,6 +409,114 @@ export function setFireChart(res) {
 
 
 }
+
+// 火力发电量统计图 备用 
+export function setFireChartB(res) {
+    let colorList = ["#c36dff", "#3bb3ff","#7d89ff",  "#ff9344", "#f3c304", "#36d97b", "#12d5ce", "#f2956f", "#f2d66f", "#cdf26f", "#8cf26f", "#6ff294"]
+    var option = {
+        color: colorList,
+        tooltip: {
+            trigger: "axis",
+            axisPointer: {
+                type: "shadow",
+            },
+        },
+        grid: {
+            top: "20%",
+            left: "7%",
+            bottom: "5%",
+            right: "5%",
+            containLabel: true,
+        },
+        xAxis: {
+            type: "category",
+            data: res.xData,
+            logBase: 5,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: chart.xLine,
+                    width: 1,
+                },
+            },
+            axisTick: {
+                show: false,
+            },
+            axisLabel: {
+                fontSize: chart.fontSize,
+                // margin: 10,
+                color: chart.fontColor,
+            },
+            splitLine: {
+                show: false,
+                lineStyle: {
+                    color: "#ffffff",
+                    opacity: 0.2,
+                    width: 1,
+                },
+            },
+        },
+        yAxis: {
+            name: "单位：亿千瓦小时",
+            type: "value",
+            nameTextStyle: {
+                color: chart.fontColor,
+                fontSize: chart.fontSize,
+            },
+            max: function (value) {
+                return parseInt(value.max * 1.2);
+            },
+            axisLine: {
+                show: false,
+            },
+            axisLabel: {
+                color: chart.fontColor,
+                fontSize: chart.fontSize,
+                // margin: 10,
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: "rgba(35,51,81)",
+                    opacity: 0.2,
+                    width: 1,
+                },
+            },
+            nameGap: 20,
+        },
+        legend: {
+            show: true,
+            right: "7%",
+            top: '5%',
+            // itemWidth: 20,
+            // itemHeight: 20,
+            // data: [
+            //     { icon: 'image://' + require('@/2d/assets/images/zft-lan.png'), name: res.data[0].name },
+            //     { icon: 'image://' + require('@/2d/assets/images/zft-ju.png'), name: res.data[1].name },
+            // ],
+            textStyle: {
+                color: chart.fontColor,
+            },
+        },
+        series: function () {
+            let series = []
+            for (let i = 0; i < res.data.length; i++) {
+                let serie = {
+                    "name": res.data[i].name,
+                    "type": "bar",
+                    "barWidth": "20%",
+                    "data": res.data[i].value
+                }
+                series.push(serie)
+            }
+            return series
+        }()
+    }
+
+    return option
+}
+
+
 
 // 全国碳排放---1
 export function setCarbonChart1(res) {
