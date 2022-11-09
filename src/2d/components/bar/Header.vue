@@ -15,7 +15,7 @@ const time = ref(dayjs().format("HH:mm:ss"));
 
 // 返回
 const back = () => {
-  if (store.state.LEVEL > 0) {
+  if (store.state.LEVEL > 1) {
     store.commit("changeLevel", --store.state.LEVEL);
 
     if (store.state.LEVEL == 0) {
@@ -59,28 +59,32 @@ const back = () => {
 };
 
 const handleHome = () => {
-  store.commit("changeLevel", 0);
+  // store.commit("changeLevel", 0);
 
-  CACHE.container.orbitControls.maxDistance = 1000000;
-  CACHE.container.orbitControls.minPolarAngle = 0;
-  CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
-  CACHE.container.orbitCamera.far = 1000000;
-  CACHE.container.bounds.radius = 1000000;
+  // CACHE.container.orbitControls.maxDistance = 1000000;
+  // CACHE.container.orbitControls.minPolarAngle = 0;
+  // CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
+  // CACHE.container.orbitCamera.far = 1000000;
+  // CACHE.container.bounds.radius = 1000000;
 
-  API.cameraAnimation({
-    cameraState: STATE.earthState2,
-    callback: () => {
-      API.hideSkyBox();
-      API.hideFloor();
-      API.hideAll();
-      API.showEarth();
+  // API.cameraAnimation({
+  //   cameraState: STATE.earthState2,
+  //   callback: () => {
+  //     API.hideSkyBox();
+  //     API.hideFloor();
+  //     API.hideAll();
+  //     API.showEarth();
 
-      API.cameraAnimation({
-        cameraState: STATE.earthState,
-        callback: () => {},
-      });
-    },
-  });
+  //     API.cameraAnimation({
+  //       cameraState: STATE.earthState,
+  //       callback: () => {},
+  //     });
+  //   },
+  // });
+
+
+  store.commit("changeLevel", 1);
+  router.push('/IndustrialEconomy')
 };
 
 setInterval(() => {
