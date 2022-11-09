@@ -29,7 +29,7 @@
 
         <div class="dpy-row">
           <div class="left">
-            <p>公路总里程</p>
+            <p>公交总里程</p>
           </div>
           <div class="right">
             <span class="span1">{{ base.data.gjzlc }}</span
@@ -225,7 +225,7 @@ onMounted(() => {
     // 公共交通
     optionPublicTransport0.data = setPublicTransport(
       base.data.gjzlc,
-      "公路总里程",
+      "公交总里程",
       "#7B68EE",
       require("@/2d/assets/images/pie-bg-b.png"),
       40000
