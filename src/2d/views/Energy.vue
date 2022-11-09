@@ -92,10 +92,10 @@ onMounted(() => {
   getnyzxhm().then((res) => {
     console.log("getnyzxhm: ", res);
     const data = res.data.formInfoList;
-    fireChart.data[0] = data
+    fireChart.data[1] = data
       .filter((item) => item.year == store.state.year)
       .map((item) => item.hlfdzlm);
-    fireChart.data[1] = data
+    fireChart.data[0] = data
       .filter((item) => item.year == store.state.year - 1)
       .map((item) => item.hlfdzlm);
     fireChart.xData = data
