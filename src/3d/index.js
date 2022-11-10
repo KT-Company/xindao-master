@@ -78,7 +78,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         color: "#ffffff",
         intensity: 1.2,
       },
-    },
+    },  
     background: {
       type: "panorama",
       value: ["/assets/png/skybox/sky1(1).jpg"],
@@ -194,6 +194,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       API.loadTraffic();
       // API.loadEducation()
       // API.loadEnergy()
+
 
       // 地球模块
       API.loadEarth(() => {
@@ -552,7 +553,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     // icon.scale.set(3000, 3000, 3000)
 
     if (e.objects.length > 0) {
-      const obj = e.objects[0].object;
+    
       const name = e.objects[0].object.name;
       if (name == "海景区") {
         API.cameraAnimation({
@@ -571,6 +572,15 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           callback: () => {
             store.commit("changeLevel", 2);
             router.push("/Area");
+
+            // CACHE.cities2.forEach( ci2 => {
+            //   ci2.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
+            //     color: '#0000ff',
+            //     emissive: '#00ffff',
+            //     minHeight: -142,
+            //     maxHeight: -27
+            //   })
+            // })
           },
         });
       } else if (STATE.platesNames.includes(name)) {
@@ -581,44 +591,51 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           },
         });
         
-      } else if (obj.userData.name == "智能制造") {
-        API.showModels();
-        API.showIcons();
-        // console.log('下钻')
-        API.cameraAnimation({
-          cameraState: STATE.earthState,
-          callback: () => {
-            API.cameraAnimation({
-              cameraState: STATE.earthState2,
-              callback: () => {
-                API.cameraAnimation({
-                  cameraState: STATE.industrialState,
-                  callback: () => {
-                    store.commit("changeLevel", 1);
-                    router.push("/IndustrialEconomy");
-
-                    CACHE.container.orbitControls.maxDistance = STATE.CAMERA_BOUNDS;
-                    CACHE.container.orbitControls.minPolarAngle =
-                      Math.PI * 0.05;
-                    CACHE.container.orbitControls.maxPolarAngle =
-                      Math.PI * 0.44;
-                    CACHE.container.orbitCamera.far = 100000;
-                    CACHE.container.bounds.radius = STATE.CAMERA_BOUNDS;
-                    CACHE.container.bounds.center.set(0, 0, 0);
-
-                    API.hideEarth();
-                    API.showFloor();
-                    API.showSkyBox();
-                    API.showRoutes();
-                  },
-                });
-              },
-            });
-          },
-        });
-      }
+      } 
     }
   };
 
   // events.onhover = (e) => {}
+
+
+  events.onclick = (e) => {
+    if(e.objects.length == 0) return
+    const obj = e.objects[0].object;
+    if (obj.userData.name == "智能制造") {
+      API.showModels();
+      API.showIcons();
+      // console.log('下钻')
+      API.cameraAnimation({
+        cameraState: STATE.earthState,
+        callback: () => {
+          API.cameraAnimation({
+            cameraState: STATE.earthState2,
+            callback: () => {
+              API.cameraAnimation({
+                cameraState: STATE.industrialState,
+                callback: () => {
+                  store.commit("changeLevel", 1);
+                  router.push("/IndustrialEconomy");
+
+                  CACHE.container.orbitControls.maxDistance = STATE.CAMERA_BOUNDS;
+                  CACHE.container.orbitControls.minPolarAngle =
+                    Math.PI * 0.05;
+                  CACHE.container.orbitControls.maxPolarAngle =
+                    Math.PI * 0.44;
+                  CACHE.container.orbitCamera.far = 100000;
+                  CACHE.container.bounds.radius = STATE.CAMERA_BOUNDS;
+                  CACHE.container.bounds.center.set(0, 0, 0);
+
+                  API.hideEarth();
+                  API.showFloor();
+                  API.showSkyBox();
+                  API.showRoutes();
+                },
+              });
+            },
+          });
+        },
+      });
+    }
+  }
 };

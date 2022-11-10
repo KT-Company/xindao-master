@@ -58,8 +58,8 @@ const back = () => {
 };
 
 const handleHome = () => {
-  store.commit("changeLevel", 0);
-  window.top.location.href = "/aie_web"; // 返回用户 home 地址
+  // store.commit("changeLevel", 0);
+  
   // CACHE.container.orbitControls.maxDistance = 1000000;
   // CACHE.container.orbitControls.minPolarAngle = 0;
   // CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
@@ -80,6 +80,10 @@ const handleHome = () => {
   //     });
   //   },
   // });
+
+  store.commit("changeLevel", 1);
+  router.push('/IndustrialEconomy')
+  window.location.href='/aie_web' // 返回用户 home 地址
 };
 
 // setInterval(() => {

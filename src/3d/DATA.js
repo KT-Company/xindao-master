@@ -296,27 +296,27 @@ const earthIcons = [
     active: true
   },
   {
-    name:'物流服务',
+    name:'现代服务',
     lnglat: [116.32,39.89],//北京
     active: false
   },
   {
-    name:'供应企业',
+    name:'行业名称',
     lnglat: [106.55,29.56],//重庆
     active: false
   },
   {
-    name:'综合服务',
+    name:'行业名称',
     lnglat: [104.07,30.57],//成都
     active: false
   },
   {
-    name:'数字金融',
+    name:'金融服务中心',
     lnglat: [121.47,31.23],//上海
     active: false
   },
   {
-    name:'数字政务',
+    name:'行业名称',
     lnglat: [114.30,30.59],//武汉
     active: false
   },

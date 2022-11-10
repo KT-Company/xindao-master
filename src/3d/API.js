@@ -897,12 +897,13 @@ function loadEarthIcon() {
       fontColor: "#ffffff",
       opacity: 1,
       size: 4000,
-      type: 2,
+      type: 3,
     });
     znzzTitle.userData.type = "earthIcon";
     znzzTitle.userData.name = ic.name;
     znzzTitle.position.copy(posTitle);
     znzzTitle.lookAt(0, 0, 0);
+    znzzTitle.scale.set(znzzTitle.canvasSize , znzzTitle.canvasSize * (znzzTitle.canvasHeight / znzzTitle.canvasWidth), 1)
     CACHE.earthGroup.add(znzzTitle);
     CACHE.earthIcons.push(znzzTitle);
 
