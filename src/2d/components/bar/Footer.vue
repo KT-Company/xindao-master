@@ -19,32 +19,53 @@ const menus = ref([
   { id: 4, name: "教育医疗", path: "/Education" },
   { id: 5, name: "能源碳排放", path: "/Energy" },
 ]);
+
+const footers = ref([
+  { id: 1, name: "海景区", isPick: true },
+  { id: 2, name: "智能制造产业园", isPick: true },
+  { id: 3, name: "数字金融区", isPick: false },
+  { id: 4, name: "物流服务", isPick: false },
+  { id: 5, name: "供应链", isPick: false },
+  { id: 6, name: "综合服务", isPick: false },
+  { id: 7, name: "数字政务", isPick: false },
+]);
+// 海景区.... 点击事件
+const handleFooters = (item) => {
+  footers.value[item.id - 1].isPick = !item.isPick;
+  console.log("item: ", item);
+};
+
 const handleMenu = (item) => {
   // const currRouter = firstA(router.currentRoute.value.path);
   // if (currRouter === item.path) router.replace("/Replace");
   // else router.push(item.path);
-  router.push(item.path)
+  router.push(item.path);
 };
-const isShow = ref(true);
+
+const goBack = ()=>{
+  window.top.location.href = "/aie_web"; // 返回用户 home 地址
+}
+
+// const isShow = ref(true);
 const routerName = ref("/IndustrialEconomy");
 
 watch(
   () => router,
   () => {
     routerName.value = getWenhaoA(firstA(router.options.history.state.current));
-    isShow.value = [
-      "/IndustrialEconomy",
-      "/Transportation",
-      "/Environmental",
-      "/Education",
-      "/Energy",
-    ].includes(routerName.value);
+    // isShow.value = [
+    //   "/IndustrialEconomy",
+    //   "/Transportation",
+    //   "/Environmental",
+    //   "/Education",
+    //   "/Energy",
+    // ].includes(routerName.value);
 
     API.hideAll();
     API.showIcons();
     API.showModels();
-    API.showRoutes()
-    
+    API.showRoutes();
+
     // 根据路由名称调用三维方法
     if (routerName.value === "/IndustrialEconomy") {
       // API.showIndustrialEconomy();
@@ -57,8 +78,6 @@ watch(
       });
     }
     if (routerName.value === "/Transportation") {
-      
-
       API.cameraAnimation({
         cameraState: STATE.trafficState,
         callback: () => {
@@ -106,8 +125,8 @@ watch(
       });
     }
     if (routerName.value === "/Area") {
-      API.showPlates()
-      API.hideIcons()
+      API.showPlates();
+      API.hideIcons();
     }
   },
   { deep: true }
@@ -115,9 +134,9 @@ watch(
 </script>
 
 <template>
-  <div class="footer">
+  <div :class="['footer', store.state.LEVEL != 2 ? 'fb' : '']">
     <div class="footer-main">
-      <ul class="button-box" v-if="isShow && store.state.LEVEL == 1">
+      <ul class="button-box" v-if="store.state.LEVEL == 1">
         <li
           v-for="item in menus"
           :key="item.id"
@@ -127,6 +146,19 @@ watch(
           <span>{{ item.name }}</span>
         </li>
       </ul>
+
+      <ul class="button-box2 animated bounceInDown" v-if="store.state.LEVEL == 2">
+        <li
+          v-for="item in footers"
+          :key="item.id"
+          @click="handleFooters(item)"
+          :class="item.isPick ? 'pick2' : ''"
+        >
+          <span>{{ item.name }}</span>
+        </li>
+      </ul>
+
+      <img src="../../assets/images/fanhui.png" class="back" @click="goBack" v-if="store.state.LEVEL == 2">
     </div>
   </div>
 </template>
@@ -138,9 +170,6 @@ watch(
   position: fixed;
   bottom: 0;
   pointer-events: auto;
-  background: url("@/2d/assets/images/footer.png") no-repeat center center /
-    100% 100%;
-
   .footer-main {
     width: 100%;
     height: 100%;
@@ -188,6 +217,44 @@ watch(
       }
     }
   }
+}
+.fb {
+  background: url("@/2d/assets/images/footer.png") no-repeat center center /
+    100% 100%;
+}
+.back{
+  position: absolute;
+  right: 24%;
+  height: 40%;
+  cursor: pointer;  
+  // &:hover{
+  //   scale: 1.1;
+  // }
+}
+
+.button-box2 {
+  display: flex;
+  width: 40%;
+  height: 38%;
+  justify-content: space-between;
+  li {
+    display: flex;
+    align-items: center;
+    padding: 0 2%;
+    background: rgba(0, 0, 0, 0.7);
+    transition: 0.3s;
+    &:not(&:nth-child(1)) {
+      margin-left: 1%;
+    }
+    &:hover {
+      cursor: pointer;
+      scale: 1.1;
+    }
+  }
+}
+
+.pick2 {
+  background: rgba(197, 0, 0, 0.7) !important;
 }
 
 .pick {

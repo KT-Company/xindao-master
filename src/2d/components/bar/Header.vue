@@ -15,6 +15,7 @@ const title = ref("AIE智境-数智商业综合实践平台");
 
 // 返回
 const back = () => {
+  window.top.location.href = "/aie_web";
   if (store.state.LEVEL > 0) {
     store.commit("changeLevel", --store.state.LEVEL);
 
@@ -54,12 +55,11 @@ const back = () => {
       //
     }
   }
-
 };
 
 const handleHome = () => {
   store.commit("changeLevel", 0);
-  window.location.href='/aie_web' // 返回用户 home 地址
+  window.top.location.href = "/aie_web"; // 返回用户 home 地址
   // CACHE.container.orbitControls.maxDistance = 1000000;
   // CACHE.container.orbitControls.minPolarAngle = 0;
   // CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
@@ -88,9 +88,9 @@ const handleHome = () => {
 </script>
 
 <template>
-  <div class="header">
+  <div :class="['header', store.state.LEVEL != 2 ? 'hb' : '']">
     <!-- <h1 class="title num-jianbian-lan">{{ title }}</h1> -->
-    <img class="title" src="../../assets/images/logo.png" alt="">
+    <img class="title" src="../../assets/images/logo.png" v-show="store.state.LEVEL != 2" />
     <p class="time">
       <span>数据统计时间： {{ store.state.year }}年</span>
     </p>
@@ -105,10 +105,16 @@ const handleHome = () => {
         src="../../assets/images/btn-back.png"
         class="back"
         @click="back"
-        v-show="store.state.LEVEL > 0"
+        v-show="store.state.LEVEL != 2"
       />
     </p>
   </div>
+
+  <img
+    src="../../assets/images/logoa.png"
+    class="head"
+    v-if="store.state.LEVEL == 2"
+  />
 </template>
 
 <style lang="less" scoped>
@@ -121,8 +127,18 @@ const handleHome = () => {
   justify-content: right;
   padding-right: 1vw;
   color: rgb(255, 255, 255);
+}
+
+.hb {
   background: url("@/2d/assets/images/top.png") no-repeat center center / 100%
     100%;
+}
+
+.head {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28.5%;
 }
 .title {
   position: absolute;

@@ -42,7 +42,7 @@ onMounted(() => {
   position: fixed;
   z-index: 2;
   pointer-events: none;
-  background: url("@/2d/assets/images/bg-5.png") no-repeat center center / 100%
+  background: url("@/2d/assets/images/bg-5.png") no-repeat center center / 101%
     100%;
 }
 .container-3d {

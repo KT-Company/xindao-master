@@ -1,17 +1,31 @@
 <!-- 区域层 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { setColumnChart } from "@/2d/viewCharts/Education";
-import { getIntinterval } from "@/2d/utils/myRandom";
-import { setSchoolChart } from "@/2d/viewCharts/Education";
-import Highchart from "@/2d/components/util/Highchart/Highchart.vue";
 import {
-  setStackedChart,
-  setLineCharts,
-  setAddValue,
-  setLineChartsQYJ,
+  setYuanChart,
+  setZhuChart,
+  setQuXianChart,
+  setBingChart,
 } from "@/2d/viewCharts/Area";
 import { getqycyjj } from "@/2d/api";
+import { useStore } from "vuex";
+const store = useStore();
+// 当前年
+const baseA = reactive({
+  data: {},
+});
+const baseListA = ref([]);
+const zjz = {
+  gy: { name: "工业增加值", value: [] },
+  fw: { name: "服务增加值", value: [] },
+};
+
+// 去年
+const baseB = reactive({
+  data: {},
+});
+const baseListB = ref([]);
+
 const option = reactive({
   data1: {},
   data2: {},
@@ -20,578 +34,353 @@ const option = reactive({
   data5: {},
   data6: {},
   data7: {},
+  data8: {},
 });
-const fixedAssetsChartData = reactive({
-  xData: [],
-  data: [{ name: "固定资产投入", value: [] }],
-});
-const areaAssetsChartData = ref([
-  { name: "存货", y: 35, h: 0, selected: true },
-  { name: "货币资金", y: 15, h: 0, selected: true },
-  { name: "固定资产", y: 50, h: 0, selected: true },
-]);
 
-const gongyeChart = reactive({
+const data2 = reactive({
+  xData: [],
+  data: [],
+});
+const data3 = reactive({
   xData: [],
   data: [
-    { name: "工业增加值", value: [] },
-    { name: "中间投入", value: [] },
-    { name: "工业总产值", value: [] },
-    { name: "应交增值税", value: [] },
+    {
+      name: "消费价格指数",
+      value: [],
+    },
   ],
 });
+const data4 = reactive({
+  xData: [],
+  data: [
+    {
+      name: "区域纳税总额",
+      value: [],
+    },
+  ],
+});
+const data5 = reactive({
+  xData: [],
+  data: [
+    {
+      name: "固定资产投入 ",
+      value: [],
+    },
+  ],
+});
+const data6 = reactive({
+  xData: [],
+  data: [
+    {
+      name: "企业数量",
+      value: [],
+    },
+  ],
+});
+const data7 = reactive({
+  xData: [],
+  data: [
+    {
+      name: "企业总资产",
+      value: [],
+    },
+  ],
+});
+const data8 = ref([
+  { name: "存货", value: 0 },
+  { name: "货币资金", value: 0 },
+  { name: "固定资产", value: 0 },
+]);
+const pickWho = ref(1);
+const handleZJZ = (type) => {
+  pickWho.value = type;
+  if (type === 1) data2.data[0] = zjz.gy;
+  else data2.data[0] = zjz.fw;
+
+  option.data2 = setZhuChart(data2);
+};
+
+const heads = ref([
+  { id: 1, name: "三圈关系", img: require("@/2d/assets/images/sanquan.png") },
+  { id: 2, name: "物流", img: require("@/2d/assets/images/wuliu.png") },
+  { id: 3, name: "信息流", img: require("@/2d/assets/images/xinxiliu.png") },
+  { id: 4, name: "资金流", img: require("@/2d/assets/images/zijinliu.png") },
+]);
+// 三圈关系.... 点击事件
+const handleHeads = (id) => {
+  console.log("id: ", id);
+};
 
 onMounted(() => {
   getqycyjj().then((res) => {
     console.log("getqycyjj: ", res);
+    const data = res.data.formInfoList;
+    baseListA.value = data.filter((item) => item.year == store.state.year);
+    baseListB.value = data.filter((item) => item.year == store.state.year - 1);
+    baseA.data = baseListA.value.find((item) => item.qy == "海景区");
+    baseB.data = baseListB.value.find((item) => item.qy == "海景区");
+    const areaA = data.filter((item) => item.qy == "海景区");
+
+    option.data1 = setYuanChart({ name: "GDP增速", value: baseA.data.gdpzs });
+
+    data2.xData = areaA.map((item) => item.year);
+    zjz.gy.value = areaA.map((item) => item.gyzjz);
+    zjz.fw.value = areaA.map((item) => item.dscy);
+    handleZJZ(pickWho.value);
+
+    data3.xData = data2.xData;
+    data3.data[0].value = areaA.map((item) => item.gxckye);
+    option.data3 = setQuXianChart(data3);
+
+    data4.xData = data2.xData;
+    data4.data[0].value = areaA.map((item) => item.sssr);
+    option.data4 = setQuXianChart(data4, { color: [1] });
+
+    data5.xData = data2.xData;
+    data5.data[0].value = areaA.map((item) => item.dycy);
+    option.data5 = setZhuChart(data5);
+
+    data6.xData = data2.xData;
+    data6.data[0].value = areaA.map((item) => item.gjjgxjsqyzs);
+    option.data6 = setZhuChart(data6);
+
+    data7.xData = data2.xData;
+    data7.data[0].value = areaA.map((item) => item.gxdkye);
+    option.data7 = setQuXianChart(data7, { color: [1] });
+
+    data8.value[0].value = baseA.data.zzssr
+    data8.value[1].value = baseA.data.qysdssr
+    data8.value[2].value = baseA.data.grsdssr
+    option.data8 = setBingChart(data8.value);
   });
-
-  for (let index = 0; index < 12; index++) {
-    fixedAssetsChartData.xData.push(`${index + 1}月`);
-    gongyeChart.xData.push(`${index + 1}月`);
-    gongyeChart.data[0].value.push(getIntinterval(100, 0));
-    gongyeChart.data[1].value.push(getIntinterval(100, 0));
-    gongyeChart.data[2].value.push(getIntinterval(100, 0));
-    gongyeChart.data[3].value.push(getIntinterval(100, 0));
-    fixedAssetsChartData.data[0].value.push(getIntinterval(100, 20));
-    option.data1 = setColumnChart(fixedAssetsChartData, {
-      legend: false,
-      grid: {
-        top: "15%",
-        left: "10%",
-        bottom: "20%",
-      },
-      barW: 15,
-      barImgW: 22,
-      color: 1,
-    });
-  }
-  option.data2 = setSchoolChart(areaAssetsChartData, "%");
-  option.data3 = setStackedChart(gongyeChart);
-  var index = -1;
-  setInterval(() => {
-    index++;
-    if (index === areaAssetsChartData.value.length) index = 0;
-    areaAssetsChartData.value.forEach((item) => (item.h = 0));
-    areaAssetsChartData.value[index].h = 10;
-  }, 1000);
-
-  // 区域纳税总额度
-  let xftj = [];
-  let month = 0;
-  let xftjdata2 = [];
-
-  for (let i = 0; i < 12; i++) {
-    let sum = Math.floor(Math.random() * 3000 + 1);
-    month += 1;
-    xftj.push({ name: month + "月", value: sum });
-    let sum2 = Math.floor(Math.random() * 2000 + 3000);
-
-    xftjdata2.push(sum2);
-  }
-
-  option.data4 = setLineCharts(
-    xftj,
-    "rgba(0, 7, 13, 1)",
-    "rgba(255, 186, 52,0.2)",
-    "rgba(255, 186, 52, .3)",
-    "rgba(255, 186, 52,1)",
-    6000,
-    "区域纳税额/亿"
-  );
-  option.data6 = setLineCharts(
-    xftj,
-    "rgba(0, 7, 13, 1)",
-    "rgba(46,255,105,0.27)",
-    "rgba(46,255,105,0.27)",
-    "rgba(46,255,105,0.27)",
-    6000,
-    "消费指数"
-  );
-  option.data7 = setLineChartsQYJ(
-    xftj,
-    "rgba(0, 7, 13, 1)",
-    "rgba(255, 186, 52,0.2)",
-    "rgba(255, 186, 52, .3)",
-    "#2860FF",
-    6000,
-    xftjdata2
-  );
-
-  //  工业增加值
-  let month2 = [];
-  for (let i = 0; i < 12; i++) {
-    month += 1;
-    month2.push(month + "月");
-  }
-  let addValue2 = reactive({
-    xData: month2,
-    data: [
-      { name: "共工业增加值", value: [] },
-      { name: "中间投入", value: [] },
-      { name: "工业总产量", value: [] },
-      { name: "应交增值税", value: [] },
-    ],
-  });
-  for (let j = 0; j < 12; j++) {
-    for (let i = 0; i < 4; i++) {
-      addValue2.data[i].value.push(getIntinterval(2000, 0));
-    }
-  }
-  let data2color = [
-    ["rgba(0,66,255, .8)", "rgba(0,66,255, 0.2)"],
-    ["rgba(255,168,0, .8)", "rgba(255,168,0, 0.2)"],
-    ["rgba(255,255,255, .8)", "rgba(255,255,255, 0.2)"],
-    ["rgba(84,0,255, .8)", "rgba(84,0,255, 0.2)"],
-  ];
-  option.data3 = setAddValue(addValue2, data2color);
-  // 服务增加值
-  const addValue = reactive({
-    xData: [],
-    data: [
-      { name: "中和服务中心", value: [] },
-      { name: "供应", value: [] },
-      { name: "经销", value: [] },
-      { name: "物流", value: [] },
-      { name: "政务", value: [] },
-      { name: "银行", value: [] },
-      { name: "销售", value: [] },
-    ],
-  });
-  let year = 2009;
-  for (let i = 0; i < 6; i++) {
-    year += 1;
-    addValue.xData.push(year);
-  }
-  for (let j = 0; j < 6; j++) {
-    for (let i = 0; i < 7; i++) {
-      addValue.data[i].value.push(getIntinterval(2000, 0));
-    }
-  }
-  let data5color = [
-    ["rgba(0,66,255, .8)", "rgba(0,66,255, 0.2)"],
-    ["rgba(255,168,0, .8)", "rgba(255,168,0, 0.2)"],
-    ["rgba(255,255,255, .8)", "rgba(255,255,255, 0.2)"],
-    ["rgba(84,0,255, .8)", "rgba(84,0,255, 0.2)"],
-    ["rgba(0,255,246, .8)", "rgba(0,255,246, 0.2)"],
-    ["rgba(255,240,0, .8)", "rgba(255,240,0, 0.2)"],
-    ["rgba(0,255,72, .8)", "rgba(0,255,72, 0.2)"],
-  ];
-  option.data5 = setAddValue(addValue, data5color);
 });
-
-// 中间列表类容
-let contentListBtn = ref([
-  { name: "三圈关系", id: 0, change: true },
-  { name: "资金流", id: 1, change: false },
-  { name: "信息流", id: 2, change: false },
-  { name: "物流", id: 3, change: false },
-]);
-let contentListBtnId = ref(0);
-const changData = (id) => {
-  contentListBtnId.value = id;
-  contentListBtn.value.forEach((item) => {
-    item.change = false;
-    if (item.id == id) {
-      item.change = true;
-    }
-  });
-};
-let btnBoeeomData = [
-  {
-    id: 0,
-    title: "建筑基本信息",
-    data: [
-      { title: "开发商:", value: "中建五局" },
-      { title: "物业名称:", value: "新都物业有限公司" },
-      { title: "详细地址:", value: "北京市" },
-      { title: "所属地块:", value: "DK-01" },
-      { title: "占地面积:", value: "64123㎡" },
-      { title: "层数:", value: "25层" },
-      { title: "智能话设施:", value: "办公自动化系统" },
-      { title: "LEED认证:", value: "是" },
-      { title: "外立面材料:", value: "单元式玻璃幕墙" },
-    ],
-  },
-  {
-    id: 1,
-    title: "建筑基本信息1",
-    data: [
-      { title: "开发商:", value: "中建五局" },
-      { title: "物业名称:", value: "新都物业有限公司" },
-      { title: "详细地址:", value: "北京市" },
-      { title: "所属地块:", value: "DK-01" },
-      { title: "占地面积:", value: "64123㎡" },
-      { title: "层数:", value: "25层" },
-      { title: "智能话设施:", value: "办公自动化系统" },
-      { title: "LEED认证:", value: "是" },
-      { title: "外立面材料:", value: "单元式玻璃幕墙" },
-    ],
-  },
-  {
-    id: 2,
-    title: "建筑基本信息2",
-    data: [
-      { title: "开发商:", value: "中建五局" },
-      { title: "物业名称:", value: "新都物业有限公司" },
-      { title: "详细地址:", value: "北京市" },
-      { title: "所属地块:", value: "DK-01" },
-      { title: "占地面积:", value: "64123㎡" },
-      { title: "层数:", value: "25层" },
-      { title: "智能话设施:", value: "办公自动化系统" },
-      { title: "LEED认证:", value: "是" },
-      { title: "外立面材料:", value: "单元式玻璃幕墙" },
-    ],
-  },
-  {
-    id: 3,
-    title: "建筑基本信息3",
-    data: [
-      { title: "开发商:", value: "中建五局" },
-      { title: "物业名称:", value: "新都物业有限公司" },
-      { title: "详细地址:", value: "北京市" },
-      { title: "所属地块:", value: "DK-01" },
-      { title: "占地面积:", value: "64123㎡" },
-      { title: "层数:", value: "25层" },
-      { title: "智能话设施:", value: "办公自动化系统" },
-      { title: "LEED认证:", value: "是" },
-      { title: "外立面材料:", value: "单元式玻璃幕墙" },
-    ],
-  },
-];
 </script>
 
 <template>
-  <Left>
-    <Title>区域GDP</Title>
-    <div class="main">
-      <div class="GDP-wrap dpy-row">
-        <div class="GDP-img dpy-column">
-          <div class="percent">+58%</div>
-          <div class="title">环比率</div>
-        </div>
-        <div class="GDP-data">
-          <div class="box1">
-            <div class="GDP-top dpy-row">
-              <div class="icon"></div>
-              <div class="text">本月</div>
-            </div>
-            <div class="GDP-bottom dpy-row">
-              <div class="text">￥</div>
-              <div class="text">22,332,323,232.23</div>
-            </div>
-          </div>
-          <div class="box2">
-            <div class="GDP-top dpy-row">
-              <div class="icon"></div>
-              <div class="text">环比</div>
-            </div>
-            <div class="GDP-bottom dpy-row">
-              <div class="text">￥</div>
-              <div class="text">22,332,323,232.23</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <Title>工业增加值</Title>
-    <div class="main">
-      <Echart :option="option.data3" class="h-100"></Echart>
-    </div>
-    <Title>区域纳税总额</Title>
-    <div class="main">
-      <Echart :option="option.data4" class="h-100"></Echart>
-    </div>
-  </Left>
-  <Right>
-    <Title>服务增加值</Title>
-    <div class="main">
-      <Echart :option="option.data5" class="h-100"></Echart>
-    </div>
-    <Title>消费价格指数</Title>
-    <div class="main">
-      <Echart :option="option.data6" class="h-100"></Echart>
-    </div>
-    <Title>企业数量及总资产</Title>
-    <div class="main">
-      <Echart :option="option.data7" class="h-100"></Echart>
-    </div>
-  </Right>
-
-  <div class="bottom">
-    <div class="bottom-left">
-      <Title class="bottom-title">固定资产投入</Title>
-      <div class="bottom-main">
-        <Echart :option="option.data1" class="h-100"></Echart>
-      </div>
-    </div>
-    <div class="bottom-right">
-      <Title class="bottom-title">区域资产结构</Title>
-      <div class="bottom-main area-main">
-        <div class="area-bg"></div>
-        <Highchart :option="option.data2" uid="areaChart"></Highchart>
-      </div>
-    </div>
+  <div class="area-head">
+    <ul class="animated bounceInDown">
+      <li v-for="item in heads" :key="item.id" @click="handleHeads(item.id)">
+        <img :src="item.img" /><span>{{ item.name }}</span>
+      </li>
+    </ul>
   </div>
 
-  <div class="center-content">
-    <div class="btn-list dpy-row">
-      <div
-        v-for="item in contentListBtn"
-        :key="item.id"
-        :class="item.change ? 'change' : 'unchange'"
-        class="btn"
-        @click="changData(item.id)"
-      >
-        <span>{{ item.name }}</span>
+  <Left class="z-left">
+    <Bar>
+      <div class="b-title">区域GDP</div>
+      <div class="b-content gdp">
+        <div class="gdp-chart h-100">
+          <Echart :option="option.data1"></Echart>
+        </div>
+        <div class="qy-gdp h-100">
+          <p class="gdp-name">本年</p>
+          <p class="gdp-val">
+            ￥{{ baseA.data.gdpzz }} <span class="yi">亿元</span>
+          </p>
+          <p class="gdp-name">环比</p>
+          <p class="gdp-val">
+            +￥{{ baseB.data.gdpzz }} <span class="yi">亿元</span>
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="center-bg" v-if="false">
-      <div class="tetel">{{ btnBoeeomData[contentListBtnId].title }}</div>
-      <div class="center-box">
-        <div
-          v-for="item in btnBoeeomData[contentListBtnId].data"
-          :key="item.id"
-          class="center-list"
+    </Bar>
+
+    <Bar>
+      <div class="b-title">
+        <span
+          :class="['zjz-name', pickWho == 1 ? '' : 'hui']"
+          @click="handleZJZ(1)"
+          >工业增加值</span
         >
-          <span class="span-title">{{ item.title }}</span>
-          <span class="span-value">{{ item.value }}</span>
-        </div>
+        /
+        <span
+          :class="['zjz-name', pickWho == 2 ? '' : 'hui']"
+          @click="handleZJZ(2)"
+          >服务增加值</span
+        >
       </div>
-    </div>
+      <div class="b-content">
+        <span class="unit1 hui">单位：亿</span>
+        <Echart :option="option.data2"></Echart>
+      </div>
+    </Bar>
 
-    <div class="dong"></div>
-  </div>
+    <Bar>
+      <div class="b-title">消费价格指数</div>
+      <div class="b-content"><Echart :option="option.data3"></Echart></div>
+    </Bar>
+
+    <Bar>
+      <div class="b-title">区域纳税总额</div>
+      <div class="b-content">
+        <span class="unit1 hui">单位：亿</span>
+        <Echart :option="option.data4"></Echart>
+      </div>
+    </Bar>
+  </Left>
+
+  <Right class="z-right">
+    <Bar>
+      <div class="b-title">固定资产投入</div>
+      <div class="b-content">
+        <span class="unit1 hui">单位：亿</span>
+        <Echart :option="option.data5"></Echart>
+      </div>
+    </Bar>
+
+    <Bar>
+      <div class="c-title">企业数量</div>
+      <div class="h28">
+        <span class="unit1 hui">单位：家</span>
+        <Echart :option="option.data6"></Echart>
+      </div>
+      <div class="c-title">企业总资产</div>
+      <div class="h28">
+        <span class="unit1 hui">单位：亿</span>
+        <Echart :option="option.data7"></Echart>
+      </div>
+      <div class="c-title d-title">
+        <span>区域资产结构</span
+        ><span class="hui">当前：{{ store.state.year }}</span>
+      </div>
+      <div class="h26">
+        <Echart :option="option.data8"></Echart>
+      </div>
+    </Bar>
+  </Right>
 </template>
 
 <style lang="less" scoped>
-.main {
-  height: calc(33.33% - var(--titleH));
-  // border: 1px solid red;
+.z-left {
+  display: grid;
+  grid-template-columns: 4fr;
+  grid-template-rows: repeat(4, 1fr);
+  row-gap: 2%;
+}
+.z-right {
+  display: grid;
+  grid-template-columns: 4fr;
+  grid-template-rows: 1fr 3fr;
+  row-gap: 2%;
 }
 
-.bottom {
-  height: calc(34.5% - var(--titleH));
-  pointer-events: auto;
-  width: 49%;
+.b-title {
+  font-size: 1vw;
+  font-family: Source Han Sans CN;
+  font-weight: bold;
+  color: #ffffff;
+  height: 20%;
+}
+
+.c-title {
+  font-size: 1vw;
+  font-family: Source Han Sans CN;
+  font-weight: bold;
+  color: #ffffff;
+  height: 6%;
+}
+
+.yi {
+  font-size: 0.8vw;
+}
+
+.area-head {
   position: absolute;
-  bottom: 5%;
-  left: 26%;
+  width: 25%;
+  height: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 9%;
+  ul {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+  }
+  li {
+    display: flex;
+    padding: 0 3%;
+    align-items: center;
+    cursor: pointer;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 2vw;
+    transition: 0.3s;
+    &:hover {
+      scale: 1.1;
+      * {
+        color: rgb(255, 166, 0);
+      }
+    }
+    img {
+      height: 50%;
+      margin-right: 0.4vw;
+    }
+  }
+}
+
+.unit1 {
+  position: absolute;
+  right: 1%;
+  top: -2%;
+  font-size: 0.5vw;
+}
+
+.b-content {
+  // border: 1px solid red;
+  height: 80%;
+  position: relative;
+}
+.gdp {
+  display: flex;
+  .gdp-chart {
+    width: 40%;
+  }
+
+  .qy-gdp {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 4%;
+    p {
+      &,
+      * {
+        color: rgba(202, 224, 255);
+      }
+
+      &:nth-child(3) {
+        margin-top: 5%;
+      }
+    }
+    .gdp-name {
+      font-size: 0.8vw;
+    }
+    .gdp-val {
+      font-size: 1.1vw;
+    }
+  }
+}
+
+.zjz-name {
+  cursor: pointer;
+}
+.h28 {
+  position: relative;
+  height: 28%;
+  padding-bottom: 3%;
+}
+.h26 {
+  position: relative;
+  height: 26%;
+}
+.d-title {
   display: flex;
   justify-content: space-between;
-
-  .bottom-left,
-  .bottom-right {
-    width: 47%;
-    height: 100%;
-
-    .bottom-title {
-      height: 18%;
-    }
-
-    .bottom-main {
-      height: calc(100% - 18%);
-      width: 100%;
-    }
-  }
-}
-
-#areaChart {
-  height: 100%;
-}
-
-.area-main {
-  position: relative;
-
-  .area-bg {
-    position: absolute;
-    background: url("@/2d/assets/images/chart-yuanpan.png") no-repeat center
-      center / 100% 100%;
-    height: 75%;
-    width: 80%;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -20%;
-  }
-}
-
-.GDP-wrap {
-  width: 100%;
-  height: 100%;
-  padding: 0 1rem;
-
-  .GDP-img {
-    width: 35%;
-    height: 66%;
-    background: url("@/2d/assets/images/shuanghuan.png") no-repeat;
-    background-size: 100% 100%;
-    text-align: center;
-    justify-content: center;
-
-    .percent {
-      font-family: DINCond-Bold;
-      font-size: 3rem;
-      background-image: linear-gradient(
-        0deg,
-        rgba(155, 207, 255, 0.76) 0.9521484375%,
-        #ffffff 100%
-      );
-      -webkit-background-clip: text;
-      color: transparent;
-      // color: linear-gradient(0deg, rgba(155, 207, 255, 0.76) 0.9521484375%, #FFFFFF 100%);
-      // text-shadow: 0px 2px 1px rgba(0, 3, 4, 0.45);
-    }
-  }
-
-  .GDP-data {
-    & > div {
-      margin: 1.5rem 0;
-    }
-
-    .dpy-row {
-      justify-content: start;
-    }
-
-    .icon {
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
-    }
-
-    .GDP-top {
-      .text {
-        color: #ffffff;
-        opacity: 0.7;
-        margin-left: 1rem;
-      }
-    }
-
-    .GDP-bottom {
-      .text {
-        font-family: Microsoft YaHei;
-        font-weight: 400;
-        font-size: 1.3vw;
-        color: #ffffff;
-        opacity: 1;
-      }
-    }
-
-    .box1 {
-      .icon {
-        background: #0042ff;
-      }
-    }
-
-    .box2 {
-      .icon {
-        background: #00ff00;
-      }
-    }
-  }
-}
-
-.center-content {
-  // height: calc(34.5% - var(--titleH));
-  pointer-events: auto;
-  width: 37%;
-  position: absolute;
-  top: 15%;
-  left: 50%;
-  transform: translate(-50%);
-
-  .btn {
-    width: 17%;
-    height: 2.7rem;
-    line-height: 0rem;
-    text-align: center;
-    font-size: 5rem;
-    cursor: pointer;
-  }
-
-  .change {
-    color: #ffffff;
-    text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
-
-    background: url("@/2d/assets/images/top-button-pick.png") no-repeat;
-    background-size: 100% 100%;
-
-    span {
-      text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
-      background: linear-gradient(
-        180deg,
-        #e8eeff 71.044921875%,
-        #124efb 99.5849609375%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-  }
-
-  span {
-    font-size: 1.2rem;
-    font-family: DINCond-Bold;
-  }
-
-  .unchange {
-    background: url("@/2d/assets/images/top-button.png") no-repeat;
-    background-size: 100% 100%;
-
-    span {
-      text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
-      background: linear-gradient(
-        180deg,
-        #e8eeff 71.044921875%,
-        #bfcae8 99.5849609375%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-  }
-
-  .center-bg {
-    width: 50%;
-    height: 25rem;
-    background: url("@/2d/assets/images/tanchuang-bg.png") no-repeat;
-    background-size: 100% 100%;
-
-    .tetel {
-      padding: 1rem 0;
-      font-size: 1.5rem;
-      font-family: DINCond-Bold;
-      font-weight: 700;
-      text-shadow: 2px 0px 3px rgba(11, 54, 57, 0.14);
-      background: linear-gradient(
-        180deg,
-        #e8eeff 71.044921875%,
-        #bfcae8 99.5849609375%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-align: center;
-    }
-
-    .center-box {
-      width: 100%;
-
-      .center-list {
-        margin-top: 0.5rem;
-
-        .span-title {
-          width: 50%;
-          display: inline-block;
-          text-align: right;
-          padding-right: 1rem;
-          font-size: 1rem;
-        }
-
-        .span-value {
-          font-size: 1rem;
-        }
-      }
-    }
+  span:nth-child(2) {
+    font-size: 0.8vw;
+    font-weight: normal;
   }
 }
 </style>

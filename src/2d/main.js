@@ -15,6 +15,7 @@ import {
     Item,
     Echart,
     Title,
+    Bar,
 } from '@/2d/components'
 const app = createApp(App);
 app.component('Left', Left)
@@ -24,12 +25,13 @@ app.component('Left', Left)
     .component('Item', Item)
     .component('Echart', Echart)
     .component('Title', Title)
+    .component('Bar', Bar)
 
 if (dayjs().format("YYYY-MM-DD") > "2022-12-01") {
     alert('体验时间过期，请联系管理员')
 } else {
     app.use(router).use(store).mount('#app')
-    store.commit('setUrlParam',getUrlParam())
+    store.commit('setUrlParam', getUrlParam())
 }
 
 

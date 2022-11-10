@@ -2,6 +2,337 @@ import * as echarts from 'echarts'
 import store from '@/2d/store/index'
 const { chart } = store.state
 
+// 圆圈 --》区域EGP
+export function setYuanChart(res) {
+  var option = {
+    title: [
+      {
+        text: res.name,
+        x: 'center',
+        top: '55%',
+        textStyle: {
+          color: '#FFFFFF',
+          fontSize: chart.fontSize,
+          fontWeight: '100',
+        },
+      },
+      {
+        text: `+${res.value}%`,
+        x: 'center',
+        top: '35%',
+        textStyle: {
+          fontSize: chart.fontSize + 5,
+          color: '#FFFFFF',
+          fontFamily: 'DINAlternate-Bold, DINAlternate',
+          foontWeight: '600',
+        },
+      },
+    ],
+    polar: {
+      radius: ['90%', '70%'],
+      center: ['50%', '50%'],
+    },
+    angleAxis: {
+      max: 100,
+      show: false,
+    },
+    radiusAxis: {
+      type: 'category',
+      show: true,
+      axisLabel: {
+        show: false,
+      },
+      axisLine: {
+        show: false,
+      },
+      axisTick: {
+        show: false,
+      },
+    },
+    series: [
+      {
+        name: '',
+        type: 'bar',
+        roundCap: true,
+        barWidth: 50,
+        showBackground: true,
+        backgroundStyle: {
+          color: 'rgba(66, 66, 66, .3)',
+        },
+        data: [res.value],
+        coordinateSystem: 'polar',
+        itemStyle: {
+          normal: {
+            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
+              {
+                offset: 0,
+                color: 'rgba(213,110,42)',
+              },
+              {
+                offset: 1,
+                color: 'rgba(106,82,85)',
+              },
+            ]),
+          },
+        },
+      },
+    ],
+  };
+  return option
+}
+
+// 柱状图 --》增加值
+export function setZhuChart(res, obj) {
+  let colorList = ['rgba(92, 115, 230)']
+  let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
+  var option = {
+    color: _colorList,
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
+    },
+    grid: {
+      top: "15%",
+      left: "0%",
+      bottom: "0%",
+      right: "0%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      data: res.xData,
+      logBase: 5,
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: chart.xLine,
+          width: 1,
+        },
+      },
+      axisTick: {
+        show: false,
+      },
+      axisLabel: {
+        fontSize: chart.fontSize,
+        // margin: 10,
+        color: chart.fontColor,
+      },
+      splitLine: {
+        show: false,
+        lineStyle: {
+          color: "#ffffff",
+          opacity: 0.2,
+          width: 1,
+        },
+      },
+    },
+    yAxis: {
+      name: obj?.unit ? obj.unit : '',
+      type: "value",
+      nameTextStyle: {
+        color: chart.fontColor,
+        fontSize: chart.fontSize,
+      },
+      // nameGap: -250,  // 通过你生成的图表来调整
+      // nameLocation: "start", // y轴name处于y轴的什么位置
+      max: function (value) {
+        return parseInt(value.max * 1.2);
+      },
+      axisLine: {
+        show: false,
+      },
+      axisLabel: {
+        color: chart.fontColor,
+        fontSize: chart.fontSize,
+        // margin: 10,
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: "rgba(35,51,81)",
+          opacity: 0.2,
+          width: 1,
+        },
+      },
+    },
+    // legend: {
+    //   show: true,
+    //   right: "7%",
+    //   top: '5%',
+    //   // itemWidth: 20,
+    //   // itemHeight: 20,
+    //   // data: [
+    //   //     { icon: 'image://' + require('@/2d/assets/images/zft-lan.png'), name: res.data[0].name },
+    //   //     { icon: 'image://' + require('@/2d/assets/images/zft-ju.png'), name: res.data[1].name },
+    //   // ],
+    //   textStyle: {
+    //     color: chart.fontColor,
+    //   },
+    // },
+    series: function () {
+      let series = []
+      for (let i = 0; i < res.data.length; i++) {
+        let serie = {
+          "name": res.data[i].name,
+          "type": "bar",
+          "barWidth": "35%",
+          "data": res.data[i].value
+        }
+        series.push(serie)
+      }
+      return series
+    }()
+  }
+
+  return option
+}
+
+// 曲线图 --》消费
+export function setQuXianChart(res, obj) {
+  let colorList = ['85,106,215', '239,150,63']
+  let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
+  var datas = []
+  res.data.forEach((item, i) => {
+    datas.push({
+      name: item.name,
+      data: item.value,
+      type: 'line',
+      smooth: true, // 平滑过渡
+      symbol: 'none', // 拐点设置为实心圆点 默认是空心圆点 ECharts 提供的标记类型包括 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none' 可以通过 'image://url' 设置为图片，其中 URL 为图片的链接
+      // symbolSize: 8, // 拐点圆的大小
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: `rgba(${_colorList[i]},1)`,
+          },
+          {
+            offset: 0.5,
+            color: `rgba(${_colorList[i]},.3)`,
+          },
+          {
+            offset: 1,
+            color: `rgba(${_colorList[i]},0)`,
+          },
+        ],
+          false
+        ),
+      },
+      lineStyle: {
+        //线条样式
+        width: 2,
+        color: `rgba(${_colorList[i]})`,
+        type: 'solid' //虚线  dotted 点线 solid 实线 dashed 虚线
+      },
+
+    })
+  })
+  var option = {
+    tooltip: {
+      trigger: "axis",
+    },
+    grid: {
+      top: "15%",
+      left: "0%",
+      bottom: "0%",
+      right: "0%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: true, // 紧挨边缘
+      axisLabel: {
+        fontSize: chart.fontSize,
+        // margin: 10,
+        color: chart.fontColor,
+      },
+      axisTick: {
+        // x轴上的小刻度
+        show: false
+      },
+      data: res.xData
+    },
+    yAxis: {
+      type: 'value',
+      splitLine: {
+        // 网格线
+        show: true,
+        lineStyle: {
+          type: 'dotted', // dotted 虚线 solid 实线
+          color: chart.xLine
+        }
+      },
+      axisLabel: {
+        formatter: '{value}',
+        color: chart.fontColor,
+        fontSize: chart.fontSize
+      }
+    },
+    series: datas
+  };
+  return option
+}
+
+// 饼图 --》区域资产结构
+export function setBingChart(res) {
+  var colorList = ['rgba(72,124,223)', 'rgba(72,176,162)', 'rgba(112,100,188)'];
+  var option = {
+    color: colorList,
+    tooltip: {
+      trigger: 'item',
+    },
+    legend: {
+      orient: 'vertical',
+      right: '10%',
+      top: 'middle',
+      itemWidth: 13,
+      itemHeight: 13,
+      icon: 'circle',
+      itemGap: 20,
+      formatter(name) {
+        let result = res.find((item) => item.name == name);
+        return `{a|${result.name}} {b|${result.value}}`;
+      },
+      textStyle: {
+        color: '#000',
+        rich: {
+          a: {
+            fontSize: chart.fontSize,
+            color: chart.fontColor,
+            padding: [0, 10, 0, 6],
+          },
+          b: {
+            fontSize: chart.fontSize,
+            color: chart.fontColor,
+            padding: [0, 6, 0, 6],
+          },
+        },
+      },
+    },
+    series: [
+      // 展示层
+      {
+        type: 'pie',
+        center: ['25%', '50%'],
+        radius: ['45%', '85%'],
+        itemStyle: {
+          borderWidth: 2, //描边线宽
+          borderColor: '#fff',
+        },
+        label: {
+          show: false,
+        },
+        data: res,
+      },
+    ],
+  };
+  return option
+}
+
+// *************************
+
 export function setStackedChart(res) {
   var option = {
     color: ['rgba(0,214,78)', '#F4A419', '#3CBE89',],
