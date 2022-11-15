@@ -100,16 +100,16 @@ const handleZJZ = (type) => {
   option.data2 = setZhuChart(data2);
 };
 
-const heads = ref([
-  { id: 1, name: "三圈关系", img: require("@/2d/assets/images/sanquan.png") },
-  { id: 2, name: "物流", img: require("@/2d/assets/images/wuliu.png") },
-  { id: 3, name: "信息流", img: require("@/2d/assets/images/xinxiliu.png") },
-  { id: 4, name: "资金流", img: require("@/2d/assets/images/zijinliu.png") },
-]);
+// const heads = ref([
+//   { id: 1, name: "三圈关系", img: require("@/2d/assets/images/sanquan.png") },
+//   { id: 2, name: "物流", img: require("@/2d/assets/images/wuliu.png") },
+//   { id: 3, name: "信息流", img: require("@/2d/assets/images/xinxiliu.png") },
+//   { id: 4, name: "资金流", img: require("@/2d/assets/images/zijinliu.png") },
+// ]);
 // 三圈关系.... 点击事件
-const handleHeads = (id) => {
-  console.log("id: ", id);
-};
+// const handleHeads = (id) => {
+//   console.log("id: ", id);
+// };
 
 onMounted(() => {
   getqycyjj().then((res) => {
@@ -157,13 +157,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="area-head">
+  <!-- <div class="area-head">
     <ul class="animated bounceInDown">
       <li v-for="item in heads" :key="item.id" @click="handleHeads(item.id)">
         <img :src="item.img" /><span>{{ item.name }}</span>
       </li>
     </ul>
-  </div>
+  </div> -->
 
   <Left class="z-left">
     <Bar>

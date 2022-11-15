@@ -7,12 +7,13 @@ import { useStore } from "vuex";
 import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
 import { CACHE } from "@/3d/CACHE";
+import { menu } from "@/2d/hooks/useMenu";
 
-// const iframeRef = inject("iframeRef"); // 获取三维里的方法
 const router = useRouter();
 const store = useStore();
 
 const menus = ref([
+  // 只用于老版本-后面会删除
   { id: 1, name: "产业经济", path: "/IndustrialEconomy" },
   { id: 2, name: "交通出行", path: "/Transportation" },
   { id: 3, name: "环境人口", path: "/Environmental" },
@@ -20,19 +21,26 @@ const menus = ref([
   { id: 5, name: "能源碳排放", path: "/Energy" },
 ]);
 
-const footers = ref([
-  { id: 1, name: "海景区", isPick: true },
-  { id: 2, name: "智能制造产业园", isPick: true },
-  { id: 3, name: "数字金融区", isPick: false },
-  { id: 4, name: "物流服务", isPick: false },
-  { id: 5, name: "供应链", isPick: false },
-  { id: 6, name: "综合服务", isPick: false },
-  { id: 7, name: "数字政务", isPick: false },
-]);
-// 海景区.... 点击事件
-const handleFooters = (item) => {
-  footers.value[item.id - 1].isPick = !item.isPick;
-  console.log("item: ", item);
+const footers = menu; // 底部菜单
+const pickId = ref(1); // 二级菜单显示
+
+// 底部菜单点击事件
+const handleFooters = (item, leve, son) => {
+  if (leve === 1) {
+    footers.value.forEach((v) => (v.isPick = false));
+    item.children.forEach((v) => (v.isPick = false));
+    item.isPick = true;
+    if (item.id === 1) {
+      const _son = item.children.find((v) => v.id === "1-1")
+      _son.isPick = true;
+      // router.push(_son.path);
+    }
+    pickId.value = item.id;
+  } else {
+    item.children.forEach((v) => (v.isPick = false));
+    son.isPick = true;
+    // if (item.id === 1) router.push(son.path);
+  }
 };
 
 const handleMenu = (item) => {
@@ -42,25 +50,17 @@ const handleMenu = (item) => {
   router.push(item.path);
 };
 
-const goBack = ()=>{
+const goBack = () => {
   window.top.location.href = "/aie_web"; // 返回用户 home 地址
-}
+};
 
-// const isShow = ref(true);
 const routerName = ref("/IndustrialEconomy");
 
 watch(
   () => router,
   () => {
     routerName.value = getWenhaoA(firstA(router.options.history.state.current));
-    // isShow.value = [
-    //   "/IndustrialEconomy",
-    //   "/Transportation",
-    //   "/Environmental",
-    //   "/Education",
-    //   "/Energy",
-    // ].includes(routerName.value);
-
+   
     API.hideAll();
     API.showIcons();
     API.showModels();
@@ -147,18 +147,31 @@ watch(
         </li>
       </ul>
 
-      <ul class="button-box2 animated bounceInDown" v-if="store.state.LEVEL == 2">
+      <ul class="button-box2 animated bounceInUp" v-if="store.state.LEVEL == 2">
         <li
           v-for="item in footers"
           :key="item.id"
-          @click="handleFooters(item)"
+          @click="handleFooters(item, 1)"
           :class="item.isPick ? 'pick2' : ''"
         >
-          <span>{{ item.name }}</span>
+          <img v-if="item.icon" :src="item.icon" class="f-icon" />
+          <span class="m1-t">{{ item.name }}</span>
+
+          <!-- 二级菜单 -->
+          <ul :class="['menu-children','animated fadeIn']" v-show="item.id === pickId">
+            <li
+              v-for="son in item.children"
+              :key="son.id"
+              :class="son.isPick ? 'pick2' : ''"
+              @click.stop="handleFooters(item, 2, son)"
+            >
+              {{ son.name }}
+            </li>
+          </ul>
         </li>
       </ul>
 
-      <img src="../../assets/images/fanhui.png" class="back" @click="goBack" v-if="store.state.LEVEL == 2">
+      <!-- <img src="../../assets/images/fanhui.png" class="back" @click="goBack" v-if="store.state.LEVEL == 2"> -->
     </div>
   </div>
 </template>
@@ -222,11 +235,11 @@ watch(
   background: url("@/2d/assets/images/footer.png") no-repeat center center /
     100% 100%;
 }
-.back{
+.back {
   position: absolute;
   right: 24%;
   height: 40%;
-  cursor: pointer;  
+  cursor: pointer;
   // &:hover{
   //   scale: 1.1;
   // }
@@ -234,21 +247,47 @@ watch(
 
 .button-box2 {
   display: flex;
-  width: 40%;
-  height: 38%;
+  width: 48%;
+  // height: 38%;
+  height: 35%;
   justify-content: space-between;
+  position: relative;
+  * {
+    font-size: 0.7vw;
+    // font-size: 12px;
+  }
+  .f-icon {
+    height: 50%;
+    margin-right: 0.5rem;
+  }
   li {
     display: flex;
     align-items: center;
-    padding: 0 2%;
+    padding: 0 0.65rem;
     background: rgba(0, 0, 0, 0.7);
     transition: 0.3s;
-    &:not(&:nth-child(1)) {
-      margin-left: 1%;
-    }
+    // &:not(&:nth-child(1)) {
+    //   margin-left: .5%;
+    // }
     &:hover {
       cursor: pointer;
-      scale: 1.1;
+      // scale: 1.1;
+    }
+  }
+}
+
+.menu-children {
+  display: flex;
+  justify-content: flex-start;
+  position: absolute;
+  top: -160%;
+  top: -120%;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  li {
+    &:not(&:nth-child(1)) {
+      margin-left: 1%;
     }
   }
 }
