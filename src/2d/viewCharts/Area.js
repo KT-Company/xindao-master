@@ -83,7 +83,7 @@ export function setYuanChart(res) {
 
 // 柱状图 --》增加值
 export function setZhuChart(res, obj) {
-  let colorList = ['rgba(92, 115, 230)']
+  let colorList = ['rgba(92, 115, 230)', 'rgba(223,153,92)']
   let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
   var option = {
     color: _colorList,
@@ -91,6 +91,18 @@ export function setZhuChart(res, obj) {
       trigger: "axis",
       axisPointer: {
         type: "shadow",
+      },
+    },
+    legend: {
+      show: obj?.legend ? true : false,
+      icon: 'rect',
+      orient: 'horizontal',
+      // align: 'center',
+      itemWidth: 12,
+      itemHeight: 8,
+      textStyle: {
+        fontSize: 12,
+        color: chart.fontColor,
       },
     },
     grid: {
@@ -118,6 +130,7 @@ export function setZhuChart(res, obj) {
         fontSize: chart.fontSize,
         // margin: 10,
         color: chart.fontColor,
+        interval: obj?.interval ?? null,
       },
       splitLine: {
         show: false,
@@ -137,9 +150,9 @@ export function setZhuChart(res, obj) {
       },
       // nameGap: -250,  // 通过你生成的图表来调整
       // nameLocation: "start", // y轴name处于y轴的什么位置
-      max: function (value) {
-        return parseInt(value.max * 1.2);
-      },
+      // max: function (value) {
+      //   return parseInt(value.max * 1.2);
+      // },
       axisLine: {
         show: false,
       },
@@ -151,7 +164,7 @@ export function setZhuChart(res, obj) {
       splitLine: {
         show: true,
         lineStyle: {
-          color: "rgba(35,51,81)",
+          color: chart.xLine,
           opacity: 0.2,
           width: 1,
         },
@@ -177,7 +190,7 @@ export function setZhuChart(res, obj) {
         let serie = {
           "name": res.data[i].name,
           "type": "bar",
-          "barWidth": "35%",
+          "barWidth": obj?.barW || "35%",
           "data": res.data[i].value
         }
         series.push(serie)
@@ -276,41 +289,81 @@ export function setQuXianChart(res, obj) {
 }
 
 // 饼图 --》区域资产结构
-export function setBingChart(res) {
-  var colorList = ['rgba(72,124,223)', 'rgba(72,176,162)', 'rgba(112,100,188)'];
+export function setBingChart(res, obj) {
+  const legendStyle = () => {
+    if (obj?.legend === 1) {
+      return {
+        orient: 'vertical',
+        left: '50%',
+        top: 'middle',
+        itemWidth: 10,
+        itemHeight: 10,
+        itemStyle: {
+          borderColor: null,
+        },
+        icon: 'rect',
+        itemGap: 10,
+        formatter(name) {
+          let result = res.find((item) => item.name == name);
+          return `{a|${result.name}} {b|${result.value}所}`;
+        },
+        textStyle: {
+          color: '#000',
+          rich: {
+            a: {
+              fontSize: chart.fontSize,
+              color: 'rgba(177,197,255)',
+              padding: [0, 3, 0, 3],
+            },
+            b: {
+              fontSize: 14,
+              color: 'rgba(255,255,255)',
+              padding: [0, 0, 0, 6],
+            },
+          },
+        },
+      }
+    } else {
+      return {
+        orient: 'vertical',
+        left: '48%',
+        top: 'middle',
+        itemWidth: 10,
+        itemHeight: 10,
+        itemStyle: {
+          borderColor: null,
+        },
+        icon: 'rect',
+        itemGap: 20,
+        formatter(name) {
+          let result = res.find((item) => item.name == name);
+          return `{a|${result.name}} {b|${result.value}%}`;
+        },
+        textStyle: {
+          color: '#000',
+          rich: {
+            a: {
+              fontSize: chart.fontSize,
+              color: chart.fontColor,
+              padding: [0, 10, 0, 6],
+            },
+            b: {
+              fontSize: 14,
+              color: 'rgba(255,255,255)',
+              padding: [0, 0, 0, 6],
+            },
+          },
+        },
+      }
+    }
+  }
+  var colorList = ['rgba(72,124,223)', 'rgba(72,176,162)', 'rgba(112,100,188)', 'rgba(255,159,64)'];
   var option = {
     color: colorList,
     tooltip: {
       trigger: 'item',
     },
-    legend: {
-      orient: 'vertical',
-      right: '10%',
-      top: 'middle',
-      itemWidth: 13,
-      itemHeight: 13,
-      icon: 'circle',
-      itemGap: 20,
-      formatter(name) {
-        let result = res.find((item) => item.name == name);
-        return `{a|${result.name}} {b|${result.value}}`;
-      },
-      textStyle: {
-        color: '#000',
-        rich: {
-          a: {
-            fontSize: chart.fontSize,
-            color: chart.fontColor,
-            padding: [0, 10, 0, 6],
-          },
-          b: {
-            fontSize: chart.fontSize,
-            color: chart.fontColor,
-            padding: [0, 6, 0, 6],
-          },
-        },
-      },
-    },
+    legend: legendStyle(),
     series: [
       // 展示层
       {
@@ -318,7 +371,7 @@ export function setBingChart(res) {
         center: ['25%', '50%'],
         radius: ['45%', '85%'],
         itemStyle: {
-          borderWidth: 2, //描边线宽
+          borderWidth: 1, //描边线宽
           borderColor: '#fff',
         },
         label: {

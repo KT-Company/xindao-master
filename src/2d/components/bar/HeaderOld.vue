@@ -92,11 +92,30 @@ const handleHome = () => {
 </script>
 
 <template>
-  <p class="time">
-    <span>数据统计时间： {{ store.state.year }}年</span>
-  </p>
-  <img src="../../assets/images/home.png" class="home" @click="handleHome" />
-  <img src="../../assets/images/logoa.png" class="head" />
+  <!-- <div :class="['header', store.state.LEVEL != 2 ? 'hb' : '']"> -->
+  <div :class="['header', store.state.LEVEL != 2 ? '' : '']">
+    <!-- <h1 class="title num-jianbian-lan">{{ title }}</h1> -->
+    <!-- <img class="title" src="../../assets/images/logo.png" v-show="store.state.LEVEL != 2" /> -->
+    <p class="time">
+      <span>数据统计时间： {{ store.state.year }}年</span>
+    </p>
+    <p class="info">
+      <img
+        src="../../assets/images/home.png"
+        class="home"
+        @click="handleHome"
+        v-show="store.state.LEVEL > 0"
+      />
+      <!-- <img
+        src="../../assets/images/btn-back.png"
+        class="back"
+        @click="back"
+        v-show="store.state.LEVEL != 2"
+      /> -->
+    </p>
+  </div>
+
+  <img src="../../assets/images/logoa.png" class="head" v-if="true" />
 </template>
 
 <style lang="less" scoped>
@@ -111,16 +130,32 @@ const handleHome = () => {
   color: rgb(255, 255, 255);
 }
 
+.hb {
+  background: url("@/2d/assets/images/top.png") no-repeat center center / 100%
+    100%;
+}
+
 .head {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   width: 28.5%;
 }
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 20%;
+  font-size: 1.6vw;
+  width: 20%;
+  color: #ffffff;
+}
 .time {
   position: absolute;
-  left: .8%;
-  top: 3.5%;
+  display: inline-block;
+  height: 22%;
+  left: 2%;
+  top: 20%;
   display: flex;
   align-items: center;
   font-family: Alibaba PuHuiTi;
@@ -131,10 +166,26 @@ const handleHome = () => {
     padding: 0 5px;
   }
 }
-.home{
+.info {
   position: absolute;
   right: 2%;
-  top: 2.5%;
-  width: 2.5%;
+  top: 20%;
+  height: 22%;
+  width: 15%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  pointer-events: auto;
+  * {
+    padding: 0 8px;
+  }
+}
+.back {
+  height: 100%;
+  cursor: pointer;
+}
+.home {
+  height: 100%;
+  cursor: pointer;
 }
 </style>

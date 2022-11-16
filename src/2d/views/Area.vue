@@ -100,16 +100,6 @@ const handleZJZ = (type) => {
   option.data2 = setZhuChart(data2);
 };
 
-// const heads = ref([
-//   { id: 1, name: "三圈关系", img: require("@/2d/assets/images/sanquan.png") },
-//   { id: 2, name: "物流", img: require("@/2d/assets/images/wuliu.png") },
-//   { id: 3, name: "信息流", img: require("@/2d/assets/images/xinxiliu.png") },
-//   { id: 4, name: "资金流", img: require("@/2d/assets/images/zijinliu.png") },
-// ]);
-// 三圈关系.... 点击事件
-// const handleHeads = (id) => {
-//   console.log("id: ", id);
-// };
 
 onMounted(() => {
   getqycyjj().then((res) => {
@@ -265,17 +255,13 @@ onMounted(() => {
 }
 
 .b-title {
-  font-size: 1vw;
-  font-family: Source Han Sans CN;
-  font-weight: bold;
-  color: #ffffff;
   height: 20%;
 }
 
 .c-title {
-  font-size: 1vw;
+  font-size: .9vw;
   font-family: Source Han Sans CN;
-  font-weight: bold;
+  font-weight: 500;
   color: #ffffff;
   height: 6%;
 }

@@ -1,12 +1,9 @@
 <!-- 教育医疗 -->
-<!-- 
-  数据对接情况：全部完成
- -->
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import Highchart from "@/2d/components/util/Highchart/Highchart.vue";
 import { getjyyl } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
+import { setBingChart, setZhuChart } from "@/2d/viewCharts/Area";
 import {
   setSchoolChart,
   setHistogramChartMore,
@@ -20,17 +17,10 @@ const base = reactive({
 // const baseList = ref([]);
 
 const schoolChartData = ref([
-  { name: "高等院校", y: 0, h: 0, selected: true },
-  { name: "中等院校", y: 0, h: 0, selected: true },
-  { name: "小学教育", y: 0, h: 0, selected: true },
-  { name: "学前教育", y: 0, h: 0, selected: true },
-]);
-const medicalChartData = ref([
-  { name: "医疗卫生机构", value: 0, unit: "家" },
-  { name: "市属医疗机构", value: 0, unit: "家" },
-  { name: "床位", value: 0, unit: "万张" },
-  { name: "医护人员", value: 0, unit: "万人" },
-  { name: "总诊疗人次", value: 0, unit: "亿次" },
+  { name: "小学教育", value: 0 },
+  { name: "学前教育", value: 0 },
+  { name: "中等院校", value: 0 },
+  { name: "高等院校", value: 0 },
 ]);
 const insuranceChartData = reactive({
   xData: ["参保人数（万）", "基金收入（亿）", "基金支出（亿）"],
@@ -41,17 +31,8 @@ const insuranceChartData = reactive({
 });
 const option = reactive({
   data1: {},
-  data2: {},
   data3: {},
 });
-const jiaoyuData = reactive([
-  { name: "教育支出占比", value: "0%" },
-  { name: "教育总投入(亿元)", value: "0" },
-  { name: "教职工人数", value: "0" },
-  { name: "专任教师总人数", value: "0" },
-  { name: "高考报名人数", value: "0" },
-  { name: "中考报名人数", value: "0" },
-]);
 
 onMounted(() => {
   getjyyl().then((res) => {
@@ -61,27 +42,10 @@ onMounted(() => {
     // baseList.value = data.filter((item) => useYear(item));
 
     try {
-      jiaoyuData[0].value = `${base.data.jyzczb}%`;
-      jiaoyuData[1].value = base.data.sjztr;
-      jiaoyuData[2].value = base.data.jzgzrs;
-      jiaoyuData[3].value = base.data.zrjszrs;
-      jiaoyuData[4].value = base.data.gkbmrs;
-      jiaoyuData[5].value = base.data.zkbmrs;
-    } catch (error) {}
-
-    try {
-      schoolChartData.value[0].y = base.data.gdyxs;
-      schoolChartData.value[1].y = base.data.zdyxs;
-      schoolChartData.value[2].y = base.data.xxjyyxs;
-      schoolChartData.value[3].y = base.data.xqjyyxs;
-    } catch (error) {}
-
-    try {
-      medicalChartData.value[0].value = base.data.ylwsjg;
-      medicalChartData.value[1].value = base.data.ssyljg;
-      medicalChartData.value[2].value = base.data.cw;
-      medicalChartData.value[3].value = base.data.yhrs;
-      medicalChartData.value[4].value = base.data.zzlrc;
+      schoolChartData.value[0].value = base.data.xqjyyxs;
+      schoolChartData.value[1].value = base.data.xxjyyxs;
+      schoolChartData.value[2].value = base.data.zdyxs;
+      schoolChartData.value[3].value = base.data.gdyxs;
     } catch (error) {}
 
     try {
@@ -93,161 +57,139 @@ onMounted(() => {
       insuranceChartData.data[1].value[2] = base.data.cxjmjbylbxjjzc;
     } catch (error) {}
 
-
-
-    option.data1 = setSchoolChart(schoolChartData);
-    option.data2 = setHistogramChartMore(medicalChartData.value, 3);
-    option.data3 = setColumnChart(insuranceChartData);
+    option.data1 = setBingChart(schoolChartData.value, { legend: 1 });
+    option.data3 = setZhuChart(insuranceChartData, {
+      legend: true,
+      interval: 0,
+      barW: "20%",
+    });
   });
-  var index = -1;
-  setInterval(() => {
-    index++;
-    if (index === schoolChartData.value.length) index = 0;
-    schoolChartData.value.forEach((item) => (item.h = 0));
-    schoolChartData.value[index].h = 10;
-  }, 1000);
 });
 </script>
 
 <template>
-  <Left>
-    <Title>教育概况{{store.state.year}}年</Title>
-    <ul class="education-main">
-      <li
-        v-for="(item,index) in jiaoyuData"
-        :key="item.name"
-      >
-        <p>
-          <span :class="['num-type','animation-downUp',[0,3,4].includes(index) ? 'num-jianbian-lan' : 'num-jianbian-huang']">{{ item.value }}</span>
-        </p>
-        <p>{{ item.name }}</p>
-      </li>
-    </ul>
-    <Title>院校分布与数量</Title>
-    <div class="school-main">
-      <div class="school-chart-bg"></div>
-      <Highchart
-        :option="option.data1"
-        uid="gg"
-      ></Highchart>
-    </div>
+  <Left class="z-left">
+    <Bar>
+      <div class="b-title">教育概况</div>
+      <div class="b-content content1">
+        <ul class="bg-hui">
+          <li>
+            <span class="hui">教育支出占比</span
+            ><span>{{ base.data.jyzczb }}%</span>
+          </li>
+          <li>
+            <span class="hui">教育支出占比</span
+            ><span>{{ base.data.sjztr }}</span>
+          </li>
+        </ul>
+
+        <ul class="bg-hui">
+          <li>
+            <span class="hui">教职工总人数(人)</span
+            ><span>{{ base.data.jzgzrs }}</span>
+          </li>
+          <li>
+            <span class="hui">专任教师总人数(人)</span
+            ><span>{{ base.data.zrjszrs }}</span>
+          </li>
+        </ul>
+
+        <ul class="bg-hui">
+          <li>
+            <span class="hui">高考报名人数(人)</span
+            ><span>{{ base.data.gkbmrs }}</span>
+          </li>
+          <li>
+            <span class="hui">中考报名人数(人)</span
+            ><span>{{ base.data.zkbmrs }}</span>
+          </li>
+        </ul>
+      </div>
+    </Bar>
+    <Bar>
+      <div class="b-title">院校分布与数量</div>
+      <ul class="b-content content2">
+        <Echart :option="option.data1"></Echart>
+      </ul>
+    </Bar>
   </Left>
 
-  <Right>
-    <Title>{{store.state.year}}一一医疗指标</Title>
-    <div class="medical-main">
-      <Echart
-        :option='option.data2'
-        class="h-100"
-      ></Echart>
-    </div>
-    <Title>医疗保险和生育保险主要指标</Title>
-    <div class="insurance-main">
-      <Echart
-        :option='option.data3'
-        class="h-100"
-      ></Echart>
-    </div>
+  <Right class="z-right">
+    <Bar>
+      <div class="b-title">医疗概况</div>
+      <div class="b-content content1">
+        <ul class="bg-hui">
+          <li>
+            <span class="hui">医疗卫生机构(家)</span
+            ><span>{{ base.data.ylwsjg }}</span>
+          </li>
+          <li>
+            <span class="hui">市属医疗机构(家)</span
+            ><span>{{ base.data.ssyljg }}</span>
+          </li>
+        </ul>
+        <ul class="bg-hui">
+          <li>
+            <span class="hui">床位(万)</span><span>{{ base.data.cw }}</span>
+          </li>
+          <li>
+            <span class="hui">医护人员(万)</span
+            ><span>{{ base.data.yhrs }}</span>
+          </li>
+          <li>
+            <span class="hui">总诊疗人次(亿)</span
+            ><span>{{ base.data.zzlrc }}</span>
+          </li>
+        </ul>
+      </div>
+    </Bar>
+    <Bar>
+      <div class="b-title">医疗保险和生育保险主要指标</div>
+      <ul class="b-content content3">
+        <Echart :option="option.data3"></Echart>
+      </ul>
+    </Bar>
   </Right>
 </template>
 
 <style lang="less" scoped>
-.education-main {
-  height: calc(60% - var(--titleH));
-  // border: 1px solid red;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  li {
-    // border: 1px solid pink;
-    width: 40%;
-    & p:nth-child(1) {
-      height: 70%;
-      text-align: center;
-      padding-top: 6%;
-      span {
-        font-size: 1.2vw;
-        font-weight: bold;
-      }
-    }
-    &:nth-child(1) p:nth-child(1) {
-      background: url("@/2d/assets/images/guanghuan-lan.png") no-repeat center
-        bottom / 75% 75%;
-      span {
-        animation: downUp 1s infinite alternate-reverse;
-      }
-    }
-    &:nth-child(2) p:nth-child(1) {
-      background: url("@/2d/assets/images/guanghuan-huang.png") no-repeat center
-        bottom / 75% 75%;
-    }
-    &:nth-child(3) p:nth-child(1) {
-      background: url("@/2d/assets/images/guanghuan-huang.png") no-repeat center
-        bottom / 75% 75%;
-    }
-    &:nth-child(4) p:nth-child(1) {
-      background: url("@/2d/assets/images/guanghuan-lan.png") no-repeat center
-        bottom / 75% 75%;
-    }
-    &:nth-child(5) p:nth-child(1) {
-      background: url("@/2d/assets/images/guanghuan-lan.png") no-repeat center
-        bottom / 75% 75%;
-    }
-    &:nth-child(6) p:nth-child(1) {
-      background: url("@/2d/assets/images/guanghuan-huang.png") no-repeat center
-        bottom / 75% 75%;
-    }
-    & p:nth-child(2) {
-      background: url("@/2d/assets/images/fang-lan.png") no-repeat center center /
-        100% 100%;
-      height: 30%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8vw;
-    }
-  }
+.z-left,
+.z-right {
+  height: 52% !important;
+  top: 22% !important;
 }
-.school-main {
-  height: calc(40% - var(--titleH));
-  position: relative;
-  .school-chart-bg {
-    position: absolute;
-    background: url("@/2d/assets/images/chart-yuanpan.png") no-repeat center
-      center / 100% 100%;
-    height: 70%;
-    width: 100%;
-    bottom: -15%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .school-title-box {
-    height: 30%;
+
+.z-left {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1.2fr 1fr;
+  row-gap: 4%;
+}
+.z-right {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1.2fr;
+  row-gap: 4%;
+}
+
+.content1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-columns: repeat(1fr);
+  row-gap: 4%;
+  ul {
     display: flex;
-  }
-  #gg {
-    height: 100%;
+    flex-direction: column;
+    justify-content: space-around;
+    li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 5%;
+    }
   }
 }
 
-.medical-main {
-  height: calc(55% - var(--titleH));
-}
-.insurance-main {
-  height: calc(45% - var(--titleH));
-}
-
-.animation-downUp {
-  animation: downUp 1s infinite alternate-reverse;
-}
-
-@keyframes downUp {
-  from {
-    transform: translateY(50%);
-  }
-
-  to {
-    transform: translateY(-30%);
-  }
+.content3{
+  padding-bottom: 3%;
 }
 </style>

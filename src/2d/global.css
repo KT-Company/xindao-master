@@ -66,13 +66,31 @@ li {
   right: 1% !important;
 }
 
+.b-title {
+  font-size: .9vw;
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  color: #ffffff;
+  height: 2rem;
+}
+
+.b-content {
+  height: calc(100% - 2rem);
+  position: relative;
+}
+
+.bg-hui {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
 
 /* ************************************************** */
 :root {
   --barMargin: 1vw;
   --headerH: 8%;
   --barMargin: 0;
-  --headerH: 16%;
+  --headerH: 6%;
   --itemPL: 5%;
   --titleH: 6.3%;
 }
@@ -208,6 +226,7 @@ li {
   background-image: linear-gradient(0deg,
       rgba(155, 207, 255, 0.76) 0.95214844%,
       #ffffff 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
 }
