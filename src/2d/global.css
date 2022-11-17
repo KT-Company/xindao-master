@@ -1,7 +1,8 @@
 * {
   box-sizing: border-box;
   color: rgb(255, 255, 255);
-  font-size: .85vw;
+  /* font-size: .85vw; */
+  font-size: .65vw;
 }
 
 div,
@@ -48,8 +49,7 @@ li {
 .z-left {
   /* border: 1px solid red; */
   position: absolute;
-  width: 20% !important;
-  min-width: 18% !important;
+  width: 19.8% !important;
   height: 88% !important;
   top: 8% !important;
   left: 1% !important;
@@ -58,9 +58,7 @@ li {
 .z-right {
   /* border: 1px solid red; */
   position: absolute;
-  width: 20% !important;
-  min-width: 18% !important;
-  /* min-width: 352px !important; */
+  width: 19.8% !important;
   height: 88% !important;
   top: 8% !important;
   right: 1% !important;
@@ -172,7 +170,10 @@ li {
   font-family: 'DINCond-Bold';
   src: url("@/2d/assets/font/DINCond-Bold.otf");
 }
-
+@font-face {
+  font-family: 'sscr';
+  src: url("@/2d/assets/font/sscr.otf");
+}
 
 .font-number-style {
   font-family: DINCond-Bold;

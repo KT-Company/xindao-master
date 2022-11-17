@@ -4,11 +4,6 @@ import { ref, reactive, onMounted } from "vue";
 import { getjyyl } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { setBingChart, setZhuChart } from "@/2d/viewCharts/Area";
-import {
-  setSchoolChart,
-  setHistogramChartMore,
-  setColumnChart,
-} from "@/2d/viewCharts/Education";
 import { useStore } from "vuex";
 const store = useStore();
 const base = reactive({
@@ -117,7 +112,7 @@ onMounted(() => {
   <Right class="z-right">
     <Bar>
       <div class="b-title">医疗概况</div>
-      <div class="b-content content1">
+      <div class="b-content content1 content-r1">
         <ul class="bg-hui">
           <li>
             <span class="hui">医疗卫生机构(家)</span
@@ -176,7 +171,8 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-columns: repeat(1fr);
-  row-gap: 4%;
+  row-gap: 5%;
+  padding: 3% 0;
   ul {
     display: flex;
     flex-direction: column;
@@ -187,6 +183,10 @@ onMounted(() => {
       padding: 0 5%;
     }
   }
+}
+
+.content-r1{
+  row-gap: 7%;
 }
 
 .content3{

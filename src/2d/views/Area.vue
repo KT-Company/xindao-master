@@ -87,7 +87,7 @@ const data7 = reactive({
   ],
 });
 const data8 = ref([
-  { name: "存货", value: 0 },
+  { name: "存      货", value: 0 },
   { name: "货币资金", value: 0 },
   { name: "固定资产", value: 0 },
 ]);
@@ -99,7 +99,6 @@ const handleZJZ = (type) => {
 
   option.data2 = setZhuChart(data2);
 };
-
 
 onMounted(() => {
   getqycyjj().then((res) => {
@@ -138,9 +137,9 @@ onMounted(() => {
     data7.data[0].value = areaA.map((item) => item.gxdkye);
     option.data7 = setQuXianChart(data7, { color: [1] });
 
-    data8.value[0].value = baseA.data.zzssr
-    data8.value[1].value = baseA.data.qysdssr
-    data8.value[2].value = baseA.data.grsdssr
+    data8.value[0].value = baseA.data.zzssr;
+    data8.value[1].value = baseA.data.qysdssr;
+    data8.value[2].value = baseA.data.grsdssr;
     option.data8 = setBingChart(data8.value);
   });
 });
@@ -168,7 +167,7 @@ onMounted(() => {
             ￥{{ baseA.data.gdpzz }} <span class="yi">亿元</span>
           </p>
           <p class="gdp-name">环比</p>
-          <p class="gdp-val">
+          <p class="gdp-val gdp-sp">
             +￥{{ baseB.data.gdpzz }} <span class="yi">亿元</span>
           </p>
         </div>
@@ -259,7 +258,7 @@ onMounted(() => {
 }
 
 .c-title {
-  font-size: .9vw;
+  font-size: 0.9vw;
   font-family: Source Han Sans CN;
   font-weight: 500;
   color: #ffffff;
@@ -333,18 +332,25 @@ onMounted(() => {
     p {
       &,
       * {
-        color: rgba(202, 224, 255);
+        color: rgba(202, 224, 255); 
+        font-family: Source Han Sans CN;
       }
 
       &:nth-child(3) {
-        margin-top: 5%;
+        margin-top: 7%;
       }
     }
     .gdp-name {
-      font-size: 0.8vw;
+      font-size: 0.7vw;
+      font-weight: 100;
+      // font-family: sscr;
     }
     .gdp-val {
       font-size: 1.1vw;
+      font-family: sscr;
+    }
+    .gdp-sp{
+      margin-left: -8%;
     }
   }
 }

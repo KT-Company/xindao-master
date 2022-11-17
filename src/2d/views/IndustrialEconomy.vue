@@ -8,8 +8,8 @@ import { setZhuChart } from "@/2d/viewCharts/Area";
 const store = useStore();
 
 // 企业总量点击事件
-const handleCompany = (item,index) => {
-  pickIndex.value = index
+const handleCompany = (item, index) => {
+  pickIndex.value = index;
   console.log("item: ", item);
 };
 
@@ -61,7 +61,7 @@ const economicData = reactive([
   { name: "(市级)专精特新“小巨人”中小企业", value: 0, isPick: false },
   { name: "(市级)专精特新“小巨人”企业", value: 0, isPick: false },
 ]);
-const pickIndex = ref(0)
+const pickIndex = ref(0);
 onMounted(() => {
   getcyjj().then((res) => {
     console.log("getcyjj: ", res);
@@ -70,7 +70,7 @@ onMounted(() => {
     cyzbList.value = data.filter((item) => useYear(item));
 
     jjzlData.value[0].val = cyzb.data.gdpzz;
-    jjzlData.value[1].val = cyzb.data.gdpzs;
+    jjzlData.value[1].val = cyzb.data.gdpzs + "%";
     jjzlData.value[2].val = cyzb.data.rjgdp;
     jjzlData.value[3].val = cyzb.data.dycy;
     jjzlData.value[4].val = cyzb.data.decy;
@@ -169,7 +169,7 @@ onMounted(() => {
         <li
           v-for="(item, index) in economicData"
           :key="index"
-          @click="handleCompany(item,index)"
+          @click="handleCompany(item, index)"
           :class="[pickIndex === index ? 'pick-item' : '']"
         >
           <span class="hui">{{ item.name }}</span>
@@ -261,7 +261,9 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(1fr);
-  gap: 4%;
+  column-gap: 4%;
+  row-gap: 6%;
+  padding: 2% 2% 5% 2%;
   li {
     display: flex;
     align-items: center;
@@ -274,10 +276,12 @@ onMounted(() => {
       font-family: Source Han Sans CN;
       font-weight: bold;
       color: #ffffff;
+      font-size: 0.85vw;
     }
-    // .t1-name {
-    //   color: rgb(199 202 208);
-    // }
+    .t1-name {
+      // color: rgb(199 202 208);
+      font-size: 0.78vw;
+    }
   }
 }
 
@@ -314,6 +318,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: .8% 0;
   li {
     background: rgba(255, 255, 255, 0.1);
     // border: 1px solid rgba(255, 255, 255, 0.2);
@@ -341,6 +346,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 1.5% 0 1% 0;
   li {
     display: flex;
     align-items: center;
@@ -363,6 +369,7 @@ onMounted(() => {
   grid-template-columns: 3fr;
   grid-template-rows: 4fr 2fr 1fr;
   row-gap: 4%;
+  padding: 1.5% 0 1% 0;
   ul {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);

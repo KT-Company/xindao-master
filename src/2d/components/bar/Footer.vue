@@ -24,8 +24,8 @@ const handleFooters = (item, leve, son) => {
       const _son = item.children.find((v) => v.id === "1-1");
       store.commit("setMenuBid", _son.id);
       router.push(_son.path);
-    }
-    if (item.id === 2) router.push("/Area");
+    } else if (item.id === 2) router.push("/Area");
+    else return;
     pickId.value = item.id;
   } else {
     if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
@@ -52,7 +52,7 @@ watch(
   () => router,
   () => {
     routerName.value = getWenhaoA(firstA(router.options.history.state.current));
-    return
+    return;
     API.hideAll();
     API.showIcons();
     API.showModels();
@@ -138,7 +138,7 @@ watch(
           v-for="item in footers"
           :key="item.id"
           @click="handleFooters(item, 1)"
-          :class="store.state.menuAid === item.id ? 'pick2' : ''"
+          :class="[store.state.menuAid === item.id ? `pick2` : '']"
         >
           <img v-if="item.icon" :src="item.icon" class="f-icon" />
           <span class="m1-t">{{ item.name }}</span>
@@ -148,15 +148,22 @@ watch(
             :class="['menu-children', 'animated fadeIn']"
             v-show="item.id === pickId"
           >
-            <li
-              v-for="son in item.children"
-              :key="son.id"
-              :class="store.state.menuBid.includes(son.id) ? 'pick2' : ''"
-              @click.stop="handleFooters(item, 2, son)"
-              :style="{ cursor: ['1-2', '1-3', '1-4'].includes(son.id) ? 'no-drop' : 'pointer' }"
-            >
-              {{ son.name }}
-            </li>
+            <div :class="['c-main', `pickClass${item.id}`]">
+              <img src="../../assets/images/xiajian.png" class="xiajian" />
+              <li
+                v-for="son in item.children"
+                :key="son.id"
+                :class="store.state.menuBid.includes(son.id) ? 'pick2' : ''"
+                @click.stop="handleFooters(item, 2, son)"
+                :style="{
+                  cursor: ['1-2', '1-3', '1-4'].includes(son.id)
+                    ? 'no-drop'
+                    : 'pointer',
+                }"
+              >
+                {{ son.name }}
+              </li>
+            </div>
           </ul>
         </li>
       </ul>
@@ -171,7 +178,7 @@ watch(
 .footer {
   width: 48%;
   height: 10.8vh;
-  left: 25.5%;
+  left: 26.1%;
   position: fixed;
   bottom: 0;
   pointer-events: auto;
@@ -211,17 +218,26 @@ watch(
 }
 
 .menu-children {
-  display: flex;
-  justify-content: flex-start;
   position: absolute;
   top: -160%;
-  top: -120%;
-  height: 100%;
+  top: -170%;
   width: 100%;
   left: 0;
-  li {
-    &:not(&:nth-child(1)) {
-      margin-left: 1%;
+  height: 170%;
+  cursor: auto;
+  // background: url("@/2d/assets/images/xiansanjiao.png") no-repeat;
+  .c-main {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    li {
+      height: 60%;
+      &:not(&:nth-of-type(1)) {
+        margin-left: 1%;
+      }
     }
   }
 }
@@ -235,5 +251,57 @@ watch(
   width: 5%;
   right: -8%;
   cursor: pointer;
+}
+.xiajian {
+  height: 0;
+}
+.pickClass1 {
+  width: 45% !important;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 8%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 13%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 7.5%;
+  }
+}
+
+.pickClass2 {
+  width: 38% !important;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 37%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 44%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 37%;
+  }
 }
 </style>

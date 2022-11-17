@@ -8,10 +8,10 @@ export const menu = ref([
         icon: require('@/2d/assets/images/shehui.png'),
         children: [
             { id: "1-1", name: "产业经济", isPick: true, path: "/IndustrialEconomy" },
-            { id: "1-2", name: "能源碳排放", isPick: false, path: "/Energy" },
             { id: "1-3", name: "交通出行", isPick: false, path: "/Transportation" },
             { id: "1-4", name: "环境人口", isPick: false, path: "/Environmental" },
             { id: "1-5", name: "教育医疗", isPick: false, path: "/Education" },
+            { id: "1-2", name: "能源碳排放", isPick: false, path: "/Energy" },
         ],
     },
     {
