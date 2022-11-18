@@ -52,7 +52,6 @@ watch(
   () => router,
   () => {
     routerName.value = getWenhaoA(firstA(router.options.history.state.current));
-    return;
     API.hideAll();
     API.showIcons();
     API.showModels();
@@ -60,7 +59,6 @@ watch(
 
     // 根据路由名称调用三维方法
     if (routerName.value === "/IndustrialEconomy") {
-      isNewView.value = true;
       // API.showIndustrialEconomy();
       API.cameraAnimation({
         cameraState: STATE.industrialState,
@@ -70,7 +68,6 @@ watch(
       });
     }
     if (routerName.value === "/Transportation") {
-      isNewView.value = false;
       API.cameraAnimation({
         cameraState: STATE.trafficState,
         callback: () => {
@@ -79,7 +76,6 @@ watch(
       });
     }
     if (routerName.value === "/Environmental") {
-      isNewView.value = false;
       // for (const i in CACHE.completeBoundrays) {
       //   const d = CACHE.completeBoundrays[i];
       //   if (d.name == "environment") d.visible = true;
@@ -95,7 +91,6 @@ watch(
       });
     }
     if (routerName.value === "/Education") {
-      isNewView.value = true;
       // for (const i in CACHE.completeBoundrays) {
       //   const d = CACHE.completeBoundrays[i];
       //   if (d.name == "education") d.visible = true;
@@ -111,7 +106,6 @@ watch(
       });
     }
     if (routerName.value === "/Energy") {
-      isNewView.value = false;
       API.cameraAnimation({
         cameraState: STATE.industrialState,
         callback: () => {
@@ -121,7 +115,6 @@ watch(
       });
     }
     if (routerName.value === "/Area") {
-      isNewView.value = true;
       API.showPlates();
       API.hideIcons();
     }
