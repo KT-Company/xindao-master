@@ -15,7 +15,6 @@ const title = ref("AIE智境-数智商业综合实践平台");
 
 // 返回
 const back = () => {
-  window.top.location.href = "/aie_web";
   if (store.state.LEVEL > 0) {
     store.commit("changeLevel", --store.state.LEVEL);
 
@@ -81,8 +80,8 @@ const handleHome = () => {
   //   },
   // });
 
-  store.commit("changeLevel", 1);
-  router.push('/IndustrialEconomy')
+  // store.commit("changeLevel", 1);
+  // router.push('/IndustrialEconomy')
   window.top.location.href = "/aie_web"; // 返回用户 home 地址
 };
 

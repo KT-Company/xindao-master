@@ -26,8 +26,9 @@ const earthTitles = [];
 const earthVics = [];
 const earthCircles = [];
 let earthAnimationIndex = -1;
-const cities = [];
-const cities2 = [];
+const cities = [];   // 白模1
+const cities2 = [];  // 白模2： 带企业
+const innerEnterprises = [] // 企业内部
 
 export const CACHE = {
   container,
@@ -56,6 +57,7 @@ export const CACHE = {
   earthIcons,
   cities,
   cities2,
+  innerEnterprises,
   earthTitles,
   earthVics,
   earthCircles,

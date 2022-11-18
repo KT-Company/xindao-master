@@ -52,26 +52,36 @@ function loadIcons() {
 }
 
 function loadPlates() {
-  for (const data of DATA.platesData) {
-    const icon = new Bol3D.CompositeIconTag({
-      titleHeight: 0.8,
-      color: "#EBA216",
-      type: 2,
-      title: data.name,
-    });
-    CACHE.container.scene.add(icon);
-    icon.children[0].traverse((ci9) => {
-      if (ci9.isMesh) {
-        CACHE.container.addBloom(ci9);
+  for (const data of STATE.enterprisesIcons) {
+
+    const icon = new Bol3D.CompositeIconHTML({
+      color: '#EBA216',
+      bgColor: '#031951',
+      opacity: 0.6,
+      titleHeight: 1,
+      titleSize: 10,
+      titleColor: '#ffffff',
+      title: data.name
+    })
+    CACHE.container.scene.add(icon)
+    icon.position.copy(data.position)
+    icon.scale.set(2000, 2000, 2000);
+
+    CACHE.container.addBloom(icon.children[0]);
+    CACHE.container.addBloom(icon.children[2]);
+    icon.children[1].traverse((cihtml) => {
+      if (cihtml.isMesh) {
+        CACHE.container.addBloom(cihtml);
       }
     });
-    CACHE.container.addBloom(icon.children[1].children[1]);
-    CACHE.container.scene.add(icon);
-    icon.scale.set(2000, 2000, 2000);
+    icon.children[3].traverse((cihtml) => {
+      if (cihtml.isMesh) {
+        CACHE.container.addBloom(cihtml);
+      }
+    });
     icon.renderOrder = 100;
-    icon.position.copy(data.position);
     icon.name = data.name;
-    icon.visible = false;
+    // icon.visible = false;
 
     CACHE.plates.push(icon);
 

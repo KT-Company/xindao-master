@@ -92,12 +92,22 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       "/assets/models/BeiJing/beijing-2.glb",
       "/assets/models/BeiJing/beijing-3.glb",
       "/assets/models/BeiJing/beijing-4.glb",
-      "/assets/models/BeiJing/gongying.glb",
-      "/assets/models/BeiJing/wuliu.glb",
-      "/assets/models/BeiJing/shuzijinrong.glb",
-      "/assets/models/BeiJing/zhengwu.glb",
-      "/assets/models/BeiJing/zhinengzhizao.glb",
-      "/assets/models/BeiJing/zonghefuwu.glb",
+      "/assets/models/BeiJing/fuwugongsi.glb",
+      "/assets/models/BeiJing/gongyingqiye.glb",
+      "/assets/models/BeiJing/guanweihui.glb",
+      "/assets/models/BeiJing/jingxiaoqiye.glb",
+      "/assets/models/BeiJing/wuliuqiye.glb",
+      "/assets/models/BeiJing/xiaoshougongsi.glb",
+      "/assets/models/BeiJing/yinhangyuanqu.glb",
+      "/assets/models/BeiJing/zhengwuzhongxin.glb",
+      "/assets/models/BeiJing/zhizaojituan.glb",
+      "/assets/models/NeiBu/GongYingBanGongShi.glb",
+      "/assets/models/NeiBu/JingXiaoBanGongShi.glb",
+      "/assets/models/NeiBu/Xiao_Shou_Gong_Si.glb",
+      "/assets/models/NeiBu/yinghang.glb",
+      "/assets/models/NeiBu/zhengwuzhongxinbangongshi.glb",
+      "/assets/models/NeiBu/zhizaojituanbangongshi.glb",
+      "/assets/models/NeiBu/zonghefuwulou.glb",
     ],
     hdrUrls: ["/assets/hdr/st_peters_square_night_1k.hdr"],
     enableShadow: false,
@@ -115,13 +125,12 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     gammaEnabled: false,
     stats: false,
     loadingBar: {
-      show: true,
+      show: false,
       type: 5,
     },
     onProgress: (model) => {
-      model.scale.set(2, 3.8, 2);
-
       if (model.name.includes("beijing")) {
+        model.scale.set(2, 3.8, 2);
         model.traverse((m) => {
           if (m.isMesh) {
             // m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
@@ -132,25 +141,23 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             // })
             // CACHE.container.addBloom(m)
 
-            m.material =
-              new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
+            m.material = new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
                 color: "#1a2199",
                 emissive: "#ff004b",
                 minHeight: -142,
                 maxHeight: -82,
-                threshold: STATE.modelExclude.includes(model.name)
-                  ? STATE.modelThreshold[model.name]
-                  : 0,
+                threshold: 0,
                 mixColor: "#512c2c",
               });
 
-            CACHE.cities.push(m);
-
-            // todo
-            // m.material.envMap = CACHE.container.envMap
-          }
-        });
-      } else {
+              
+              // todo
+              // m.material.envMap = CACHE.container.envMap
+            }
+          });
+        CACHE.cities.push(model);
+      } else if(STATE.modelExclude.includes(model.name)) {
+        model.scale.set(2, 3.8, 2);
         model.children.forEach((m) => {
           if (m.isMesh) {
             m.material =
@@ -159,18 +166,32 @@ export const sceneOnLoad = ({ domElement, callback }) => {
                 emissive: "#ff004b",
                 minHeight: -142,
                 maxHeight: -82,
-                threshold: STATE.modelExclude.includes(model.name)
-                  ? STATE.modelThreshold[model.name]
-                  : 0,
+                threshold: 0,
                 mixColor: "#512c2c",
               });
 
-            CACHE.cities2.push(m);
+            // m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
+            //   color: '#0000ff',
+            //   emissive: '#00ffff',
+            //   minHeight: -142,
+            //   maxHeight: -27
+            // })
+            // CACHE.container.addBloom(m)
 
+            
             // todo
             // m.material.envMap = CACHE.container.envMap
           }
         });
+        CACHE.cities2.push(model);
+      }else {
+        model.scale.set(100, 100, 100)
+        if(STATE.enterprisesNames.includes(model.name)){
+          CACHE.innerEnterprises.push(model)
+          model.visible = false
+          const pos = STATE.enterprisesStates[model.name]
+          model.position.set(pos.x , pos.y , pos.z)
+        }
       }
 
       CACHE.models.push(model);
@@ -180,10 +201,18 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       window.position = evt.orbitControls.object;
       evt.clickObjects = [];
 
-      console.log(evt.sceneModels);
+      // CACHE.cities2.forEach( d => {
+      //   d.traverse( m => {
+      //     if(m.isMesh){
+      //       evt.clickObjects.push(m)
+      //     }
+      //   })
+      // })
+
+      console.log(evt.sceneModels , evt.clickObjects);
 
       // ************** init icons start **************
-      API.loadIcons();
+      // API.loadIcons();
       API.loadPlates();
       // ************** init icons end **************
 
@@ -196,25 +225,29 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // API.loadEnergy()
 
 
+      // CACHE.innerEnterprises.forEach( d => {
+      //   d.visible = true
+      // })
+
       // 地球模块
-      API.loadEarth(() => {
-        API.hideFloor();
-        API.hideSkyBox();
-        // earth load finish
-        API.cameraAnimation({
-          duration: 0,
-          cameraState: STATE.earthState,
-          callback: () => {
-            API.earthRotateAnimation();
-            API.startEarthLineAnimation();
+      // API.loadEarth(() => {
+      //   API.hideFloor();
+      //   API.hideSkyBox();
+      //   // earth load finish
+      //   API.cameraAnimation({
+      //     duration: 0,
+      //     cameraState: STATE.earthState,
+      //     callback: () => {
+      //       API.earthRotateAnimation();
+      //       API.startEarthLineAnimation();
 
-            if (CACHE.container.loadingBar)
-              CACHE.container.loadingBar.style.visibility = "hidden";
+      //       if (CACHE.container.loadingBar)
+              // CACHE.container.loadingBar.style.visibility = "hidden";
 
-            API.hideAll();
-          },
-        });
-      });
+      //       API.hideAll();
+      //     },
+      //   });
+      // });
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
@@ -229,7 +262,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // floor.receiveShadow = true
       // evt.clickObjects = [floor]
       // evt.clickObjects.push(floor)
-      evt.scene.add(floor);
+      // evt.scene.add(floor);
 
       // mirror
       // const mirrorGeo = new Bol3D.CircleBufferGeometry(50000, 64)
@@ -536,7 +569,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
   const events = new Bol3D.Events(CACHE.container);
   events.enabled.hover = false;
   events.ondbclick = (e) => {
-    // console.log('e', e)
+    console.log('e', e)
 
     // console.log(e, e.objects[0].point , e.objects[0].object.name)
 
