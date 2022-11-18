@@ -9,14 +9,27 @@ const store = createStore({
                 fontColor: '#999999',
                 xLine: '#8098CD'
             },
-            viewType: 1, // 当前显示的页面类型  默认1，2：区域层
+            menuAid: 1, // 底部一级导航选中 id
+            menuBid: ['1-1'], // 底部二级导航选中 id
             year: window.publicParams.year, // 全局年份
             szxs: window.publicParams.szxs, // 全局省/直辖市
-            LEVEL: 0, // 3维层级： 0地球1城市2海景区3园区4企业5内部
+            LEVEL: 0, // 3维层级： 0地球1社会层2区域层3企业层4内部层
             enterpriseData: []  // 企业总量
         }
     },
     mutations: {
+        setMenuAid(state, value) {
+            state.menuAid = value
+        },
+        setMenuBid(state, value) {
+            if (state.menuAid === 2) {
+                const index = state.menuBid.findIndex(item => item === value)
+                if (index === -1) state.menuBid.push(value)
+                else state.menuBid.splice(index, 1)
+            } else {
+                state.menuBid = [value]
+            }
+        },
         setViewType(state, value) {
             state.viewType = value
         },
@@ -26,7 +39,7 @@ const store = createStore({
         jumpPage(state, value) {
             router.push(`${value}`)
         },
-        changeLevel(state,value){
+        changeLevel(state, value) {
             state.LEVEL = value
         },
         setEnterpriseData(state, value) {

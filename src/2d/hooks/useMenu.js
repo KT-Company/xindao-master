@@ -1,5 +1,5 @@
-import { ref } from 'vue'
-
+import { ref, watch } from 'vue'
+import router from '@/2d/router'
 export const menu = ref([
     {
         id: 1,
@@ -8,10 +8,10 @@ export const menu = ref([
         icon: require('@/2d/assets/images/shehui.png'),
         children: [
             { id: "1-1", name: "产业经济", isPick: true, path: "/IndustrialEconomy" },
-            { id: "1-2", name: "能源碳排放", isPick: false, path: "/Transportation" },
-            { id: "1-3", name: "交通出行", isPick: false, path: "/Environmental" },
-            { id: "1-4", name: "环境人口", isPick: false, path: "/Education" },
-            { id: "1-5", name: "教育医疗", isPick: false, path: "/Energy" },
+            { id: "1-3", name: "交通出行", isPick: false, path: "/Transportation" },
+            { id: "1-4", name: "环境人口", isPick: false, path: "/Environmental" },
+            { id: "1-5", name: "教育医疗", isPick: false, path: "/Education" },
+            { id: "1-2", name: "能源碳排放", isPick: false, path: "/Energy" },
         ],
     },
     {
@@ -91,3 +91,15 @@ export const menu = ref([
         ],
     },
 ]);
+
+
+watch(
+    () => router.currentRoute.value.path,
+    (a) => {
+        menu.value[0].children.forEach(v => {
+            if (v.path === a) v.isPick = true
+            else v.isPick = false
+        })
+    },
+    { deep: true }
+)

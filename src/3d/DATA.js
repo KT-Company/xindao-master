@@ -27,34 +27,6 @@ const iconsData = [
 ]
 
 
-// ICONS 板块（海景区分类）
-const platesData = [
-  {
-    name: '物流服务',
-    position: new Bol3D.Vector3(-11856.571967921695, 100, -11005.707162464587) ///
-  },
-  {
-    name: '智能制造',
-    position: new Bol3D.Vector3(19191.515895917313, 100, -1401.7313118283578) ///
-  },
-  {
-    name: '供应企业',
-    position: new Bol3D.Vector3(1263.312855694537, 100, -10232.466116283375) ///
-  },
-  {
-    name: '综合服务',
-    position: new Bol3D.Vector3(12735.57911102606, 100, -13640.058338600236) //
-  },
-  {
-    name: '数字金融',
-    position: new Bol3D.Vector3(4019.052582447628, 100, 4768.801776306624) ///
-  },
-  {
-    name: '数字政务',
-    position: new Bol3D.Vector3(-11181.560771963133, 100, 1882.2014251958635) ///
-  }
-]
-
 // ICONS 产业经济
 const areaIconsData = [
   {
@@ -326,7 +298,6 @@ const earthIcons = [
 
 export const DATA = {
   iconsData,
-  platesData,
   areaIconsData,
   energyIconsData,
   earthIcons

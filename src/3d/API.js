@@ -51,7 +51,7 @@ function loadIcons() {
   }
 }
 
-function loadPlates() {
+function loadEnterPrises() {
   for (const data of STATE.enterprisesIcons) {
 
     const icon = new Bol3D.CompositeIconHTML({
@@ -81,12 +81,13 @@ function loadPlates() {
     });
     icon.renderOrder = 100;
     icon.name = data.name;
-    // icon.visible = false;
+    icon.visible = false;
+    icon.hideTitle()
 
-    CACHE.plates.push(icon);
+    CACHE.enterpriseIcons.push(icon);
 
     icon.traverse((d) => {
-      if (d.isMesh || d.isSprite) {
+      if (d.isMesh ) {
         d.name = data.name;
         CACHE.container.clickObjects.push(d);
       }
@@ -120,16 +121,39 @@ function showIcons() {
   });
 }
 
-function hidePlates() {
-  CACHE.plates.forEach((plt) => {
-    plt.visible = false;
+function hideEnterpriseIcons() {
+  CACHE.enterpriseIcons.forEach((epi) => {
+    epi.visible = false;
+    epi.hideTitle()
   });
 }
 
-function showPlates() {
-  CACHE.plates.forEach((plt) => {
-    plt.visible = true;
+function showEnterpriseIcons() {
+  CACHE.enterpriseIcons.forEach((epi) => {
+    epi.visible = true;
+    epi.showTitle()
   });
+}
+
+function showEnterpriseIconByName(name){
+  CACHE.enterpriseIcons.forEach((epi) => {
+    if(epi.name == name) {
+      epi.visible = true
+      epi.showTitle()
+    }
+  });
+}
+
+function hideEnterprises(){
+  CACHE.innerEnterprises.forEach(d => {
+    d.visible = false
+  })
+}
+
+function showEnterpriseByName(name){
+  CACHE.innerEnterprises.forEach(d => {
+    if(d.name == name) d.visible = true
+  })
 }
 
 // 相机动画（传指定state）
@@ -618,16 +642,24 @@ function hideAll() {
   hideEnergyIcons();
   hideIcons();
   hideCompleteBoundrays();
-  hidePlates();
+  hideEnterpriseIcons();
+  hideEnterprises()
+  hideMirror()
 }
 
 function hideFloor() {
   if (CACHE.floor) CACHE.floor.visible = false;
-  if (CACHE.floorMirror) CACHE.container.scene.remove(CACHE.floorMirror);
 }
 
 function showFloor() {
   if (CACHE.floor) CACHE.floor.visible = true;
+}
+
+function hideMirror() {
+  if (CACHE.floorMirror) CACHE.container.scene.remove(CACHE.floorMirror);
+}
+
+function showMirror() {
   if (CACHE.floorMirror) CACHE.container.scene.add(CACHE.floorMirror);
 }
 
@@ -985,7 +1017,7 @@ function lglt2xyz(lng, lat, radius) {
 
 export const API = {
   loadIcons,
-  loadPlates,
+  loadEnterPrises,
   loadIndustrialEconomy,
   loadEnergy,
   loadHeatMap,
@@ -1007,8 +1039,9 @@ export const API = {
   showEnergy,
   hideEnergy,
   cameraAnimation,
-  showPlates,
-  hidePlates,
+  showEnterpriseIcons,
+  showEnterpriseIconByName,
+  hideEnterpriseIcons,
   showIcons,
   hideIcons,
   showAreaIcons,
@@ -1036,4 +1069,8 @@ export const API = {
   hideEarth,
   showEarth,
   getEnterprise,
+  showEnterpriseByName,
+  hideEnterprises,
+  showMirror,
+  hideMirror,
 };

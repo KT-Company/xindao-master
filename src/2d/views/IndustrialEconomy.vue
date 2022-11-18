@@ -1,18 +1,15 @@
 <!-- 产业经济 -->
-<!-- 
-  数据对接情况：全部完成
- -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { setColumnChart } from "@/2d/viewCharts/Education";
-import { setHistogramChartMore } from "@/2d/viewCharts/IndustrialEconomy";
 import { getcyjj } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
+import { setZhuChart } from "@/2d/viewCharts/Area";
 const store = useStore();
 
 // 企业总量点击事件
-const handleCompany = (item) => {
+const handleCompany = (item, index) => {
+  pickIndex.value = index;
   console.log("item: ", item);
 };
 
@@ -24,9 +21,17 @@ const cyzbList = ref([]);
 const option = reactive({
   data1: {},
   data2: {},
-  data3: {},
   data4: {},
 });
+
+const jjzlData = ref([
+  { name: "GDP总值(亿)", val: 0 },
+  { name: "GDP增速", val: 0 },
+  { name: "人均GDP(元)", val: 0 },
+  { name: "第一产业(亿)", val: 0 },
+  { name: "第二产业(亿)", val: 0 },
+  { name: "第三产业(亿)", val: 0 },
+]);
 
 const industrialChartData = reactive({
   xData: [],
@@ -49,30 +54,27 @@ const dataChartData = reactive({
 });
 
 const economicData = reactive([
-  { name: "(国家级)高新技术企业", value: 0 },
-  { name: "(国家级)科技部科技型中小企业", value: 0 },
-  { name: "(国家级)技术创新示范企业", value: 0 },
-  { name: "(国家级)专精特新“小巨人”企业", value: 0 },
-  { name: "(市级)专精特新“小巨人”中小企业", value: 0 },
-  { name: "(市级)专精特新“小巨人”企业", value: 0 },
+  { name: "(国家级)高新技术企业", value: 0, isPick: true },
+  { name: "(国家级)科技部科技型中小企业", value: 0, isPick: false },
+  { name: "(国家级)技术创新示范企业", value: 0, isPick: false },
+  { name: "(国家级)专精特新“小巨人”企业", value: 0, isPick: false },
+  { name: "(市级)专精特新“小巨人”中小企业", value: 0, isPick: false },
+  { name: "(市级)专精特新“小巨人”企业", value: 0, isPick: false },
 ]);
-
-const taxChartData = ref([
-  { name: "税收收入", value: 0, unit: "亿" },
-  { name: "增值税收入", value: 0, unit: "亿" },
-  { name: "企业所得税收入", value: 0, unit: "亿" },
-  { name: "个人所得税收入", value: 0, unit: "亿" },
-  { name: "地方政府债券", value: 0, unit: "亿" },
-  { name: "地方政府债务", value: 0, unit: "亿" },
-  { name: "一般公共预算支出", value: 0, unit: "亿" },
-  // { name: "社会消费品零售总额", value: 0, unit: "亿" },
-]);
+const pickIndex = ref(0);
 onMounted(() => {
   getcyjj().then((res) => {
     console.log("getcyjj: ", res);
     const data = res.data.formInfoList;
     cyzb.data = data.find((item) => item.year == store.state.year);
     cyzbList.value = data.filter((item) => useYear(item));
+
+    jjzlData.value[0].val = cyzb.data.gdpzz;
+    jjzlData.value[1].val = cyzb.data.gdpzs + "%";
+    jjzlData.value[2].val = cyzb.data.rjgdp;
+    jjzlData.value[3].val = cyzb.data.dycy;
+    jjzlData.value[4].val = cyzb.data.decy;
+    jjzlData.value[5].val = cyzb.data.dscy;
 
     industrialChartData.xData = cyzbList.value.map((item) => item.year);
     industrialChartData.data[0].value = cyzbList.value.map(
@@ -86,15 +88,6 @@ onMounted(() => {
     totalAmountChartData.data[1].value = cyzbList.value.map(
       (item) => item.ckze || 0
     );
-
-    taxChartData.value[0].value = cyzb.data.sssr;
-    taxChartData.value[1].value = cyzb.data.zzssr;
-    taxChartData.value[2].value = cyzb.data.qysdssr;
-    taxChartData.value[3].value = cyzb.data.grsdssr;
-    taxChartData.value[4].value = cyzb.data.dfzfzq;
-    taxChartData.value[5].value = cyzb.data.dfzfzw;
-    taxChartData.value[6].value = cyzb.data.ybggyszc;
-    // taxChartData.value[7].value = cyzb.data.shxfplsze;
 
     economicData[0].value = cyzb.data.gjjgxjsqyzs;
     economicData[1].value = cyzb.data.gjjkjbkjxzxqy;
@@ -111,195 +104,288 @@ onMounted(() => {
       (item) => item.gxdkye || 0
     );
 
-    option.data1 = setColumnChart(industrialChartData, {
-      legend: false,
-      grid: { top: "15%", bottom: "15%" },
-      barW: 25,
-      unit: "亿元",
+    option.data1 = setZhuChart(industrialChartData);
+
+    option.data2 = setZhuChart(totalAmountChartData, {
+      color: [1, 0],
+      legend: true,
     });
 
-    option.data2 = setColumnChart(totalAmountChartData, {
-      barW: 13,
-      barImgW: 20,
-      grid: { top: "23%", bottom: "10%" },
-      unit: "亿美元",
-    });
-
-    option.data3 = setHistogramChartMore(taxChartData.value, 4);
-
-    option.data4 = setColumnChart(dataChartData, {
-      barW: 13,
-      barImgW: 20,
-      grid: { top: "23%", bottom: "15%" },
-      unit: "亿元",
+    option.data4 = setZhuChart(dataChartData, {
+      legend: true,
     });
   });
 });
 </script>
 
 <template>
-  <Left>
-    <Title>经济总量</Title>
-    <ul class="industry-main main">
-      <li>
-        <span>GDP总值</span><span>{{cyzb.data.gdpzz}}亿</span>
-      </li>
-      <li>
-        <span>GDP增速</span><span>{{cyzb.data.gdpzs}}%</span>
-      </li>
-      <li>
-        <span>人均GDP</span><span>{{cyzb.data.rjgdp}}元</span>
-      </li>
-      <li>
-        <span>第一产业</span><span>{{cyzb.data.dycy}}亿</span>
-      </li>
-      <li>
-        <span>第二产业</span><span>{{cyzb.data.decy}}亿</span>
-      </li>
-      <li>
-        <span>第三产业</span><span>{{cyzb.data.dscy}}亿</span>
-      </li>
-    </ul>
-    <Title>工业增加值</Title>
-    <div class="industrial-main main">
-      <Echart
-        :option="option.data1"
-        class="h-100"
-      ></Echart>
-    </div>
-    <Title>外贸总量</Title>
-    <div class="totalAmount-main main">
-      <Echart
-        :option="option.data2"
-        class="h-100"
-      ></Echart>
-    </div>
+  <Left class="z-left">
+    <Bar>
+      <div class="b-title">经济总量</div>
+      <ul class="b-content content1">
+        <li v-for="(item, i) in jjzlData" :key="i">
+          <span class="t1-val">{{ item.val }}</span>
+          <span class="t1-name hui">{{ item.name }}</span>
+        </li>
+      </ul>
+    </Bar>
+
+    <Bar>
+      <div class="b-title">工业增加值</div>
+      <div class="b-content">
+        <span class="unit1 hui">单位：亿</span>
+        <Echart :option="option.data1"></Echart>
+      </div>
+    </Bar>
+
+    <Bar>
+      <div class="b-title">外贸总量</div>
+      <div class="b-content">
+        <ul class="wmzl-list">
+          <li>
+            <span class="hui">进出口总额(亿)</span>
+            <span>{{ cyzb.data.jckze }}</span>
+          </li>
+          <li>
+            <span class="hui">出口总额(亿)</span>
+            <span>{{ cyzb.data.ckze }}</span>
+          </li>
+          <li>
+            <span class="hui">进口总额(亿)</span>
+            <span>{{ cyzb.data.jkze }}</span>
+          </li>
+        </ul>
+        <div class="wmzl-chart">
+          <span class="unit1 hui">单位：亿</span>
+          <Echart :option="option.data2"></Echart>
+        </div>
+      </div>
+    </Bar>
   </Left>
-  <Right>
-    <Title>企业总量</Title>
-    <ul class="economic-main">
-      <li
-        v-for="(item, index) in economicData"
-        :key="index"
-        @click="handleCompany(item)"
-      >
-        <span>{{ item.name }}</span>
-        <hr />
-        <span>{{ item.value }}</span>
-      </li>
-    </ul>
-    <Title>税收与债务</Title>
-    <div class="tax-main">
-      <Echart
-        :option="option.data3"
-        class="h-100"
-      ></Echart>
-    </div>
-    <Title>社会存贷款总量</Title>
-    <div class="data-main">
-      <Echart
-        :option="option.data4"
-        class="h-100"
-      ></Echart>
-    </div>
+  <Right class="z-right">
+    <Bar>
+      <div class="b-title">企业总量</div>
+      <ul class="b-content content2">
+        <li
+          v-for="(item, index) in economicData"
+          :key="index"
+          @click="handleCompany(item, index)"
+          :class="[pickIndex === index ? 'pick-item' : '']"
+        >
+          <span class="hui">{{ item.name }}</span>
+          <span>{{ item.value }}</span>
+        </li>
+      </ul>
+    </Bar>
+
+    <Bar>
+      <div class="b-title">社会存贷款总量</div>
+      <div class="b-content">
+        <ul class="shcdk-list">
+          <li>
+            <span class="hui">各项存款余额(亿)</span
+            ><span>{{ cyzb.data.gxckye }}</span>
+          </li>
+          <li>
+            <span class="hui">各项贷款余额(亿)</span
+            ><span>{{ cyzb.data.gxdkye }}</span>
+          </li>
+        </ul>
+        <div class="shcdk-chart">
+          <span class="unit1 hui">单位：亿</span>
+          <Echart :option="option.data4"></Echart>
+        </div>
+      </div>
+    </Bar>
+
+    <Bar>
+      <div class="b-title">税收与债务</div>
+      <div class="b-content content3">
+        <ul class="c3-list1">
+          <li>
+            <span class="hui">税收收入(亿)</span
+            ><span>{{ cyzb.data.sssr }}</span>
+          </li>
+          <li>
+            <span class="hui">增值税收入(亿)</span
+            ><span>{{ cyzb.data.zzssr }}</span>
+          </li>
+          <li>
+            <span class="hui">企业所得税收入(亿)</span
+            ><span>{{ cyzb.data.qysdssr }}</span>
+          </li>
+          <li>
+            <span class="hui">个人所得税收入(亿)</span
+            ><span>{{ cyzb.data.grsdssr }}</span>
+          </li>
+        </ul>
+
+        <ul>
+          <li>
+            <span class="hui">地方政府债券(亿)</span
+            ><span>{{ cyzb.data.dfzfzq }}</span>
+          </li>
+          <li>
+            <span class="hui">地方政府债务(亿)</span
+            ><span>{{ cyzb.data.dfzfzw }}</span>
+          </li>
+        </ul>
+
+        <ul>
+          <li>
+            <span class="hui">一般公共预算支出(亿)</span
+            ><span>{{ cyzb.data.ybggyszc }}</span>
+          </li>
+        </ul>
+      </div>
+    </Bar>
   </Right>
 </template>
 
 
 <style lang="less" scoped>
-.main {
-  height: calc(33% - var(--titleH));
+.z-left {
+  display: grid;
+  grid-template-columns: 3fr;
+  grid-template-rows: 1fr 0.8fr 1.4fr;
+  row-gap: 2%;
+}
+.z-right {
+  display: grid;
+  grid-template-columns: 3fr;
+  grid-template-rows: 1fr 1.2fr 1fr;
+  row-gap: 2%;
 }
 
-.industry-main {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
+.content1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(1fr);
+  column-gap: 4%;
+  row-gap: 6%;
+  padding: 2% 2% 5% 2%;
   li {
     display: flex;
+    align-items: center;
     flex-direction: column;
-    align-items: flex-start;
     justify-content: center;
-    width: 40%;
-    padding-left: 18%;
-
-    & span:nth-child(1) {
-      color: rgb(194, 194, 194);
-      font-size: 0.7vw;
-    }
-
-    & span:nth-child(2) {
-      font-size: 0.75vw;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    .t1-val {
+      font-family: Source Han Sans CN;
       font-weight: bold;
+      color: #ffffff;
+      font-size: 0.85vw;
     }
-
-    &:nth-child(1) {
-      background: url("@/2d/assets/images/gdp1.png") no-repeat left bottom / 40%
-        80%;
-    }
-
-    &:nth-child(2) {
-      background: url("@/2d/assets/images/gdp2.png") no-repeat left bottom / 40%
-        80%;
-    }
-
-    &:nth-child(3) {
-      background: url("@/2d/assets/images/gdp3.png") no-repeat left bottom / 40%
-        80%;
-    }
-
-    &:nth-child(4) {
-      background: url("@/2d/assets/images/chanye1.png") no-repeat left bottom /
-        40% 80%;
-    }
-
-    &:nth-child(5) {
-      background: url("@/2d/assets/images/chanye2.png") no-repeat left bottom /
-        40% 80%;
-    }
-
-    &:nth-child(6) {
-      background: url("@/2d/assets/images/chanye3.png") no-repeat left bottom /
-        40% 80%;
+    .t1-name {
+      // color: rgb(199 202 208);
+      font-size: 0.78vw;
     }
   }
 }
 
-.economic-main,
-.data-main {
-  height: calc(30% - var(--titleH));
+.unit1 {
+  position: absolute;
+  right: 1%;
+  top: -2%;
+  font-size: 0.5vw;
 }
 
-.tax-main {
-  height: calc(40% - var(--titleH));
-}
-
-.economic-main {
+.wmzl-list {
+  height: 35%;
   display: flex;
   flex-direction: column;
-  padding: 0 6%;
+  justify-content: space-between;
+  li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5%;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    height: 30%;
+  }
+}
 
+.wmzl-chart {
+  height: 60%;
+  position: relative;
+  margin-top: 5%;
+}
+
+.content2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: .8% 0;
+  li {
+    background: rgba(255, 255, 255, 0.1);
+    // border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 15%;
+    transition: 0.3s ease;
+    &:hover {
+      cursor: pointer;
+      // background: rgba(255, 0, 0, 0.5);
+      // border: 1px solid rgba(255, 0, 0, 0.8);
+      scale: 1.05;
+    }
+  }
+}
+.pick-item {
+  background: rgba(255, 0, 0, 0.5) !important;
+  // border: 1px solid rgba(255, 0, 0, 0.8) !important;
+  border-left: 2px solid rgba(255, 0, 0, 0.8) !important;
+}
+.shcdk-list {
+  height: 28%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5% 0 1% 0;
   li {
     display: flex;
     align-items: center;
-    flex: 1;
-    cursor: pointer;
-    &:hover {
-      span {
-        color: rgb(255, 255, 255) !important;
-      }
-    }
-    & span:nth-child(1) {
-      color: rgb(194, 194, 194);
-    }
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 45%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
 
-    hr {
-      flex: 1;
-      border: 1px solid rgba(184, 184, 184, 0.2);
-      height: 1px;
-      margin: 0.5% 2% 0 2%;
+.shcdk-chart {
+  margin-top: 2%;
+  height: 70%;
+  position: relative;
+}
+
+.content3 {
+  display: grid;
+  grid-template-columns: 3fr;
+  grid-template-rows: 4fr 2fr 1fr;
+  row-gap: 4%;
+  padding: 1.5% 0 1% 0;
+  ul {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
     }
+  }
+  .c3-list1 {
+    padding: 1% 0;
   }
 }
 </style>

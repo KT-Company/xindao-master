@@ -8,7 +8,6 @@ const completeBoundrays = {};
 let educationAnimateIndex = -1;
 const education = [];
 const energy = [];
-const plates = [];
 const icons = [];
 const areaIcons = [];
 const earth = [];
@@ -29,6 +28,7 @@ let earthAnimationIndex = -1;
 const cities = [];   // 白模1
 const cities2 = [];  // 白模2： 带企业
 const innerEnterprises = [] // 企业内部
+const enterpriseIcons = [] // 企业标签
 
 export const CACHE = {
   container,
@@ -39,7 +39,7 @@ export const CACHE = {
   education,
   educationAnimateIndex,
   energy,
-  plates,
+  enterpriseIcons,
   icons,
   areaIcons,
   earth,

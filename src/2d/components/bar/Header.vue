@@ -58,7 +58,7 @@ const back = () => {
 
 const handleHome = () => {
   // store.commit("changeLevel", 0);
-  
+
   // CACHE.container.orbitControls.maxDistance = 1000000;
   // CACHE.container.orbitControls.minPolarAngle = 0;
   // CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
@@ -80,8 +80,8 @@ const handleHome = () => {
   //   },
   // });
 
-  // store.commit("changeLevel", 1);
-  // router.push('/IndustrialEconomy')
+  store.commit("changeLevel", 1);
+  router.push('/IndustrialEconomy')
   window.top.location.href = "/aie_web"; // 返回用户 home 地址
 };
 
@@ -91,33 +91,11 @@ const handleHome = () => {
 </script>
 
 <template>
-  <div :class="['header', store.state.LEVEL != 2 ? 'hb' : '']">
-    <!-- <h1 class="title num-jianbian-lan">{{ title }}</h1> -->
-    <img class="title" src="../../assets/images/logo.png" v-show="store.state.LEVEL != 2" />
-    <p class="time">
-      <span>数据统计时间： {{ store.state.year }}年</span>
-    </p>
-    <p class="info">
-      <img
-        src="../../assets/images/home.png"
-        class="home"
-        @click="handleHome"
-        v-show="store.state.LEVEL > 0"
-      />
-      <img
-        src="../../assets/images/btn-back.png"
-        class="back"
-        @click="back"
-        v-show="store.state.LEVEL != 2"
-      />
-    </p>
-  </div>
-
-  <img
-    src="../../assets/images/logoa.png"
-    class="head"
-    v-if="store.state.LEVEL == 2"
-  />
+  <p class="time">
+    <span>数据统计时间： {{ store.state.year }}年</span>
+  </p>
+  <img src="../../assets/images/home.png" class="home" @click="handleHome" />
+  <img src="../../assets/images/logoa.png" class="head" />
 </template>
 
 <style lang="less" scoped>
@@ -132,58 +110,30 @@ const handleHome = () => {
   color: rgb(255, 255, 255);
 }
 
-.hb {
-  background: url("@/2d/assets/images/top.png") no-repeat center center / 100%
-    100%;
-}
-
 .head {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   width: 28.5%;
 }
-.title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 20%;
-  font-size: 1.6vw;
-  width: 20%;
-  color: #ffffff;
-}
 .time {
   position: absolute;
-  display: inline-block;
-  height: 22%;
-  left: 2%;
-  top: 20%;
+  left: .8%;
+  top: 3.5%;
   display: flex;
   align-items: center;
+  font-family: Alibaba PuHuiTi;
+  font-weight: 400;
+  color: #ffffff;
+  opacity: 0.7;
   * {
     padding: 0 5px;
   }
 }
-.info {
+.home{
   position: absolute;
   right: 2%;
-  top: 20%;
-  height: 22%;
-  width: 15%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  pointer-events: auto;
-  * {
-    padding: 0 8px;
-  }
-}
-.back {
-  height: 100%;
-  cursor: pointer;
-}
-.home {
-  height: 100%;
-  cursor: pointer;
+  top: 2.5%;
+  width: 2.5%;
 }
 </style>

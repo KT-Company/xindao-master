@@ -126,6 +126,57 @@ const energyState = {
   },
 };
 
+// 区域层角度
+const areaState = {
+  position: {
+    x: -15515.614936773884, y: 12100.515066280692, z: 23637.00484955622
+  },
+  target: {
+    x: -1503.202421042367, y: 0, z: 8708.97403091847
+  },
+}
+/** 9个企业角度 start */
+const enterpriseStates = {
+  zhizaojituan: {
+    position:{x: 1698.0219163614192, y: 3347.507529731886, z: 11075.291786464813},
+    target:{x: 1729.0384800293295, y: 0, z: 8609.419361275015}
+  },
+  yinhangyuanqu:{
+    position:{x: -1980.6804179278756, y: 2006.3986366823592, z: 60.072912468945106},
+    target:{x: -1940.514363262612, y: 0, z: -2245.163672769586}
+  },
+  zhengwuzhongxin:{
+    position:{x: 11757.536843246038, y: 4087.1587632330857, z: 15184.075636260884},
+    target:{x: 11979.67870010836, y: 0, z: 10860.398765804988}
+  },
+  guanweihui:{//无内部
+    position:{x: 7969.62641154124, y: 3399.1467161585538, z: 9583.093517111636},
+    target:{x: 8194.780217777594, y: 0, z: 1280.2954376368739}
+  },
+  wuliuqiye:{//无内部
+    position:{x: -3771.57677966697, y: 3472.5624968522243, z: 25499.65252037516},
+    target:{x: -3721.834793653318, y: 0, z: 19067.57574426238}
+  },
+  zonghefuwulou:{
+    position:{x: 2858.732343078326, y: 4561.789946341446, z: 21201.117386320308},
+    target:{x: 2888.3197379596622, y: 0, z: 17375.2067088381}
+  },
+  Xiao_Shou_Gong_Si:{
+    position:{x: -5309.102190849693, y: 4280.420809143024, z: 11239.135518697942},
+    target:{x: -5316.331539890986, y: 0, z: 7541.822667685167}
+  },
+  GongYingBanGongShi:{
+    position:{x: 19172.12744287263, y: 4066.3994675297135, z: 9243.519664808724},
+    target:{x: 19199.289933790264, y: 0, z: 5731.170421302181}
+  },
+  JingXiaoBanGongShi:{
+    position:{x: -10298.82204143777, y: 3488.332141950092, z: 5059.097839609528},
+    target:{x: -10285.959692489916, y: 0, z: 606.7332641829053}
+  }
+}
+
+/** 9个企业角度 end */
+
 const modelThreshold = {
   fuwugongsi: 1,
   gongyingqiye: 1,
@@ -150,88 +201,6 @@ const modelExclude = [
   "zhizaojituan",
 ];
 
-const platesNames = [
-  "物流服务",
-  "供应企业",
-  "综合服务",
-  "智能制造",
-  "数字金融",
-  "数字政务",
-];
-const platesViewStates = {
-  物流服务: {
-    position: {
-      x: -15566.12461256521,
-      y: 3224.4901005912693,
-      z: -5609.777556038479,
-    },
-    target: {
-      x: -12296.100162922101,
-      y: -1.421407369603958e-13,
-      z: -10807.081934238533,
-    },
-  },
-  供应企业: {
-    position: {
-      x: -2449.687925865157,
-      y: 3571.374701822279,
-      z: -4514.272723102796,
-    },
-    target: {
-      x: 1172.7753634275005,
-      y: -2.6711002621599213e-13,
-      z: -10274.492473598973,
-    },
-  },
-  综合服务: {
-    position: {
-      x: 9262.83891526821,
-      y: 3392.805966731159,
-      z: -8829.506157450362,
-    },
-    target: {
-      x: 12704.179672912924,
-      y: -1.9441795668056147e-13,
-      z: -14301.715808119558,
-    },
-  },
-  智能制造: {
-    position: {
-      x: 16277.75987497227,
-      y: 3223.1656683946057,
-      z: 3491.111003173791,
-    },
-    target: {
-      x: 19547.03308405005,
-      y: -1.6859661103236783e-13,
-      z: -1707.4873528899773,
-    },
-  },
-  数字金融: {
-    position: {
-      x: 1051.7426027543443,
-      y: 1957.4118152847207,
-      z: 8836.186242412718,
-    },
-    target: {
-      x: 4352.6983291339175,
-      y: -1.8421332212063645e-13,
-      z: 4293.952020107741,
-    },
-  },
-  数字政务: {
-    position: {
-      x: -14697.107982541967,
-      y: 2413.170516420395,
-      z: 6011.062871803393,
-    },
-    target: {
-      x: -10996.375264924223,
-      y: -2.551555266517058e-13,
-      z: 1577.0053968580273,
-    },
-  },
-};
 
 const enterprisesNames = ['GongYingBanGongShi','JingXiaoBanGongShi', 'Xiao_Shou_Gong_Si', 'yinghang', 'zhengwuzhongxinbangongshi', 'zhizaojituanbangongshi', 'zonghefuwulou']
 const enterprisesStates = {
@@ -243,6 +212,7 @@ const enterprisesStates = {
   zhizaojituanbangongshi: {x: 1675.3892046318097, y: 10, z: 8728.292905219469},
   zonghefuwulou: {x: 2835.441504939446, y: 10, z: 16897.858815489963}
 };
+const enterpriseIconNames = ['供应企业', '经销企业', '销售公司', '工商银行', '政务服务', '制造集团', '综合服务', '物流公司', '管委会']
 const enterprisesIcons = [
   {
     name: '供应企业',
@@ -265,7 +235,7 @@ const enterprisesIcons = [
     inner: true
   },
   {
-    name: '政务服务中心',
+    name: '政务服务',
     position: {x: 12172.6232505863, y: 10, z: 10489.113002582086},
     inner: true
   },
@@ -275,18 +245,18 @@ const enterprisesIcons = [
     inner: true
   },
   {
-    name: '服务公司',
+    name: '综合服务',
     position: {x: 2835.441504939446, y: 10, z: 16897.858815489963},
     inner: true
   },
   {
-    name: '物流企业',
+    name: '物流公司',
     position: {x: -3773.1485368738836, y: 10, z: 19631.761207797565},
     inner: false
   },
   {
-    name: '园区管委会',
-    position: {x: 8228.327547500401, y: 10, z: 3007.024347085281},
+    name: '管委会',
+    position: {x: 8338.327547500401, y: 10, z: 3007.024347085281},
     inner: false
   },
 ]
@@ -316,13 +286,14 @@ export const STATE = {
   educationGeojson,
   modelThreshold,
   modelExclude,
-  platesViewStates,
-  platesNames,
   chinajson,
   isAnimating,
   RADIUS,
   CAMERA_BOUNDS,
   enterprisesStates,
   enterprisesNames,
-  enterprisesIcons
+  enterprisesIcons,
+  enterpriseIconNames,
+  areaState,
+  enterpriseStates
 };
