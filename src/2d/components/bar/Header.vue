@@ -135,5 +135,7 @@ const handleHome = () => {
   right: 2%;
   top: 2.5%;
   width: 2.5%;
+  cursor: pointer;
+  pointer-events: auto;
 }
 </style>
