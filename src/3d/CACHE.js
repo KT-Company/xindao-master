@@ -9,7 +9,6 @@ let educationAnimateIndex = -1;
 const education = [];
 const energy = [];
 const icons = [];
-const areaIcons = [];
 const earth = [];
 const lines = [];
 const linesBottom = [];
@@ -41,7 +40,6 @@ export const CACHE = {
   energy,
   enterpriseIcons,
   icons,
-  areaIcons,
   earth,
   lines,
   models,

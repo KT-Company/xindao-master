@@ -53,18 +53,17 @@ function loadIcons() {
 
 function loadEnterPrises() {
   for (const data of STATE.enterprisesIcons) {
-
     const icon = new Bol3D.CompositeIconHTML({
-      color: '#EBA216',
-      bgColor: '#031951',
+      color: "#EBA216",
+      bgColor: "#031951",
       opacity: 0.6,
       titleHeight: 1,
       titleSize: 10,
-      titleColor: '#ffffff',
-      title: data.name
-    })
-    CACHE.container.scene.add(icon)
-    icon.position.copy(data.position)
+      titleColor: "#ffffff",
+      title: data.name,
+    });
+    CACHE.container.scene.add(icon);
+    icon.position.copy(data.position);
     icon.scale.set(2000, 2000, 2000);
 
     CACHE.container.addBloom(icon.children[0]);
@@ -82,12 +81,12 @@ function loadEnterPrises() {
     icon.renderOrder = 100;
     icon.name = data.name;
     icon.visible = false;
-    icon.hideTitle()
+    icon.hideTitle();
 
     CACHE.enterpriseIcons.push(icon);
 
     icon.traverse((d) => {
-      if (d.isMesh ) {
+      if (d.isMesh) {
         d.name = data.name;
         CACHE.container.clickObjects.push(d);
       }
@@ -124,36 +123,36 @@ function showIcons() {
 function hideEnterpriseIcons() {
   CACHE.enterpriseIcons.forEach((epi) => {
     epi.visible = false;
-    epi.hideTitle()
+    epi.hideTitle();
   });
 }
 
 function showEnterpriseIcons() {
   CACHE.enterpriseIcons.forEach((epi) => {
     epi.visible = true;
-    epi.showTitle()
+    epi.showTitle();
   });
 }
 
-function showEnterpriseIconByName(name){
+function showEnterpriseIconByName(name) {
   CACHE.enterpriseIcons.forEach((epi) => {
-    if(epi.name == name) {
-      epi.visible = true
-      epi.showTitle()
+    if (epi.name == name) {
+      epi.visible = true;
+      epi.showTitle();
     }
   });
 }
 
-function hideEnterprises(){
-  CACHE.innerEnterprises.forEach(d => {
-    d.visible = false
-  })
+function hideEnterprises() {
+  CACHE.innerEnterprises.forEach((d) => {
+    d.visible = false;
+  });
 }
 
-function showEnterpriseByName(name){
-  CACHE.innerEnterprises.forEach(d => {
-    if(d.name == name) d.visible = true
-  })
+function showEnterpriseByName(name) {
+  CACHE.innerEnterprises.forEach((d) => {
+    if (d.name == name) d.visible = true;
+  });
 }
 
 // 相机动画（传指定state）
@@ -244,73 +243,34 @@ function cameraAnimation({
  * 产业经济->区域板块
  */
 function loadIndustrialEconomy() {
-  fetch(STATE.boundrayGeojson)
-    .then((value) => {
-      return value.json();
-    })
-    .then((result) => {
-      const boundrays = result.features;
+  const img = new Image();
+  img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
+  img.onload = () => {
+    for (const data of DATA.industryData) {
+      const icon = new Bol3D.CompositeIconPopup({
+        color: "#ff0000",
+        bgColor: "#211F1F",
+        fontColor1: '#ffffff',
+        fontColor2: '#ffffff',
+        fontColor3: '#ffffff',
+        strokeColor: "#ffffff",
+        opacity: 0.8,
+        img,
+        titleAnchor: [-0.05, 0.5],
+      });
+      CACHE.container.scene.add(icon);
+      icon.position.copy(data.position);
+      icon.scale.set(2000, 2000, 2000);
+      icon.renderOrder = 100;
 
-      let index = 0;
+      CACHE.container.addBloom(icon.children[0])
+      CACHE.container.addBloom(icon.children[1])
+      CACHE.container.addBloom(icon.children[2])
 
-      for (const feature of boundrays) {
-        const coordinates = feature.geometry.coordinates[0][0];
-
-        const extrudeShape = new Bol3D.Primitives.BaseExtrudeShape({
-          points: coordinates,
-          color: "#671c91",
-          gradient: "#003a64",
-          height: index * 100 + 200,
-          center: [116.41, 39.9],
-          extrude: true,
-          vertical: 83000,
-        });
-
-        extrudeShape.position.set(-2000, index * 50 + 1000, -10000);
-
-        extrudeShape.scale.set(0.25, 1, 0.25);
-        extrudeShape.visible = false;
-        CACHE.container.scene.add(extrudeShape);
-
-        extrudeShape.name = feature.properties.name;
-
-        CACHE.industries.push(extrudeShape);
-        extrudeShape.visible = false;
-
-        // CACHE.container.clickObjects.push(extrudeShape)
-
-        index++;
-      }
-
-      for (const data of DATA.areaIconsData) {
-        const icon = new Bol3D.CompositeIconTitle({
-          titleHeight: 0.5,
-          color: "#00ffff",
-          type: 2,
-          title: data.name,
-          bgColor: "#000000",
-          strokeColor: "#000000",
-          fontColor: "#ffffff",
-        });
-        CACHE.container.scene.add(icon);
-        icon.scale.set(2000, 2000, 2000);
-        icon.renderOrder = 100;
-        icon.position.copy(data.position);
-        icon.position.y += 10;
-        icon.name = data.name;
-        CACHE.container.addBloom(icon.children[0]);
-
-        // icon.traverse(d => {
-        //   if (d.isMesh || d.isSprite) {
-        //     d.name = data.name
-        //     CACHE.container.clickObjects.push(d)
-        //   }
-        // })
-
-        CACHE.areaIcons.push(icon);
-        icon.visible = false;
-      }
-    });
+      CACHE.industries.push(icon)
+    }
+  };
+  
 }
 
 /**
@@ -637,14 +597,13 @@ function hideAll() {
   hideEnvironments();
   hideTraffics();
   hideRoutes();
-  hideAreaIcons();
   hideModels();
   hideEnergyIcons();
   hideIcons();
   hideCompleteBoundrays();
   hideEnterpriseIcons();
-  hideEnterprises()
-  hideMirror()
+  hideEnterprises();
+  hideMirror();
 }
 
 function hideFloor() {
@@ -687,18 +646,6 @@ function showEnergyIcons() {
 
 function hideEnergyIcons() {
   CACHE.energyIcons.forEach((e) => {
-    e.visible = false;
-  });
-}
-
-function showAreaIcons() {
-  CACHE.areaIcons.forEach((e) => {
-    e.visible = true;
-  });
-}
-
-function hideAreaIcons() {
-  CACHE.areaIcons.forEach((e) => {
     e.visible = false;
   });
 }
@@ -906,7 +853,7 @@ function loadEarthIcon() {
     const posTitle = lglt2xyz(ic.lnglat[0], ic.lnglat[1], STATE.RADIUS + 2000);
 
     const znzzIcon = new Bol3D.Primitives.BaseSpreadCircle({
-      color: ic.name == '智能制造' ? "#2363e2" : '#9b6d53',
+      color: ic.name == "智能制造" ? "#2363e2" : "#9b6d53",
     });
     znzzIcon.geometry.rotateX(-Math.PI / 2);
     znzzIcon.position.copy(posIcon);
@@ -920,7 +867,7 @@ function loadEarthIcon() {
     znzzIcon.scale.set(3000, 3000, 3000);
 
     const znzzVic = new Bol3D.Primitives.BaseShapeVic({
-      color: ic.name == '智能制造' ? "#7e8bd1" : '#b2724f',
+      color: ic.name == "智能制造" ? "#7e8bd1" : "#b2724f",
     });
     znzzVic.geometry.rotateX(-Math.PI / 2);
     znzzVic.position.copy(posVic);
@@ -945,7 +892,11 @@ function loadEarthIcon() {
     znzzTitle.userData.name = ic.name;
     znzzTitle.position.copy(posTitle);
     znzzTitle.lookAt(0, 0, 0);
-    znzzTitle.scale.set(znzzTitle.canvasSize , znzzTitle.canvasSize * (znzzTitle.canvasHeight / znzzTitle.canvasWidth), 1)
+    znzzTitle.scale.set(
+      znzzTitle.canvasSize,
+      znzzTitle.canvasSize * (znzzTitle.canvasHeight / znzzTitle.canvasWidth),
+      1
+    );
     CACHE.earthGroup.add(znzzTitle);
     CACHE.earthIcons.push(znzzTitle);
 
@@ -954,14 +905,13 @@ function loadEarthIcon() {
       CACHE.container.clickObjects.push(znzzVic);
       znzzVic.start();
       CACHE.container.clickObjects.push(znzzTitle);
-      
+
       CACHE.container.addBloom(znzzIcon);
       CACHE.container.addBloom(znzzTitle);
-      
     }
-    CACHE.earthTitles.push(znzzTitle)
-    CACHE.earthCircles.push(znzzIcon)
-    CACHE.earthVics.push(znzzVic)
+    CACHE.earthTitles.push(znzzTitle);
+    CACHE.earthCircles.push(znzzIcon);
+    CACHE.earthVics.push(znzzVic);
   });
 }
 
@@ -1044,8 +994,7 @@ export const API = {
   hideEnterpriseIcons,
   showIcons,
   hideIcons,
-  showAreaIcons,
-  hideAreaIcons,
+
   showEnergyIcons,
   hideEnergyIcons,
   animate,
