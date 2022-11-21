@@ -3,7 +3,7 @@ import { STATE } from "@/3d/STATE";
 import { CACHE } from "@/3d/CACHE";
 import store from '@/2d/store/index'
 import router from '@/2d/router'
-
+import { handleBackMap, handleBMenuBMap } from './use3dhandle'
 /** 底部菜单三维交互
  * @param  {object} item  一级菜单信息 (包括二级)
  * @param  {number} leve  当前点击菜单类型（1：一级菜单，2：二级菜单）
@@ -129,9 +129,20 @@ function menuInteraction(item, leve, son) {
                 },
             });
         }
+    } else {
+        // 二级菜单点击事件
+        handleBMenuBMap[son.id](store.state.menuBid.includes(son.id))
     }
 }
+
+// 返回
+function goBack() {
+    const currentId = store.state.menuAid // 当前激活的一级菜单id
+    handleBackMap[currentId]()
+}
+
 const USE3D = {
-    menuInteraction
+    menuInteraction,
+    goBack
 }
 export default USE3D

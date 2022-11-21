@@ -31,6 +31,7 @@ export const menu = ref([
         name: "制造集团",
         isPick: false,
         children: [
+            { id: "3-0", name: "整体布局", isPick: false },
             { id: "3-1", name: "企管部", isPick: false },
             { id: "3-2", name: "人力资源部", isPick: false },
             { id: "3-3", name: "财务部", isPick: false },
@@ -47,6 +48,7 @@ export const menu = ref([
         name: "物流公司",
         isPick: false,
         children: [
+            { id: "7-0", name: "整体布局", isPick: false },
             { id: "7-1", name: "企管部", isPick: false },
             { id: "7-2", name: "业务部", isPick: false },
         ],
@@ -56,6 +58,7 @@ export const menu = ref([
         name: "综合服务",
         isPick: false,
         children: [
+            { id: "8-0", name: "整体布局", isPick: false },
             { id: "8-1", name: "企管部", isPick: false },
             { id: "8-2", name: "业务部", isPick: false },
         ],
@@ -65,6 +68,7 @@ export const menu = ref([
         name: "销售公司",
         isPick: false,
         children: [
+            { id: "9-0", name: "整体布局", isPick: false },
             { id: "9-1", name: "企管部", isPick: false },
             { id: "9-2", name: "财务部", isPick: false },
         ],
@@ -74,6 +78,7 @@ export const menu = ref([
         name: "供应企业",
         isPick: false,
         children: [
+            { id: "10-0", name: "整体布局", isPick: false },
             { id: "10-1", name: "企管部", isPick: false },
             { id: "10-2", name: "财务部", isPick: false },
             { id: "10-3", name: "业务部", isPick: false },
@@ -84,6 +89,7 @@ export const menu = ref([
         name: "经销企业",
         isPick: false,
         children: [
+            { id: "11-0", name: "整体布局", isPick: false },
             { id: "11-1", name: "企管部", isPick: false },
             { id: "11-2", name: "财务部", isPick: false },
             { id: "11-3", name: "采购部", isPick: false },

@@ -24,9 +24,20 @@ const store = createStore({
         setMenuBid(state, value) {
             if (state.menuAid === 2) {
                 const index = state.menuBid.findIndex(item => item === value)
-                if (index === -1) state.menuBid.push(value)
+                if (index === -1) {
+                    if (value === '2-1') {
+                        state.menuBid = ['2-1']
+                    } else {
+                        state.menuBid.push(value)
+                        const index = state.menuBid.findIndex(item => item === '2-1')
+                        index !== -1 && state.menuBid.splice(index, 1)
+                    }
+                }
                 else state.menuBid.splice(index, 1)
-            } else {
+            } else if (!value) {
+                state.menuBid = []
+            }
+            else {
                 state.menuBid = [value]
             }
         },

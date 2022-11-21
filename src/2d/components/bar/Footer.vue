@@ -8,41 +8,46 @@ import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
 import { CACHE } from "@/3d/CACHE";
 import { menu } from "@/2d/hooks/useMenu";
-import USE3D from '@/2d/hooks/use3d'
+import USE3D from "@/2d/hooks/use3d";
 
 const router = useRouter();
 const store = useStore();
 
 const footers = menu; // 底部菜单
 const pickId = ref(1); // 二级菜单显示
+const isShowBack = () => {
+  const isDepartment = ![1, 2].includes(store.state.menuAid);
+  return isDepartment && store.state.menuBid.length;
+};
 
 // 底部菜单点击事件
 const handleFooters = (item, leve, son) => {
-  if(STATE.isAnimating) return
-
-  if (leve === 1) { // 一级菜单点击事件 
+  if (leve === 1) {
     store.commit("setMenuBid", null);
+    if (STATE.isAnimating) return;
+    // 一级菜单点击事件
     store.commit("setMenuAid", item.id);
     if (item.id === 1) {
       const _son = item.children.find((v) => v.id === "1-1");
       store.commit("setMenuBid", _son.id);
       router.push(_son.path);
     } else if (item.id === 2) {
-      router.push("/Area")
-    }
-    else {
+      router.push("/Area");
+    } else {
       //
     }
     pickId.value = item.id;
-  } else { // 二级菜单点击事件
+  } else {
+    // 二级菜单点击事件
     if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
     store.commit("setMenuBid", son.id);
     if (item.id === 1) router.push(son.path);
+    if (item.id === 2) {
+    }
   }
 
-  
   // 3d
-  USE3D.menuInteraction(item, leve, son)
+  USE3D.menuInteraction(item, leve, son);
 };
 
 const handleMenu = (item) => {
@@ -53,7 +58,9 @@ const handleMenu = (item) => {
 };
 
 const goBack = () => {
-  window.top.location.href = "/aie_web"; // 返回用户 home 地址
+  // window.top.location.href = "/aie_web"; // 返回用户 home 地址(废弃)
+  store.commit("setMenuBid", null);
+  USE3D.goBack();
 };
 
 const routerName = ref("/IndustrialEconomy");
@@ -75,10 +82,14 @@ watch(
         <li
           v-for="item in footers"
           :key="item.id"
-          @click="handleFooters(item, 1)"
+          @click.stop="handleFooters(item, 1)"
           :class="[store.state.menuAid === item.id ? `pick2` : '']"
         >
-          <img v-if="item.icon" :src="item.icon" class="f-icon" />
+          <img
+            v-if="item.icon"
+            :src="item.icon"
+            class="f-icon"
+          />
           <span class="m1-t">{{ item.name }}</span>
 
           <!-- 二级菜单 -->
@@ -87,7 +98,10 @@ watch(
             v-show="item.id === pickId"
           >
             <div :class="['c-main', `pickClass${item.id}`]">
-              <img src="../../assets/images/xiajian.png" class="xiajian" />
+              <img
+                src="../../assets/images/xiajian.png"
+                class="xiajian"
+              />
               <li
                 v-for="son in item.children"
                 :key="son.id"
@@ -107,7 +121,12 @@ watch(
       </ul>
 
       <!-- 返回按钮 -->
-      <!-- <img src="../../assets/images/fanhui.png" class="back" @click="goBack" > -->
+      <img
+        v-show="isShowBack()"
+        src="../../assets/images/fanhui.png"
+        class="back"
+        @click="goBack"
+      >
     </div>
   </div>
 </template>
@@ -152,6 +171,7 @@ watch(
     background: rgba(0, 0, 0, 0.7);
     transition: 0.3s;
     cursor: pointer;
+    pointer-events: auto;
   }
 }
 
@@ -163,6 +183,7 @@ watch(
   left: 0;
   height: 170%;
   cursor: auto;
+  pointer-events: none;
   // background: url("@/2d/assets/images/xiansanjiao.png") no-repeat;
   .c-main {
     display: flex;
@@ -243,12 +264,12 @@ watch(
   }
 }
 
-.pickClass3{
-  width: 46.5% !important;
+.pickClass3 {
+  width: 57% !important;
   &::before {
     position: absolute;
     content: "";
-    width: 50%;
+    width: 41.5%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
   }
@@ -258,97 +279,19 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 56%;
+    left: 45.5%;
   }
   .xiajian {
     position: absolute;
     height: 42%;
     bottom: 0%;
-    left: 50%;
+    left: 41%;
   }
 }
 
-.pickClass7{
-  width: 14% !important;
-  left: 52%;
-  &::before {
-    position: absolute;
-    content: "";
-    width: 43%;
-    border-bottom: 1px solid rgb(179, 179, 179);
-    bottom: 28%;
-  }
-  &::after {
-    position: absolute;
-    content: "";
-    width: 100%;
-    border-bottom: 1px solid rgb(179, 179, 179);
-    bottom: 28%;
-    left: 61%;
-  }
-  .xiajian {
-    position: absolute;
-    height: 42%;
-    bottom: 0%;
-    left: 42%;
-  }
-}
-
-
-.pickClass8{
-  width: 14% !important;
-  left: 61%;
-  &::before {
-    position: absolute;
-    content: "";
-    width: 43%;
-    border-bottom: 1px solid rgb(179, 179, 179);
-    bottom: 28%;
-  }
-  &::after {
-    position: absolute;
-    content: "";
-    width: 100%;
-    border-bottom: 1px solid rgb(179, 179, 179);
-    bottom: 28%;
-    left: 61%;
-  }
-  .xiajian {
-    position: absolute;
-    height: 42%;
-    bottom: 0%;
-    left: 42%;
-  }
-}
-.pickClass9{
-  width: 14% !important;
-  left: 70%;
-  &::before {
-    position: absolute;
-    content: "";
-    width: 43%;
-    border-bottom: 1px solid rgb(179, 179, 179);
-    bottom: 28%;
-  }
-  &::after {
-    position: absolute;
-    content: "";
-    width: 100%;
-    border-bottom: 1px solid rgb(179, 179, 179);
-    bottom: 28%;
-    left: 61%;
-  }
-  .xiajian {
-    position: absolute;
-    height: 42%;
-    bottom: 0%;
-    left: 42%;
-  }
-}
-
-.pickClass10{
-  width: 21.5% !important;
-  left: 76%;
+.pickClass7 {
+  width: 23% !important;
+  left: 49%;
   &::before {
     position: absolute;
     content: "";
@@ -372,13 +315,13 @@ watch(
   }
 }
 
-.pickClass11{
-  width: 28.5% !important;
-  left: 71.5%;
+.pickClass8 {
+  width: 23% !important;
+  left: 58%;
   &::before {
     position: absolute;
     content: "";
-    width: 80%;
+    width: 43%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
   }
@@ -388,13 +331,90 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 90%;
+    left: 54%;
   }
   .xiajian {
     position: absolute;
     height: 42%;
     bottom: 0%;
-    right: 10%;
+    left: 42%;
+  }
+}
+.pickClass9 {
+  width: 23% !important;
+  left: 67%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 43%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 54%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 42%;
+  }
+}
+
+.pickClass10 {
+  width: 30% !important;
+  left: 70%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 52.5%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 61%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 52%;
+  }
+}
+
+.pickClass11 {
+  width: 38% !important;
+  left: 62%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 86%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 92%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    right: 7%;
   }
 }
 </style>
