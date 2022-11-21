@@ -8,157 +8,46 @@ import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
 import { CACHE } from "@/3d/CACHE";
 import { menu } from "@/2d/hooks/useMenu";
+import USE3D from "@/2d/hooks/use3d";
 
 const router = useRouter();
 const store = useStore();
 
 const footers = menu; // 底部菜单
 const pickId = ref(1); // 二级菜单显示
+const isShowBack = () => {
+  const isDepartment = ![1, 2].includes(store.state.menuAid);
+  return isDepartment && store.state.menuBid.length;
+};
 
 // 底部菜单点击事件
 const handleFooters = (item, leve, son) => {
-  if(STATE.isAnimating) return
-
   if (leve === 1) {
     store.commit("setMenuBid", null);
+    if (STATE.isAnimating) return;
+    // 一级菜单点击事件
     store.commit("setMenuAid", item.id);
     if (item.id === 1) {
       const _son = item.children.find((v) => v.id === "1-1");
       store.commit("setMenuBid", _son.id);
       router.push(_son.path);
     } else if (item.id === 2) {
-      router.push("/Area")
-    }
-    else {
+      router.push("/Area");
+    } else {
       //
     }
     pickId.value = item.id;
   } else {
+    // 二级菜单点击事件
     if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
     store.commit("setMenuBid", son.id);
     if (item.id === 1) router.push(son.path);
+    if (item.id === 2) {
+    }
   }
 
-  
   // 3d
-  if (item.name == "社会层") {
-    API.hideAll()
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.industrialState,
-      callback: () => {
-        //
-      },
-    });
-  } else if (item.name == "区域层") {
-    API.hideAll()
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.areaState,
-      callback: () => {
-        API.showEnterpriseIcons()
-      },
-    });
-  } else if (item.name == "制造集团") {
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.zhizaojituan,
-      callback: () => {
-        API.hideAll()
-        API.showMirror()
-        API.showEnterpriseByName('zhizaojituanbangongshi')
-      },
-    });
-  } else if (item.name == "工商银行") {
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.yinhangyuanqu,
-      callback: () => {
-        API.hideAll()
-        API.showMirror()
-        API.showEnterpriseByName('yinghang')
-      },
-    });
-  } else if (item.name == "政务服务") {
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.zhengwuzhongxin,
-      callback: () => {
-        API.hideAll()
-        API.showMirror()
-        API.showEnterpriseByName('zhengwuzhongxinbangongshi')
-      },
-    });
-  } else if (item.name == "管委会") { // 无内部
-    API.hideAll()
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.guanweihui,
-      callback: () => {
-        API.showEnterpriseIconByName(item.name)
-      },
-    });
-  } else if (item.name == "物流公司") { // 无内部
-    API.hideAll()
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.wuliuqiye,
-      callback: () => {
-        API.showEnterpriseIconByName(item.name)
-      },
-    });
-  } else if (item.name == "综合服务") {
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.zonghefuwulou,
-      callback: () => {
-        API.hideAll()
-        API.showMirror()
-        API.showEnterpriseByName('zonghefuwulou')
-      },
-    });
-  } else if (item.name == "销售公司") {
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.Xiao_Shou_Gong_Si,
-      callback: () => {
-        API.hideAll()
-        API.showMirror()
-        API.showEnterpriseByName('Xiao_Shou_Gong_Si')
-      },
-    });
-  } else if (item.name == "供应企业") {
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.GongYingBanGongShi,
-      callback: () => {
-        API.hideAll()
-        API.showMirror()
-        API.showEnterpriseByName('GongYingBanGongShi')
-      },
-    });
-  } else if (item.name == "经销企业") {
-    API.showRoutes()
-    API.showModels()
-    API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.JingXiaoBanGongShi,
-      callback: () => {
-        API.hideAll()
-        API.showMirror()
-        API.showEnterpriseByName('JingXiaoBanGongShi')
-      },
-    });
-  }
+  USE3D.menuInteraction(item, leve, son);
 };
 
 const handleMenu = (item) => {
@@ -169,7 +58,9 @@ const handleMenu = (item) => {
 };
 
 const goBack = () => {
-  window.top.location.href = "/aie_web"; // 返回用户 home 地址
+  // window.top.location.href = "/aie_web"; // 返回用户 home 地址(废弃)
+  store.commit("setMenuBid", null);
+  USE3D.goBack();
 };
 
 const routerName = ref("/IndustrialEconomy");
@@ -191,10 +82,14 @@ watch(
         <li
           v-for="item in footers"
           :key="item.id"
-          @click="handleFooters(item, 1)"
+          @click.stop="handleFooters(item, 1)"
           :class="[store.state.menuAid === item.id ? `pick2` : '']"
         >
-          <img v-if="item.icon" :src="item.icon" class="f-icon" />
+          <img
+            v-if="item.icon"
+            :src="item.icon"
+            class="f-icon"
+          />
           <span class="m1-t">{{ item.name }}</span>
 
           <!-- 二级菜单 -->
@@ -203,7 +98,10 @@ watch(
             v-show="item.id === pickId"
           >
             <div :class="['c-main', `pickClass${item.id}`]">
-              <img src="../../assets/images/xiajian.png" class="xiajian" />
+              <img
+                src="../../assets/images/xiajian.png"
+                class="xiajian"
+              />
               <li
                 v-for="son in item.children"
                 :key="son.id"
@@ -223,7 +121,12 @@ watch(
       </ul>
 
       <!-- 返回按钮 -->
-      <!-- <img src="../../assets/images/fanhui.png" class="back" @click="goBack" > -->
+      <img
+        v-show="isShowBack()"
+        src="../../assets/images/fanhui.png"
+        class="back"
+        @click="goBack"
+      >
     </div>
   </div>
 </template>
@@ -268,6 +171,7 @@ watch(
     background: rgba(0, 0, 0, 0.7);
     transition: 0.3s;
     cursor: pointer;
+    pointer-events: auto;
   }
 }
 
@@ -279,6 +183,7 @@ watch(
   left: 0;
   height: 170%;
   cursor: auto;
+  pointer-events: none;
   // background: url("@/2d/assets/images/xiansanjiao.png") no-repeat;
   .c-main {
     display: flex;
@@ -356,6 +261,160 @@ watch(
     height: 42%;
     bottom: 0%;
     left: 37%;
+  }
+}
+
+.pickClass3 {
+  width: 57% !important;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 41.5%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 45.5%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 41%;
+  }
+}
+
+.pickClass7 {
+  width: 23% !important;
+  left: 49%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 43%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 54%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 42%;
+  }
+}
+
+.pickClass8 {
+  width: 23% !important;
+  left: 58%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 43%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 54%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 42%;
+  }
+}
+.pickClass9 {
+  width: 23% !important;
+  left: 67%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 43%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 54%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 42%;
+  }
+}
+
+.pickClass10 {
+  width: 30% !important;
+  left: 70%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 52.5%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 61%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 52%;
+  }
+}
+
+.pickClass11 {
+  width: 38% !important;
+  left: 62%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 86%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 92%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    right: 7%;
   }
 }
 </style>
