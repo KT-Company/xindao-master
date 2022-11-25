@@ -1,3 +1,4 @@
+let Bol3D = window.Bol3D
 let container = null;
 
 const industries = [];
@@ -28,6 +29,17 @@ const cities = [];   // 白模1
 const cities2 = [];  // 白模2： 带企业
 const innerEnterprises = [] // 企业内部
 const enterpriseIcons = [] // 企业标签
+const seperateModels = [] // 单体化模型
+const educationModels = [] // 单体化模型： 教育/医疗
+let heatmap = null // 能源： 热力图
+const enterpriseIconsInner = {
+  zonghefuwulou: [],
+  GongYingBanGongShi: [],
+  JingXiaoBanGongShi: [],
+  wuliubangongshi: [],
+  Xiao_Shou_Gong_Si: [],
+  zhizaojituanbangongshi: []
+}
 
 export const CACHE = {
   container,
@@ -59,4 +71,8 @@ export const CACHE = {
   earthTitles,
   earthVics,
   earthCircles,
+  seperateModels,
+  educationModels,
+  heatmap,
+  enterpriseIconsInner
 };

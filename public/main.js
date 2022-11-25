@@ -84946,6 +84946,109 @@ void main() {
 	    }
 	    return { canvas, height, width };
 	};
+	// 更新canvas（文字+图片 Popup） （类型1）
+	const updateTextCanvasWithImg = ({ canvas, title1, title2, title3, fontColor1, fontColor2, fontColor3, bgColor, strokeColor, fontSize1 = 100, fontSize2 = 80, fontSize3 = 60, img }) => {
+	    const ctx = canvas.getContext('2d'); //上下文，绘图环境
+	    ctx.font = 'Bold ' + fontSize1 + 'px Microsoft YaHei';
+	    const rgbaStroke = ColorRGBA.parse(strokeColor);
+	    const w = ctx.measureText(title1).width + 20;
+	    let width = 512;
+	    let height = 256;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	    const w2 = ctx.measureText(title2).width + width / 2;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w2) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	    const w3 = ctx.measureText(title3).width + width / 2;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w3) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    canvas.width = width;
+	    canvas.height = height;
+	    canvas.style.width = width / 2 + 'px';
+	    canvas.style.height = height / 2 + 'px';
+	    let paddingTop = 10 * (width / 512);
+	    let paddingLeft = 10 * (width / 512);
+	    // clear bg
+	    ctx.clearRect(0, 0, width, height);
+	    // bg
+	    ctx.fillStyle = bgColor;
+	    ctx.fillRect(paddingLeft, paddingTop, width - paddingLeft * 2, height - paddingTop * 2);
+	    // stroke
+	    ctx.beginPath();
+	    ctx.moveTo(paddingLeft + paddingLeft / 2, 0);
+	    ctx.lineTo(0, 0);
+	    ctx.lineTo(0, height);
+	    ctx.lineTo(paddingLeft + paddingLeft / 2, height);
+	    ctx.moveTo(width - paddingLeft - paddingLeft / 2, height);
+	    ctx.lineTo(width, height);
+	    ctx.lineTo(width, 0);
+	    ctx.lineTo(width - paddingLeft - paddingLeft / 2, 0);
+	    ctx.strokeStyle = `rgb(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255})`;
+	    ctx.lineWidth = (8 * width) / 512;
+	    ctx.stroke();
+	    // stroke 2
+	    ctx.beginPath();
+	    ctx.moveTo(paddingTop + paddingTop / 2, 0);
+	    ctx.lineTo(width - paddingTop - paddingTop / 2, 0);
+	    ctx.moveTo(width - paddingTop - paddingTop / 2, height);
+	    ctx.lineTo(paddingTop + paddingTop / 2, height);
+	    ctx.strokeStyle = `rgba(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255},.1)`;
+	    ctx.lineWidth = (8 * width) / 512;
+	    ctx.stroke();
+	    // title1
+	    ctx.font = 'Bold ' + fontSize1 + 'px Microsoft YaHei';
+	    ctx.textBaseline = 'top';
+	    ctx.fillStyle = fontColor1;
+	    ctx.fillText(title1, (width - ctx.measureText(title1).width) / 2, paddingTop * 4);
+	    // title2 & title3 & img
+	    if (img) {
+	        // img
+	        ctx.drawImage(img, width / 8, (height - (paddingTop * 2 + fontSize1)) / 2, width / 4, width / 4);
+	        // title2
+	        ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor2;
+	        ctx.fillText(title2, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2);
+	        // title3
+	        ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor3;
+	        ctx.fillText(title3, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2 + (fontSize2 + paddingTop));
+	    }
+	    else {
+	        // title2
+	        ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor2;
+	        ctx.fillText(title2, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2);
+	        // title3
+	        ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor3;
+	        ctx.fillText(title3, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2 + (fontSize2 + paddingTop));
+	    }
+	    return { canvas, height, width };
+	};
 	//经纬度转墨卡托
 	function lnglat2mercator(coord) {
 	    //[114.32894, 30.585748]
@@ -97015,7 +97118,7 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	        const materials = {};
 	        const darkMaterial = new MeshBasicMaterial({ transparent: false, opacity: 1, fog: false, color: new Color(0, 0, 0) });
 	        const darkLamberMaterial = new MeshLambertMaterial({ transparent: false, opacity: 1, fog: false, color: new Color(0, 0, 0) });
-	        const darkSpriteMateral = new SpriteMaterial({ color: new Color(0, 0, 0), transparent: false, opacity: 0, fog: false });
+	        const darkSpriteMateral = new SpriteMaterial({ color: new Color(0, 0, 0), transparent: false, opacity: 1, fog: false });
 	        const darkStandardMaterial = new MeshStandardMaterial({
 	            transparent: false,
 	            color: new Color(0, 0, 0),
@@ -103127,7 +103230,7 @@ void main(){
 	    }
 	}
 
-	const drawText$2 = [drawTextCanvas, drawTextCanvas2, drawTextCanvas3, drawTextCanvas4, drawTextCanvas5, drawTextCanvas6];
+	const drawText$1 = [drawTextCanvas, drawTextCanvas2, drawTextCanvas3, drawTextCanvas4, drawTextCanvas5, drawTextCanvas6];
 	const updateText = [updateTextCanvas];
 	class BaseTitle extends Sprite {
 	    text;
@@ -103167,7 +103270,7 @@ void main(){
 	            size: this.canvasSize,
 	            type: this.textType
 	        }, opts);
-	        const { canvas: canvasEle, width, height } = drawText$2[this.opts.type]({
+	        const { canvas: canvasEle, width, height } = drawText$1[this.opts.type]({
 	            text: this.opts.text,
 	            fontColor: this.opts.fontColor,
 	            bgColor: this.opts.bgColor,
@@ -105832,7 +105935,8 @@ void main(){
 	    }
 	}
 
-	const drawText$1 = [drawTextCanvasWithImg];
+	const drawTextWithImg = [drawTextCanvasWithImg];
+	const updateTextWithImg = [updateTextCanvasWithImg];
 	class BaseImageTitle extends Sprite {
 	    title1; // 1级标题
 	    title2; // 2级标题
@@ -105895,7 +105999,7 @@ void main(){
 	            img: this.img,
 	            center: this.anchor
 	        }, opts);
-	        const { canvas: canvasEle, width, height } = drawText$1[this.opts.type]({
+	        const { canvas: canvasEle, width, height } = drawTextWithImg[this.opts.type]({
 	            title1: this.title1,
 	            title2: this.title2,
 	            title3: this.title3,
@@ -105953,35 +106057,54 @@ void main(){
 	    // strokeColor: string
 	    // fontSize: number
 	    // size: number
-	    update({ type, title1, title2, title3, fontColor1, fontColor2, fontColor3, bgColor, strokeColor, fontSize1, fontSize2, size }) {
-	        // if (!this.canvasElement) throw new Error('title-update needs canvasElement')
-	        // if (bgColor !== undefined) this.bgColor = bgColor
-	        // this.fontColor = fontColor !== undefined ? fontColor : this.fontColor
-	        // this.strokeColor = strokeColor !== undefined ? strokeColor : this.strokeColor
-	        // this.text = text !== undefined ? text : this.text
-	        // this.fontSize = fontSize !== undefined ? fontSize : this.fontSize
-	        // this.textType = type !== undefined ? type : this.textType
-	        // this.canvasSize = size !== undefined ? size : this.canvasSize
-	        // const updateOpts = Object.assign({
-	        //   text: this.text,
-	        //   fontColor: this.fontColor,
-	        //   bgColor: this.bgColor,
-	        //   strokeColor: this.strokeColor,
-	        //   fontSize: this.fontSize,
-	        //   canvas: this.canvasElement
-	        // })
-	        // const { width, height } = updateText[this.textType](updateOpts)
-	        // this.canvasWidth = width
-	        // this.canvasHeight = height
-	        // this.scale.set((this.canvasSize * this.canvasWidth) / this.canvasHeight, this.canvasSize, 1)
-	        // if (this.material.map) this.material.map.needsUpdate = true
-	        // this.material.needsUpdate = true
+	    update({ type, title1, title2, title3, fontColor1, fontColor2, fontColor3, bgColor, strokeColor, fontSize1, fontSize2, fontSize3, size }) {
+	        if (!this.canvasElement)
+	            throw new Error('title-update needs canvasElement');
+	        if (bgColor !== undefined)
+	            this.bgColor = bgColor;
+	        this.fontColor1 = fontColor1 !== undefined ? fontColor1 : this.fontColor1;
+	        this.fontColor2 = fontColor2 !== undefined ? fontColor2 : this.fontColor2;
+	        this.fontColor3 = fontColor3 !== undefined ? fontColor3 : this.fontColor3;
+	        this.strokeColor = strokeColor !== undefined ? strokeColor : this.strokeColor;
+	        this.title1 = title1 !== undefined ? title1 : this.title1;
+	        this.title2 = title2 !== undefined ? title2 : this.title2;
+	        this.title3 = title3 !== undefined ? title3 : this.title3;
+	        this.fontSize1 = fontSize1 !== undefined ? fontSize1 : this.fontSize1;
+	        this.fontSize2 = fontSize2 !== undefined ? fontSize2 : this.fontSize2;
+	        this.fontSize3 = fontSize3 !== undefined ? fontSize3 : this.fontSize3;
+	        this.textType = type !== undefined ? type : this.textType;
+	        this.canvasSize = size !== undefined ? size : this.canvasSize;
+	        const updateOpts = Object.assign({
+	            title1: this.title1,
+	            title2: this.title2,
+	            title3: this.title3,
+	            fontColor1: this.fontColor1,
+	            fontColor2: this.fontColor3,
+	            fontColor3: this.fontColor2,
+	            bgColor: this.bgColor,
+	            strokeColor: this.strokeColor,
+	            fontSize1: this.fontSize1,
+	            fontSize2: this.fontSize2,
+	            fontSize3: this.fontSize3,
+	            img: this.img,
+	            canvas: this.canvasElement
+	        });
+	        const { width, height } = updateTextWithImg[this.textType](updateOpts);
+	        this.canvasWidth = width;
+	        this.canvasHeight = height;
+	        this.scale.set((this.canvasSize * this.canvasWidth) / this.canvasHeight, this.canvasSize, 1);
+	        if (this.material.map)
+	            this.material.map.needsUpdate = true;
+	        this.material.needsUpdate = true;
 	    }
 	}
 
 	class CompositeIconPopup extends CompositeIcon {
 	    opts;
 	    baseImageTitle;
+	    cubicGuide;
+	    t1;
+	    t2;
 	    constructor(opts) {
 	        super();
 	        this.opts = Object.assign({
@@ -106006,23 +106129,24 @@ void main(){
 	            titleAnchor: [0.5, 0]
 	        }, opts);
 	        // cubic guide
-	        const cubicGuide = new BaseCube({
+	        this.cubicGuide = new BaseCube({
 	            color: this.opts.color,
-	            type: 1,
+	            type: 0,
 	            width: 0.015,
 	            height: this.opts.guideHeight,
 	            depth: 0.015,
 	            mixColor: '#0000ff',
 	            mixColor2: '#000000'
 	        });
-	        this.add(cubicGuide);
+	        this.add(this.cubicGuide);
 	        // inner spread circle1
 	        const baseCircle1 = new BaseCircle({
 	            color: this.opts.color,
 	            type: 6,
-	            radius: 1,
-	            spreadEndRadius: 0.3,
-	            spreadSpeed: 2
+	            radius: 2,
+	            spreadStartRadius: 0.2,
+	            spreadEndRadius: 0.4,
+	            spreadSpeed: 1.2
 	        });
 	        this.add(baseCircle1);
 	        baseCircle1.startSpreadAnimation();
@@ -106030,10 +106154,10 @@ void main(){
 	        const baseCircle2 = new BaseCircle({
 	            color: this.opts.color,
 	            type: 6,
-	            radius: 1,
-	            spreadStartRadius: 0.15,
-	            spreadEndRadius: 0.3,
-	            spreadSpeed: 2
+	            radius: 2,
+	            spreadStartRadius: 0.1,
+	            spreadEndRadius: 0.4,
+	            spreadSpeed: 1.2
 	        });
 	        this.add(baseCircle2);
 	        baseCircle2.startSpreadAnimation();
@@ -106059,6 +106183,98 @@ void main(){
 	        });
 	        this.add(this.baseImageTitle);
 	    }
+	    show(cb) {
+	        let count = 0;
+	        this.showPopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.showGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	    }
+	    hide(cb) {
+	        let count = 0;
+	        this.hidePopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.hideGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	    }
+	    showPopup(cb) {
+	        if (this.t1) {
+	            this.t1.stop();
+	        }
+	        this.baseImageTitle.scale.x = 0;
+	        this.baseImageTitle.scale.y = 0;
+	        this.t1 = new Tween(this.baseImageTitle.scale)
+	            .to({ x: (this.baseImageTitle.canvasSize * this.baseImageTitle.canvasWidth) / this.baseImageTitle.canvasHeight, y: this.baseImageTitle.canvasSize }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t1 = null;
+	            cb && cb();
+	        });
+	    }
+	    showGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.cubicGuide.scale.y = 0;
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 1 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    hidePopup(cb) {
+	        if (this.t1) {
+	            this.t1.stop();
+	        }
+	        this.t1 = new Tween(this.baseImageTitle.scale)
+	            .to({ x: 0, y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t1 = null;
+	            cb && cb();
+	        });
+	    }
+	    hideGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    setTitle1(val) {
+	        this.baseImageTitle.update({
+	            title1: val
+	        });
+	    }
+	    setTitle2(val) {
+	        this.baseImageTitle.update({
+	            title2: val
+	        });
+	    }
+	    setTitle3(val) {
+	        this.baseImageTitle.update({
+	            title3: val
+	        });
+	    }
 	}
 
 	class CompositeIconHTML extends CompositeIcon {
@@ -106075,7 +106291,8 @@ void main(){
 	            title: 'icon-html',
 	            titleHeight: 1,
 	            titleSize: 14,
-	            titleColor: '#ffffff'
+	            titleColor: '#ffffff',
+	            closed: true
 	        }, opts);
 	        this._bgColor = new Color(this.opts.bgColor);
 	        this.opacity = this.opts.opacity;
@@ -106123,6 +106340,7 @@ void main(){
 	        this.add(baseShapeVic);
 	        // title
 	        this.htmlEle = new Popup({
+	            closeVisible: this.opts.closed ? 'visible' : 'hidden',
 	            value: `<div style='pointer-events:none;background-color:${this.bgColor};min-width:160px;width:auto;height:40px;outline: 1px ridge rgb(255, 255, 255);border-radius: 1px;'>
                 <div style='display:flex;width:100%;;height:100%;text-align:center;color:${this.opts.titleColor};font-size:${this.opts.titleSize}px;font-weight:bold;align-items:center;'>
                   <p style='width:100%;text-align:center;white-space:nowrap;'>${this.opts.title}</p>
@@ -106145,6 +106363,140 @@ void main(){
 	    }
 	    hideTitle() {
 	        this.htmlEle.visible = false;
+	    }
+	}
+
+	class CompositeIconSimple extends CompositeIcon {
+	    opts;
+	    cubicGuide;
+	    icon;
+	    t1; // icon move animation
+	    t1Tag; // icon move animation tag
+	    t2; // cubicGuide show/hide animation
+	    t3; // icon show/hide animation
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            guideColor: '#ff0000',
+	            guideHeight: 2,
+	            opacity: 1,
+	            texture: null,
+	            anchor: [0.5, 0.5],
+	            iconSpeed: 1
+	        }, opts);
+	        this.t1Tag = 1;
+	        // cubic guide
+	        this.cubicGuide = new BaseCube({
+	            color: this.opts.guideColor,
+	            type: 0,
+	            width: 0.015,
+	            height: this.opts.guideHeight,
+	            depth: 0.015,
+	            mixColor: '#00ffff',
+	            mixColor2: '#000000'
+	        });
+	        this.add(this.cubicGuide);
+	        // simple icon
+	        this.icon = new Sprite();
+	        this.icon.center.set(this.opts.anchor[0], this.opts.anchor[1]);
+	        this.icon.material = new SpriteMaterial({
+	            map: this.opts.texture,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.icon.position.set(0, this.opts.guideHeight, 0);
+	        this.add(this.icon);
+	    }
+	    iconAnimation() {
+	        this.t1 = requestAnimationFrame(this.iconAnimation.bind(this));
+	        this.icon.position.y += 0.005 * this.opts.iconSpeed * this.t1Tag;
+	        if (this.icon.position.y >= this.opts.guideHeight + 0.25 || this.icon.position.y <= this.opts.guideHeight - 0.25) {
+	            this.t1Tag *= -1;
+	        }
+	    }
+	    startIconAnimation() {
+	        this.iconAnimation();
+	    }
+	    stopIconAnimation() {
+	        cancelAnimationFrame(this.t1);
+	        this.t1 = null;
+	    }
+	    showGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.cubicGuide.scale.y = 0;
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 1 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    hideGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    showPopup(cb) {
+	        if (this.t3) {
+	            this.t3.stop();
+	        }
+	        this.icon.scale.x = 0;
+	        this.icon.scale.y = 0;
+	        this.t3 = new Tween(this.icon.scale)
+	            .to({ x: 1, y: 1 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t3 = null;
+	            cb && cb();
+	        });
+	    }
+	    hidePopup(cb) {
+	        if (this.t3) {
+	            this.t3.stop();
+	        }
+	        this.t3 = new Tween(this.icon.scale)
+	            .to({ x: 0, y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t3 = null;
+	            cb && cb();
+	        });
+	    }
+	    show(cb) {
+	        let count = 0;
+	        this.showPopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.showGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	    }
+	    hide(cb) {
+	        let count = 0;
+	        this.hidePopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.hideGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
 	    }
 	}
 
@@ -109171,6 +109523,7 @@ void main(){
 	exports.ColumnarTag = ColumnarTag;
 	exports.CompositeIconHTML = CompositeIconHTML;
 	exports.CompositeIconPopup = CompositeIconPopup;
+	exports.CompositeIconSimple = CompositeIconSimple;
 	exports.CompositeIconTag = CompositeIconTag;
 	exports.CompositeIconTitle = CompositeIconTitle;
 	exports.CompressedTexture = CompressedTexture;

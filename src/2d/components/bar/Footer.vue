@@ -23,8 +23,9 @@ const isShowBack = () => {
 // 底部菜单点击事件
 const handleFooters = (item, leve, son) => {
   if (leve === 1) {
-    store.commit("setMenuBid", null);
     if (STATE.isAnimating) return;
+    if(store.state.LEVEL == 4) return
+    store.commit("setMenuBid", null);
     // 一级菜单点击事件
     store.commit("setMenuAid", item.id);
     if (item.id === 1) {
@@ -33,13 +34,11 @@ const handleFooters = (item, leve, son) => {
       router.push(_son.path);
     } else if (item.id === 2) {
       router.push("/Area");
-    } else {
-      //
-    }
+    } 
     pickId.value = item.id;
   } else {
     // 二级菜单点击事件
-    if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
+    // if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
     store.commit("setMenuBid", son.id);
     if (item.id === 1) router.push(son.path);
     if (item.id === 2) {
@@ -60,6 +59,7 @@ const handleMenu = (item) => {
 const goBack = () => {
   // window.top.location.href = "/aie_web"; // 返回用户 home 地址(废弃)
   store.commit("setMenuBid", null);
+  store.commit('changeLevel' , 3)
   USE3D.goBack();
 };
 
@@ -107,11 +107,6 @@ watch(
                 :key="son.id"
                 :class="store.state.menuBid.includes(son.id) ? 'pick2' : ''"
                 @click.stop="handleFooters(item, 2, son)"
-                :style="{
-                  cursor: ['1-2', '1-3', '1-4'].includes(son.id)
-                    ? 'no-drop'
-                    : 'pointer',
-                }"
               >
                 {{ son.name }}
               </li>
@@ -122,7 +117,7 @@ watch(
 
       <!-- 返回按钮 -->
       <img
-        v-show="isShowBack()"
+        v-show="store.state.LEVEL == 4"
         src="../../assets/images/fanhui.png"
         class="back"
         @click="goBack"
@@ -265,13 +260,15 @@ watch(
 }
 
 .pickClass3 {
-  width: 57% !important;
+  width: 60% !important;
+  right: 1%;
   &::before {
     position: absolute;
     content: "";
     width: 41.5%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
+    left: -.15%;
   }
   &::after {
     position: absolute;
@@ -290,7 +287,7 @@ watch(
 }
 
 .pickClass7 {
-  width: 23% !important;
+  width: 22% !important;
   left: 49%;
   &::before {
     position: absolute;
@@ -298,6 +295,7 @@ watch(
     width: 43%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
+    left: -0.5%;
   }
   &::after {
     position: absolute;
@@ -305,7 +303,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 54%;
+    left: 53.5%;
   }
   .xiajian {
     position: absolute;
@@ -316,7 +314,7 @@ watch(
 }
 
 .pickClass8 {
-  width: 23% !important;
+  width: 22% !important;
   left: 58%;
   &::before {
     position: absolute;
@@ -324,6 +322,7 @@ watch(
     width: 43%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
+    left: -0.5%;
   }
   &::after {
     position: absolute;
@@ -331,7 +330,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 54%;
+    left: 54.5%;
   }
   .xiajian {
     position: absolute;
@@ -341,14 +340,15 @@ watch(
   }
 }
 .pickClass9 {
-  width: 23% !important;
-  left: 67%;
+  width: 29% !important;
+  left: 64.5%;
   &::before {
     position: absolute;
     content: "";
     width: 43%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
+    left: -0.5%;
   }
   &::after {
     position: absolute;
@@ -356,7 +356,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 54%;
+    left: 51%;
   }
   .xiajian {
     position: absolute;
@@ -367,8 +367,8 @@ watch(
 }
 
 .pickClass10 {
-  width: 30% !important;
-  left: 70%;
+  width: 29% !important;
+  left: 70.5%;
   &::before {
     position: absolute;
     content: "";
@@ -382,7 +382,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 61%;
+    left: 61.5%;
   }
   .xiajian {
     position: absolute;
@@ -408,7 +408,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 92%;
+    left: 92.5%;
   }
   .xiajian {
     position: absolute;

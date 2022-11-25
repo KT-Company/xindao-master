@@ -1,3 +1,5 @@
+let Bol3D = window.Bol3D
+
 // ICONS 
 const iconsData = [
   {
@@ -28,30 +30,61 @@ const iconsData = [
 
 
 // ICONS 产业经济
+const industryBaseHeight = 5000
 const industryData = [
   {
     name: '海景区',
-    position: new Bol3D.Vector3(-19425.43533103114, 0.1, -15968.667815998684)
+    position: new Bol3D.Vector3(-19425.43533103114, 0.1, -15968.667815998684),
+    data: {
+      title1: '(国家级)高新技术产业',
+      title2: '海景区',
+      title3: '5000'
+    }
   },
   {
     name: '崇武区',
-    position: new Bol3D.Vector3(14999.590085793356, 0.1, -24570.312039456356)
+    position: new Bol3D.Vector3(14999.590085793356, 0.1, -24570.312039456356),
+    data: {
+      title1: '(国家级)高新技术产业',
+      title2: '崇武区',
+      title3: '8000'
+    }
   },
   {
     name: '延平区',
-    position: new Bol3D.Vector3(30660.107029163068, 0.1, -932.139094563925)
+    position: new Bol3D.Vector3(30660.107029163068, 0.1, -932.139094563925),
+    data: {
+      title1: '(国家级)高新技术产业',
+      title2: '延平区',
+      title3: '7000'
+    }
   },
   {
     name: '丰阳区',
-    position: new Bol3D.Vector3(-23998.7867404583, 0.1, 21093.928057913305)
+    position: new Bol3D.Vector3(-23998.7867404583, 0.1, 21093.928057913305),
+    data: {
+      title1: '(国家级)高新技术产业',
+      title2: '丰阳区',
+      title3: '7000'
+    }
   },
   {
     name: '兴通区',
-    position: new Bol3D.Vector3(8384.14138935829, 0.1, 5726.746226325336)
+    position: new Bol3D.Vector3(8384.14138935829, 0.1, 5726.746226325336),
+    data: {
+      title1: '(国家级)高新技术产业',
+      title2: '兴通区',
+      title3: '7500'
+    }
   },
   {
     name: '平云区',
-    position: new Bol3D.Vector3(30753.86698923057, 0.1, 25198.43153192119)
+    position: new Bol3D.Vector3(30753.86698923057, 0.1, 25198.43153192119),
+    data: {
+      title1: '(国家级)高新技术产业',
+      title2: '平云区',
+      title3: '8000'
+    }
   }
 ]
 
@@ -206,10 +239,13 @@ const earthIcons = [
   },
 ]
 
+const educationPos = []
 
 export const DATA = {
   iconsData,
+  industryBaseHeight,
   industryData,
   energyIconsData,
-  earthIcons
+  earthIcons,
+  educationPos
 }
