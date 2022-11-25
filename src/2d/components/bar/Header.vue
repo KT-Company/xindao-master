@@ -81,7 +81,7 @@ const handleHome = () => {
   // });
 
   store.commit("changeLevel", 1);
-  router.push('/IndustrialEconomy')
+  // router.push('/IndustrialEconomy')
   window.top.location.href = "/aie_web"; // 返回用户 home 地址
 };
 

@@ -11,5 +11,6 @@ import bar from "@/2d/components/bar/bar.module.css";
 <style lang="less" scoped>
 .right {
   right: var(--barMargin);
+  font-family: sscr;
 }
 </style>

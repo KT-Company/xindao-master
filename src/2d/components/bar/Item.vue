@@ -22,7 +22,7 @@ const props = defineProps({
     color: rgb(255, 255, 255);
     display: flex;
     align-items: center;
-    font-family: Source Han Sans CN;
+    // font-family: Source Han Sans CN;
     font-size: .96vw;
     font-weight: 600;
     padding-left: 18%;

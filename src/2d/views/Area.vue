@@ -179,14 +179,12 @@ onMounted(() => {
         <span
           :class="['zjz-name', pickWho == 1 ? '' : 'hui']"
           @click="handleZJZ(1)"
-          >工业增加值</span
-        >
+        >工业增加值</span>
         /
         <span
           :class="['zjz-name', pickWho == 2 ? '' : 'hui']"
           @click="handleZJZ(2)"
-          >服务增加值</span
-        >
+        >服务增加值</span>
       </div>
       <div class="b-content">
         <span class="unit1 hui">单位：亿</span>
@@ -196,7 +194,9 @@ onMounted(() => {
 
     <Bar>
       <div class="b-title">消费价格指数</div>
-      <div class="b-content"><Echart :option="option.data3"></Echart></div>
+      <div class="b-content">
+        <Echart :option="option.data3"></Echart>
+      </div>
     </Bar>
 
     <Bar>
@@ -229,8 +229,8 @@ onMounted(() => {
         <Echart :option="option.data7"></Echart>
       </div>
       <div class="c-title d-title">
-        <span>区域资产结构</span
-        ><span class="hui">当前：{{ store.state.year }}</span>
+        <span class="b-title">区域资产结构</span>
+        <p class="hui c-y-p">当前：<span class="c-y-s">{{ store.state.year }}</span></p>
       </div>
       <div class="h26">
         <Echart :option="option.data8"></Echart>
@@ -258,8 +258,8 @@ onMounted(() => {
 }
 
 .c-title {
-  font-size: 0.9vw;
-  font-family: Source Han Sans CN;
+  font-size: var(--titleSize);
+  // font-family: Source Han Sans CN;
   font-weight: 500;
   color: #ffffff;
   height: 6%;
@@ -332,8 +332,8 @@ onMounted(() => {
     p {
       &,
       * {
-        color: rgba(202, 224, 255); 
-        font-family: Source Han Sans CN;
+        color: rgba(202, 224, 255);
+        // font-family: Source Han Sans CN;
       }
 
       &:nth-child(3) {
@@ -349,7 +349,7 @@ onMounted(() => {
       font-size: 1.1vw;
       font-family: sscr;
     }
-    .gdp-sp{
+    .gdp-sp {
       margin-left: -8%;
     }
   }
@@ -357,6 +357,8 @@ onMounted(() => {
 
 .zjz-name {
   cursor: pointer;
+  font-size: var(--titleSize);
+  // transition: 0.3s ease-in;
 }
 .h28 {
   position: relative;
@@ -370,9 +372,28 @@ onMounted(() => {
 .d-title {
   display: flex;
   justify-content: space-between;
+  padding-right: 5%;
   span:nth-child(2) {
     font-size: 0.8vw;
     font-weight: normal;
+  }
+}
+.c-y-p {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40%;
+  .c-y-s {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75%;
+    width: 45%;
+    // padding: 0% 15%;
+    border-radius: 0.2rem;
+    background: rgba(74, 74, 74, 0.2);
+    border: 1px solid rgba(100, 100, 100, 0.5);
   }
 }
 </style>

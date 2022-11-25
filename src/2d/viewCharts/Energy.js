@@ -2,6 +2,132 @@ import Highcharts from 'highcharts'
 import * as echarts from 'echarts'
 import store from '@/2d/store/index'
 const { chart } = store.state
+export function lineChart(res, obj) {
+    let xaxisData = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+    let yaxisData1 = [90, 80, 100, 70, 65, 69, 80, 100, 70, 65, 69, 66];
+    let yaxisData2 = [70, 50, 80, 60, 62, 54, 34, 66, 60, 55, 50, 45];
+    const colorList = ["rgba(202,202,205)", "rgba(243,162,84)", "rgba(106,189,154)", "rgba(94,118,223)"]
+    let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
+    var option = {
+        color: _colorList,
+        grid: {
+            top: "18%",
+            left: "1%",
+            right: "3%",
+            bottom: "1%",
+            containLabel: true,
+        },
+        tooltip: {
+            trigger: "axis",
+        },
+        legend: {
+            orient: "horizontal",
+            // right: "3%",
+            // itemWidth: 20,
+            // itemHeight: 4,
+            // icon: "react",
+            // itemGap: 17,
+            // align: "right",
+            textStyle: {
+                color: chart.fontColor,
+                fontSize: chart.fontSize,
+            },
+        },
+        xAxis: {
+            data: res.xData,
+            boundaryGap: true,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: chart.xLine,
+                },
+            },
+            axisTick: {
+                show: false,
+            },
+        },
+        yAxis: [
+            {
+                name: "(万条)",
+                nameTextStyle: {
+                    color: chart.fontColor,
+                    fontSize: chart.fontSize,
+                },
+                axisLabel: {
+                    color: "#AEC9FF",
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: chart.xLine,
+                    },
+                },
+                axisTick: {
+                    show: false,
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: chart.xLine,
+                    },
+                },
+            }, {
+                name: "(万条)",
+                nameTextStyle: {
+                    color: chart.fontColor,
+                    fontSize: chart.fontSize,
+                },
+                axisLabel: {
+                    color: chart.fontColor,
+                    fontSize: chart.fontSize,
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: chart.xLine,
+                    },
+                },
+                axisTick: {
+                    show: false,
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: chart.xLine,
+                    },
+                },
+            }
+        ],
+        series: function () {
+            let series = []
+            for (let i = 0; i < res.data.length; i++) {
+                let serie = {
+                    name: res.data[i].name,
+                    yAxisIndex: i,
+                    data: res.data[i].value,
+                    type: "line",
+                    symbol: "circle",
+                    symbolSize: 3,
+                    // itemStyle: {
+                    //     color: "#FF845A",
+                    //     shadowColor: "#FF845A",
+                    //     shadowBlur: 10,
+                    //     borderColor: "#FF845A",
+                    //     borderWidth: 3,
+                    //     lineStyle: {
+                    //         color: "#FF845A",
+                    //     },
+                    // },
+                }
+                series.push(serie)
+            }
+            return series
+        }(),
+    };
+    return option
+}
+
+
 export function setHChart1(res) {
     return {
         chart: {
@@ -412,7 +538,7 @@ export function setFireChart(res) {
 
 // 火力发电量统计图 备用 
 export function setFireChartB(res) {
-    let colorList = ["#c36dff", "#3bb3ff","#7d89ff",  "#ff9344", "#f3c304", "#36d97b", "#12d5ce", "#f2956f", "#f2d66f", "#cdf26f", "#8cf26f", "#6ff294"]
+    let colorList = ["#c36dff", "#3bb3ff", "#7d89ff", "#ff9344", "#f3c304", "#36d97b", "#12d5ce", "#f2956f", "#f2d66f", "#cdf26f", "#8cf26f", "#6ff294"]
     var option = {
         color: colorList,
         tooltip: {

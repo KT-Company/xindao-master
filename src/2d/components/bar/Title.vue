@@ -20,7 +20,7 @@ const props = defineProps({
   color: rgb(255, 255, 255);
   display: flex;
   align-items: center;
-  font-family: Source Han Sans CN;
+  // font-family: Source Han Sans CN;
   font-size: 0.96vw;
   padding-left: 18%;
   background: url("@/2d/assets/images/item-title.png") no-repeat center center /

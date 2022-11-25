@@ -4,6 +4,7 @@ export const menu = ref([
     {
         id: 1,
         name: "社会层",
+        path: '/IndustrialEconomy',
         isPick: true,
         icon: require('@/2d/assets/images/shehui.png'),
         children: [
@@ -17,6 +18,7 @@ export const menu = ref([
     {
         id: 2,
         name: "区域层",
+        path: '/Area',
         isPick: false,
         icon: require('@/2d/assets/images/quyu.png'),
         children: [
@@ -29,23 +31,44 @@ export const menu = ref([
     {
         id: 3,
         name: "制造集团",
+        path: '/Manufacture',
         isPick: false,
         children: [
             { id: "3-0", name: "整体布局", isPick: false },
             { id: "3-1", name: "企管部", isPick: false },
-            { id: "3-2", name: "人力资源部", isPick: false },
+            { id: "3-2", name: "人力资源部", isPick: false, path: "/HR" },
             { id: "3-3", name: "财务部", isPick: false },
             { id: "3-4", name: "采购部", isPick: false },
             { id: "3-5", name: "营销部", isPick: false },
             { id: "3-6", name: "生产部", isPick: false },
         ],
     },
-    { id: 4, name: "工商银行", isPick: false, children: [] },
-    { id: 5, name: "政务服务", isPick: false, children: [] },
-    { id: 6, name: "管委会", isPick: false, children: [] },
+    {
+        id: 4, name: "工商银行",
+        path: '/ICBC',
+        isPick: false,
+        children: [
+            { id: '4-1', name: '营业大厅', isPick: false }
+        ]
+    },
+    {
+        id: 5, name: "政务服务",
+        path: '/Government',
+        isPick: false,
+        children: [
+            { id: '4-1', name: '服务大厅', isPick: false }]
+    },
+    {
+        id: 6,
+        name: "管委会",
+        path: '/Management',
+        isPick: false,
+        children: []
+    },
     {
         id: 7,
         name: "物流公司",
+        path: '/Logistics',
         isPick: false,
         children: [
             { id: "7-0", name: "整体布局", isPick: false },
@@ -56,6 +79,7 @@ export const menu = ref([
     {
         id: 8,
         name: "综合服务",
+        path: "/Comprehensive",
         isPick: false,
         children: [
             { id: "8-0", name: "整体布局", isPick: false },
@@ -66,6 +90,7 @@ export const menu = ref([
     {
         id: 9,
         name: "销售公司",
+        path: "/Sales",
         isPick: false,
         children: [
             { id: "9-0", name: "整体布局", isPick: false },
@@ -76,6 +101,7 @@ export const menu = ref([
     {
         id: 10,
         name: "供应企业",
+        path: "/Supply",
         isPick: false,
         children: [
             { id: "10-0", name: "整体布局", isPick: false },
@@ -87,6 +113,7 @@ export const menu = ref([
     {
         id: 11,
         name: "经销企业",
+        path: "/Distribution",
         isPick: false,
         children: [
             { id: "11-0", name: "整体布局", isPick: false },

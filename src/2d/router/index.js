@@ -53,27 +53,59 @@ const routes = [
   //   name: "AreaOld",
   //   component: () => import("@/2d/views/AreaOld.vue"),
   // },
-  // *************************************************************** 企业层 ***************************************************************
-  // { // 综合服务中心 
-  //   path: "/Comprehensive",
-  //   name: "Comprehensive",
-  //   component: () => import("@/2d/views/Comprehensive.vue"),
-  // },
-  // { // 政务中心
-  //   path: "/Government",
-  //   name: "Government",
-  //   component: () => import("@/2d/views/Government.vue"),
-  // },
-  // { // 人力资源部
-  //   path: "/HR",
-  //   name: "HR",
-  //   component: () => import("@/2d/views/HR.vue"),
-  // }, {
+  // *************************************************************** 企业层（未开发） ***************************************************************
+  // {
   //   // 制造集团
   //   path: "/Manufacture",
   //   name: "Manufacture",
   //   component: () => import("@/2d/views/Manufacture.vue"),
-  // }
+  // },
+  // {
+  //   // 工商银行
+  //   path: "/ICBC",
+  //   name: "ICBC",
+  //   component: () => import("@/2d/views/ICBC.vue"),
+  // },
+  // { // 政务服务
+  //   path: "/Government",
+  //   name: "Government",
+  //   component: () => import("@/2d/views/Government.vue"),
+  // },
+  // { // 管委会
+  //   path: "/Management",
+  //   name: "Management",
+  //   component: () => import("@/2d/views/Management.vue"),
+  // },
+  // { // 物流公司
+  //   path: "/Logistics",
+  //   name: "Logistics",
+  //   component: () => import("@/2d/views/Logistics.vue"),
+  // },
+  // { // 综合服务
+  //   path: "/Comprehensive",
+  //   name: "Comprehensive",
+  //   component: () => import("@/2d/views/Comprehensive.vue"),
+  // },
+  // { // 销售公司
+  //   path: "/Sales",
+  //   name: "Sales",
+  //   component: () => import("@/2d/views/Sales.vue"),
+  // },
+  // { // 供应企业
+  //   path: "/Supply",
+  //   name: "Supply",
+  //   component: () => import("@/2d/views/Supply.vue"),
+  // },
+  // { // 经销企业
+  //   path: "/Distribution",
+  //   name: "Distribution",
+  //   component: () => import("@/2d/views/Distribution.vue"),
+  // },
+  { // 人力资源部 ()
+    path: "/HR",
+    name: "HR",
+    component: () => import("@/2d/views/HR.vue"),
+  }
 ];
 
 export const router = createRouter({

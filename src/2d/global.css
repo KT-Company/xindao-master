@@ -50,8 +50,8 @@ li {
   /* border: 1px solid red; */
   position: absolute;
   width: 19.8% !important;
-  height: 88% !important;
-  top: 8% !important;
+  height: 89.72% !important;
+  top: 7% !important;
   left: 1% !important;
 }
 
@@ -59,13 +59,13 @@ li {
   /* border: 1px solid red; */
   position: absolute;
   width: 19.8% !important;
-  height: 88% !important;
-  top: 8% !important;
+  height: 89.72% !important;
+  top: 7% !important;
   right: 1% !important;
 }
 
 .b-title {
-  font-size: .9vw;
+  font-size: var(--titleSize);
   font-family: Source Han Sans CN;
   font-weight: 500;
   color: #ffffff;
@@ -91,6 +91,7 @@ li {
   --headerH: 6%;
   --itemPL: 5%;
   --titleH: 6.3%;
+  --titleSize: .85vw;
 }
 
 .unit {
@@ -142,6 +143,10 @@ li {
 
 }
 
+.hui-s {
+  color: rgb(168, 198, 245);
+}
+
 .hui {
   color: rgb(165, 168, 175);
 }
@@ -170,6 +175,7 @@ li {
   font-family: 'DINCond-Bold';
   src: url("@/2d/assets/font/DINCond-Bold.otf");
 }
+
 @font-face {
   font-family: 'sscr';
   src: url("@/2d/assets/font/sscr.otf");

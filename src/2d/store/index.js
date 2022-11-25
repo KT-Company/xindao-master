@@ -23,6 +23,7 @@ const store = createStore({
         },
         setMenuBid(state, value) {
             if (state.menuAid === 2) {
+                if (!value) return state.menuBid = [] 
                 const index = state.menuBid.findIndex(item => item === value)
                 if (index === -1) {
                     if (value === '2-1') {

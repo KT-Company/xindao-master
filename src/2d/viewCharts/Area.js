@@ -3,33 +3,57 @@ import store from '@/2d/store/index'
 const { chart } = store.state
 
 // 圆圈 --》区域EGP
-export function setYuanChart(res) {
-  var option = {
-    title: [
-      {
+export function setYuanChart(res, obj) {
+  let colorList = [
+    ['rgba(213,110,42)', 'rgba(106,82,85)'],
+    ['rgba(84,115,232)', 'rgba(63,84,147)'],
+  ]
+  let _colorList = obj?.color ? colorList[obj.color] : colorList[0]
+  let _title = () => {
+    let type = obj?.title ? obj.title : 1
+    const titleMap = {
+      1: [
+        {
+          text: res.name,
+          x: 'center',
+          top: '55%',
+          textStyle: {
+            color: '#FFFFFF',
+            fontSize: chart.fontSize,
+            fontWeight: '100',
+          },
+        },
+        {
+          text: `+${res.value}%`,
+          x: 'center',
+          top: '35%',
+          textStyle: {
+            fontSize: chart.fontSize + 6,
+            color: '#FFFFFF',
+            fontFamily: 'DINAlternate-Bold, DINAlternate',
+            foontWeight: '600',
+          },
+        },
+      ],
+      2:{
         text: res.name,
         x: 'center',
-        top: '55%',
+        y: 'center',
         textStyle: {
-          color: '#FFFFFF',
-          fontSize: chart.fontSize,
-          fontWeight: '100',
-        },
-      },
-      {
-        text: `+${res.value}%`,
-        x: 'center',
-        top: '35%',
-        textStyle: {
-          fontSize: chart.fontSize + 5,
+          fontSize: chart.fontSize + 6,
           color: '#FFFFFF',
           fontFamily: 'DINAlternate-Bold, DINAlternate',
           foontWeight: '600',
         },
-      },
-    ],
+      }
+    }
+
+    return titleMap[type]
+  }
+  var option = {
+    title: _title(),
     polar: {
-      radius: ['90%', '70%'],
+      radius: ['90%', '74%'],
       center: ['50%', '50%'],
     },
     angleAxis: {
@@ -66,11 +90,11 @@ export function setYuanChart(res) {
             color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [
               {
                 offset: 0,
-                color: 'rgba(213,110,42)',
+                color: _colorList[0],
               },
               {
                 offset: 1,
-                color: 'rgba(106,82,85)',
+                color: _colorList[1],
               },
             ]),
           },
@@ -294,7 +318,7 @@ export function setBingChart(res, obj) {
     if (obj?.legend === 1) {
       return {
         orient: 'vertical',
-        left: '50%',
+        left: '52%',
         top: 'middle',
         itemWidth: 10,
         itemHeight: 10,
@@ -326,7 +350,7 @@ export function setBingChart(res, obj) {
     } else {
       return {
         orient: 'vertical',
-        left: '48%',
+        left: '50%',
         top: 'middle',
         itemWidth: 10,
         itemHeight: 10,
