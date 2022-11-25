@@ -5,10 +5,17 @@ import { getcyjj } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
 import { setZhuChart } from "@/2d/viewCharts/Area";
+import {CACHE} from '@/3d/CACHE'
 const store = useStore();
 
 // 企业总量点击事件
 const handleCompany = (item, index) => {
+
+
+  CACHE.industries.forEach( d => {
+    d.setTitle1(item.name)
+  })
+
   pickIndex.value = index;
   console.log("item: ", item);
 };
@@ -279,8 +286,7 @@ onMounted(() => {
       font-size: 0.85vw;
     }
     .t1-name {
-      // color: rgb(199 202 208);
-      font-size: 0.78vw;
+      font-size: 0.7vw;
     }
   }
 }
@@ -297,6 +303,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding-top: 2%;
   li {
     display: flex;
     justify-content: space-between;

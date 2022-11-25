@@ -8,12 +8,13 @@ export const menu = ref([
         isPick: true,
         icon: require('@/2d/assets/images/shehui.png'),
         children: [
-            { id: "1-1", name: "产业经济", isPick: true, path: "/IndustrialEconomy" },
-            { id: "1-3", name: "交通出行", isPick: false, path: "/Transportation" },
-            { id: "1-4", name: "环境人口", isPick: false, path: "/Environmental" },
-            { id: "1-5", name: "教育医疗", isPick: false, path: "/Education" },
-            { id: "1-2", name: "能源碳排放", isPick: false, path: "/Energy" },
+            { id: "1-1", name: "产业经济", isPick: true, path: "/IndustrialEconomy" , level: 1},
+            { id: "1-3", name: "交通出行", isPick: false, path: "/Transportation" , level: 1},
+            { id: "1-4", name: "环境人口", isPick: false, path: "/Environmental" , level: 1},
+            { id: "1-5", name: "教育医疗", isPick: false, path: "/Education" , level: 1},
+            { id: "1-2", name: "能源碳排放", isPick: false, path: "/Energy" , level: 1},
         ],
+        level: 1
     },
     {
         id: 2,
@@ -22,11 +23,12 @@ export const menu = ref([
         isPick: false,
         icon: require('@/2d/assets/images/quyu.png'),
         children: [
-            { id: "2-1", name: "三圈关系", isPick: false },
-            { id: "2-2", name: "资金流关系", isPick: false },
-            { id: "2-3", name: "物流关系", isPick: false },
-            { id: "2-4", name: "信息流关系", isPick: false },
+            { id: "2-1", name: "三圈关系", isPick: false , level: 2},
+            { id: "2-2", name: "资金流关系", isPick: false , level: 2},
+            { id: "2-3", name: "物流关系", isPick: false, level: 2 },
+            { id: "2-4", name: "信息流关系", isPick: false , level: 2},
         ],
+        level: 2
     },
     {
         id: 3,
@@ -34,14 +36,15 @@ export const menu = ref([
         path: '/Manufacture',
         isPick: false,
         children: [
-            { id: "3-0", name: "整体布局", isPick: false },
-            { id: "3-1", name: "企管部", isPick: false },
-            { id: "3-2", name: "人力资源部", isPick: false, path: "/HR" },
-            { id: "3-3", name: "财务部", isPick: false },
-            { id: "3-4", name: "采购部", isPick: false },
-            { id: "3-5", name: "营销部", isPick: false },
-            { id: "3-6", name: "生产部", isPick: false },
+            { id: "3-0", name: "整体布局", isPick: false , level: 4},
+            { id: "3-1", name: "企管部", isPick: false , level: 4},
+            { id: "3-2", name: "人力资源部", isPick: false, level: 4, path: "/HR" },
+            { id: "3-3", name: "财务部", isPick: false , level: 4},
+            { id: "3-4", name: "采购部", isPick: false , level: 4},
+            { id: "3-5", name: "营销部", isPick: false , level: 4},
+            { id: "3-6", name: "生产部", isPick: false , level: 4},
         ],
+        level: 3,
     },
     {
         id: 4, name: "工商银行",
@@ -49,21 +52,24 @@ export const menu = ref([
         isPick: false,
         children: [
             { id: '4-1', name: '营业大厅', isPick: false }
-        ]
+        ],
+        level: 3
     },
     {
         id: 5, name: "政务服务",
         path: '/Government',
         isPick: false,
         children: [
-            { id: '4-1', name: '服务大厅', isPick: false }]
+            { id: '4-1', name: '服务大厅', isPick: false }],
+            level: 3
     },
     {
         id: 6,
         name: "管委会",
         path: '/Management',
         isPick: false,
-        children: []
+        children: [],
+        level: 3
     },
     {
         id: 7,
@@ -71,10 +77,11 @@ export const menu = ref([
         path: '/Logistics',
         isPick: false,
         children: [
-            { id: "7-0", name: "整体布局", isPick: false },
-            { id: "7-1", name: "企管部", isPick: false },
-            { id: "7-2", name: "业务部", isPick: false },
+            { id: "7-0", name: "整体布局", isPick: false, level: 4 },
+            { id: "7-1", name: "企管部", isPick: false , level: 4},
+            { id: "7-2", name: "业务部", isPick: false, level: 4 },
         ],
+        level: 3
     },
     {
         id: 8,
@@ -82,10 +89,11 @@ export const menu = ref([
         path: "/Comprehensive",
         isPick: false,
         children: [
-            { id: "8-0", name: "整体布局", isPick: false },
-            { id: "8-1", name: "企管部", isPick: false },
-            { id: "8-2", name: "业务部", isPick: false },
+            { id: "8-0", name: "整体布局", isPick: false, level: 4 },
+            { id: "8-1", name: "企管部", isPick: false , level: 4},
+            { id: "8-2", name: "业务部", isPick: false , level: 4},
         ],
+        level: 3
     },
     {
         id: 9,
@@ -93,10 +101,12 @@ export const menu = ref([
         path: "/Sales",
         isPick: false,
         children: [
-            { id: "9-0", name: "整体布局", isPick: false },
-            { id: "9-1", name: "企管部", isPick: false },
-            { id: "9-2", name: "财务部", isPick: false },
+            { id: "9-0", name: "整体布局", isPick: false , level: 4},
+            { id: "9-1", name: "企管部", isPick: false , level: 4},
+            { id: "9-2", name: "行政部", isPick: false , level: 4},
+            { id: "9-3", name: "业务部", isPick: false , level: 4},
         ],
+        level: 3
     },
     {
         id: 10,
@@ -104,11 +114,12 @@ export const menu = ref([
         path: "/Supply",
         isPick: false,
         children: [
-            { id: "10-0", name: "整体布局", isPick: false },
-            { id: "10-1", name: "企管部", isPick: false },
-            { id: "10-2", name: "财务部", isPick: false },
-            { id: "10-3", name: "业务部", isPick: false },
+            { id: "10-0", name: "整体布局", isPick: false , level: 4},
+            { id: "10-1", name: "企管部", isPick: false , level: 4},
+            { id: "10-2", name: "财务部", isPick: false , level: 4},
+            { id: "10-3", name: "业务部", isPick: false , level: 4},
         ],
+        level: 3
     },
     {
         id: 11,
@@ -116,12 +127,13 @@ export const menu = ref([
         path: "/Distribution",
         isPick: false,
         children: [
-            { id: "11-0", name: "整体布局", isPick: false },
-            { id: "11-1", name: "企管部", isPick: false },
-            { id: "11-2", name: "财务部", isPick: false },
-            { id: "11-3", name: "采购部", isPick: false },
-            { id: "11-4", name: "营销部", isPick: false },
+            { id: "11-0", name: "整体布局", isPick: false , level: 4},
+            { id: "11-1", name: "企管部", isPick: false , level: 4},
+            { id: "11-2", name: "财务部", isPick: false , level: 4},
+            { id: "11-3", name: "采购部", isPick: false , level: 4},
+            { id: "11-4", name: "营销部", isPick: false , level: 4},
         ],
+        level: 3
     },
 ]);
 

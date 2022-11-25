@@ -3,6 +3,9 @@ import { CACHE } from "./CACHE.js";
 import { STATE } from "./STATE.js";
 import store from "@/2d/store";
 
+let Bol3D = window.Bol3D
+let h337 = window.h337
+
 // ******************************* 二维方法开始 *******************************
 
 // 获取企业总量
@@ -51,20 +54,56 @@ function loadIcons() {
   }
 }
 
+// 根据名字找企业内部标签
+function findEnterpriseInnerIconByName(data, name){
+  let result
+    data.forEach( d=> {
+      if(d.name == name){
+        result = d
+      }
+    })
+  return result
+}
+
+// 企业内部标签
+function loadEnterPrisesInnerIcon(){
+  for(const i in STATE.enterprisesInnerIcons){
+    const enterprise = STATE.enterprisesInnerIcons[i]
+    for(const data of enterprise){
+      const bsTitle = new Bol3D.Primitives.BaseTitle({
+        text: data.name,
+        bgColor: '#ff0000',
+        type: 1,
+        size: 150,
+        fontSize: 50
+      })
+      CACHE.container.scene.add(bsTitle)
+      CACHE.enterpriseIconsInner[i].push(bsTitle)
+      bsTitle.renderOrder = 100
+      bsTitle.position.set(data.position.x , data.position.y , data.position.z)
+      bsTitle.visible = false
+
+      CACHE.container.clickObjects.push(bsTitle)
+      bsTitle.userData.type = 'enterpriseIconInner'
+    }
+  }
+
+}
+
 function loadEnterPrises() {
   for (const data of STATE.enterprisesIcons) {
-
     const icon = new Bol3D.CompositeIconHTML({
-      color: '#EBA216',
-      bgColor: '#031951',
+      color: "#EBA216",
+      bgColor: "#031951",
       opacity: 0.6,
       titleHeight: 1,
       titleSize: 10,
-      titleColor: '#ffffff',
-      title: data.name
-    })
-    CACHE.container.scene.add(icon)
-    icon.position.copy(data.position)
+      titleColor: "#ffffff",
+      title: data.name,
+      closed: false
+    });
+    CACHE.container.scene.add(icon);
+    icon.position.copy(data.position);
     icon.scale.set(2000, 2000, 2000);
 
     CACHE.container.addBloom(icon.children[0]);
@@ -82,12 +121,12 @@ function loadEnterPrises() {
     icon.renderOrder = 100;
     icon.name = data.name;
     icon.visible = false;
-    icon.hideTitle()
+    icon.hideTitle();
 
     CACHE.enterpriseIcons.push(icon);
 
     icon.traverse((d) => {
-      if (d.isMesh ) {
+      if (d.isMesh) {
         d.name = data.name;
         CACHE.container.clickObjects.push(d);
       }
@@ -95,18 +134,6 @@ function loadEnterPrises() {
   }
 }
 
-// 循环动画
-function animate() {
-  let delta = new Bol3D.Clock().getDelta();
-  CACHE.earth.forEach((e) => {
-    e.rotation.y -= 0.01;
-  });
-  // lines.forEach((l) => {
-  //   l.material.dashOffset -= (1 * l.totalDistance) / 100
-  //   l.material.dashOffset %= l.totalDistance
-  // })
-  requestAnimationFrame(animate);
-}
 
 function hideIcons() {
   // 进入区域层
@@ -121,39 +148,54 @@ function showIcons() {
   });
 }
 
+function showEnterpriseIconInnerByType(type){
+  CACHE.enterpriseIconsInner[type].forEach( eIcon => {
+    eIcon.visible = true
+  })
+}
+
+function hideEnterpriseIconsInner(){
+  for(const i in CACHE.enterpriseIconsInner){
+    const enpriseIcons = CACHE.enterpriseIconsInner[i]
+    enpriseIcons.forEach( eIcon => {
+      eIcon.visible = false
+    })
+  }
+}
+
 function hideEnterpriseIcons() {
   CACHE.enterpriseIcons.forEach((epi) => {
     epi.visible = false;
-    epi.hideTitle()
+    epi.hideTitle();
   });
 }
 
 function showEnterpriseIcons() {
   CACHE.enterpriseIcons.forEach((epi) => {
     epi.visible = true;
-    epi.showTitle()
+    epi.showTitle();
   });
 }
 
-function showEnterpriseIconByName(name){
+function showEnterpriseIconByName(name) {
   CACHE.enterpriseIcons.forEach((epi) => {
-    if(epi.name == name) {
-      epi.visible = true
-      epi.showTitle()
+    if (epi.name == name) {
+      epi.visible = true;
+      epi.showTitle();
     }
   });
 }
 
-function hideEnterprises(){
-  CACHE.innerEnterprises.forEach(d => {
-    d.visible = false
-  })
+function hideEnterprises() {
+  CACHE.innerEnterprises.forEach((d) => {
+    d.visible = false;
+  });
 }
 
-function showEnterpriseByName(name){
-  CACHE.innerEnterprises.forEach(d => {
-    if(d.name == name) d.visible = true
-  })
+function showEnterpriseByName(name) {
+  CACHE.innerEnterprises.forEach((d) => {
+    if (d.name == name) d.visible = true;
+  });
 }
 
 // 相机动画（传指定state）
@@ -244,159 +286,199 @@ function cameraAnimation({
  * 产业经济->区域板块
  */
 function loadIndustrialEconomy() {
-  fetch(STATE.boundrayGeojson)
-    .then((value) => {
-      return value.json();
-    })
-    .then((result) => {
-      const boundrays = result.features;
+  const img = new Image();
+  img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
+  img.onload = () => {
+    for (const d of DATA.industryData) {
+      const {data , position ,} = d
+      const icon = new Bol3D.CompositeIconPopup({
+        color: "#ff0000",
+        bgColor: "#211F1F",
+        guideHeight: 2 * data.title3 / DATA.industryBaseHeight,
+        titleHeight: (2 * data.title3 / DATA.industryBaseHeight) / 2,
+        fontSize1: 60,
+        fontSize2: 50,
+        fontSize3: 40,
+        title1: data.title1,
+        title2: data.title2,
+        title3: '数量：' +data.title3,
+        fontColor1: '#ffffff',
+        fontColor2: '#ffffff',
+        fontColor3: '#ffffff',
+        strokeColor: "#ffffff",
+        opacity: 0.8,
+        img,
+        titleAnchor: [-0.05, 0.5],
+      });
+      CACHE.container.scene.add(icon);
+      icon.position.copy(position);
+      icon.scale.set(2000, 2000, 2000);
+      icon.renderOrder = 100;
 
-      let index = 0;
+      icon.children[0].material.uniforms.color.value.set('#00069b')
+      icon.children[0].material.uniforms.mixColor.value.set('#f267af')
+      icon.children[0].material.uniforms.mixColor2.value.set('#000aff')
+      icon.children[0].material.uniforms.threshold.value = 0.5
 
-      for (const feature of boundrays) {
-        const coordinates = feature.geometry.coordinates[0][0];
+      icon.children[1].material.uniforms.color.value.set('#8babff')
+      icon.children[2].material.uniforms.color.value.set('#8babff')
 
-        const extrudeShape = new Bol3D.Primitives.BaseExtrudeShape({
-          points: coordinates,
-          color: "#671c91",
-          gradient: "#003a64",
-          height: index * 100 + 200,
-          center: [116.41, 39.9],
-          extrude: true,
-          vertical: 83000,
-        });
+      CACHE.container.addBloom(icon.children[0])
+      CACHE.container.addBloom(icon.children[1])
+      CACHE.container.addBloom(icon.children[2])
 
-        extrudeShape.position.set(-2000, index * 50 + 1000, -10000);
+      icon.visible = false
 
-        extrudeShape.scale.set(0.25, 1, 0.25);
-        extrudeShape.visible = false;
-        CACHE.container.scene.add(extrudeShape);
-
-        extrudeShape.name = feature.properties.name;
-
-        CACHE.industries.push(extrudeShape);
-        extrudeShape.visible = false;
-
-        // CACHE.container.clickObjects.push(extrudeShape)
-
-        index++;
-      }
-
-      for (const data of DATA.areaIconsData) {
-        const icon = new Bol3D.CompositeIconTitle({
-          titleHeight: 0.5,
-          color: "#00ffff",
-          type: 2,
-          title: data.name,
-          bgColor: "#000000",
-          strokeColor: "#000000",
-          fontColor: "#ffffff",
-        });
-        CACHE.container.scene.add(icon);
-        icon.scale.set(2000, 2000, 2000);
-        icon.renderOrder = 100;
-        icon.position.copy(data.position);
-        icon.position.y += 10;
-        icon.name = data.name;
-        CACHE.container.addBloom(icon.children[0]);
-
-        // icon.traverse(d => {
-        //   if (d.isMesh || d.isSprite) {
-        //     d.name = data.name
-        //     CACHE.container.clickObjects.push(d)
-        //   }
-        // })
-
-        CACHE.areaIcons.push(icon);
-        icon.visible = false;
-      }
-    });
+      CACHE.industries.push(icon)
+    }
+  };
+  
 }
 
 /**
  * 能源
  */
-function loadEnergy() {
-  fetch(STATE.boundrayGeojson)
-    .then((value) => {
-      return value.json();
-    })
-    .then((result) => {
-      const boundrays = result.features;
-      const colors = [
-        "#03a9f4",
-        "#c61818",
-        "#2196f3",
-        "#00bcd4",
-        "#f44336",
-        "#4caf50",
-        "#3f51b5",
-        "#03a9f4",
-        "#c61818",
-        "#2196f3",
-        "#00bcd4",
-        "#f44336",
-        "#4caf50",
-        "#3f51b5",
-        "#03a9f4",
-        "#c61818",
-        "#2196f3",
-        "#00bcd4",
-        "#f44336",
-        "#4caf50",
-        "#3f51b5",
-      ];
+// function loadEnergy() {
+//   fetch(STATE.boundrayGeojson)
+//     .then((value) => {
+//       return value.json();
+//     })
+//     .then((result) => {
+//       const boundrays = result.features;
+//       const colors = [
+//         "#03a9f4",
+//         "#c61818",
+//         "#2196f3",
+//         "#00bcd4",
+//         "#f44336",
+//         "#4caf50",
+//         "#3f51b5",
+//         "#03a9f4",
+//         "#c61818",
+//         "#2196f3",
+//         "#00bcd4",
+//         "#f44336",
+//         "#4caf50",
+//         "#3f51b5",
+//         "#03a9f4",
+//         "#c61818",
+//         "#2196f3",
+//         "#00bcd4",
+//         "#f44336",
+//         "#4caf50",
+//         "#3f51b5",
+//       ];
 
-      for (let i = 0; i < boundrays.length; i++) {
-        const coordinates = boundrays[i].geometry.coordinates[0][0];
-        const extrudeShape = new Bol3D.Primitives.BaseExtrudeShape({
-          points: coordinates,
-          color: colors[i],
-          // gradient: Math.random() * 555555,
-          height: 400 + Math.random() * 20,
-          center: [116.41, 39.9],
-          opacity: 0.1,
-        });
+//       for (let i = 0; i < boundrays.length; i++) {
+//         const coordinates = boundrays[i].geometry.coordinates[0][0];
+//         const extrudeShape = new Bol3D.Primitives.BaseExtrudeShape({
+//           points: coordinates,
+//           color: colors[i],
+//           // gradient: Math.random() * 555555,
+//           height: 400 + Math.random() * 20,
+//           center: [116.41, 39.9],
+//           opacity: 0.1,
+//         });
 
-        extrudeShape.position.set(-2000, 1000, -10000);
-        extrudeShape.scale.set(0.25, 1, 0.25);
-        extrudeShape.visible = false;
-        CACHE.energy.push(extrudeShape);
+//         extrudeShape.position.set(-2000, 1000, -10000);
+//         extrudeShape.scale.set(0.25, 1, 0.25);
+//         extrudeShape.visible = false;
+//         CACHE.energy.push(extrudeShape);
 
-        CACHE.container.scene.add(extrudeShape);
-        CACHE.container.addBloom(extrudeShape.children[0]);
-        extrudeShape.visible = false;
-      }
-    });
+//         CACHE.container.scene.add(extrudeShape);
+//         CACHE.container.addBloom(extrudeShape.children[0]);
+//         extrudeShape.visible = false;
+//       }
+//     });
 
-  for (const data of DATA.energyIconsData) {
-    const tag = new Bol3D.CompositeIconTag({
-      titleHeight: 0.8,
-      color: "#00A2FF",
-      type: 10,
-      title: data.name,
-      particleSize: 300,
-      particleNumber: 100,
-    });
-    CACHE.container.scene.add(tag);
-    tag.children[0].traverse((ci11) => {
-      if (ci11.isMesh) CACHE.container.addBloom(ci11);
-    });
-    tag.children[1].traverse((ci11) => {
-      if (ci11.isMesh) CACHE.container.addBloom(ci11);
-    });
-    tag.children[2].traverse((ci11) => {
-      if (ci11.isMesh) CACHE.container.addBloom(ci11);
-    });
-    CACHE.container.addBloom(tag.children[4]);
-    tag.renderOrder = 100;
-    tag.position.copy(data.position);
-    tag.position.y += 10;
-    tag.scale.set(3000, 3000, 3000);
+//   for (const data of DATA.energyIconsData) {
+//     const tag = new Bol3D.CompositeIconTag({
+//       titleHeight: 0.8,
+//       color: "#00A2FF",
+//       type: 10,
+//       title: data.name,
+//       particleSize: 300,
+//       particleNumber: 100,
+//     });
+//     CACHE.container.scene.add(tag);
+//     tag.children[0].traverse((ci11) => {
+//       if (ci11.isMesh) CACHE.container.addBloom(ci11);
+//     });
+//     tag.children[1].traverse((ci11) => {
+//       if (ci11.isMesh) CACHE.container.addBloom(ci11);
+//     });
+//     tag.children[2].traverse((ci11) => {
+//       if (ci11.isMesh) CACHE.container.addBloom(ci11);
+//     });
+//     CACHE.container.addBloom(tag.children[4]);
+//     tag.renderOrder = 100;
+//     tag.position.copy(data.position);
+//     tag.position.y += 10;
+//     tag.scale.set(3000, 3000, 3000);
 
-    CACHE.energyIcons.push(tag);
-    tag.visible = false;
+//     CACHE.energyIcons.push(tag);
+//     tag.visible = false;
+//   }
+// }
+
+
+// 能源
+function loadEnergy(){
+
+  const heatmapEle = document.createElement('canvas')
+  heatmapEle.width = 1024
+  heatmapEle.height = 1024
+  heatmapEle.style.width = 1024 + 'px'
+  heatmapEle.style.height = 1024 + 'px'
+  document.body.appendChild(heatmapEle)
+  // heatmap
+  const heatmap = h337.create({
+    container: heatmapEle,
+    radius: 30,
+    alpha: true,
+    blur : .85
+  });
+  let len = 1200;
+  const width = 1024;
+  const height = 1024;
+  const points = [];
+  let max = 0;
+  const v1 = new Bol3D.Vector2(512 , 512)
+  const v2 = new Bol3D.Vector2()
+  const base = v1.distanceTo(v2)
+  while (len--) {
+    const val = Math.floor(Math.random()*50);
+    max = Math.max(max, val);
+    const point = {
+      x: Math.floor(Math.random()*width ),
+      y: Math.floor(Math.random()*height* 3  / 5 + height / 5),
+      value: val
+    };
+    v2.set(point.x, point.y)
+    point.value = 40 * (1 - v2.distanceTo(v1) / base)
+    points.push(point);
   }
+  heatmap.setData({
+    max: max,
+    data: points
+  });
+
+  const texture = new Bol3D.Texture(heatmap._renderer.canvas)
+  texture.encoding = Bol3D.sRGBEncoding
+
+  const heatMapPlaneGeo = new Bol3D.CircleBufferGeometry(25000, 128)
+  const heatMapPlaneMat = new Bol3D.MeshLambertMaterial({
+    transparent: true,
+    map: texture
+  })
+  heatMapPlaneMat.map.needsUpdate = true
+  heatMapPlaneGeo.rotateX(-Math.PI / 2)
+  const hetaMapPlane = new Bol3D.Mesh(heatMapPlaneGeo, heatMapPlaneMat)
+  CACHE.container.scene.add(hetaMapPlane)
+  hetaMapPlane.position.set(0, 10, 0)
+  hetaMapPlane.visible = false
+
+  CACHE.heatmap = hetaMapPlane
 }
 
 /**
@@ -455,62 +537,62 @@ function loadCompeleteBoundrays() {
 /**
  * 环境人口
  */
-function loadHeatMap() {
-  // 改成柱状图
-  fetch(STATE.environmentJson)
-    .then((value) => {
-      return value.json();
-    })
-    .then((result) => {
-      const environment = result;
+// function loadEnvironment() {
+//   // 改成柱状图
+//   fetch(STATE.environmentJson)
+//     .then((value) => {
+//       return value.json();
+//     })
+//     .then((result) => {
+//       const environment = result;
 
-      environment.forEach((d) => {
-        let { options, position, renderOrder } = d;
+//       environment.forEach((d) => {
+//         let { options, position, renderOrder } = d;
 
-        // console.log(options)
-        options = Object.assign(options, {
-          threshold: -900,
-          color: "#000000",
-          mixColor: "#005f93",
-          mixColor2: "#151548",
-        });
+//         // console.log(options)
+//         options = Object.assign(options, {
+//           threshold: -900,
+//           color: "#000000",
+//           mixColor: "#005f93",
+//           mixColor2: "#151548",
+//         });
 
-        const baseCube = new Bol3D.Primitives.BaseCube(options);
+//         const baseCube = new Bol3D.Primitives.BaseCube(options);
 
-        CACHE.container.scene.add(baseCube);
-        baseCube.position.set(position.x, position.y, position.z);
-        baseCube.renderOrder = renderOrder;
-        baseCube.visible = false;
-        baseCube.userData.speed = Math.random() * 0.05 + 0.015;
-        CACHE.container.addBloom(baseCube);
+//         CACHE.container.scene.add(baseCube);
+//         baseCube.position.set(position.x, position.y, position.z);
+//         baseCube.renderOrder = renderOrder;
+//         baseCube.visible = false;
+//         baseCube.userData.speed = Math.random() * 0.05 + 0.015;
+//         CACHE.container.addBloom(baseCube);
 
-        CACHE.environment.push(baseCube);
-      });
-    });
-}
+//         CACHE.environment.push(baseCube);
+//       });
+//     });
+// }
 
 /**
  * 环境人口->柱状图动画
  */
-function animateEnvironment() {
-  CACHE.environmentAnimateIndex = requestAnimationFrame(animateEnvironment);
+// function animateEnvironment() {
+//   CACHE.environmentAnimateIndex = requestAnimationFrame(animateEnvironment);
 
-  const length = CACHE.environment;
-  let count = 0;
+//   const length = CACHE.environment;
+//   let count = 0;
 
-  for (let l of CACHE.environment) {
-    if (l.scale.y == 1) continue;
+//   for (let l of CACHE.environment) {
+//     if (l.scale.y == 1) continue;
 
-    if (l.scale.y < 1) {
-      l.scale.y += l.userData.speed;
-    } else {
-      l.scale.y = 1;
-      count++;
-    }
-  }
+//     if (l.scale.y < 1) {
+//       l.scale.y += l.userData.speed;
+//     } else {
+//       l.scale.y = 1;
+//       count++;
+//     }
+//   }
 
-  if (length == count) cancelAnimationFrame(CACHE.environmentAnimateIndex);
-}
+//   if (length == count) cancelAnimationFrame(CACHE.environmentAnimateIndex);
+// }
 
 /**
  * 路网
@@ -533,60 +615,69 @@ function loadTraffic() {
  * 教育医疗
  */
 function loadEducation() {
-  fetch(STATE.educationGeojson)
-    .then((value) => {
-      return value.json();
+
+  let count = 0
+  const doLoad = (textures) => {
+    DATA.educationPos.forEach( data => {
+      const icon = new Bol3D.CompositeIconSimple({
+        color: '#ff0000',
+        opacity: 0.5,
+        texture: textures[data.type],
+        anchor: [0.5, -0.25],
+        guideHeight: Math.random() * 2 + .5,
+        iconSpeed: Math.random() *.5 + .025
+      })
+      CACHE.container.scene.add(icon)
+      CACHE.container.addBloom(icon.children[0])
+      icon.startIconAnimation()
+      icon.position.copy(data.position)
+      icon.renderOrder = 100
+      icon.scale.set(500, 500, 500)
+
+      icon.visible = false
+      CACHE.education.push(icon)
     })
-    .then((result) => {
-      const education = result;
+  }
 
-      education.forEach((d) => {
-        let { options, position, renderOrder } = d;
+  const textures = {}
+  CACHE.container.texLoader.load(STATE.DEV_ENV + '/assets/png/icons/school2.png', (tex) => {
+    count++
+    tex.encoding = Bol3D.sRGBEncoding
+    textures['education'] = tex
+    if(count == 2) doLoad(textures)
+  })
 
-        // console.log(options)
-        options = Object.assign(options, {
-          threshold: -800,
-          color: "#720000",
-          mixColor: "#78591a",
-          mixColor2: "#090037",
-        });
-
-        const baseCube = new Bol3D.Primitives.BaseCube(options);
-
-        CACHE.container.scene.add(baseCube);
-        baseCube.position.set(position.x, position.y, position.z);
-        baseCube.renderOrder = renderOrder;
-        baseCube.visible = false;
-        baseCube.userData.speed = Math.random() * 0.05 + 0.015;
-        CACHE.container.addBloom(baseCube);
-
-        CACHE.education.push(baseCube);
-      });
-    });
+   CACHE.container.texLoader.load(STATE.DEV_ENV + '/assets/png/icons/hospital2.png', (tex) => {
+    count++
+    tex.encoding = Bol3D.sRGBEncoding
+    textures['medical'] = tex
+    if(count == 2) doLoad(textures)
+  })
+  
 }
 
 /**
  * 教育医疗->柱状图动画
  */
-function animateEducation() {
-  CACHE.educationAnimateIndex = requestAnimationFrame(animateEducation);
+// function animateEducation() {
+//   CACHE.educationAnimateIndex = requestAnimationFrame(animateEducation);
 
-  const length = CACHE.education;
-  let count = 0;
+//   const length = CACHE.education;
+//   let count = 0;
 
-  for (let l of CACHE.education) {
-    if (l.material.uniforms.opacity.value == 1) continue;
+//   for (let l of CACHE.education) {
+//     if (l.material.uniforms.opacity.value == 1) continue;
 
-    if (l.material.uniforms.opacity.value < 1) {
-      l.material.uniforms.opacity.value += l.userData.speed;
-    } else {
-      l.material.uniforms.opacity.value = 1;
-      count++;
-    }
-  }
+//     if (l.material.uniforms.opacity.value < 1) {
+//       l.material.uniforms.opacity.value += l.userData.speed;
+//     } else {
+//       l.material.uniforms.opacity.value = 1;
+//       count++;
+//     }
+//   }
 
-  if (length == count) cancelAnimationFrame(CACHE.educationAnimateIndex);
-}
+//   if (length == count) cancelAnimationFrame(CACHE.educationAnimateIndex);
+// }
 
 // 道路
 function loadByJson() {
@@ -595,7 +686,14 @@ function loadByJson() {
       return value.json();
     })
     .then((result) => {
+
+      console.log('result' , result)
+
+      let count = 0
       result.road.forEach((d) => {
+        count++
+        let colors = ['#12aa6a' ,'#9b8f46', '#8e003d'  ]
+        let speeds = [.35 +  Math.random() * .35, .075 +  Math.random() * .075, .035 +  Math.random() * .035]
         const le = new Bol3D.Primitives.BaseLine({
           lineWidth: 2,
           color: "#ed6565",
@@ -609,9 +707,12 @@ function loadByJson() {
         CACHE.linesBottom.push(le);
         le.visible = false;
 
+        count %= 3
+        let color = colors[count]
+        let speed = speeds[count]
         const le2 = new Bol3D.Primitives.BaseLine({
-          lineWidth: 2,
-          color: "#ffad00",
+          lineWidth: 3,
+          color,
           dashOffset: 3,
           dashSize: 1,
           gapSize: 1,
@@ -621,7 +722,7 @@ function loadByJson() {
         le2.renderOrder = 100;
         le2.setPositions(d);
         le2.position.set(0, 20, 0);
-        le2.userData.speed = Math.random() + 0.15;
+        le2.userData.speed = speed
         CACHE.container.scene.add(le2);
         CACHE.container.addBloom(le2);
         CACHE.lines.push(le2);
@@ -637,14 +738,13 @@ function hideAll() {
   hideEnvironments();
   hideTraffics();
   hideRoutes();
-  hideAreaIcons();
   hideModels();
-  hideEnergyIcons();
   hideIcons();
   hideCompleteBoundrays();
   hideEnterpriseIcons();
-  hideEnterprises()
-  hideMirror()
+  hideEnterprises();
+  hideMirror();
+  hideEnterpriseIconsInner()
 }
 
 function hideFloor() {
@@ -679,39 +779,28 @@ function hideEarth() {
   CACHE.container.scene.remove(CACHE.earthGroup);
 }
 
-function showEnergyIcons() {
-  CACHE.energyIcons.forEach((e) => {
-    e.visible = true;
-  });
+function showEnergy() {
+  CACHE.heatmap.visible = true
 }
 
-function hideEnergyIcons() {
-  CACHE.energyIcons.forEach((e) => {
-    e.visible = false;
-  });
-}
-
-function showAreaIcons() {
-  CACHE.areaIcons.forEach((e) => {
-    e.visible = true;
-  });
-}
-
-function hideAreaIcons() {
-  CACHE.areaIcons.forEach((e) => {
-    e.visible = false;
-  });
+function hideEnergy() {
+  CACHE.heatmap.visible = false
 }
 
 function showIndustrialEconomy() {
   CACHE.industries.forEach((idstry) => {
     idstry.visible = true;
+
+    idstry.show()
   });
 }
 
 function hideIndustrialEconomy() {
   CACHE.industries.forEach((idstry) => {
-    idstry.visible = false;
+
+    idstry.hide(() => {
+      idstry.visible = false;
+    })
   });
 }
 
@@ -739,22 +828,44 @@ function hideRoutes() {
   });
 }
 
-function showEnvironments() {
-  CACHE.environment.forEach((env) => {
-    env.visible = true;
-  });
+function hideAreaModels(){
+  CACHE.cities2.forEach( d=> {
+    d.visible = false
+  })
 }
 
-function beforeEnvironmentAniamtion() {
-  CACHE.environment.forEach((env) => {
-    env.scale.y = 0;
-  });
+function beforeShowEnvironments(){
+  CACHE.seperateModels.forEach( d=> {
+    CACHE.container.removeBloom(d)
+    d.scale.set(0,0,0)
+    const data = d.userData.environment
+    d.material.color.set(data.color)
+    d.material.envMapIntensity = data.envMapIntensity
+    d.material.roughness = data.roughness
+    d.material.metalness = data.metalness
+  })
+}
+
+function showEnvironments() {
+  CACHE.seperateModels.forEach( d=> {
+    d.visible = true
+
+    new Bol3D.TWEEN.Tween(d.scale)
+    .to(
+      {
+        x: 1.1,
+        y: 1.1,
+        z: 1.1,
+      },
+      800
+    ).start()
+  })
 }
 
 function hideEnvironments() {
-  CACHE.environment.forEach((env) => {
-    env.visible = false;
-  });
+  CACHE.seperateModels.forEach( d=> {
+    d.visible = false
+  })
 }
 
 function showCompleteBoundrays() {
@@ -769,35 +880,35 @@ function hideCompleteBoundrays() {
   }
 }
 
+function beforeShowEducations(){
+  CACHE.educationModels.forEach(m => {
+    CACHE.container.addBloom(m)
+    m.visible = true
+    const data = m.userData.education ? m.userData.education : m.userData.medical
+    m.material.color.set(data.color)
+    m.material.envMapIntensity = data.envMapIntensity
+    m.material.roughness = data.roughness
+    m.material.metalness = data.metalness
+  })
+}
+
 function showEducations() {
   CACHE.education.forEach((edu) => {
     edu.visible = true;
-  });
-}
 
-function beforeEducationAniamtion() {
-  CACHE.education.forEach((edu) => {
-    edu.material.uniforms.opacity.value = 0;
+    edu.show()
   });
 }
 
 function hideEducations() {
   CACHE.education.forEach((edu) => {
-    edu.visible = false;
+
+    edu.hide(() => {
+      edu.visible = false;
+    })
   });
 }
 
-function showEnergy() {
-  CACHE.energy.forEach((engy) => {
-    engy.visible = true;
-  });
-}
-
-function hideEnergy() {
-  CACHE.energy.forEach((engy) => {
-    engy.visible = false;
-  });
-}
 
 function showModels() {
   CACHE.models.forEach((model) => {
@@ -825,16 +936,16 @@ function loadEarth(cb) {
         `${window.publicPath}/assets/png/earth/earth.jpg`,
         () => {
           loadCount++;
-          if (loadCount == 2) cb && cb();
+          if (loadCount == 1) cb && cb();
         }
       );
-      const normalMap = loader.load(
-        `${window.publicPath}/assets/png/earth/normal.png`,
-        () => {
-          loadCount++;
-          if (loadCount == 2) cb && cb();
-        }
-      );
+      // const normalMap = loader.load(
+      //   `${window.publicPath}/assets/png/earth/normal.png`,
+      //   () => {
+      //     loadCount++;
+      //     if (loadCount == 2) cb && cb();
+      //   }
+      // );
 
       //创建本体
       const geometry = new Bol3D.SphereGeometry(STATE.RADIUS, 64, 64);
@@ -906,7 +1017,7 @@ function loadEarthIcon() {
     const posTitle = lglt2xyz(ic.lnglat[0], ic.lnglat[1], STATE.RADIUS + 2000);
 
     const znzzIcon = new Bol3D.Primitives.BaseSpreadCircle({
-      color: ic.name == '智能制造' ? "#2363e2" : '#9b6d53',
+      color: ic.name == "智能制造" ? "#2363e2" : "#9b6d53",
     });
     znzzIcon.geometry.rotateX(-Math.PI / 2);
     znzzIcon.position.copy(posIcon);
@@ -920,7 +1031,7 @@ function loadEarthIcon() {
     znzzIcon.scale.set(3000, 3000, 3000);
 
     const znzzVic = new Bol3D.Primitives.BaseShapeVic({
-      color: ic.name == '智能制造' ? "#7e8bd1" : '#b2724f',
+      color: ic.name == "智能制造" ? "#7e8bd1" : "#b2724f",
     });
     znzzVic.geometry.rotateX(-Math.PI / 2);
     znzzVic.position.copy(posVic);
@@ -945,7 +1056,11 @@ function loadEarthIcon() {
     znzzTitle.userData.name = ic.name;
     znzzTitle.position.copy(posTitle);
     znzzTitle.lookAt(0, 0, 0);
-    znzzTitle.scale.set(znzzTitle.canvasSize , znzzTitle.canvasSize * (znzzTitle.canvasHeight / znzzTitle.canvasWidth), 1)
+    znzzTitle.scale.set(
+      znzzTitle.canvasSize,
+      znzzTitle.canvasSize * (znzzTitle.canvasHeight / znzzTitle.canvasWidth),
+      1
+    );
     CACHE.earthGroup.add(znzzTitle);
     CACHE.earthIcons.push(znzzTitle);
 
@@ -954,14 +1069,13 @@ function loadEarthIcon() {
       CACHE.container.clickObjects.push(znzzVic);
       znzzVic.start();
       CACHE.container.clickObjects.push(znzzTitle);
-      
+
       CACHE.container.addBloom(znzzIcon);
       CACHE.container.addBloom(znzzTitle);
-      
     }
-    CACHE.earthTitles.push(znzzTitle)
-    CACHE.earthCircles.push(znzzIcon)
-    CACHE.earthVics.push(znzzVic)
+    CACHE.earthTitles.push(znzzTitle);
+    CACHE.earthCircles.push(znzzIcon);
+    CACHE.earthVics.push(znzzVic);
   });
 }
 
@@ -1018,9 +1132,11 @@ function lglt2xyz(lng, lat, radius) {
 export const API = {
   loadIcons,
   loadEnterPrises,
+  findEnterpriseInnerIconByName,
+  loadEnterPrisesInnerIcon,
   loadIndustrialEconomy,
   loadEnergy,
-  loadHeatMap,
+  // loadHeatMap,
   loadTraffic,
   loadEducation,
   hideAll,
@@ -1030,11 +1146,12 @@ export const API = {
   hideTraffics,
   showRoutes,
   hideRoutes,
+  hideAreaModels,
+  beforeShowEnvironments,
   showEnvironments,
-  beforeEnvironmentAniamtion,
   hideEnvironments,
+  beforeShowEducations,
   showEducations,
-  beforeEducationAniamtion,
   hideEducations,
   showEnergy,
   hideEnergy,
@@ -1042,16 +1159,12 @@ export const API = {
   showEnterpriseIcons,
   showEnterpriseIconByName,
   hideEnterpriseIcons,
+  hideEnterpriseIconsInner,
   showIcons,
   hideIcons,
-  showAreaIcons,
-  hideAreaIcons,
-  showEnergyIcons,
-  hideEnergyIcons,
-  animate,
   loadByJson,
-  animateEducation,
-  animateEnvironment,
+  // animateEducation,
+  // animateEnvironment,
   showModels,
   hideModels,
   showCompleteBoundrays,
@@ -1073,4 +1186,5 @@ export const API = {
   hideEnterprises,
   showMirror,
   hideMirror,
+  showEnterpriseIconInnerByType,
 };

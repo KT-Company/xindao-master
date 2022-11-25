@@ -84842,6 +84842,213 @@ void main() {
 	    ctx.fillText(text, (width - ctx.measureText(text).width) / 2, (1.2 * (height - fontSize)) / 2);
 	    return { canvas, height, width };
 	};
+	// 绘制canvas（文字+图片 Popup） （类型1）
+	const drawTextCanvasWithImg = ({ title1, title2, title3, fontColor1, fontColor2, fontColor3, bgColor, strokeColor, fontSize1 = 100, fontSize2 = 80, fontSize3 = 60, img }) => {
+	    const canvas = document.createElement('canvas');
+	    const ctx = canvas.getContext('2d'); //上下文，绘图环境
+	    ctx.font = 'Bold ' + fontSize1 + 'px Microsoft YaHei';
+	    const rgbaStroke = ColorRGBA.parse(strokeColor);
+	    const w = ctx.measureText(title1).width + 20;
+	    let width = 512;
+	    let height = 256;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	    const w2 = ctx.measureText(title2).width + width / 2;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w2) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	    const w3 = ctx.measureText(title3).width + width / 2;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w3) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    canvas.width = width;
+	    canvas.height = height;
+	    canvas.style.width = width / 2 + 'px';
+	    canvas.style.height = height / 2 + 'px';
+	    let paddingTop = 10 * (width / 512);
+	    let paddingLeft = 10 * (width / 512);
+	    // clear bg
+	    ctx.clearRect(0, 0, width, height);
+	    // bg
+	    ctx.fillStyle = bgColor;
+	    ctx.fillRect(paddingLeft, paddingTop, width - paddingLeft * 2, height - paddingTop * 2);
+	    // stroke
+	    ctx.beginPath();
+	    ctx.moveTo(paddingLeft + paddingLeft / 2, 0);
+	    ctx.lineTo(0, 0);
+	    ctx.lineTo(0, height);
+	    ctx.lineTo(paddingLeft + paddingLeft / 2, height);
+	    ctx.moveTo(width - paddingLeft - paddingLeft / 2, height);
+	    ctx.lineTo(width, height);
+	    ctx.lineTo(width, 0);
+	    ctx.lineTo(width - paddingLeft - paddingLeft / 2, 0);
+	    ctx.strokeStyle = `rgb(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255})`;
+	    ctx.lineWidth = (8 * width) / 512;
+	    ctx.stroke();
+	    // stroke 2
+	    ctx.beginPath();
+	    ctx.moveTo(paddingTop + paddingTop / 2, 0);
+	    ctx.lineTo(width - paddingTop - paddingTop / 2, 0);
+	    ctx.moveTo(width - paddingTop - paddingTop / 2, height);
+	    ctx.lineTo(paddingTop + paddingTop / 2, height);
+	    ctx.strokeStyle = `rgba(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255},.1)`;
+	    ctx.lineWidth = (8 * width) / 512;
+	    ctx.stroke();
+	    // title1
+	    ctx.font = 'Bold ' + fontSize1 + 'px Microsoft YaHei';
+	    ctx.textBaseline = 'top';
+	    ctx.fillStyle = fontColor1;
+	    ctx.fillText(title1, (width - ctx.measureText(title1).width) / 2, paddingTop * 4);
+	    // title2 & title3 & img
+	    if (img) {
+	        // img
+	        ctx.drawImage(img, width / 8, (height - (paddingTop * 2 + fontSize1)) / 2, width / 4, width / 4);
+	        // title2
+	        ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor2;
+	        ctx.fillText(title2, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2);
+	        // title3
+	        ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor3;
+	        ctx.fillText(title3, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2 + (fontSize2 + paddingTop));
+	    }
+	    else {
+	        // title2
+	        ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor2;
+	        ctx.fillText(title2, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2);
+	        // title3
+	        ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor3;
+	        ctx.fillText(title3, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2 + (fontSize2 + paddingTop));
+	    }
+	    return { canvas, height, width };
+	};
+	// 更新canvas（文字+图片 Popup） （类型1）
+	const updateTextCanvasWithImg = ({ canvas, title1, title2, title3, fontColor1, fontColor2, fontColor3, bgColor, strokeColor, fontSize1 = 100, fontSize2 = 80, fontSize3 = 60, img }) => {
+	    const ctx = canvas.getContext('2d'); //上下文，绘图环境
+	    ctx.font = 'Bold ' + fontSize1 + 'px Microsoft YaHei';
+	    const rgbaStroke = ColorRGBA.parse(strokeColor);
+	    const w = ctx.measureText(title1).width + 20;
+	    let width = 512;
+	    let height = 256;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	    const w2 = ctx.measureText(title2).width + width / 2;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w2) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	    const w3 = ctx.measureText(title3).width + width / 2;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w3) {
+	            width = Math.pow(2, i);
+	            height = width / 2;
+	            break;
+	        }
+	    }
+	    canvas.width = width;
+	    canvas.height = height;
+	    canvas.style.width = width / 2 + 'px';
+	    canvas.style.height = height / 2 + 'px';
+	    let paddingTop = 10 * (width / 512);
+	    let paddingLeft = 10 * (width / 512);
+	    // clear bg
+	    ctx.clearRect(0, 0, width, height);
+	    // bg
+	    ctx.fillStyle = bgColor;
+	    ctx.fillRect(paddingLeft, paddingTop, width - paddingLeft * 2, height - paddingTop * 2);
+	    // stroke
+	    ctx.beginPath();
+	    ctx.moveTo(paddingLeft + paddingLeft / 2, 0);
+	    ctx.lineTo(0, 0);
+	    ctx.lineTo(0, height);
+	    ctx.lineTo(paddingLeft + paddingLeft / 2, height);
+	    ctx.moveTo(width - paddingLeft - paddingLeft / 2, height);
+	    ctx.lineTo(width, height);
+	    ctx.lineTo(width, 0);
+	    ctx.lineTo(width - paddingLeft - paddingLeft / 2, 0);
+	    ctx.strokeStyle = `rgb(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255})`;
+	    ctx.lineWidth = (8 * width) / 512;
+	    ctx.stroke();
+	    // stroke 2
+	    ctx.beginPath();
+	    ctx.moveTo(paddingTop + paddingTop / 2, 0);
+	    ctx.lineTo(width - paddingTop - paddingTop / 2, 0);
+	    ctx.moveTo(width - paddingTop - paddingTop / 2, height);
+	    ctx.lineTo(paddingTop + paddingTop / 2, height);
+	    ctx.strokeStyle = `rgba(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255},.1)`;
+	    ctx.lineWidth = (8 * width) / 512;
+	    ctx.stroke();
+	    // title1
+	    ctx.font = 'Bold ' + fontSize1 + 'px Microsoft YaHei';
+	    ctx.textBaseline = 'top';
+	    ctx.fillStyle = fontColor1;
+	    ctx.fillText(title1, (width - ctx.measureText(title1).width) / 2, paddingTop * 4);
+	    // title2 & title3 & img
+	    if (img) {
+	        // img
+	        ctx.drawImage(img, width / 8, (height - (paddingTop * 2 + fontSize1)) / 2, width / 4, width / 4);
+	        // title2
+	        ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor2;
+	        ctx.fillText(title2, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2);
+	        // title3
+	        ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor3;
+	        ctx.fillText(title3, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2 + (fontSize2 + paddingTop));
+	    }
+	    else {
+	        // title2
+	        ctx.font = 'Bold ' + fontSize2 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor2;
+	        ctx.fillText(title2, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2);
+	        // title3
+	        ctx.font = 'Bold ' + fontSize3 + 'px Microsoft YaHei';
+	        ctx.textBaseline = 'top';
+	        ctx.fillStyle = fontColor3;
+	        ctx.fillText(title3, width / 2, (height - (paddingTop * 2 + fontSize1)) / 2 + (fontSize2 + paddingTop));
+	    }
+	    return { canvas, height, width };
+	};
 	//经纬度转墨卡托
 	function lnglat2mercator(coord) {
 	    //[114.32894, 30.585748]
@@ -96752,7 +96959,13005 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 		'envMap'
 	] );
 
-	const _0x49cdc8=_0x16a8;(function(_0x41a6ea,_0xd4db49){const _0x9cc74=_0x16a8,_0x59ab44=_0x41a6ea();while(!![]){try{const _0x50a27e=-parseInt(_0x9cc74(0x3a6))/0x1+parseInt(_0x9cc74(0x62a))/0x2+parseInt(_0x9cc74(0x594))/0x3*(parseInt(_0x9cc74(0x3b1))/0x4)+parseInt(_0x9cc74(0x38e))/0x5+parseInt(_0x9cc74(0x12a))/0x6+parseInt(_0x9cc74(0x5f6))/0x7*(parseInt(_0x9cc74(0x383))/0x8)+-parseInt(_0x9cc74(0x310))/0x9;if(_0x50a27e===_0xd4db49)break;else _0x59ab44['push'](_0x59ab44['shift']());}catch(_0xb23052){_0x59ab44['push'](_0x59ab44['shift']());}}}(_0x3de8,0xef414));const _0x2517c4=(function(){let _0x340177=!![];return function(_0x2a2eba,_0x399020){const _0x504132=_0x340177?function(){if(_0x399020){const _0xbac009=_0x399020['apply'](_0x2a2eba,arguments);return _0x399020=null,_0xbac009;}}:function(){};return _0x340177=![],_0x504132;};}()),_0x104d6e=_0x2517c4(this,function(){const _0x2bbcc1=_0x16a8;return _0x104d6e['toString']()[_0x2bbcc1(0x382)](_0x2bbcc1(0x1ca))[_0x2bbcc1(0x23c)]()[_0x2bbcc1(0x601)](_0x104d6e)[_0x2bbcc1(0x382)]('(((.+)+)+)+$');});_0x104d6e();const _0x21ff80=(function(){let _0x1ab16b=!![];return function(_0x3a3fd3,_0x2ded82){const _0x3b8d34=_0x1ab16b?function(){const _0x2c5b47=_0x16a8;if(_0x2ded82){const _0x68f65c=_0x2ded82[_0x2c5b47(0x45a)](_0x3a3fd3,arguments);return _0x2ded82=null,_0x68f65c;}}:function(){};return _0x1ab16b=![],_0x3b8d34;};}()),_0x52aeb4=_0x21ff80(this,function(){const _0x3c1067=_0x16a8,_0x5c19a1=function(){const _0x32c495=_0x16a8;let _0x597dd9;try{_0x597dd9=Function(_0x32c495(0x44b)+_0x32c495(0x426)+');')();}catch(_0x587687){_0x597dd9=window;}return _0x597dd9;},_0x542353=_0x5c19a1(),_0x58cda7=_0x542353['console']=_0x542353['console']||{},_0x39df24=['log',_0x3c1067(0x449),'info',_0x3c1067(0x611),_0x3c1067(0x52c),_0x3c1067(0x22d),'trace'];for(let _0x52723a=0x0;_0x52723a<_0x39df24[_0x3c1067(0x25b)];_0x52723a++){const _0x426175=_0x21ff80[_0x3c1067(0x601)][_0x3c1067(0x60f)][_0x3c1067(0x46e)](_0x21ff80),_0x474326=_0x39df24[_0x52723a],_0x1d601c=_0x58cda7[_0x474326]||_0x426175;_0x426175[_0x3c1067(0x266)]=_0x21ff80['bind'](_0x21ff80),_0x426175[_0x3c1067(0x23c)]=_0x1d601c['toString'][_0x3c1067(0x46e)](_0x1d601c),_0x58cda7[_0x474326]=_0x426175;}});_0x52aeb4();class Container{[_0x49cdc8(0x4ac)];['css2dRenderer'];[_0x49cdc8(0x40d)];[_0x49cdc8(0x401)];[_0x49cdc8(0x436)];[_0x49cdc8(0x2c1)];[_0x49cdc8(0x573)];[_0x49cdc8(0x563)];[_0x49cdc8(0x112)];['orbitControls'];[_0x49cdc8(0x4e1)];[_0x49cdc8(0x128)];[_0x49cdc8(0x359)];[_0x49cdc8(0x362)];['directionLights'];['spotLights'];[_0x49cdc8(0x4b3)];[_0x49cdc8(0x54c)];[_0x49cdc8(0x392)];['clickObjects'];[_0x49cdc8(0x2d3)];[_0x49cdc8(0x199)];[_0x49cdc8(0x14d)];[_0x49cdc8(0x584)];['children'];[_0x49cdc8(0x5d5)];[_0x49cdc8(0x4a2)];[_0x49cdc8(0x591)];[_0x49cdc8(0x393)];[_0x49cdc8(0x10b)];[_0x49cdc8(0x50b)];[_0x49cdc8(0x5f5)];['ssrSkyBox'];[_0x49cdc8(0x26b)];[_0x49cdc8(0x3b5)];['hdrUrls'];[_0x49cdc8(0x4f6)];[_0x49cdc8(0x1cd)];[_0x49cdc8(0xfd)];[_0x49cdc8(0x20c)];[_0x49cdc8(0x1e7)];[_0x49cdc8(0x2cb)];['outlinePass'];[_0x49cdc8(0x5be)];[_0x49cdc8(0x38d)];[_0x49cdc8(0x354)];[_0x49cdc8(0x3dd)];['bounds'];[_0x49cdc8(0x4f1)];[_0x49cdc8(0x4a7)];[_0x49cdc8(0x443)];[_0x49cdc8(0x46a)];['containerWidth'];[_0x49cdc8(0x1fa)];['gltfLoader'];[_0x49cdc8(0x570)];[_0x49cdc8(0x205)];[_0x49cdc8(0x4c4)];[_0x49cdc8(0x361)];[_0x49cdc8(0x5ce)];['pmremGenerator'];[_0x49cdc8(0x23d)];['bgColor'];[_0x49cdc8(0x5af)];[_0x49cdc8(0x18f)];[_0x49cdc8(0x3c2)];['nodepass'];constructor(_0x312fbe){const _0x417a07=_0x49cdc8;this[_0x417a07(0x1db)]=[],this['children']=[],this[_0x417a07(0x4f6)]=[],this[_0x417a07(0x1cd)]=[],this[_0x417a07(0x5be)]=[],this[_0x417a07(0x354)]=[],this[_0x417a07(0x38d)]=[],this[_0x417a07(0x3dd)]={},this[_0x417a07(0x46a)]=[],this[_0x417a07(0x452)]=[],this[_0x417a07(0x4a7)]=_0x312fbe&&_0x312fbe[_0x417a07(0x4a7)]!==undefined?_0x312fbe['publicPath']:_0x417a07(0x109),this[_0x417a07(0x1f9)]=window[_0x417a07(0x464)],this['containerHeight']=window[_0x417a07(0x3dc)],this[_0x417a07(0x4c4)]=new FBXLoader(),this[_0x417a07(0x133)]=new GLTFLoader(),this[_0x417a07(0x361)]=new DRACOLoader(),this[_0x417a07(0x570)]=new OBJLoader(),this[_0x417a07(0x205)]=new MTLLoader(),this['dracoLoader'][_0x417a07(0x23e)](this['publicPath']+'/js/gltfDraco/'),this['dracoLoader'][_0x417a07(0x514)](),this[_0x417a07(0x133)][_0x417a07(0x2b8)](this[_0x417a07(0x361)]),this[_0x417a07(0x23d)]=_0x312fbe,this[_0x417a07(0x3eb)](_0x312fbe),this['layers']={},this['frame']=new NodeFrame(0x1);}get[_0x49cdc8(0x1ed)](){const _0x540847=_0x49cdc8;return this[_0x540847(0x584)];}set[_0x49cdc8(0x1ed)](_0x5da12b){const _0x35db8d=_0x49cdc8;this[_0x35db8d(0x584)]=_0x5da12b,this[_0x35db8d(0x122)]['enabled']=![],this['firstPersonControls'][_0x35db8d(0x13a)]=![];if(this[_0x35db8d(0x584)]=='orbit')this['renderPass'][_0x35db8d(0x503)]=this[_0x35db8d(0x112)],this[_0x35db8d(0x4a2)]['camera']=this[_0x35db8d(0x112)],this[_0x35db8d(0x202)][_0x35db8d(0x48d)]=this['orbitCamera'],this[_0x35db8d(0x10b)][_0x35db8d(0x503)]=this[_0x35db8d(0x112)],this[_0x35db8d(0x122)][_0x35db8d(0x13a)]=!![];else this['_viewState']==_0x35db8d(0x43a)&&(this[_0x35db8d(0x5d5)]['camera']=this[_0x35db8d(0x128)],this[_0x35db8d(0x4a2)][_0x35db8d(0x503)]=this[_0x35db8d(0x128)],this[_0x35db8d(0x202)][_0x35db8d(0x48d)]=this['firstPersonCamera'],this[_0x35db8d(0x10b)]['camera']=this[_0x35db8d(0x128)],this[_0x35db8d(0x4e1)][_0x35db8d(0x13a)]=!![]);}[_0x49cdc8(0x3eb)](_0x49b3b0){const _0x2cdac8=_0x49cdc8,_0x34f0df=this;this[_0x2cdac8(0x584)]=_0x49b3b0&&_0x49b3b0[_0x2cdac8(0x1ed)]!=undefined?_0x49b3b0[_0x2cdac8(0x1ed)]:_0x2cdac8(0x1a1),this['cubeTexLoader']=new CubeTextureLoader(),this[_0x2cdac8(0x199)]=new TextureLoader(),this[_0x2cdac8(0x14d)]=new GifLoader(),this['initRender'](_0x49b3b0),this[_0x2cdac8(0x26a)](_0x49b3b0),this[_0x2cdac8(0x273)](_0x49b3b0),this['initControls'](_0x49b3b0),this['initLights'](_0x49b3b0);const _0x364df7=_0x49b3b0&&_0x49b3b0[_0x2cdac8(0x452)]!=undefined?_0x49b3b0['hdrUrls']:[];_0x364df7['length']!=0x0?this['initHDR'](_0x49b3b0,()=>{const _0x298ae8=_0x2cdac8;this[_0x298ae8(0x5b3)](_0x49b3b0);}):this[_0x2cdac8(0x5b3)](_0x49b3b0);this['initPasses'](_0x49b3b0);const _0x210627=new Clock(),_0x17b2c4=new Layers();_0x17b2c4[_0x2cdac8(0x4ec)](0x1);const _0x21538c=new Layers();_0x21538c[_0x2cdac8(0x4ec)](0x2);const _0x1f98f8={},_0x3612e3=new MeshBasicMaterial({'transparent':![],'opacity':0x1,'fog':![],'color':new Color(0x0,0x0,0x0)}),_0x3fde10=new MeshLambertMaterial({'transparent':![],'opacity':0x1,'fog':![],'color':new Color(0x0,0x0,0x0)}),_0x114238=new SpriteMaterial({'color':new Color(0x0,0x0,0x0),'transparent':![],'opacity':0x0,'fog':![]}),_0x143f39=new MeshStandardMaterial({'transparent':![],'color':new Color(0x0,0x0,0x0),'fog':![],'opacity':0x0}),_0x1225c4=new ShaderMaterial({'lights':![],'transparent':!![],'fog':![],'vertexShader':_0x2cdac8(0x538),'fragmentShader':_0x2cdac8(0x2a7),'uniforms':{'diffuse':{'value':new Color(0x0,0x0,0x0)},'gradient':{'value':new Color(0x0,0x0,0x0)},'color':{'value':new Color(0x0,0x0,0x0)},'emissive':{'value':new Color(0x0,0x0,0x0)},'opacity':{'value':0x0},'map':{'value':null},'useMap':{'value':![]}}}),_0x6870db=new LineBasicMaterial({'color':_0x2cdac8(0x1eb)});_0x49b3b0&&_0x49b3b0[_0x2cdac8(0x622)]!=undefined?_0x49b3b0[_0x2cdac8(0x622)]:![];const _0x1f5e09=()=>{const _0x4f2044=_0x2cdac8;this[_0x4f2044(0x1e7)][_0x4f2044(0x358)]();if(_0x34f0df['viewState']==_0x4f2044(0x1a1)){_0x34f0df[_0x4f2044(0x122)][_0x4f2044(0x577)]();_0x34f0df[_0x4f2044(0x591)]['enabled']&&(_0x34f0df[_0x4f2044(0x563)][_0x4f2044(0x4f1)]=null,this[_0x4f2044(0x4ac)][_0x4f2044(0x3f8)](_0x4f2044(0x1eb),0x0),_0x34f0df['scene'][_0x4f2044(0x1a6)](_0x2ce4d2=>{const _0x32a3ea=_0x4f2044;if(_0x17b2c4[_0x32a3ea(0x3b0)](_0x2ce4d2[_0x32a3ea(0x18f)])===![]){if(!_0x1f98f8[_0x2ce4d2[_0x32a3ea(0x309)]])_0x1f98f8[_0x2ce4d2[_0x32a3ea(0x309)]]=_0x2ce4d2[_0x32a3ea(0x4b8)];if(Array[_0x32a3ea(0x406)](_0x2ce4d2[_0x32a3ea(0x4b8)]))_0x2ce4d2[_0x32a3ea(0x4b8)]=[_0x3612e3,_0x3612e3,_0x3612e3,_0x3612e3,_0x3612e3,_0x3612e3];else{if(_0x2ce4d2['material']instanceof MeshBasicMaterial)_0x2ce4d2[_0x32a3ea(0x4b8)]=_0x3612e3;else{if(_0x2ce4d2['material']instanceof MeshLambertMaterial)_0x2ce4d2[_0x32a3ea(0x4b8)]=_0x3fde10;else{if(_0x2ce4d2[_0x32a3ea(0x4b8)]instanceof SpriteMaterial)_0x2ce4d2[_0x32a3ea(0x4b8)]=_0x114238;else{if(_0x2ce4d2[_0x32a3ea(0x4b8)]instanceof MeshStandardMaterial)_0x2ce4d2[_0x32a3ea(0x4b8)]=_0x143f39;else{if(_0x2ce4d2[_0x32a3ea(0x4b8)]instanceof LineBasicMaterial)_0x2ce4d2[_0x32a3ea(0x4b8)]=_0x6870db;else{if(_0x2ce4d2['material']instanceof ShaderMaterial){const _0x5e8585=_0x1225c4['clone']();_0x2ce4d2[_0x32a3ea(0x4b8)]=_0x5e8585,(_0x2ce4d2[_0x32a3ea(0x5f7)]||_0x2ce4d2[_0x32a3ea(0x1cb)])&&(_0x2ce4d2['visible']=![]);}}}}}}}}}),_0x34f0df[_0x4f2044(0x573)][_0x4f2044(0x27d)](),_0x34f0df['scene'][_0x4f2044(0x1a6)](_0x5e2edd=>{const _0x1017af=_0x4f2044;if(_0x1f98f8[_0x5e2edd[_0x1017af(0x309)]]){if(_0x5e2edd[_0x1017af(0x5f7)]||_0x5e2edd[_0x1017af(0x1cb)])_0x5e2edd['visible']=!![];_0x5e2edd[_0x1017af(0x4b8)]=_0x1f98f8[_0x5e2edd[_0x1017af(0x309)]],delete _0x1f98f8[_0x5e2edd['uuid']];}}),_0x34f0df[_0x4f2044(0x563)][_0x4f2044(0x4f1)]=_0x34f0df[_0x4f2044(0x4f1)],this[_0x4f2044(0x4ac)][_0x4f2044(0x3f8)](this[_0x4f2044(0x147)],0x1));_0x34f0df['outlinePass'][_0x4f2044(0x31e)]=_0x34f0df['outlineObjects'],_0x34f0df[_0x4f2044(0x2c1)][_0x4f2044(0x27d)]();const _0x4c2086=_0x210627[_0x4f2044(0x5ff)]();_0x34f0df[_0x4f2044(0x3c2)]['update'](_0x4c2086)[_0x4f2044(0x1e5)](_0x34f0df['nodepass'][_0x4f2044(0x4b8)]),_0x34f0df[_0x4f2044(0x354)][_0x4f2044(0x56d)](_0x4d1ee7=>{const _0x27f6f7=_0x4f2044;_0x4d1ee7[_0x27f6f7(0x577)](_0x4c2086);}),_0x34f0df[_0x4f2044(0x5e6)][_0x4f2044(0x27d)](_0x34f0df[_0x4f2044(0x563)],_0x34f0df[_0x4f2044(0x112)]),_0x34f0df[_0x4f2044(0x40d)]['render'](_0x34f0df[_0x4f2044(0x563)],_0x34f0df[_0x4f2044(0x112)]);}else{if(_0x34f0df['viewState']==_0x4f2044(0x43a)){_0x34f0df[_0x4f2044(0x202)][_0x4f2044(0x31e)]=_0x34f0df[_0x4f2044(0x5be)],_0x34f0df[_0x4f2044(0x4e1)][_0x4f2044(0x577)](_0x210627[_0x4f2044(0x5ff)]()),_0x34f0df['sceneComposer'][_0x4f2044(0x27d)]();const _0x2e31b1=_0x210627['getDelta']();_0x34f0df['mixers'][_0x4f2044(0x56d)](_0x2c8a8f=>{const _0x4b9f60=_0x4f2044;_0x2c8a8f[_0x4b9f60(0x577)](_0x2e31b1);}),_0x34f0df[_0x4f2044(0x5e6)][_0x4f2044(0x27d)](_0x34f0df[_0x4f2044(0x563)],_0x34f0df['firstPersonCamera']),_0x34f0df[_0x4f2044(0x40d)]['render'](_0x34f0df['scene'],_0x34f0df[_0x4f2044(0x128)]);}}_0x34f0df['gifTextures']['length']>0x0&&_0x34f0df['gifTextures'][_0x4f2044(0x56d)](_0x2032df=>{const _0x28d4bc=_0x4f2044;_0x2032df[_0x28d4bc(0x4c5)]();}),update(),this['stats'][_0x4f2044(0x5a8)]();};this[_0x2cdac8(0x4ac)][_0x2cdac8(0x558)](_0x1f5e09);const _0x6838e3=()=>{const _0x49e390=_0x2cdac8;_0x49b3b0&&_0x49b3b0[_0x49e390(0x509)]!=undefined&&_0x49b3b0['container']['parentElement']?(this[_0x49e390(0x1f9)]=Math['round'](_0x49b3b0[_0x49e390(0x509)]['parentElement']['clientWidth']),this[_0x49e390(0x1fa)]=Math['round'](_0x49b3b0['container'][_0x49e390(0x1b2)][_0x49e390(0x47f)])):(this['containerWidth']=Math[_0x49e390(0x448)](window['innerWidth']),this[_0x49e390(0x1fa)]=Math[_0x49e390(0x448)](window[_0x49e390(0x3dc)]));const _0x293ced=this['supersampling']?this[_0x49e390(0x1f9)]*0x2:this[_0x49e390(0x1f9)],_0x140efe=this['supersampling']?this[_0x49e390(0x1fa)]*0x2:this['containerHeight'];this[_0x49e390(0x401)][_0x49e390(0x123)](_0x293ced,_0x140efe),this[_0x49e390(0x4ac)][_0x49e390(0x47a)](window[_0x49e390(0x2da)]),this[_0x49e390(0x4ac)][_0x49e390(0x123)](this[_0x49e390(0x1f9)],this[_0x49e390(0x1fa)]),this[_0x49e390(0x5e6)]['setSize'](this['containerWidth'],this[_0x49e390(0x1fa)]);let _0x1793ab=_0x49b3b0&&_0x49b3b0['container']&&_0x49b3b0['container'][_0x49e390(0x3f1)]();this[_0x49e390(0x5e6)][_0x49e390(0x160)][_0x49e390(0x2b7)]['top']=_0x1793ab[_0x49e390(0x3a4)]+'px',this[_0x49e390(0x5e6)][_0x49e390(0x160)][_0x49e390(0x2b7)][_0x49e390(0x574)]=_0x1793ab[_0x49e390(0x574)]+'px',this['css3dRenderer'][_0x49e390(0x123)](this[_0x49e390(0x1f9)],this[_0x49e390(0x1fa)]),this['css3dRenderer'][_0x49e390(0x160)][_0x49e390(0x2b7)][_0x49e390(0x3a4)]=_0x1793ab[_0x49e390(0x3a4)]+'px',this[_0x49e390(0x40d)][_0x49e390(0x160)]['style']['left']=_0x1793ab[_0x49e390(0x574)]+'px',this[_0x49e390(0x2c1)][_0x49e390(0x123)](_0x293ced,_0x140efe),this[_0x49e390(0x573)][_0x49e390(0x123)](_0x293ced,_0x140efe),this[_0x49e390(0x591)][_0x49e390(0x123)](_0x293ced,_0x140efe),this[_0x49e390(0x393)]['setSize'](_0x293ced,_0x140efe),this[_0x49e390(0x2cb)][_0x49e390(0x123)](_0x293ced,_0x140efe);this['loadingBar']&&(this[_0x49e390(0x443)][_0x49e390(0x2b7)][_0x49e390(0x552)]=this[_0x49e390(0x1f9)]+'px',this[_0x49e390(0x443)][_0x49e390(0x2b7)]['height']=this['containerHeight']+'px');if(this['viewState']==_0x49e390(0x1a1))this[_0x49e390(0x112)][_0x49e390(0x438)]=this[_0x49e390(0x1f9)]/this[_0x49e390(0x1fa)],this['orbitCamera'][_0x49e390(0x4f9)]();else this[_0x49e390(0x1ed)]==_0x49e390(0x43a)&&(this[_0x49e390(0x128)][_0x49e390(0x438)]=this['containerWidth']/this[_0x49e390(0x1fa)],this[_0x49e390(0x128)]['updateProjectionMatrix']());};window[_0x2cdac8(0x44f)](_0x2cdac8(0x5fc),_0x6838e3,![]);}[_0x49cdc8(0x290)](_0x18702c){const _0x36f13b=_0x49cdc8,_0x4a891f=_0x18702c&&_0x18702c[_0x36f13b(0x622)]!=undefined?_0x18702c['enableShadow']:![],_0x593c3d=_0x18702c&&_0x18702c[_0x36f13b(0x363)]!=undefined?_0x18702c[_0x36f13b(0x363)]:!![],_0x11b15d=_0x18702c&&_0x18702c[_0x36f13b(0x4ac)]!==undefined&&_0x18702c[_0x36f13b(0x4ac)][_0x36f13b(0x204)]!==undefined?_0x18702c[_0x36f13b(0x4ac)][_0x36f13b(0x204)]:!![],_0x2078f9=_0x18702c&&_0x18702c[_0x36f13b(0x4ac)]!==undefined&&_0x18702c[_0x36f13b(0x4ac)][_0x36f13b(0x51e)]!==undefined?_0x18702c[_0x36f13b(0x4ac)][_0x36f13b(0x51e)]:_0x36f13b(0x37b),_0x301b76=_0x18702c&&_0x18702c['renderer']!==undefined&&_0x18702c[_0x36f13b(0x4ac)][_0x36f13b(0x372)]!==undefined?_0x18702c['renderer'][_0x36f13b(0x372)]:!![],_0x2a7604=_0x18702c&&_0x18702c[_0x36f13b(0x4ac)]!==undefined&&_0x18702c[_0x36f13b(0x4ac)]['alpha']!==undefined?_0x18702c[_0x36f13b(0x4ac)]['alpha']:![];_0x18702c&&_0x18702c[_0x36f13b(0x509)]!=undefined?(this[_0x36f13b(0x4ac)]=new WebGLRenderer({'antialias':_0x301b76,'canvas':_0x18702c[_0x36f13b(0x509)],'precision':_0x2078f9,'logarithmicDepthBuffer':_0x11b15d,'alpha':_0x2a7604}),this[_0x36f13b(0x1f9)]=_0x18702c[_0x36f13b(0x1f9)]!==undefined?_0x18702c['containerWidth']:_0x18702c[_0x36f13b(0x509)]['clientWidth'],this['containerHeight']=_0x18702c[_0x36f13b(0x1fa)]!==undefined?_0x18702c[_0x36f13b(0x1fa)]:_0x18702c[_0x36f13b(0x509)][_0x36f13b(0x47f)]):(this[_0x36f13b(0x4ac)]=new WebGLRenderer({'antialias':_0x301b76,'precision':_0x2078f9,'logarithmicDepthBuffer':_0x11b15d,'alpha':_0x2a7604}),document[_0x36f13b(0x157)][_0x36f13b(0x2fd)](this[_0x36f13b(0x4ac)][_0x36f13b(0x160)]));this[_0x36f13b(0x147)]=_0x36f13b(0x1eb);_0x18702c&&_0x18702c[_0x36f13b(0x21d)]&&_0x18702c[_0x36f13b(0x21d)][_0x36f13b(0x26f)]===_0x36f13b(0x229)&&(this['bgColor']='#'+new Color(_0x18702c[_0x36f13b(0x21d)][_0x36f13b(0x4ba)])['getHexString'](),this[_0x36f13b(0x5af)]=_0x36f13b(0x229));this[_0x36f13b(0x4ac)]['setClearColor'](this[_0x36f13b(0x147)],_0x2a7604?0x0:0x1),this['renderer'][_0x36f13b(0x3d4)]=![],this['renderer']['sortObjects']=_0x593c3d,this['renderer'][_0x36f13b(0x3c5)]=sRGBEncoding,this[_0x36f13b(0x4ac)]['setPixelRatio'](window[_0x36f13b(0x2da)]),this[_0x36f13b(0x4ac)][_0x36f13b(0x123)](this[_0x36f13b(0x1f9)],this[_0x36f13b(0x1fa)]),this[_0x36f13b(0x4ac)][_0x36f13b(0x454)][_0x36f13b(0x13a)]=_0x4a891f,this[_0x36f13b(0x4ac)]['shadowMap']['type']=PCFSoftShadowMap;const _0x23f44a=_0x18702c&&_0x18702c[_0x36f13b(0x33b)]!=undefined&&_0x18702c[_0x36f13b(0x33b)][_0x36f13b(0x31a)]!=undefined?_0x18702c[_0x36f13b(0x33b)][_0x36f13b(0x31a)]:0x1,_0x56fc8c=_0x18702c&&_0x18702c[_0x36f13b(0x33b)]!=undefined&&_0x18702c[_0x36f13b(0x33b)][_0x36f13b(0x5dc)]!=undefined?_0x18702c[_0x36f13b(0x33b)][_0x36f13b(0x5dc)]:_0x36f13b(0x5c4);if(_0x56fc8c==_0x36f13b(0x477))this[_0x36f13b(0x4ac)][_0x36f13b(0x33b)]=NoToneMapping;else{if(_0x56fc8c==_0x36f13b(0x5c4))this['renderer'][_0x36f13b(0x33b)]=LinearToneMapping;else{if(_0x56fc8c=='ReinhardToneMapping')this['renderer'][_0x36f13b(0x33b)]=ReinhardToneMapping;else{if(_0x56fc8c=='CineonToneMapping')this[_0x36f13b(0x4ac)][_0x36f13b(0x33b)]=CineonToneMapping;else _0x56fc8c==_0x36f13b(0x5d7)?this['renderer']['toneMapping']=ACESFilmicToneMapping:this['renderer'][_0x36f13b(0x33b)]=LinearToneMapping;}}}this[_0x36f13b(0x4ac)][_0x36f13b(0x31a)]=_0x23f44a;if(_0x18702c==undefined||_0x18702c['container']==undefined)this[_0x36f13b(0x4ac)]['domElement'][_0x36f13b(0x2b7)]['position']=_0x36f13b(0x4d6);if(window[_0x36f13b(0x3a8)](this[_0x36f13b(0x4ac)]['domElement'])[_0x36f13b(0x47d)]==_0x36f13b(0x242))this[_0x36f13b(0x4ac)][_0x36f13b(0x160)][_0x36f13b(0x2b7)][_0x36f13b(0x47d)]='1';document[_0x36f13b(0x157)]['style'][_0x36f13b(0x457)]='0';let _0x1e26ae=this['renderer'][_0x36f13b(0x160)][_0x36f13b(0x3f1)]();this[_0x36f13b(0x5e6)]=new CSS2DRenderer(),this['css2dRenderer'][_0x36f13b(0x123)](this['containerWidth'],this[_0x36f13b(0x1fa)]),this[_0x36f13b(0x5e6)]['domElement'][_0x36f13b(0x2b7)][_0x36f13b(0x26e)]=_0x36f13b(0x4d6),this['css2dRenderer'][_0x36f13b(0x160)]['style'][_0x36f13b(0x3a4)]=_0x1e26ae[_0x36f13b(0x3a4)]+'px',this['css2dRenderer']['domElement'][_0x36f13b(0x2b7)][_0x36f13b(0x574)]=_0x1e26ae[_0x36f13b(0x574)]+'px';_0x18702c&&_0x18702c[_0x36f13b(0x509)]!=undefined?_0x18702c[_0x36f13b(0x509)][_0x36f13b(0x1b2)]?.['appendChild'](this[_0x36f13b(0x5e6)]['domElement']):document['body'][_0x36f13b(0x2fd)](this[_0x36f13b(0x5e6)][_0x36f13b(0x160)]);this['css3dRenderer']=new CSS3DRenderer(),this[_0x36f13b(0x40d)]['setSize'](this[_0x36f13b(0x1f9)],this[_0x36f13b(0x1fa)]),this['css3dRenderer'][_0x36f13b(0x160)][_0x36f13b(0x2b7)][_0x36f13b(0x26e)]=_0x36f13b(0x4d6),this['css3dRenderer'][_0x36f13b(0x160)]['style'][_0x36f13b(0x52b)]='none',this['css3dRenderer'][_0x36f13b(0x160)][_0x36f13b(0x2b7)][_0x36f13b(0x3a4)]=_0x1e26ae[_0x36f13b(0x3a4)]+'px',this[_0x36f13b(0x40d)][_0x36f13b(0x160)]['style']['left']=_0x1e26ae['left']+'px',this[_0x36f13b(0x40d)][_0x36f13b(0x160)]['style'][_0x36f13b(0x47d)]=_0x36f13b(0x244);_0x18702c&&_0x18702c[_0x36f13b(0x509)]!=undefined?_0x18702c[_0x36f13b(0x509)]['parentElement']?.[_0x36f13b(0x2fd)](this[_0x36f13b(0x40d)]['domElement']):document[_0x36f13b(0x157)][_0x36f13b(0x2fd)](this[_0x36f13b(0x40d)][_0x36f13b(0x160)]);this[_0x36f13b(0x1e7)]=new Stats();_0x18702c&&_0x18702c[_0x36f13b(0x1e7)]&&(_0x18702c[_0x36f13b(0x509)]!=undefined?_0x18702c['container'][_0x36f13b(0x1b2)]?.['appendChild'](this[_0x36f13b(0x1e7)][_0x36f13b(0x509)]):document[_0x36f13b(0x157)][_0x36f13b(0x2fd)](this[_0x36f13b(0x1e7)][_0x36f13b(0x509)]));if(_0x18702c&&_0x18702c[_0x36f13b(0x443)]&&_0x18702c[_0x36f13b(0x443)]['show']){const _0x1df2fa=_0x18702c&&_0x18702c[_0x36f13b(0x443)][_0x36f13b(0x26f)]?_0x18702c[_0x36f13b(0x443)]['type']:'10';this[_0x36f13b(0x443)]=loadingAnimation({'type':_0x1df2fa});}this[_0x36f13b(0x5ce)]=new RGBELoader(),this['pmremGenerator']=new PMREMGenerator(this['renderer']);}[_0x49cdc8(0x26a)](_0x3efcee){const _0x428a19=_0x49cdc8;this[_0x428a19(0x563)]=new Scene();const _0x1263b3=0xc350;this['skyRadius']=_0x1263b3;_0x3efcee&&_0x3efcee['background']&&_0x3efcee['background']['type']===_0x428a19(0x50d)&&this[_0x428a19(0x199)][_0x428a19(0x381)](this[_0x428a19(0x4a7)]+_0x3efcee['background'][_0x428a19(0x4ba)],_0x3a05be=>{const _0xf04a0a=_0x428a19;this[_0xf04a0a(0x5af)]=_0xf04a0a(0x50d),this['scene'][_0xf04a0a(0x21d)]=_0x3a05be;if(_0x3efcee[_0xf04a0a(0x21d)]?.[_0xf04a0a(0x15a)])for(const _0x50f883 in _0x3efcee[_0xf04a0a(0x21d)][_0xf04a0a(0x15a)]){const _0x1f54b5=_0x3efcee['background'][_0xf04a0a(0x15a)][_0x50f883];this[_0xf04a0a(0x563)][_0xf04a0a(0x21d)][_0x50f883]=_0x1f54b5;}});if(_0x3efcee&&_0x3efcee['background']&&_0x3efcee['background']['type']==='panorama'){this[_0x428a19(0x5af)]=_0x428a19(0x264);const _0x30b7af=_0x3efcee&&_0x3efcee[_0x428a19(0x21d)]&&_0x3efcee['background'][_0x428a19(0x15a)]&&_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)][_0x428a19(0x17e)]?_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)]['scale']:0x1,_0x51119d=_0x3efcee&&_0x3efcee[_0x428a19(0x21d)]&&_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)]&&_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)][_0x428a19(0x27e)]?_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)][_0x428a19(0x27e)]:[0x0,0x0,0x0],_0x4b70ec=_0x3efcee&&_0x3efcee[_0x428a19(0x21d)]&&_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)]&&_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)][_0x428a19(0x4f1)]?_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x15a)][_0x428a19(0x4f1)]:![];if(_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x4ba)]instanceof Array&&_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x4ba)][_0x428a19(0x25b)]==0x6){const _0x328068=[],_0x2fd6fa=[];_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x4ba)][_0x428a19(0x56d)](_0x136e0a=>{const _0x2e9052=_0x428a19;_0x328068[_0x2e9052(0x617)](loadTex(this[_0x2e9052(0x199)],this[_0x2e9052(0x4a7)]+_0x136e0a));}),Promise[_0x428a19(0x2f0)](_0x328068)['then'](_0x5a5065=>{const _0x27af1e=_0x428a19;_0x5a5065[_0x27af1e(0x56d)](_0xba52e2=>{const _0xe41268=new MeshBasicMaterial({'map':_0xba52e2,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x4b70ec});_0x2fd6fa['push'](_0xe41268);});const _0xcaff51=new BoxGeometry(_0x1263b3,_0x1263b3,_0x1263b3),_0x4d92f8=new Mesh(_0xcaff51,_0x2fd6fa);_0x4d92f8[_0x27af1e(0x17e)][_0x27af1e(0x4ec)](_0x30b7af,_0x30b7af,_0x30b7af),_0x4d92f8[_0x27af1e(0x27e)][_0x27af1e(0x4ec)](_0x51119d[0x0],_0x51119d[0x1],_0x51119d[0x2]),_0x4d92f8['renderOrder']=SKY_RENDER_ORDER,_0x4d92f8['type']=_0x27af1e(0x5b4),this[_0x27af1e(0x563)][_0x27af1e(0x4bc)](_0x4d92f8),this['sky']=_0x4d92f8,this[_0x27af1e(0xfd)]['userData'][_0x27af1e(0x4ba)]=_0x3efcee['background']?.[_0x27af1e(0x4ba)];});}else _0x3efcee[_0x428a19(0x21d)][_0x428a19(0x4ba)]instanceof Array&&_0x3efcee[_0x428a19(0x21d)]['value'][_0x428a19(0x25b)]==0x1&&this[_0x428a19(0x199)][_0x428a19(0x381)](this[_0x428a19(0x4a7)]+_0x3efcee[_0x428a19(0x21d)][_0x428a19(0x4ba)][0x0],_0x38db5f=>{const _0x4f2b20=_0x428a19,_0x3d1e3c=new SphereGeometry(_0x1263b3,0x3c,0x3c),_0x5f1aaf=new MeshBasicMaterial({'map':_0x38db5f,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x4b70ec}),_0x3ccda3=new Mesh(_0x3d1e3c,_0x5f1aaf);_0x3ccda3[_0x4f2b20(0x17e)][_0x4f2b20(0x4ec)](_0x30b7af,_0x30b7af,_0x30b7af),_0x3ccda3['rotation'][_0x4f2b20(0x4ec)](_0x51119d[0x0],_0x51119d[0x1],_0x51119d[0x2]),_0x3ccda3[_0x4f2b20(0x5a9)]=SKY_RENDER_ORDER,_0x3ccda3[_0x4f2b20(0x26f)]=_0x4f2b20(0x5b4),this[_0x4f2b20(0x563)][_0x4f2b20(0x4bc)](_0x3ccda3),this[_0x4f2b20(0xfd)]=_0x3ccda3,this[_0x4f2b20(0xfd)][_0x4f2b20(0x3d7)][_0x4f2b20(0x4ba)]=_0x3efcee['background']?.[_0x4f2b20(0x4ba)];});}if(_0x3efcee&&_0x3efcee[_0x428a19(0x4f1)]!=undefined){const _0x418b86=_0x3efcee[_0x428a19(0x4f1)][_0x428a19(0x229)]!=undefined?_0x3efcee[_0x428a19(0x4f1)][_0x428a19(0x229)]:0xffffff,_0xc1d3ad=_0x3efcee[_0x428a19(0x4f1)][_0x428a19(0x506)]!=undefined?_0x3efcee['fog'][_0x428a19(0x506)]:0.001;this[_0x428a19(0x4f1)]=new FogExp2(_0x418b86,_0xc1d3ad),this[_0x428a19(0x563)][_0x428a19(0x4f1)]=this[_0x428a19(0x4f1)];}let _0x4d3ad1={'radius':0xf4240,'center':[0x0,0x0,0x0]};_0x3efcee&&_0x3efcee[_0x428a19(0x210)]&&(_0x4d3ad1=Object['assign'](_0x4d3ad1,_0x3efcee[_0x428a19(0x210)])),this[_0x428a19(0x210)]={'radius':_0x4d3ad1[_0x428a19(0x30d)],'center':new Vector3(_0x4d3ad1[_0x428a19(0x455)][0x0],_0x4d3ad1[_0x428a19(0x455)][0x1],_0x4d3ad1[_0x428a19(0x455)][0x2])};}[_0x49cdc8(0x273)](_0x1219ac){const _0x136dd0=_0x49cdc8;let _0x1e8183={'near':0.01,'far':0x186a0,'fov':0x46,'position':[0x0,0x0,0x1]};_0x1219ac&&_0x1219ac[_0x136dd0(0x60c)]&&_0x1219ac[_0x136dd0(0x60c)][_0x136dd0(0x112)]&&(_0x1e8183=Object['assign'](_0x1e8183,_0x1219ac['cameras']['orbitCamera']));this[_0x136dd0(0x112)]=new PerspectiveCamera(_0x1e8183['fov'],this[_0x136dd0(0x1f9)]/this[_0x136dd0(0x1fa)],_0x1e8183['near'],_0x1e8183[_0x136dd0(0x4f0)]),this[_0x136dd0(0x112)][_0x136dd0(0x26e)][_0x136dd0(0x4ec)](_0x1e8183['position'][0x0],_0x1e8183[_0x136dd0(0x26e)][0x1],_0x1e8183[_0x136dd0(0x26e)][0x2]);let _0x429a21={'near':0.01,'far':0x186a0,'fov':0x46,'position':[0x0,0x0,0x1]};_0x1219ac&&_0x1219ac[_0x136dd0(0x60c)]&&_0x1219ac[_0x136dd0(0x60c)][_0x136dd0(0x128)]&&(_0x429a21=Object[_0x136dd0(0x402)](_0x429a21,_0x1219ac[_0x136dd0(0x60c)][_0x136dd0(0x128)])),this[_0x136dd0(0x128)]=new PerspectiveCamera(_0x429a21[_0x136dd0(0x1c7)],this['containerWidth']/this[_0x136dd0(0x1fa)],_0x429a21['near'],_0x429a21['far']),this[_0x136dd0(0x128)]['position'][_0x136dd0(0x4ec)](_0x429a21[_0x136dd0(0x26e)][0x0],_0x429a21[_0x136dd0(0x26e)][0x1],_0x429a21[_0x136dd0(0x26e)][0x2]);}[_0x49cdc8(0x484)](_0x3fad1e){const _0x5e43da=_0x49cdc8;let _0x1c68a3={'maxPolarAngle':Math['PI']*0.5,'minDistance':0x0,'maxDistance':0x186a0,'target':[0x0,0x0,0x0],'autoRotate':![],'autoRotateSpeed':0x1,'minPolarAngle':0x0,'enableDamping':!![],'dampingFactor':0.05,'enabled':!![]};_0x3fad1e&&_0x3fad1e[_0x5e43da(0x387)]&&_0x3fad1e[_0x5e43da(0x387)]['orbitControls']&&(_0x1c68a3=Object[_0x5e43da(0x402)](_0x1c68a3,_0x3fad1e[_0x5e43da(0x387)]['orbitControls']));this[_0x5e43da(0x122)]=new OrbitControls(this['orbitCamera'],this[_0x5e43da(0x4ac)][_0x5e43da(0x160)],this),this[_0x5e43da(0x122)]['minPolarAngle']=_0x1c68a3[_0x5e43da(0x575)],this['orbitControls']['maxPolarAngle']=_0x1c68a3['maxPolarAngle'],this[_0x5e43da(0x122)][_0x5e43da(0x5a2)]=_0x1c68a3[_0x5e43da(0x5a2)],this[_0x5e43da(0x122)][_0x5e43da(0x207)]=_0x1c68a3[_0x5e43da(0x207)],this[_0x5e43da(0x122)]['target'][_0x5e43da(0x4ec)](_0x1c68a3[_0x5e43da(0x507)][0x0],_0x1c68a3[_0x5e43da(0x507)][0x1],_0x1c68a3[_0x5e43da(0x507)][0x2]),this['orbitControls'][_0x5e43da(0x253)]=_0x1c68a3[_0x5e43da(0x253)],this[_0x5e43da(0x122)]['autoRotateSpeed']=_0x1c68a3['autoRotateSpeed'],this[_0x5e43da(0x122)][_0x5e43da(0x379)]=_0x1c68a3[_0x5e43da(0x379)],this[_0x5e43da(0x122)]['dampingFactor']=_0x1c68a3[_0x5e43da(0x5f0)],this[_0x5e43da(0x122)][_0x5e43da(0x13a)]=this[_0x5e43da(0x1ed)]===_0x5e43da(0x1a1),this[_0x5e43da(0x122)][_0x5e43da(0x13a)]=_0x1c68a3[_0x5e43da(0x13a)];let _0x25ada0={'movementSpeed':0x14,'lon':Math['PI'],'lat':0x0,'lookSpeed':0xa};_0x3fad1e&&_0x3fad1e[_0x5e43da(0x387)]&&_0x3fad1e['controls'][_0x5e43da(0x4e1)]&&(_0x25ada0=Object[_0x5e43da(0x402)](_0x25ada0,_0x3fad1e['controls'][_0x5e43da(0x4e1)]));this[_0x5e43da(0x4e1)]=new FirstPersonControls(this[_0x5e43da(0x128)],this[_0x5e43da(0x4ac)][_0x5e43da(0x160)]),this[_0x5e43da(0x4e1)][_0x5e43da(0x486)]=0xa,this['firstPersonControls'][_0x5e43da(0x4e5)]=_0x25ada0[_0x5e43da(0x4e5)],this[_0x5e43da(0x4e1)][_0x5e43da(0x178)]=_0x25ada0[_0x5e43da(0x178)],this[_0x5e43da(0x4e1)][_0x5e43da(0x236)]=_0x25ada0[_0x5e43da(0x236)],this[_0x5e43da(0x4e1)][_0x5e43da(0x13a)]=this['viewState']===_0x5e43da(0x43a);const _0x1275e7=this;this[_0x5e43da(0x359)]=new TransformControls(this[_0x5e43da(0x112)],this[_0x5e43da(0x4ac)]['domElement']),this['scene'][_0x5e43da(0x4bc)](this['transformControl']),this['transformControl'][_0x5e43da(0x1a6)](_0x1bdc62=>{const _0x483f08=_0x5e43da;_0x1bdc62[_0x483f08(0x3d7)][_0x483f08(0x403)]=_0x483f08(0x2e1);}),this['transformControl']['addEventListener'](_0x5e43da(0x394),_0x1ed8e3=>{const _0x3e08ae=_0x5e43da;_0x1275e7[_0x3e08ae(0x122)][_0x3e08ae(0x13a)]=!_0x1ed8e3[_0x3e08ae(0x4ba)];});}[_0x49cdc8(0x12c)](_0x8c4c4b){const _0x924229=_0x49cdc8,_0xbad314=_0x8c4c4b&&_0x8c4c4b['enableShadow']!=undefined?_0x8c4c4b['enableShadow']:![];if(_0x8c4c4b&&_0x8c4c4b[_0x924229(0x279)]&&_0x8c4c4b['lights'][_0x924229(0x3c8)]){let _0x380770={'skyColor':0xffffff,'groundColor':0xaaaaaa,'intensity':0.1,'position':[0x0,0x1f4,0x0]};_0x380770=Object['assign'](_0x380770,_0x8c4c4b[_0x924229(0x279)][_0x924229(0x3c8)]),this[_0x924229(0x362)]=new HemisphereLight(_0x380770[_0x924229(0x4a5)],_0x380770[_0x924229(0x3f5)],_0x380770['intensity']),this[_0x924229(0x362)][_0x924229(0x26e)][_0x924229(0x4ec)](_0x380770[_0x924229(0x26e)][0x0],_0x380770[_0x924229(0x26e)][0x1],_0x380770['position'][0x2]),this[_0x924229(0x563)][_0x924229(0x4bc)](this['hemiLight']);}RectAreaLightUniformsLib[_0x924229(0x42c)](),this[_0x924229(0x54c)]=[];_0x8c4c4b&&_0x8c4c4b[_0x924229(0x279)]&&_0x8c4c4b[_0x924229(0x279)][_0x924229(0x54c)]&&_0x8c4c4b[_0x924229(0x279)][_0x924229(0x54c)][_0x924229(0x56d)](_0x5f51d1=>{const _0x13530c=_0x924229;let _0x1650bb={'color':0xffffff,'intensity':0x0,'width':0xa,'height':0xa,'position':[0x0,0x0,0x0],'target':[0x0,0x0,0x0]};_0x1650bb=Object['assign'](_0x1650bb,_0x5f51d1);const _0x1eec6c=new RectAreaLight(_0x1650bb['color'],_0x1650bb['intensity'],_0x1650bb[_0x13530c(0x552)],_0x1650bb[_0x13530c(0x589)]);_0x1eec6c['position'][_0x13530c(0x4ec)](_0x1650bb[_0x13530c(0x26e)][0x0],_0x1650bb[_0x13530c(0x26e)][0x1],_0x1650bb['position'][0x2]),_0x1eec6c[_0x13530c(0x5cd)](0x0,0x0,0x0),_0x1eec6c[_0x13530c(0x3d7)][_0x13530c(0x507)]=_0x1650bb[_0x13530c(0x507)],this[_0x13530c(0x563)]['add'](_0x1eec6c),this['rectAreaLights'][_0x13530c(0x617)](_0x1eec6c);});this[_0x924229(0x4b3)]=[];_0x8c4c4b&&_0x8c4c4b[_0x924229(0x279)]&&_0x8c4c4b['lights'][_0x924229(0x4b3)]&&_0x8c4c4b['lights'][_0x924229(0x4b3)][_0x924229(0x56d)](_0x11b0c1=>{const _0x33e1df=_0x924229;let _0x45dc78={'color':0xffffff,'intensity':0x0,'distance':0x0,'decay':0x1,'position':[0x0,0x0,0x0],'near':0x1,'far':0x2710,'bias':0x0,'size':0x800};_0x45dc78=Object[_0x33e1df(0x402)](_0x45dc78,_0x11b0c1);const _0x3b96d5=new PointLight(_0x45dc78[_0x33e1df(0x229)],_0x45dc78[_0x33e1df(0x506)],_0x45dc78[_0x33e1df(0x474)],_0x45dc78[_0x33e1df(0x38a)]);_0x3b96d5[_0x33e1df(0x26e)][_0x33e1df(0x4ec)](_0x45dc78['position'][0x0],_0x45dc78[_0x33e1df(0x26e)][0x1],_0x45dc78[_0x33e1df(0x26e)][0x2]),_0x3b96d5[_0x33e1df(0x5b2)]=_0xbad314,_0x3b96d5[_0x33e1df(0x56a)][_0x33e1df(0x399)]=_0x45dc78[_0x33e1df(0x399)],_0x3b96d5[_0x33e1df(0x56a)][_0x33e1df(0x503)]['near']=_0x45dc78[_0x33e1df(0x129)],_0x3b96d5[_0x33e1df(0x56a)][_0x33e1df(0x503)]['far']=_0x45dc78['far'],_0x3b96d5[_0x33e1df(0x56a)][_0x33e1df(0x36e)]['width']=_0x45dc78[_0x33e1df(0x47b)],_0x3b96d5[_0x33e1df(0x56a)]['mapSize'][_0x33e1df(0x589)]=_0x45dc78['size'],_0x3b96d5[_0x33e1df(0x56a)][_0x33e1df(0x503)][_0x33e1df(0x4f9)](),_0x3b96d5[_0x33e1df(0x56a)][_0x33e1df(0x465)]=!![],this[_0x33e1df(0x563)][_0x33e1df(0x4bc)](_0x3b96d5),this[_0x33e1df(0x4b3)][_0x33e1df(0x617)](_0x3b96d5);});this[_0x924229(0x42b)]=[];_0x8c4c4b&&_0x8c4c4b[_0x924229(0x279)]&&_0x8c4c4b[_0x924229(0x279)][_0x924229(0x42b)]&&_0x8c4c4b['lights'][_0x924229(0x42b)][_0x924229(0x56d)](_0x24e2af=>{const _0x1fb621=_0x924229;let _0xe3f396={'color':0xffdcb2,'intensity':0x2,'position':[0x1,0x0,0x0],'mapSize':[0x800,0x800],'near':0.01,'far':0x2710,'bias':-0.0004,'distance':0x384,'target':[0x0,0x0,0x0]};_0xe3f396=Object[_0x1fb621(0x402)](_0xe3f396,_0x24e2af);let _0x29cdb1;this[_0x1fb621(0x1ed)]==_0x1fb621(0x1a1)&&(_0x29cdb1=new DirectionalLight(_0xe3f396[_0x1fb621(0x229)],_0xe3f396[_0x1fb621(0x506)]),_0x29cdb1['position'][_0x1fb621(0x4ec)](_0xe3f396[_0x1fb621(0x26e)][0x0],_0xe3f396['position'][0x1],_0xe3f396[_0x1fb621(0x26e)][0x2]),_0x29cdb1['target']['position'][_0x1fb621(0x4ec)](_0xe3f396[_0x1fb621(0x507)][0x0],_0xe3f396['target'][0x1],_0xe3f396[_0x1fb621(0x507)][0x2]),_0x29cdb1[_0x1fb621(0x5b2)]=_0xbad314,_0x29cdb1[_0x1fb621(0x56a)][_0x1fb621(0x36e)]['width']=_0xe3f396['mapSize'][0x0],_0x29cdb1[_0x1fb621(0x56a)][_0x1fb621(0x36e)][_0x1fb621(0x589)]=_0xe3f396[_0x1fb621(0x36e)][0x1],_0x29cdb1[_0x1fb621(0x56a)]['bias']=_0xe3f396[_0x1fb621(0x399)],_0x29cdb1[_0x1fb621(0x56a)][_0x1fb621(0x503)][_0x1fb621(0x129)]=_0xe3f396[_0x1fb621(0x129)],_0x29cdb1['shadow'][_0x1fb621(0x503)][_0x1fb621(0x4f0)]=_0xe3f396[_0x1fb621(0x4f0)],_0x29cdb1[_0x1fb621(0x56a)][_0x1fb621(0x503)]['left']=-_0xe3f396[_0x1fb621(0x474)],_0x29cdb1[_0x1fb621(0x56a)][_0x1fb621(0x503)]['right']=_0xe3f396[_0x1fb621(0x474)],_0x29cdb1['shadow'][_0x1fb621(0x503)]['top']=_0xe3f396['distance'],_0x29cdb1[_0x1fb621(0x56a)][_0x1fb621(0x503)][_0x1fb621(0x434)]=-_0xe3f396[_0x1fb621(0x474)],_0x29cdb1[_0x1fb621(0x56a)]['camera'][_0x1fb621(0x4f9)](),_0x29cdb1['shadow']['needsUpdate']=!![]),this[_0x1fb621(0x563)]['add'](_0x29cdb1[_0x1fb621(0x507)]),this[_0x1fb621(0x563)]['add'](_0x29cdb1),this['directionLights'][_0x1fb621(0x617)](_0x29cdb1);});this['spotLights']=[];_0x8c4c4b&&_0x8c4c4b['lights']&&_0x8c4c4b[_0x924229(0x279)][_0x924229(0x501)]&&_0x8c4c4b[_0x924229(0x279)][_0x924229(0x501)][_0x924229(0x56d)](_0x5e2241=>{const _0x227258=_0x924229;let _0x2bca01={'color':0xffdcb2,'intensity':0x2,'position':[-0x3e8,0x3e8,-0x3e8],'mapSize':[0x800,0x800],'decay':0x2,'near':0x1,'far':0x2710,'angle':0x2d*Math['PI']/0xb4,'distance':0x0,'penumbra':0.398,'bias':-0.0004,'focus':0x1};_0x2bca01=Object[_0x227258(0x402)](_0x2bca01,_0x5e2241);const _0x1081de=new SpotLight(_0x2bca01['color'],_0x2bca01[_0x227258(0x506)]);_0x1081de['position'][_0x227258(0x4ec)](_0x2bca01[_0x227258(0x26e)][0x0],_0x2bca01[_0x227258(0x26e)][0x1],_0x2bca01[_0x227258(0x26e)][0x2]),_0x1081de[_0x227258(0x38a)]=_0x2bca01['decay'],_0x1081de[_0x227258(0x474)]=_0x2bca01[_0x227258(0x474)],_0x1081de[_0x227258(0x437)]=_0x2bca01[_0x227258(0x437)],_0x1081de['castShadow']=_0xbad314,_0x1081de[_0x227258(0x56a)][_0x227258(0x36e)][_0x227258(0x552)]=_0x2bca01[_0x227258(0x36e)][0x0],_0x1081de['shadow']['mapSize'][_0x227258(0x589)]=_0x2bca01[_0x227258(0x36e)][0x1],_0x1081de[_0x227258(0x56a)][_0x227258(0x503)][_0x227258(0x129)]=_0x2bca01[_0x227258(0x129)],_0x1081de[_0x227258(0x56a)][_0x227258(0x503)][_0x227258(0x4f0)]=_0x2bca01[_0x227258(0x4f0)],_0x1081de[_0x227258(0x54f)]=_0x2bca01[_0x227258(0x54f)],_0x1081de[_0x227258(0x56a)][_0x227258(0x5ed)]=_0x2bca01[_0x227258(0x5ed)],_0x1081de[_0x227258(0x56a)][_0x227258(0x399)]=_0x2bca01[_0x227258(0x399)],_0x1081de[_0x227258(0x56a)][_0x227258(0x503)][_0x227258(0x4f9)](),_0x1081de[_0x227258(0x56a)][_0x227258(0x465)]=!![],this[_0x227258(0x563)][_0x227258(0x4bc)](_0x1081de[_0x227258(0x507)]),this[_0x227258(0x563)]['add'](_0x1081de),this['spotLights']['push'](_0x1081de);});if(_0x8c4c4b&&_0x8c4c4b[_0x924229(0x279)]&&_0x8c4c4b[_0x924229(0x279)]['ambientLight']){let _0xf3a8b0={'intensity':0x1,'color':0xffffff};_0xf3a8b0=Object[_0x924229(0x402)](_0xf3a8b0,_0x8c4c4b[_0x924229(0x279)][_0x924229(0x392)]),this['ambientLight']=new AmbientLight(_0xf3a8b0[_0x924229(0x229)],_0xf3a8b0[_0x924229(0x506)]),this[_0x924229(0x563)]['add'](this['ambientLight']);}}[_0x49cdc8(0x267)](_0x3b6cd5,_0x124137){const _0x20d452=_0x49cdc8,_0x9a11bc=_0x3b6cd5&&_0x3b6cd5[_0x20d452(0x452)]!=undefined?_0x3b6cd5[_0x20d452(0x452)]:[];this['hdrUrls']=_0x9a11bc;if(_0x9a11bc[_0x20d452(0x25b)]==0x1)this['pmremGenerator'][_0x20d452(0x57d)](),this['hdrLoader'][_0x20d452(0x5bf)](UnsignedByteType)[_0x20d452(0x381)](this[_0x20d452(0x4a7)]+_0x9a11bc[0x0],_0x103f63=>{const _0x4059a7=_0x20d452,_0x1ba61c=this[_0x4059a7(0x146)][_0x4059a7(0x2df)](_0x103f63)[_0x4059a7(0x50d)];this[_0x4059a7(0x146)][_0x4059a7(0x2af)](),this[_0x4059a7(0x3b5)]=_0x1ba61c,_0x124137&&_0x124137(_0x3b6cd5);});else{if(_0x9a11bc[_0x20d452(0x25b)]==0x6){this[_0x20d452(0x146)][_0x20d452(0x5ab)]();const _0xf0fb79=[];_0x9a11bc[_0x20d452(0x56d)](_0x2d13f6=>{const _0x4de01e=_0x20d452;_0xf0fb79[_0x4de01e(0x617)](this['publicPath']+_0x2d13f6);}),this[_0x20d452(0x2d3)][_0x20d452(0x381)](_0xf0fb79,_0x40c69e=>{const _0x49d7ff=_0x20d452,_0x205acb=this[_0x49d7ff(0x146)][_0x49d7ff(0x516)](_0x40c69e)[_0x49d7ff(0x50d)];this[_0x49d7ff(0x146)][_0x49d7ff(0x2af)](),this[_0x49d7ff(0x3b5)]=_0x205acb,_0x124137&&_0x124137(_0x3b6cd5);});}}}[_0x49cdc8(0x5b3)](_0x3d1993){const _0x29212f=_0x49cdc8;if(!_0x3d1993||!_0x3d1993[_0x29212f(0x5b6)]||!(_0x3d1993[_0x29212f(0x5b6)]instanceof Array)||_0x3d1993[_0x29212f(0x5b6)][_0x29212f(0x25b)]==0x0){_0x3d1993&&_0x3d1993[_0x29212f(0x164)]&&_0x3d1993[_0x29212f(0x164)](this);return;}const _0x361dd8=_0x3d1993&&_0x3d1993['enableShadow']!=undefined?_0x3d1993[_0x29212f(0x622)]:![],_0x221712=[];_0x3d1993[_0x29212f(0x5b6)][_0x29212f(0x56d)](_0x2e0c40=>{const _0x301d2f=_0x29212f;_0x221712['push'](this[_0x301d2f(0x4a7)]+_0x2e0c40);});const _0x5d41e9=_0x221712[_0x29212f(0x25b)];let _0x8a2c9=0x0;_0x221712['forEach']((_0x79d1b2,_0x3eefe0)=>{const _0x6d0cb2=_0x29212f,_0x891fee=_0x79d1b2[_0x6d0cb2(0x1e9)]('/'),_0x57bff2=_0x891fee[_0x891fee[_0x6d0cb2(0x25b)]-0x1],_0x286c5c=_0x57bff2[_0x6d0cb2(0x35c)]('/'),_0x19a627=_0x57bff2[_0x6d0cb2(0x48b)]('.'),_0x486625=_0x57bff2[_0x6d0cb2(0x425)](_0x286c5c+0x1,_0x19a627),_0x1d4643=_0x57bff2[_0x6d0cb2(0x425)](_0x19a627+0x1,_0x57bff2[_0x6d0cb2(0x25b)]);if([_0x6d0cb2(0x1b0),'gltf'][_0x6d0cb2(0x1d3)](_0x1d4643[_0x6d0cb2(0x609)]()))this[_0x6d0cb2(0x133)][_0x6d0cb2(0x381)](_0x79d1b2,_0x29f27f=>{const _0x1c6f24=_0x6d0cb2,_0x1af809=_0x29f27f[_0x1c6f24(0x563)],_0x95440=_0x1c6f24(0x35b)+_0x486625+'_'+_0x3eefe0;traverseGenerateUUID(_0x1af809,_0x95440);if(_0x29f27f['animations'][_0x1c6f24(0x25b)]!=0x0)for(var _0x310a8b=0x0;_0x310a8b<_0x29f27f[_0x1c6f24(0x495)][_0x1c6f24(0x25b)];_0x310a8b++){const _0x26cf1c=new AnimationMixer(_0x1af809);_0x26cf1c[_0x1c6f24(0x283)]=_0x29f27f['animations'][_0x310a8b]['name'],this[_0x1c6f24(0x354)]['push'](_0x26cf1c);const _0xf4188b=_0x26cf1c[_0x1c6f24(0x167)](_0x29f27f[_0x1c6f24(0x495)][_0x310a8b])[_0x1c6f24(0x5c9)]();_0xf4188b['paused']=!![],_0x26cf1c[_0x1c6f24(0x10f)]=_0xf4188b,this['mixerActions'][_0x1c6f24(0x617)](_0xf4188b);}_0x1af809[_0x1c6f24(0x283)]=_0x486625,_0x1af809[_0x1c6f24(0x3d7)][_0x1c6f24(0x4aa)]=_0x79d1b2,_0x1af809[_0x1c6f24(0x1a6)](_0x18c843=>{const _0x5441ab=_0x1c6f24;_0x18c843[_0x5441ab(0x365)]&&(_0x18c843[_0x5441ab(0x5b2)]=_0x361dd8,_0x18c843['receiveShadow']=_0x361dd8,_0x18c843['material'][_0x5441ab(0x3b5)]=this['envMap'],_0x18c843[_0x5441ab(0x4b8)]=_0x18c843[_0x5441ab(0x4b8)][_0x5441ab(0x32a)](),_0x18c843[_0x5441ab(0x5a9)]=MODEL_RENDER_ORDER,this[_0x5441ab(0x1db)]['push'](_0x18c843),this[_0x5441ab(0x10e)][_0x5441ab(0x617)](_0x18c843));}),this[_0x1c6f24(0x563)][_0x1c6f24(0x4bc)](_0x1af809),this[_0x1c6f24(0x4f6)][_0x1c6f24(0x617)](_0x1af809),this[_0x1c6f24(0x3dd)][_0x486625]=_0x29f27f['animations'],_0x8a2c9++,_0x3d1993&&_0x3d1993[_0x1c6f24(0x5a6)]&&_0x3d1993[_0x1c6f24(0x5a6)](_0x1af809),_0x8a2c9==_0x5d41e9&&(_0x3d1993&&_0x3d1993[_0x1c6f24(0x164)]&&_0x3d1993[_0x1c6f24(0x164)](this));},_0x6c934e=>{},_0x5e9412=>{console['error'](_0x5e9412);});else{if([_0x6d0cb2(0x1df)][_0x6d0cb2(0x1d3)](_0x1d4643[_0x6d0cb2(0x609)]()))this[_0x6d0cb2(0x4c4)]['load'](_0x79d1b2,_0x11634c=>{const _0x7b2dd2=_0x6d0cb2,_0x2702f5=_0x11634c,_0x1486bc=_0x7b2dd2(0x35b)+_0x486625+'_'+_0x3eefe0;traverseGenerateUUID(_0x2702f5,_0x1486bc),_0x2702f5['name']=_0x486625,_0x2702f5[_0x7b2dd2(0x1a6)](_0x489d4f=>{const _0x167358=_0x7b2dd2;_0x489d4f[_0x167358(0x365)]&&(_0x489d4f[_0x167358(0x5b2)]=_0x361dd8,_0x489d4f[_0x167358(0x55c)]=_0x361dd8,_0x489d4f['renderOrder']=MODEL_RENDER_ORDER,this[_0x167358(0x1db)]['push'](_0x489d4f),this[_0x167358(0x10e)]['push'](_0x489d4f));}),this['scene'][_0x7b2dd2(0x4bc)](_0x2702f5),this['sceneModels'][_0x7b2dd2(0x617)](_0x2702f5),_0x8a2c9++,_0x3d1993&&_0x3d1993[_0x7b2dd2(0x5a6)]&&_0x3d1993[_0x7b2dd2(0x5a6)](_0x2702f5),_0x8a2c9==_0x5d41e9&&(_0x3d1993&&_0x3d1993[_0x7b2dd2(0x164)]&&_0x3d1993[_0x7b2dd2(0x164)](this));});else throw new Error(_0x1d4643+_0x6d0cb2(0x174));}});}[_0x49cdc8(0x1f8)](_0x433ea9){const _0x573cc0=_0x49cdc8,_0x39e70a={'format':RGBEFormat,'magFilter':LinearFilter,'minFilter':LinearFilter};let _0x55e766=this[_0x573cc0(0x112)];this[_0x573cc0(0x1ed)]=='firstPerson'&&(_0x55e766=this[_0x573cc0(0x128)]);this['renderPass']=new RenderPass(this[_0x573cc0(0x563)],_0x55e766);const _0x5d01bb=this['renderer'][_0x573cc0(0x260)](new Vector2());let _0x2c5ae1={'supersampling':![]};Object[_0x573cc0(0x402)](_0x2c5ae1,_0x433ea9&&_0x433ea9[_0x573cc0(0x398)]);const _0x25781f=_0x2c5ae1['supersampling']?_0x5d01bb[_0x573cc0(0x552)]*0x2:_0x5d01bb['width'],_0x1f57ea=_0x2c5ae1[_0x573cc0(0x436)]?_0x5d01bb[_0x573cc0(0x589)]*0x2:_0x5d01bb['height'];this[_0x573cc0(0x436)]=_0x2c5ae1['supersampling'],this[_0x573cc0(0x401)]=new WebGLMultisampleRenderTarget(_0x25781f,_0x1f57ea,_0x39e70a),this[_0x573cc0(0x2c1)]=new EffectComposer(this['renderer'],this['msaaTarget']),this[_0x573cc0(0x2c1)][_0x573cc0(0x2db)](this[_0x573cc0(0x5d5)]),this['bloomComposer']=new EffectComposer(this[_0x573cc0(0x4ac)],this['msaaTarget']),this[_0x573cc0(0x573)][_0x573cc0(0x29e)]=![],this[_0x573cc0(0x573)]['addPass'](this[_0x573cc0(0x5d5)]);const _0x11e0de={'hue':0x0,'sataturation':0x1,'vibrance':0x0,'brightness':0x0,'contrast':0x1};Object[_0x573cc0(0x402)](_0x11e0de,_0x433ea9?.['nodePass']),this[_0x573cc0(0x24b)]=new NodePass();const _0x1fdc77=new ScreenNode(),_0x503d57=new FloatNode(_0x11e0de['hue']),_0x3e950f=new FloatNode(_0x11e0de['sataturation']),_0x1802f3=new FloatNode(_0x11e0de[_0x573cc0(0x45d)]),_0x4c4670=new FloatNode(_0x11e0de[_0x573cc0(0x606)]),_0x464575=new FloatNode(_0x11e0de[_0x573cc0(0x421)]),_0x5ad110=new ColorAdjustmentNode(_0x1fdc77,_0x503d57,ColorAdjustmentNode['HUE']),_0x31bf1b=new ColorAdjustmentNode(_0x5ad110,_0x3e950f,ColorAdjustmentNode[_0x573cc0(0x193)]),_0x103f66=new ColorAdjustmentNode(_0x31bf1b,_0x1802f3,ColorAdjustmentNode[_0x573cc0(0x221)]),_0x5a1a36=new ColorAdjustmentNode(_0x103f66,_0x4c4670,ColorAdjustmentNode[_0x573cc0(0x30a)]),_0x259f4f=new ColorAdjustmentNode(_0x5a1a36,_0x464575,ColorAdjustmentNode['CONTRAST']);this[_0x573cc0(0x24b)][_0x573cc0(0x141)]=_0x259f4f,this[_0x573cc0(0x24b)][_0x573cc0(0x13a)]=_0x433ea9?.[_0x573cc0(0x356)],this['sceneComposer']['addPass'](this[_0x573cc0(0x24b)]);const _0x1756c6=_0x433ea9&&_0x433ea9['background']!=undefined&&_0x433ea9[_0x573cc0(0x21d)][_0x573cc0(0x26f)]===_0x573cc0(0x229)?new Color(_0x433ea9[_0x573cc0(0x21d)][_0x573cc0(0x4ba)]):new Color();let _0x5b9a0a={'level':0x1,'unbiased':!![]};Object['assign'](_0x5b9a0a,_0x433ea9&&_0x433ea9['ssaa']),this['ssaaPass']=new SSAARenderPass(this[_0x573cc0(0x563)],_0x55e766,_0x1756c6,0x0),this[_0x573cc0(0x10b)][_0x573cc0(0x40e)]=_0x5b9a0a[_0x573cc0(0x3da)],this[_0x573cc0(0x10b)]['unbiased']=_0x5b9a0a[_0x573cc0(0x1fe)],this[_0x573cc0(0x2c1)][_0x573cc0(0x2db)](this['ssaaPass']);const _0x482295=_0x433ea9&&_0x433ea9[_0x573cc0(0x2dc)]!=undefined?_0x433ea9[_0x573cc0(0x2dc)]:![];this[_0x573cc0(0x10b)][_0x573cc0(0x13a)]=_0x482295;let _0x28d639={'renderer':this['renderer'],'scene':this['scene'],'camera':_0x55e766,'width':this['containerWidth'],'height':this['containerHeight'],'selects':[],'groundReflector':null,'encoding':LinearEncoding,'maxDistance':0xc8};_0x28d639=Object[_0x573cc0(0x402)](_0x28d639,_0x433ea9&&_0x433ea9[_0x573cc0(0x629)]),this['ssrPass']=new SSRPass(_0x28d639),this['ssrPass']['maxDistance']=0xc8;const _0xd3ee01=_0x433ea9&&_0x433ea9[_0x573cc0(0x389)]!=undefined?_0x433ea9[_0x573cc0(0x389)]:![];this[_0x573cc0(0x2cb)]['enabled']=_0xd3ee01,this[_0x573cc0(0x2c1)][_0x573cc0(0x2db)](this[_0x573cc0(0x2cb)]);let _0x2ffaf7={'factor':2.2};_0x2ffaf7=Object[_0x573cc0(0x402)](_0x2ffaf7,_0x433ea9&&_0x433ea9['gamma']),this[_0x573cc0(0x50b)]=new ShaderPass(new ShaderMaterial({'uniforms':{'tDiffuse':{'value':null},'factor':{'value':_0x2ffaf7[_0x573cc0(0x257)]}},'vertexShader':gammaVertexShader,'fragmentShader':gammaFragmentShader}));const _0x3830b5=_0x433ea9&&_0x433ea9[_0x573cc0(0x1b9)]!=undefined?_0x433ea9[_0x573cc0(0x1b9)]:!![];this['sceneComposer'][_0x573cc0(0x2db)](this[_0x573cc0(0x50b)]),this['gammaPass']['enabled']=_0x3830b5;let _0x4d82bc={'bloomStrength':1.5,'bloomRadius':0x0,'threshold':0.85};_0x4d82bc=Object['assign'](_0x4d82bc,_0x433ea9&&_0x433ea9[_0x573cc0(0x19b)]),this[_0x573cc0(0x591)]=new UnrealBloomPass(new Vector2(this['containerWidth'],this[_0x573cc0(0x1fa)]),_0x4d82bc['bloomStrength'],_0x4d82bc[_0x573cc0(0x560)],_0x4d82bc[_0x573cc0(0x1e6)]);const _0x1671ef=_0x433ea9&&_0x433ea9[_0x573cc0(0x155)]!=undefined?_0x433ea9[_0x573cc0(0x155)]:![];this['bloomPass'][_0x573cc0(0x13a)]=_0x1671ef,this[_0x573cc0(0x573)][_0x573cc0(0x2db)](this[_0x573cc0(0x591)]),this[_0x573cc0(0x393)]=new ShaderPass(new ShaderMaterial({'uniforms':{'baseTexture':{'value':null},'bloomTexture':{'value':this['bloomComposer'][_0x573cc0(0x196)]['texture']}},'vertexShader':bloomVertexShader,'fragmentShader':bloomFragShader}),_0x573cc0(0x557)),this[_0x573cc0(0x393)]['needsSwap']=!![],this[_0x573cc0(0x2c1)]['addPass'](this['finalbloomPass']);let _0x359c41={'focus':0x64,'aperture':0.00001,'maxblur':0.01,'width':this[_0x573cc0(0x1f9)],'height':this[_0x573cc0(0x1fa)]};_0x359c41=Object[_0x573cc0(0x402)](_0x359c41,_0x433ea9&&_0x433ea9[_0x573cc0(0x321)]),this[_0x573cc0(0x4a2)]=new BokehPass(this['scene'],_0x55e766,_0x359c41),this['sceneComposer']['addPass'](this[_0x573cc0(0x4a2)]);const _0x52be1e=_0x433ea9&&_0x433ea9[_0x573cc0(0x2f1)]!=undefined?_0x433ea9[_0x573cc0(0x2f1)]:![];this['bokehPass'][_0x573cc0(0x13a)]=_0x52be1e;let _0x58146a={'edgeStrength':0x3,'edgeGlow':0x0,'edgeThickness':0x1,'pulsePeriod':0x0,'visibleEdgeColor':_0x573cc0(0x1c1),'hiddenEdgeColor':_0x573cc0(0x57a)};_0x58146a=Object[_0x573cc0(0x402)](_0x58146a,_0x433ea9&&_0x433ea9['outline']),this[_0x573cc0(0x202)]=new OutlinePass(new Vector2(this['containerWidth'],this[_0x573cc0(0x1fa)]),this[_0x573cc0(0x563)],_0x55e766,this['outlineObjects']),this[_0x573cc0(0x202)]['edgeStrength']=_0x58146a['edgeStrength'],this['outlinePass']['edgeGlow']=_0x58146a[_0x573cc0(0x3d3)],this['outlinePass']['edgeThickness']=_0x58146a[_0x573cc0(0x3b2)],this[_0x573cc0(0x202)]['pulsePeriod']=_0x58146a[_0x573cc0(0x4fc)],this[_0x573cc0(0x202)][_0x573cc0(0x555)][_0x573cc0(0x4ec)](_0x58146a[_0x573cc0(0x555)]),this['outlinePass'][_0x573cc0(0x2c9)]['set'](_0x58146a[_0x573cc0(0x2c9)]),this[_0x573cc0(0x2c1)]['addPass'](this[_0x573cc0(0x202)]);const _0x53aa9a=_0x433ea9&&_0x433ea9[_0x573cc0(0x432)]!=undefined?_0x433ea9[_0x573cc0(0x432)]:![];this['outlinePass']['enabled']=_0x53aa9a;const _0x1fc07f=_0x433ea9&&_0x433ea9['ssrtEnabled']!=undefined?_0x433ea9[_0x573cc0(0x17a)]:![];_0x1fc07f&&(this['ssrSkyBox']=new SSRSkyBox(null,_0x55e766,this[_0x573cc0(0x4ac)]),this[_0x573cc0(0x2c1)][_0x573cc0(0x2db)](this[_0x573cc0(0x527)]),this[_0x573cc0(0x5f5)]=new DoubleDepthBufferPass(this['scene'][_0x573cc0(0x32a)](!![]),_0x55e766,this[_0x573cc0(0x4ac)]),this[_0x573cc0(0x2c1)][_0x573cc0(0x2db)](this[_0x573cc0(0x5f5)]),this[_0x573cc0(0x26b)]=new SSRTPass(this[_0x573cc0(0x563)][_0x573cc0(0x32a)](!![]),this[_0x573cc0(0x5f5)],_0x55e766,this[_0x573cc0(0x4ac)]),this[_0x573cc0(0x2c1)][_0x573cc0(0x2db)](this[_0x573cc0(0x26b)]));}['setSkyBox'](_0x3bd15c,_0x2aa41f){const _0x1467bd=_0x49cdc8;if(!(_0x3bd15c instanceof Array))return;const _0x418b85=this['attrs'],_0x4c91bd=_0x418b85&&_0x418b85[_0x1467bd(0x21d)]&&_0x418b85['background'][_0x1467bd(0x15a)]&&_0x418b85[_0x1467bd(0x21d)][_0x1467bd(0x15a)][_0x1467bd(0x17e)]?_0x418b85[_0x1467bd(0x21d)]['options'][_0x1467bd(0x17e)]:0x1,_0x2e20c0=_0x418b85&&_0x418b85[_0x1467bd(0x21d)]&&_0x418b85[_0x1467bd(0x21d)][_0x1467bd(0x15a)]&&_0x418b85[_0x1467bd(0x21d)][_0x1467bd(0x15a)][_0x1467bd(0x27e)]?_0x418b85[_0x1467bd(0x21d)][_0x1467bd(0x15a)][_0x1467bd(0x27e)]:[0x0,0x0,0x0],_0x2da7a8=_0x418b85&&_0x418b85[_0x1467bd(0x21d)]&&_0x418b85[_0x1467bd(0x21d)]['options']&&_0x418b85[_0x1467bd(0x21d)][_0x1467bd(0x15a)]['fog']?_0x418b85[_0x1467bd(0x21d)][_0x1467bd(0x15a)][_0x1467bd(0x4f1)]:![],_0x20021a=0xc350;this[_0x1467bd(0x20c)]=_0x20021a;if(_0x3bd15c[_0x1467bd(0x25b)]==0x6){const _0x4a792f=[],_0x3c9312=[];_0x3bd15c['forEach'](_0x316bde=>{const _0x24a826=_0x1467bd;_0x4a792f[_0x24a826(0x617)](loadTex(this[_0x24a826(0x199)],this[_0x24a826(0x4a7)]+_0x316bde));}),Promise[_0x1467bd(0x2f0)](_0x4a792f)[_0x1467bd(0x1b1)](_0xe2ccac=>{const _0x1b5ca8=_0x1467bd;_0xe2ccac[_0x1b5ca8(0x56d)](_0xc0aaee=>{const _0x188ad0=_0x1b5ca8,_0x245d82=new MeshBasicMaterial({'map':_0xc0aaee,'side':0x2,'transparent':!![],'opacity':0x1,'fog':_0x2da7a8});_0x3c9312[_0x188ad0(0x617)](_0x245d82);});const _0x560c49=new BoxGeometry(_0x20021a,_0x20021a,_0x20021a),_0x406fe4=new Mesh(_0x560c49,_0x3c9312);_0x406fe4[_0x1b5ca8(0x17e)][_0x1b5ca8(0x4ec)](_0x4c91bd,_0x4c91bd,_0x4c91bd),_0x406fe4[_0x1b5ca8(0x27e)][_0x1b5ca8(0x4ec)](_0x2e20c0[0x0],_0x2e20c0[0x1],_0x2e20c0[0x2]),_0x406fe4[_0x1b5ca8(0x5a9)]=SKY_RENDER_ORDER,_0x406fe4[_0x1b5ca8(0x26f)]=_0x1b5ca8(0x5b4),this[_0x1b5ca8(0xfd)]?(this[_0x1b5ca8(0xfd)][_0x1b5ca8(0x2d9)]=_0x560c49,this['sky'][_0x1b5ca8(0x4b8)]=_0x3c9312):(this['scene'][_0x1b5ca8(0x4bc)](_0x406fe4),this[_0x1b5ca8(0xfd)]=_0x406fe4),this[_0x1b5ca8(0xfd)]['userData'][_0x1b5ca8(0x4ba)]=_0x3bd15c,_0x2aa41f&&_0x2aa41f(this[_0x1b5ca8(0xfd)]);});}else _0x3bd15c[_0x1467bd(0x25b)]==0x1&&this[_0x1467bd(0x199)]['load'](this[_0x1467bd(0x4a7)]+_0x3bd15c[0x0],_0x5c44db=>{const _0xdced2f=_0x1467bd,_0x35be15=new MeshBasicMaterial({'map':_0x5c44db,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x2da7a8}),_0x667213=new SphereGeometry(_0x20021a,0x3c,0x3c),_0x261682=new Mesh(_0x667213,_0x35be15);_0x261682[_0xdced2f(0x17e)][_0xdced2f(0x4ec)](_0x4c91bd,_0x4c91bd,_0x4c91bd),_0x261682[_0xdced2f(0x27e)][_0xdced2f(0x4ec)](_0x2e20c0[0x0],_0x2e20c0[0x1],_0x2e20c0[0x2]),_0x261682[_0xdced2f(0x5a9)]=SKY_RENDER_ORDER,_0x261682[_0xdced2f(0x26f)]=_0xdced2f(0x5b4),this[_0xdced2f(0xfd)]?(this[_0xdced2f(0xfd)]['geometry']=_0x667213,this[_0xdced2f(0xfd)][_0xdced2f(0x4b8)]=_0x35be15):(this[_0xdced2f(0x563)][_0xdced2f(0x4bc)](_0x261682),this[_0xdced2f(0xfd)]=_0x261682),this[_0xdced2f(0xfd)][_0xdced2f(0x3d7)]['value']=_0x3bd15c,_0x2aa41f&&_0x2aa41f(this[_0xdced2f(0xfd)]);});}[_0x49cdc8(0x226)](_0x1e6ef3,_0x2a2e1f){const _0x1f3c8f=_0x49cdc8;if(!(_0x1e6ef3 instanceof Array))return;if(_0x1e6ef3[_0x1f3c8f(0x25b)]==0x1)this[_0x1f3c8f(0x146)][_0x1f3c8f(0x57d)](),this[_0x1f3c8f(0x5ce)][_0x1f3c8f(0x5bf)](UnsignedByteType)[_0x1f3c8f(0x381)](this[_0x1f3c8f(0x4a7)]+_0x1e6ef3[0x0],_0x12f9c3=>{const _0x155598=_0x1f3c8f,_0x361a1e=this[_0x155598(0x146)]['fromEquirectangular'](_0x12f9c3)[_0x155598(0x50d)];this[_0x155598(0x146)][_0x155598(0x2af)](),this['envMap']=_0x361a1e,this[_0x155598(0x563)]['traverse'](_0x4afef3=>{const _0x58d70e=_0x155598;_0x4afef3['isMesh']&&(_0x4afef3[_0x58d70e(0x4b8)][_0x58d70e(0x3b5)]=_0x361a1e);}),_0x2a2e1f&&_0x2a2e1f(this[_0x155598(0x3b5)]);});else{if(_0x1e6ef3['length']==0x6){this[_0x1f3c8f(0x146)][_0x1f3c8f(0x5ab)]();const _0x3c7e89=[];_0x3c7e89[_0x1f3c8f(0x56d)](_0x47f7c7=>{const _0x492aad=_0x1f3c8f;_0x3c7e89[_0x492aad(0x617)](this['publicPath']+_0x47f7c7);}),this[_0x1f3c8f(0x2d3)]['load'](_0x3c7e89,_0x1a622c=>{const _0x256ede=_0x1f3c8f,_0x330039=this[_0x256ede(0x146)]['fromCubemap'](_0x1a622c)[_0x256ede(0x50d)];this[_0x256ede(0x146)][_0x256ede(0x2af)](),this[_0x256ede(0x3b5)]=_0x330039,this[_0x256ede(0x563)][_0x256ede(0x1a6)](_0x2ec874=>{const _0x450d8c=_0x256ede;_0x2ec874['isMesh']&&(_0x2ec874[_0x450d8c(0x4b8)][_0x450d8c(0x3b5)]=_0x330039);}),_0x2a2e1f&&_0x2a2e1f(this['envMap']);});}}}[_0x49cdc8(0x568)](_0x7a0ca5){this['scene']['add'](_0x7a0ca5);}[_0x49cdc8(0x410)](_0x557a23){const _0x39380a=_0x49cdc8;this[_0x39380a(0x563)][_0x39380a(0x410)](_0x557a23);const _0x3ef306=this['children'][_0x39380a(0x48b)](_0x557a23);this[_0x39380a(0x10e)][_0x39380a(0x4db)](_0x3ef306,0x1);}[_0x49cdc8(0x4b1)](_0x5136f5){const _0x1b3f24=_0x49cdc8;for(const _0x24634e in this[_0x1b3f24(0x10e)]){if(this[_0x1b3f24(0x10e)][_0x24634e]['name']==_0x5136f5)return this[_0x1b3f24(0x10e)][_0x24634e];}}[_0x49cdc8(0x459)](_0x2d8c3f){const _0x2eee22=_0x49cdc8,_0x3131d6=[];for(const _0x2fcfc3 in this['children']){this[_0x2eee22(0x10e)][_0x2fcfc3][_0x2eee22(0x283)]==_0x2d8c3f&&_0x3131d6[_0x2eee22(0x617)](this[_0x2eee22(0x10e)][_0x2fcfc3]);}return _0x3131d6;}[_0x49cdc8(0x338)](_0x376aab){const _0x4f7245=_0x49cdc8;for(const _0x195673 in this[_0x4f7245(0x10e)]){if(this[_0x4f7245(0x10e)][_0x195673][_0x4f7245(0x309)]==_0x376aab)return this[_0x4f7245(0x10e)][_0x195673];}}[_0x49cdc8(0x22c)](_0x51641b){const _0x87e253=_0x49cdc8,_0x57bfe7=[];for(const _0x3dff74 in this[_0x87e253(0x10e)]){this[_0x87e253(0x10e)][_0x3dff74][_0x87e253(0x26f)]==_0x51641b&&_0x57bfe7[_0x87e253(0x617)](this['children'][_0x3dff74]);}return _0x57bfe7;}[_0x49cdc8(0x1c4)](_0x5d1c31){const _0x5640f1=_0x49cdc8;if(this[_0x5640f1(0x1ed)]!='orbit')return;const {target:_0x2a11e4,callback:_0x2f78b3,polarAngle:_0x4388c2,azimuthalAngle:_0x5d0d0a,distance:_0x5b4382}=_0x5d1c31,_0x3be410=new Vector3();if(_0x2a11e4 instanceof Vector3)_0x3be410[_0x5640f1(0x613)](_0x2a11e4);else _0x2a11e4 instanceof Array&&_0x3be410[_0x5640f1(0x4ec)](_0x2a11e4[0x0],_0x2a11e4[0x1],_0x2a11e4[0x2]);const _0x2d85b4=new Vector3()[_0x5640f1(0x346)](this[_0x5640f1(0x112)]['position'],this[_0x5640f1(0x122)][_0x5640f1(0x507)]),_0x1f07f7=new Spherical()[_0x5640f1(0x21a)](_0x2d85b4);if(_0x4388c2!==undefined)_0x1f07f7['phi']=_0x4388c2;if(_0x5d0d0a!==undefined)_0x1f07f7['theta']=_0x5d0d0a;if(_0x5b4382!==undefined)_0x1f07f7['radius']=_0x5b4382;_0x2d85b4['setFromSpherical'](_0x1f07f7);const _0x4f8b0b=new Vector3();_0x4f8b0b[_0x5640f1(0x613)](_0x3be410)[_0x5640f1(0x4bc)](_0x2d85b4),_0x4f8b0b[_0x5640f1(0x39b)](this[_0x5640f1(0x112)][_0x5640f1(0x26e)])<0.0001?(this[_0x5640f1(0x112)][_0x5640f1(0x26e)][_0x5640f1(0x613)](_0x4f8b0b),this[_0x5640f1(0x122)]['target']['copy'](_0x3be410),_0x2f78b3&&_0x2f78b3()):(new Tween(this[_0x5640f1(0x122)][_0x5640f1(0x507)])['to'](_0x3be410,0x320)['start'](),new Tween(this[_0x5640f1(0x112)][_0x5640f1(0x26e)])['to'](_0x4f8b0b,0x320)[_0x5640f1(0x3cb)]()['onComplete'](()=>{_0x2f78b3&&_0x2f78b3();}));}['addBloomSpecial'](_0x2a0e08){const _0x2746fd=_0x49cdc8;_0x2a0e08[_0x2746fd(0x18f)][_0x2746fd(0x4fe)](0x2);}[_0x49cdc8(0x4cb)](_0x20a775){const _0x2bc2df=_0x49cdc8;_0x20a775[_0x2bc2df(0x18f)][_0x2bc2df(0x292)](0x2);}[_0x49cdc8(0x416)](_0xe3f8de){const _0x292eac=_0x49cdc8;_0xe3f8de['layers'][_0x292eac(0x4fe)](0x1);}[_0x49cdc8(0x334)](_0x59ab3b){const _0x302bee=_0x49cdc8;_0x59ab3b[_0x302bee(0x18f)][_0x302bee(0x292)](0x1);}[_0x49cdc8(0x390)]({fileList:_0x2427ba,onLoad:_0x1cce63}){const _0xca5026=_0x49cdc8,_0x69c362=_0x2427ba[_0xca5026(0x25b)];if(_0x69c362==0x0)return;if(_0x69c362==0x1){this[_0xca5026(0x146)][_0xca5026(0x57d)]();const _0x589b27=new FileReader();_0x589b27[_0xca5026(0x5e7)](_0x2427ba[0x0]),_0x589b27['onload']=_0x253d66=>{const _0x54e3c8=_0xca5026,_0x5ba533=_0x253d66[_0x54e3c8(0x507)]?.[_0x54e3c8(0x337)],_0x239f9c=new DataTexture(null,0x1,0x1,undefined,undefined,undefined,undefined,undefined,NearestFilter,NearestFilter,undefined,undefined),_0x261554=this[_0x54e3c8(0x5ce)]['setDataType'](UnsignedByteType)[_0x54e3c8(0x16e)](_0x5ba533);if(!_0x261554)return;if(_0x261554[_0x54e3c8(0x15f)]!==undefined)_0x239f9c[_0x54e3c8(0x15f)]=_0x261554[_0x54e3c8(0x15f)];else _0x261554[_0x54e3c8(0x475)]!==undefined&&(_0x239f9c[_0x54e3c8(0x15f)][_0x54e3c8(0x552)]=_0x261554[_0x54e3c8(0x552)],_0x239f9c[_0x54e3c8(0x15f)]['height']=_0x261554[_0x54e3c8(0x589)],_0x239f9c['image'][_0x54e3c8(0x475)]=_0x261554[_0x54e3c8(0x475)]);_0x239f9c[_0x54e3c8(0x3de)]=_0x261554[_0x54e3c8(0x3de)]!==undefined?_0x261554['wrapS']:ClampToEdgeWrapping,_0x239f9c[_0x54e3c8(0x28d)]=_0x261554[_0x54e3c8(0x28d)]!==undefined?_0x261554[_0x54e3c8(0x28d)]:ClampToEdgeWrapping,_0x239f9c[_0x54e3c8(0x5e8)]=_0x261554[_0x54e3c8(0x5e8)]!==undefined?_0x261554[_0x54e3c8(0x5e8)]:LinearFilter,_0x239f9c[_0x54e3c8(0x1ad)]=_0x261554['minFilter']!==undefined?_0x261554['minFilter']:LinearFilter,_0x239f9c['anisotropy']=_0x261554[_0x54e3c8(0x470)]!==undefined?_0x261554[_0x54e3c8(0x470)]:0x1;_0x261554['encoding']!==undefined&&(_0x239f9c[_0x54e3c8(0x52d)]=_0x261554[_0x54e3c8(0x52d)]);_0x261554[_0x54e3c8(0x4e8)]!==undefined&&(_0x239f9c['flipY']=_0x261554[_0x54e3c8(0x4e8)]);_0x261554[_0x54e3c8(0x2c8)]!==undefined&&(_0x239f9c[_0x54e3c8(0x2c8)]=_0x261554[_0x54e3c8(0x2c8)]);_0x261554[_0x54e3c8(0x26f)]!==undefined&&(_0x239f9c['type']=_0x261554[_0x54e3c8(0x26f)]);_0x261554[_0x54e3c8(0x117)]!==undefined&&(_0x239f9c[_0x54e3c8(0x117)]=_0x261554[_0x54e3c8(0x117)],_0x239f9c[_0x54e3c8(0x1ad)]=LinearMipmapLinearFilter);_0x261554[_0x54e3c8(0x154)]===0x1&&(_0x239f9c[_0x54e3c8(0x1ad)]=LinearFilter);_0x261554[_0x54e3c8(0x57f)]!==undefined&&(_0x239f9c[_0x54e3c8(0x57f)]=_0x261554[_0x54e3c8(0x57f)]);_0x239f9c[_0x54e3c8(0x465)]=!![];const _0x2571a6=this[_0x54e3c8(0x146)][_0x54e3c8(0x2df)](_0x239f9c)[_0x54e3c8(0x50d)];this[_0x54e3c8(0x146)][_0x54e3c8(0x2af)](),this[_0x54e3c8(0x3b5)]=_0x2571a6,this['children'][_0x54e3c8(0x56d)](_0x5db3ae=>{const _0x4bb960=_0x54e3c8;_0x5db3ae[_0x4bb960(0x4b8)]['envMap']=_0x2571a6;}),_0x1cce63&&_0x1cce63(_0x2571a6);};}else{if(_0x69c362==0x6){this['pmremGenerator'][_0xca5026(0x5ab)]();const _0x254fc0=new CubeTexture(),_0x63e814=[];for(const _0x4f5305 in _0x2427ba){const _0x5525ba=_0x2427ba[_0x4f5305];if(_0x5525ba instanceof File){const _0x3c3c06=new FileReader();_0x63e814[_0xca5026(0x617)](parseImageFile(_0x3c3c06,_0x5525ba));}}Promise['all'](_0x63e814)[_0xca5026(0x1b1)](_0x689c44=>{const _0x550aa5=_0xca5026;_0x254fc0[_0x550aa5(0x465)]=!![],_0x254fc0[_0x550aa5(0x18b)]=_0x689c44;const _0x426441=this[_0x550aa5(0x146)][_0x550aa5(0x516)](_0x254fc0)[_0x550aa5(0x50d)];this[_0x550aa5(0x146)][_0x550aa5(0x2af)](),this['envMap']=_0x426441,this['children'][_0x550aa5(0x56d)](_0x13b085=>{const _0x4d7d84=_0x550aa5;_0x13b085[_0x4d7d84(0x4b8)][_0x4d7d84(0x3b5)]=_0x426441;}),_0x1cce63&&_0x1cce63(_0x426441);});}}}[_0x49cdc8(0x30b)]({fileList:_0x556d61,onLoad:_0x1c270e}){const _0x28a9f2=_0x49cdc8,_0xdcc143=_0x556d61[_0x28a9f2(0x25b)];if(_0xdcc143==0x0)return;const _0x34f901=this[_0x28a9f2(0x23d)],_0x5b4caa=_0x34f901&&_0x34f901[_0x28a9f2(0x21d)]&&_0x34f901[_0x28a9f2(0x21d)]['options']&&_0x34f901[_0x28a9f2(0x21d)][_0x28a9f2(0x15a)][_0x28a9f2(0x17e)]?_0x34f901['background'][_0x28a9f2(0x15a)]['scale']:0x1,_0x131cc6=_0x34f901&&_0x34f901['background']&&_0x34f901['background'][_0x28a9f2(0x15a)]&&_0x34f901['background']['options']['rotation']?_0x34f901[_0x28a9f2(0x21d)][_0x28a9f2(0x15a)]['rotation']:[0x0,0x0,0x0],_0x19811b=_0x34f901&&_0x34f901['background']&&_0x34f901[_0x28a9f2(0x21d)][_0x28a9f2(0x15a)]&&_0x34f901[_0x28a9f2(0x21d)]['options'][_0x28a9f2(0x4f1)]?_0x34f901[_0x28a9f2(0x21d)][_0x28a9f2(0x15a)]['fog']:![],_0x5f520b=this[_0x28a9f2(0x20c)];if(_0xdcc143==0x6){const _0x23dd63=[],_0x48f1b5=[];for(const _0x1e952b in _0x556d61){const _0x356d31=_0x556d61[_0x1e952b];if(_0x356d31 instanceof File){const _0x317f3e=new FileReader();_0x23dd63['push'](parseImageFile(_0x317f3e,_0x356d31));}}Promise[_0x28a9f2(0x2f0)](_0x23dd63)['then'](_0xdd0385=>{const _0x32de07=_0x28a9f2;_0xdd0385[_0x32de07(0x56d)](_0x3b5669=>{const _0x141b92=_0x32de07,_0x137b95=new Texture();_0x137b95['needsUpdate']=!![],_0x137b95[_0x141b92(0x15f)]=_0x3b5669;const _0x247fe5=new MeshBasicMaterial({'map':_0x137b95,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x19811b});_0x48f1b5[_0x141b92(0x617)](_0x247fe5);});if(this[_0x32de07(0xfd)])this[_0x32de07(0xfd)][_0x32de07(0x4b8)]['needsUpdate']=!![],this[_0x32de07(0xfd)]['material']=_0x48f1b5;else{const _0x3bedd1=new BoxGeometry(_0x5f520b,_0x5f520b,_0x5f520b),_0x5d296a=new Mesh(_0x3bedd1,_0x48f1b5);_0x5d296a[_0x32de07(0x17e)][_0x32de07(0x4ec)](_0x5b4caa,_0x5b4caa,_0x5b4caa),_0x5d296a[_0x32de07(0x27e)][_0x32de07(0x4ec)](_0x131cc6[0x0],_0x131cc6[0x1],_0x131cc6[0x2]),_0x5d296a[_0x32de07(0x5a9)]=SKY_RENDER_ORDER,_0x5d296a['type']=_0x32de07(0x5b4),this[_0x32de07(0x563)][_0x32de07(0x4bc)](_0x5d296a),this['sky']=_0x5d296a;}});}else{if(_0xdcc143==0x1){const _0x1bb57d=new FileReader();parseImageFile(_0x1bb57d,_0x556d61[0x0])['then'](_0x5507a1=>{const _0x2adede=_0x28a9f2,_0x3f6666=_0x5507a1,_0x48c5af=new Texture();_0x48c5af[_0x2adede(0x15f)]=_0x3f6666,_0x48c5af['needsUpdate']=!![];if(this[_0x2adede(0xfd)])this['sky'][_0x2adede(0x4b8)][_0x2adede(0x465)]=!![],this['sky'][_0x2adede(0x4b8)][_0x2adede(0x427)]=_0x48c5af;else{const _0x44fb4e=new SphereGeometry(_0x5f520b,0x3c,0x3c),_0x459d26=new MeshBasicMaterial({'map':_0x48c5af,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x19811b}),_0x1b9c66=new Mesh(_0x44fb4e,_0x459d26);_0x1b9c66[_0x2adede(0x17e)][_0x2adede(0x4ec)](_0x5b4caa,_0x5b4caa,_0x5b4caa),_0x1b9c66[_0x2adede(0x27e)][_0x2adede(0x4ec)](_0x131cc6[0x0],_0x131cc6[0x1],_0x131cc6[0x2]),_0x1b9c66[_0x2adede(0x5a9)]=SKY_RENDER_ORDER,_0x1b9c66[_0x2adede(0x26f)]=_0x2adede(0x5b4),this[_0x2adede(0x563)]['add'](_0x1b9c66),this[_0x2adede(0xfd)]=_0x1b9c66;}});}}}[_0x49cdc8(0x44a)]({fileList:_0xdc0642,onProgress:_0x22c0f1,onLoad:_0x33b41c}){const _0xd02a3c=_0x49cdc8,_0x1b7fd1=_0xdc0642['length'];if(_0x1b7fd1==0x0)return;let _0x1d0b75=0x0,_0x2bc129=new Vector3(),_0x160fed=new Vector3();const _0x379b1b=this[_0xd02a3c(0x23d)]&&this[_0xd02a3c(0x23d)][_0xd02a3c(0x622)]!=undefined?this['attrs']['enableShadow']:![];for(const _0x4b9019 in _0xdc0642){const _0x1cdc11=_0xdc0642[_0x4b9019];if(_0x1cdc11 instanceof File){const _0x3fcc25=new FileReader();_0x3fcc25['readAsArrayBuffer'](_0x1cdc11),_0x3fcc25['onload']=_0x3357da=>{const _0x54d30a=_0xd02a3c,_0x23ef65=_0x3357da[_0x54d30a(0x507)]?.[_0x54d30a(0x337)];_0x23ef65&&this['gltfLoader'][_0x54d30a(0x16e)](_0x23ef65,'',_0x1b4b73=>{const _0x4bb079=_0x54d30a;this[_0x4bb079(0x1cd)][_0x4bb079(0x617)](_0x1b4b73);const _0x3140e5=_0x1cdc11[_0x4bb079(0x283)][_0x4bb079(0x1e9)]('.'),_0x40be16=_0x3140e5[0x0],_0x59e105=_0x1b4b73[_0x4bb079(0x563)],_0x34b638='root_'+_0x40be16+'_'+_0x4b9019;traverseGenerateUUID(_0x59e105,_0x34b638),_0x59e105[_0x4bb079(0x283)]=_0x40be16,_0x59e105[_0x4bb079(0x3d7)][_0x4bb079(0x1f6)]=_0x1cdc11['name'],_0x59e105[_0x4bb079(0x1a6)](_0x3ff3e5=>{const _0x58232c=_0x4bb079;if(_0x3ff3e5[_0x58232c(0x365)]){_0x3ff3e5[_0x58232c(0x5b2)]=_0x379b1b,_0x3ff3e5[_0x58232c(0x55c)]=_0x379b1b,_0x3ff3e5['material'][_0x58232c(0x3b5)]=this[_0x58232c(0x3b5)],_0x3ff3e5[_0x58232c(0x4b8)]=_0x3ff3e5[_0x58232c(0x4b8)][_0x58232c(0x32a)](),_0x3ff3e5[_0x58232c(0x5a9)]=MODEL_RENDER_ORDER,_0x3ff3e5[_0x58232c(0x4b8)][_0x58232c(0x3b5)]=this[_0x58232c(0x3b5)];const _0x1a884b=new Vector3();_0x3ff3e5[_0x58232c(0x2d9)][_0x58232c(0x1ef)]['getCenter'](_0x1a884b);const _0x49973e=_0x1a884b[_0x58232c(0x32a)]();recursiveCalParentsMat(_0x3ff3e5,_0x49973e,new Matrix4());const _0x3a374f=_0x3ff3e5['geometry'][_0x58232c(0x1ef)]['max'][_0x58232c(0x32a)]();recursiveCalParentsMat(_0x3ff3e5,_0x3a374f,new Matrix4());const _0x4f926a=_0x3ff3e5[_0x58232c(0x2d9)][_0x58232c(0x1ef)][_0x58232c(0x3bb)][_0x58232c(0x32a)]();recursiveCalParentsMat(_0x3ff3e5,_0x4f926a,new Matrix4());const _0x6d5e9f=new Vector3()['subVectors'](_0x49973e,_0x3a374f),_0x112551=new Vector3()[_0x58232c(0x346)](_0x49973e,_0x4f926a);if(_0x6d5e9f[_0x58232c(0x5f2)]()>_0x2bc129[_0x58232c(0x5f2)]())_0x2bc129['copy'](_0x6d5e9f);if(_0x112551[_0x58232c(0x5f2)]()>_0x160fed[_0x58232c(0x5f2)]())_0x160fed['copy'](_0x112551);}}),this['scene']['add'](_0x59e105),this['sceneModels'][_0x4bb079(0x617)](_0x59e105),_0x1d0b75++,_0x22c0f1&&_0x22c0f1(_0x59e105);if(_0x1d0b75==_0x1b7fd1){let _0x3d81ea=_0x2bc129['x']-_0x160fed['x'],_0x53844f=_0x2bc129['z']-_0x160fed['z'],_0x32c74c=_0x2bc129['y']-_0x160fed['y'],_0x93ff9f=_0x160fed['x']+_0x3d81ea/0x2,_0x3c0cd5=_0x160fed['y']+_0x32c74c/0x2,_0x37a1e5=_0x160fed['z']+_0x53844f/0x2,_0x1fe21f=Math[_0x4bb079(0x20d)](Math[_0x4bb079(0x344)](Math[_0x4bb079(0x20d)](Math['pow'](_0x3d81ea,0x2)+Math[_0x4bb079(0x344)](_0x53844f,0x2)),0x2)+Math[_0x4bb079(0x344)](_0x32c74c,0x2));this[_0x4bb079(0x122)][_0x4bb079(0x1e1)][_0x4bb079(0x26e)][_0x4bb079(0x4ec)](_0x2bc129['x']+_0x1fe21f/0x2,_0x1fe21f*0x2/Math['tan'](Math['PI']/0xb4*0x2d)+Math[_0x4bb079(0x24e)](_0x2bc129['y']),_0x2bc129['z']+_0x1fe21f/0x2),this[_0x4bb079(0x122)][_0x4bb079(0x507)][_0x4bb079(0x4ec)](_0x93ff9f,_0x3c0cd5,_0x37a1e5),this[_0x4bb079(0x122)][_0x4bb079(0x577)](),_0x33b41c&&_0x33b41c();}});};}}}['exportScenes'](_0x9381d6){const _0x18f192=_0x49cdc8,_0x488cb8=this[_0x18f192(0x23d)];let _0x49392d=Object[_0x18f192(0x402)]({},_0x488cb8);_0x49392d[_0x18f192(0x60c)][_0x18f192(0x112)]=Object[_0x18f192(0x402)](_0x49392d['cameras'][_0x18f192(0x112)],{'position':[this[_0x18f192(0x112)]['position']['x'],this[_0x18f192(0x112)][_0x18f192(0x26e)]['y'],this[_0x18f192(0x112)][_0x18f192(0x26e)]['z']]}),_0x49392d[_0x18f192(0x387)][_0x18f192(0x122)]=Object[_0x18f192(0x402)](_0x49392d[_0x18f192(0x387)][_0x18f192(0x122)],{'target':[this[_0x18f192(0x122)]['target']['x'],this[_0x18f192(0x122)][_0x18f192(0x507)]['y'],this['orbitControls']['target']['z']]});const _0x90944b=[];this[_0x18f192(0x4f6)]['forEach'](_0x5998ec=>{const _0x489082=_0x18f192;_0x90944b[_0x489082(0x617)]('/'+_0x5998ec[_0x489082(0x3d7)][_0x489082(0x1f6)]);}),_0x49392d=Object[_0x18f192(0x402)](_0x49392d,{'modelUrls':_0x90944b});if(!_0x9381d6)_0x9381d6='settings.json';typeof _0x49392d===_0x18f192(0x1e1)&&(_0x49392d=JSON[_0x18f192(0x246)](_0x49392d,undefined,0x4));const _0x85f17e=new Blob([_0x49392d],{'type':'text/json'}),_0x30dcd0=document[_0x18f192(0x314)](_0x18f192(0x51c)),_0x36a925=document[_0x18f192(0x5b0)]('a');_0x36a925[_0x18f192(0x1e8)]=_0x9381d6,_0x36a925['href']=window[_0x18f192(0x27a)][_0x18f192(0x5d4)](_0x85f17e),_0x36a925[_0x18f192(0x15b)][_0x18f192(0x121)]=[_0x18f192(0x550),_0x36a925['download'],_0x36a925[_0x18f192(0x188)]][_0x18f192(0x4b0)](':'),_0x30dcd0[_0x18f192(0x2f6)]('click',!![],![],window,0x0,0x0,0x0,0x0,0x0,![],![],![],![],0x0,null),_0x36a925['dispatchEvent'](_0x30dcd0);}[_0x49cdc8(0x4ab)]({data:_0x5f3b2d,onProgress:_0xc7f539,onLoad:_0x3d469b}){const _0x2ffcc6=_0x49cdc8;this['updateScenes'](_0x5f3b2d),this[_0x2ffcc6(0x1b4)](_0x5f3b2d[_0x2ffcc6(0x279)]),this[_0x2ffcc6(0x195)](_0x5f3b2d[_0x2ffcc6(0x60c)]),this[_0x2ffcc6(0x53e)](_0x5f3b2d),this[_0x2ffcc6(0x2bb)]({'modelUrls':_0x5f3b2d[_0x2ffcc6(0x5b6)]?_0x5f3b2d['modelUrls']:[],'onProgress':_0xc7f539,'onLoad':_0x3d469b,'nodes':_0x5f3b2d[_0x2ffcc6(0x3ef)]});}[_0x49cdc8(0x2bb)]({nodes:_0x5461af,modelUrls:_0x1ffd6b,onProgress:_0x350f2b,onLoad:_0x2013b3}){const _0x3aeb4f=_0x49cdc8;if(!_0x1ffd6b||!(_0x1ffd6b instanceof Array)||_0x1ffd6b[_0x3aeb4f(0x25b)]==0x0){_0x2013b3&&_0x2013b3(this);return;}const _0x553774=this['attrs']?.[_0x3aeb4f(0x622)],_0x2969cf=[];_0x1ffd6b[_0x3aeb4f(0x56d)](_0x3b5ae4=>{const _0x1180ac=_0x3aeb4f;_0x2969cf[_0x1180ac(0x617)](this[_0x1180ac(0x4a7)]+_0x3b5ae4);});const _0x2fc11e=_0x2969cf['length'];let _0x5da88d=0x0;_0x2969cf[_0x3aeb4f(0x56d)]((_0xb90903,_0x5c4cd9)=>{const _0x3380d3=_0x3aeb4f,_0x71077b=_0xb90903[_0x3380d3(0x1e9)]('/'),_0x5bf161=_0x71077b[_0x71077b[_0x3380d3(0x25b)]-0x1],_0x2cd6d2=_0x5bf161[_0x3380d3(0x35c)]('/'),_0x4c58a0=_0x5bf161[_0x3380d3(0x48b)]('.'),_0x1aa08a=_0x5bf161[_0x3380d3(0x425)](_0x2cd6d2+0x1,_0x4c58a0),_0x1eeadb=_0x5bf161['substring'](_0x4c58a0+0x1,_0x5bf161[_0x3380d3(0x25b)]);if([_0x3380d3(0x1b0),_0x3380d3(0x3f4)][_0x3380d3(0x1d3)](_0x1eeadb[_0x3380d3(0x609)]()))this[_0x3380d3(0x133)][_0x3380d3(0x381)](_0xb90903,_0x35c28b=>{const _0x5bff18=_0x3380d3,_0xa33767=_0x35c28b['parser'][_0x5bff18(0x26d)]['nodes'],_0x2fbd17={};for(let _0x2d7f8f=0x0;_0x2d7f8f<_0xa33767['length'];_0x2d7f8f++){if(!_0xa33767[_0x2d7f8f][_0x5bff18(0x283)])throw new Error('model\x20name\x20should\x20be\x20defined.');!_0x2fbd17[_0xa33767[_0x2d7f8f]['name']]?_0x2fbd17[_0xa33767[_0x2d7f8f][_0x5bff18(0x283)]]=0x1:_0x2fbd17[_0xa33767[_0x2d7f8f]['name']]++;if(_0x2fbd17[_0xa33767[_0x2d7f8f][_0x5bff18(0x283)]]>0x1)throw new Error(_0x5bff18(0x378));}const _0x1de5f7=_0x35c28b[_0x5bff18(0x563)];if(_0x35c28b['animations'][_0x5bff18(0x25b)]!=0x0)for(var _0x551c42=0x0;_0x551c42<_0x35c28b['animations'][_0x5bff18(0x25b)];_0x551c42++){const _0x52862f=new AnimationMixer(_0x1de5f7);_0x52862f['name']=_0x35c28b[_0x5bff18(0x495)][_0x551c42][_0x5bff18(0x283)],this[_0x5bff18(0x354)]['push'](_0x52862f);const _0x4a9894=_0x52862f[_0x5bff18(0x167)](_0x35c28b[_0x5bff18(0x495)][_0x551c42])[_0x5bff18(0x5c9)]();_0x4a9894[_0x5bff18(0x270)]=!![],_0x52862f[_0x5bff18(0x10f)]=_0x4a9894,this[_0x5bff18(0x38d)][_0x5bff18(0x617)](_0x4a9894);}const _0x3752c4=_0x5bff18(0x35b)+_0x1aa08a+'_'+_0x5c4cd9;traverseGenerateUUID(_0x1de5f7,_0x3752c4),_0x1de5f7[_0x5bff18(0x283)]=_0x1aa08a,_0x1de5f7[_0x5bff18(0x3d7)][_0x5bff18(0x4aa)]=_0xb90903,_0x1de5f7[_0x5bff18(0x1a6)](_0x5d28ff=>{const _0x4f24c8=_0x5bff18,_0x247917=[];traverseSelectNodeByUUID(_0x5461af[_0x3752c4],_0x5d28ff['uuid'],_0x247917);if(_0x247917[_0x4f24c8(0x25b)]>0x0){const _0x4e6761=_0x247917[0x0];if(_0x4e6761[_0x4f24c8(0x26f)]==_0x4f24c8(0x216)||_0x4e6761[_0x4f24c8(0x26f)]=='Object3D'){_0x5d28ff['visible']=_0x4e6761[_0x4f24c8(0x592)];const {position:_0x36a3b2,scale:_0x355366,rotation:_0x11bda7}=_0x4e6761[_0x4f24c8(0x15a)];_0x5d28ff[_0x4f24c8(0x26e)]['set'](_0x36a3b2[0x0],_0x36a3b2[0x1],_0x36a3b2[0x2]),_0x5d28ff[_0x4f24c8(0x27e)][_0x4f24c8(0x4ec)](degToRad(_0x11bda7[0x0]),degToRad(_0x11bda7[0x1]),degToRad(_0x11bda7[0x2])),_0x5d28ff[_0x4f24c8(0x17e)][_0x4f24c8(0x4ec)](_0x355366[0x0],_0x355366[0x1],_0x355366[0x2]);}else{if(_0x4e6761[_0x4f24c8(0x26f)]==_0x4f24c8(0x274)){_0x5d28ff[_0x4f24c8(0x592)]=_0x4e6761[_0x4f24c8(0x592)];const {position:_0x4e1a92,scale:_0x58b687,rotation:_0x4a47a4,castShadow:_0x2765d1,receiveShadow:_0x48fda4}=_0x4e6761[_0x4f24c8(0x15a)];_0x5d28ff[_0x4f24c8(0x26e)][_0x4f24c8(0x4ec)](_0x4e1a92[0x0],_0x4e1a92[0x1],_0x4e1a92[0x2]),_0x5d28ff[_0x4f24c8(0x27e)][_0x4f24c8(0x4ec)](degToRad(_0x4a47a4[0x0]),degToRad(_0x4a47a4[0x1]),degToRad(_0x4a47a4[0x2])),_0x5d28ff['scale'][_0x4f24c8(0x4ec)](_0x58b687[0x0],_0x58b687[0x1],_0x58b687[0x2]),_0x5d28ff[_0x4f24c8(0x5b2)]=_0x553774?_0x553774:_0x2765d1,_0x5d28ff[_0x4f24c8(0x55c)]=_0x553774?_0x553774:_0x48fda4;if(_0x4e6761[_0x4f24c8(0x16b)]){const {color:_0x5af592,depthTest:_0x1a836e,depthWrite:_0x4b91af,opacity:_0x1c4564,transparent:_0x1ec1bd,wireframe:_0xb23379,type:_0xe00fb9}=_0x4e6761[_0x4f24c8(0x16b)];_0x5d28ff[_0x4f24c8(0x4b8)][_0x4f24c8(0x229)][_0x4f24c8(0x4ec)](_0x5af592),_0x5d28ff[_0x4f24c8(0x4b8)][_0x4f24c8(0x213)]=_0x1a836e,_0x5d28ff['material'][_0x4f24c8(0x466)]=_0x4b91af,_0x5d28ff[_0x4f24c8(0x4b8)]['opacity']=_0x1c4564,_0x5d28ff[_0x4f24c8(0x4b8)][_0x4f24c8(0x37c)]=_0x1ec1bd,_0x5d28ff[_0x4f24c8(0x4b8)]['wireframe']=_0xb23379;if(_0xe00fb9==_0x4f24c8(0x441)&&_0x4e6761[_0x4f24c8(0x16b)][_0x4f24c8(0x353)]){const {roughness:_0x3d5ad6,metalness:_0x47864c,envMapIntensity:_0x57151a,lightMapIntensity:_0x4332e6,emissive:_0x23ba32,emissiveIntensity:_0x42e63a}=_0x4e6761[_0x4f24c8(0x16b)][_0x4f24c8(0x353)];_0x5d28ff[_0x4f24c8(0x4b8)]['roughness']=_0x3d5ad6,_0x5d28ff[_0x4f24c8(0x4b8)]['metalness']=_0x47864c,_0x5d28ff[_0x4f24c8(0x4b8)][_0x4f24c8(0x523)]=_0x57151a,_0x5d28ff['material']['lightMapIntensity']=_0x4332e6,_0x5d28ff['material'][_0x4f24c8(0x2b3)]=_0x42e63a,_0x5d28ff['material'][_0x4f24c8(0x5cb)][_0x4f24c8(0x4ec)](_0x23ba32);}}}}}_0x5d28ff[_0x4f24c8(0x365)]&&(_0x5d28ff[_0x4f24c8(0x4b8)]['envMap']=this[_0x4f24c8(0x3b5)],_0x5d28ff['material']=_0x5d28ff[_0x4f24c8(0x4b8)]['clone'](),_0x5d28ff[_0x4f24c8(0x5a9)]=MODEL_RENDER_ORDER,this['clickObjects'][_0x4f24c8(0x617)](_0x5d28ff),this[_0x4f24c8(0x10e)][_0x4f24c8(0x617)](_0x5d28ff));}),this[_0x5bff18(0x563)][_0x5bff18(0x4bc)](_0x1de5f7),this[_0x5bff18(0x4f6)][_0x5bff18(0x617)](_0x1de5f7),this[_0x5bff18(0x3dd)][_0x1aa08a]=_0x35c28b['animations'],_0x5da88d++,_0x350f2b&&_0x350f2b(_0x1de5f7);if(_0x5da88d==_0x2fc11e)_0x2013b3&&_0x2013b3(this);},_0x369a0a=>{},_0x31dde7=>{console['error'](_0x31dde7);});else{if([_0x3380d3(0x1df)][_0x3380d3(0x1d3)](_0x1eeadb[_0x3380d3(0x609)]()))this['fbxLoader'][_0x3380d3(0x381)](_0xb90903,_0x4d043a=>{const _0x243bd2=_0x3380d3,_0x59abe4=_0x4d043a,_0x4d51d5='root_'+_0x1aa08a+'_'+_0x5c4cd9;traverseGenerateUUID(_0x59abe4,_0x4d51d5),_0x59abe4[_0x243bd2(0x283)]=_0x1aa08a,_0x59abe4[_0x243bd2(0x1a6)](_0x561a7e=>{const _0x30711b=_0x243bd2,_0x554b6f=[];traverseSelectNodeByUUID(_0x5461af[_0x4d51d5],_0x561a7e['uuid'],_0x554b6f);if(_0x554b6f[_0x30711b(0x25b)]>0x0){const _0x2b4cca=_0x554b6f[0x0];if(_0x2b4cca[_0x30711b(0x26f)]=='Group'||_0x2b4cca[_0x30711b(0x26f)]=='Object3D'){_0x561a7e[_0x30711b(0x592)]=_0x2b4cca[_0x30711b(0x592)];const {position:_0x3eb54e,scale:_0x4f20da,rotation:_0x33d7a9}=_0x2b4cca[_0x30711b(0x15a)];_0x561a7e[_0x30711b(0x26e)][_0x30711b(0x4ec)](_0x3eb54e[0x0],_0x3eb54e[0x1],_0x3eb54e[0x2]),_0x561a7e[_0x30711b(0x27e)]['set'](degToRad(_0x33d7a9[0x0]),degToRad(_0x33d7a9[0x1]),degToRad(_0x33d7a9[0x2])),_0x561a7e[_0x30711b(0x17e)][_0x30711b(0x4ec)](_0x4f20da[0x0],_0x4f20da[0x1],_0x4f20da[0x2]);}else{if(_0x2b4cca[_0x30711b(0x26f)]==_0x30711b(0x274)){_0x561a7e[_0x30711b(0x592)]=_0x2b4cca['visible'];const {position:_0x3d26f6,scale:_0x40366d,rotation:_0x4f5543,castShadow:_0x29702f,receiveShadow:_0x27dd40}=_0x2b4cca['options'];_0x561a7e[_0x30711b(0x26e)][_0x30711b(0x4ec)](_0x3d26f6[0x0],_0x3d26f6[0x1],_0x3d26f6[0x2]),_0x561a7e[_0x30711b(0x27e)][_0x30711b(0x4ec)](degToRad(_0x4f5543[0x0]),degToRad(_0x4f5543[0x1]),degToRad(_0x4f5543[0x2])),_0x561a7e['scale'][_0x30711b(0x4ec)](_0x40366d[0x0],_0x40366d[0x1],_0x40366d[0x2]),_0x561a7e[_0x30711b(0x5b2)]=_0x553774?_0x553774:_0x29702f,_0x561a7e[_0x30711b(0x55c)]=_0x553774?_0x553774:_0x27dd40;if(_0x2b4cca[_0x30711b(0x16b)]){const {color:_0x155455,depthTest:_0x2c0f3f,depthWrite:_0x451d38,opacity:_0x5c572b,transparent:_0x1ad740,wireframe:_0x5c5a2d,type:_0x218c19}=_0x2b4cca[_0x30711b(0x16b)];_0x561a7e[_0x30711b(0x4b8)][_0x30711b(0x229)]['set'](_0x155455),_0x561a7e[_0x30711b(0x4b8)][_0x30711b(0x213)]=_0x2c0f3f,_0x561a7e[_0x30711b(0x4b8)][_0x30711b(0x466)]=_0x451d38,_0x561a7e[_0x30711b(0x4b8)][_0x30711b(0x313)]=_0x5c572b,_0x561a7e[_0x30711b(0x4b8)]['transparent']=_0x1ad740,_0x561a7e[_0x30711b(0x4b8)]['wireframe']=_0x5c5a2d;if(_0x2b4cca[_0x30711b(0x16b)][_0x30711b(0x353)]){const {roughness:_0x374ee8,metalness:_0x56e7d7,envMapIntensity:_0x4f485a,lightMapIntensity:_0x4dfb3f,emissive:_0x151cc0,emissiveIntensity:_0x4d8be6}=_0x2b4cca[_0x30711b(0x16b)][_0x30711b(0x353)];_0x561a7e['material'][_0x30711b(0x140)]=_0x374ee8,_0x561a7e['material'][_0x30711b(0x237)]=_0x56e7d7,_0x561a7e[_0x30711b(0x4b8)]['envMapIntensity']=_0x4f485a,_0x561a7e['material'][_0x30711b(0x1e0)]=_0x4dfb3f,_0x561a7e['material']['emissiveIntensity']=_0x4d8be6,_0x561a7e[_0x30711b(0x4b8)][_0x30711b(0x5cb)]['set'](_0x151cc0);}}}}}_0x561a7e['isMesh']&&(_0x561a7e['renderOrder']=MODEL_RENDER_ORDER,this['clickObjects'][_0x30711b(0x617)](_0x561a7e),this[_0x30711b(0x10e)][_0x30711b(0x617)](_0x561a7e));}),this['scene']['add'](_0x59abe4),this['sceneModels'][_0x243bd2(0x617)](_0x59abe4),_0x5da88d++,_0x350f2b&&_0x350f2b(_0x59abe4);if(_0x5da88d==_0x2fc11e)_0x2013b3&&_0x2013b3(this);});else throw new Error(_0x1eeadb+_0x3380d3(0x174));}});}[_0x49cdc8(0x195)](_0x2173ea){const _0x39d15d=_0x49cdc8;if(!_0x2173ea)return;if(_0x2173ea[_0x39d15d(0x112)]){if(_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x129)]!==undefined)this[_0x39d15d(0x112)][_0x39d15d(0x129)]=0.1;if(_0x2173ea['orbitCamera'][_0x39d15d(0x4f0)]!==undefined)this[_0x39d15d(0x112)][_0x39d15d(0x4f0)]=_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x4f0)];if(_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x1c7)]!==undefined)this[_0x39d15d(0x112)]['fov']=_0x2173ea['orbitCamera']['fov'];if(_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x438)]!==undefined)this[_0x39d15d(0x112)]['aspect']=_0x2173ea['orbitCamera']['aspect'];if(_0x2173ea[_0x39d15d(0x112)]['maxDistance']!==undefined)this[_0x39d15d(0x122)]['maxDistance']=_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x207)];if(_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x5a2)]!==undefined)this[_0x39d15d(0x122)][_0x39d15d(0x5a2)]=_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x5a2)];if(_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x519)]!==undefined)this[_0x39d15d(0x122)][_0x39d15d(0x519)]=_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x519)];if(_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x575)]!==undefined)this[_0x39d15d(0x122)][_0x39d15d(0x575)]=_0x2173ea[_0x39d15d(0x112)]['minPolarAngle'];if(_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x26e)]!==undefined)this[_0x39d15d(0x112)][_0x39d15d(0x26e)][_0x39d15d(0x4ec)](_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x26e)][0x0],_0x2173ea[_0x39d15d(0x112)][_0x39d15d(0x26e)][0x1],_0x2173ea['orbitCamera'][_0x39d15d(0x26e)][0x2]);}if(!_0x2173ea['firstPersonCamera'])return;}['updateLights'](_0x14ab65){const _0x55099c=_0x49cdc8;if(!_0x14ab65)return;if(_0x14ab65[_0x55099c(0x3c8)]){let _0x31d080={'skyColor':0xffffff,'groundColor':0xaaaaaa,'intensity':0.1,'position':[0x0,0x1f4,0x0]};_0x31d080=Object['assign'](_0x31d080,_0x14ab65[_0x55099c(0x3c8)]),!this[_0x55099c(0x362)]?(this[_0x55099c(0x362)]=new HemisphereLight(_0x31d080[_0x55099c(0x4a5)],_0x31d080[_0x55099c(0x3f5)],_0x31d080[_0x55099c(0x506)]),this[_0x55099c(0x362)][_0x55099c(0x26e)][_0x55099c(0x4ec)](_0x31d080[_0x55099c(0x26e)][0x0],_0x31d080['position'][0x1],_0x31d080['position'][0x2]),this[_0x55099c(0x563)][_0x55099c(0x4bc)](this[_0x55099c(0x362)])):(this['hemiLight'][_0x55099c(0x229)][_0x55099c(0x4ec)](_0x31d080[_0x55099c(0x4a5)]),this[_0x55099c(0x362)][_0x55099c(0x3f5)][_0x55099c(0x4ec)](_0x31d080[_0x55099c(0x3f5)]),this[_0x55099c(0x362)]['intensity']=_0x31d080[_0x55099c(0x506)],this[_0x55099c(0x362)][_0x55099c(0x26e)][_0x55099c(0x4ec)](_0x31d080[_0x55099c(0x26e)][0x0],_0x31d080['position'][0x1],_0x31d080['position'][0x2]));}if(_0x14ab65[_0x55099c(0x392)]){let _0x54947d={'intensity':0x1,'color':0xffffff};_0x54947d=Object[_0x55099c(0x402)](_0x54947d,_0x14ab65[_0x55099c(0x392)]),!this[_0x55099c(0x392)]?(this[_0x55099c(0x392)]=new AmbientLight(_0x54947d[_0x55099c(0x229)],_0x54947d[_0x55099c(0x506)]),this['scene'][_0x55099c(0x4bc)](this['ambientLight'])):(this[_0x55099c(0x392)][_0x55099c(0x229)]['set'](_0x54947d[_0x55099c(0x229)]),this[_0x55099c(0x392)][_0x55099c(0x506)]=_0x54947d['intensity']);}}['updatePasses'](_0x5b9e0a){const _0x466a71=_0x49cdc8;if(!_0x5b9e0a)return;if(_0x5b9e0a[_0x466a71(0x19b)])this[_0x466a71(0x504)](_0x5b9e0a[_0x466a71(0x19b)]);if(_0x5b9e0a[_0x466a71(0x520)])this[_0x466a71(0x25f)](_0x5b9e0a['outline']);if(_0x5b9e0a[_0x466a71(0x398)])this[_0x466a71(0x5f1)](_0x5b9e0a[_0x466a71(0x398)]);if(_0x5b9e0a['gamma'])this[_0x466a71(0x36d)](_0x5b9e0a[_0x466a71(0x3aa)]);if(_0x5b9e0a[_0x466a71(0x321)])this[_0x466a71(0x4de)](_0x5b9e0a[_0x466a71(0x321)]);}[_0x49cdc8(0x504)](_0x32b7f1){const _0x2dcfdb=_0x49cdc8;if(!_0x32b7f1)return;this['bloomPass'][_0x2dcfdb(0x13a)]=_0x32b7f1[_0x2dcfdb(0x13a)],this[_0x2dcfdb(0x393)][_0x2dcfdb(0x4b8)][_0x2dcfdb(0x385)][_0x2dcfdb(0x3c7)][_0x2dcfdb(0x4ba)]=_0x32b7f1[_0x2dcfdb(0x13a)]?this['bloomComposer'][_0x2dcfdb(0x196)]['texture']:null;if(_0x32b7f1[_0x2dcfdb(0x4ce)]!==undefined)this[_0x2dcfdb(0x591)][_0x2dcfdb(0x36f)]=_0x32b7f1['bloomStrength'];if(_0x32b7f1[_0x2dcfdb(0x560)]!==undefined)this['bloomPass']['radius']=_0x32b7f1[_0x2dcfdb(0x560)];if(_0x32b7f1[_0x2dcfdb(0x1e6)]!==undefined)this['bloomPass']['threshold']=_0x32b7f1['threshold'];}[_0x49cdc8(0x25f)](_0x2ab843){const _0x406fcd=_0x49cdc8;if(!_0x2ab843)return;this[_0x406fcd(0x202)][_0x406fcd(0x13a)]=_0x2ab843[_0x406fcd(0x13a)];if(_0x2ab843['edgeStrength']!==undefined)this['outlinePass']['edgeStrength']=_0x2ab843['edgeStrength'];if(_0x2ab843[_0x406fcd(0x3d3)]!==undefined)this[_0x406fcd(0x202)]['edgeGlow']=_0x2ab843['edgeGlow'];if(_0x2ab843[_0x406fcd(0x3b2)]!==undefined)this[_0x406fcd(0x202)][_0x406fcd(0x3b2)]=_0x2ab843[_0x406fcd(0x3b2)];if(_0x2ab843['pulsePeriod']!==undefined)this['outlinePass'][_0x406fcd(0x4fc)]=_0x2ab843[_0x406fcd(0x4fc)];if(_0x2ab843[_0x406fcd(0x555)]!==undefined)this[_0x406fcd(0x202)][_0x406fcd(0x555)][_0x406fcd(0x4ec)](_0x2ab843[_0x406fcd(0x555)]);if(_0x2ab843['hiddenEdgeColor']!==undefined)this[_0x406fcd(0x202)][_0x406fcd(0x2c9)][_0x406fcd(0x4ec)](_0x2ab843['hiddenEdgeColor']);}[_0x49cdc8(0x5f1)](_0x496d2c){const _0x379a5b=_0x49cdc8;if(!_0x496d2c)return;if(_0x496d2c[_0x379a5b(0x436)]!==undefined){const _0x5d3d08=this['containerWidth']*0x2,_0x5ba669=this[_0x379a5b(0x1fa)]*0x2;this['msaaTarget'][_0x379a5b(0x123)](_0x5d3d08,_0x5ba669),this[_0x379a5b(0x2c1)][_0x379a5b(0x123)](_0x5d3d08,_0x5ba669),this[_0x379a5b(0x573)][_0x379a5b(0x123)](_0x5d3d08,_0x5ba669),this[_0x379a5b(0x591)][_0x379a5b(0x123)](_0x5d3d08,_0x5ba669),this[_0x379a5b(0x393)]['setSize'](_0x5d3d08,_0x5ba669),this[_0x379a5b(0x2cb)][_0x379a5b(0x123)](_0x5d3d08,_0x5ba669);}}[_0x49cdc8(0x36d)](_0x5595ef){const _0x579bfe=_0x49cdc8;if(!_0x5595ef)return;this[_0x579bfe(0x50b)]['enabled']=_0x5595ef['enabled'],_0x5595ef[_0x579bfe(0x257)]!==undefined&&(this['gammaPass'][_0x579bfe(0x4b8)]['uniforms'][_0x579bfe(0x257)][_0x579bfe(0x4ba)]=_0x5595ef['factor'],this[_0x579bfe(0x50b)]['material'][_0x579bfe(0x465)]=!![]);}[_0x49cdc8(0x4de)](_0x4f1401){const _0x489465=_0x49cdc8;if(!_0x4f1401)return;this[_0x489465(0x4a2)][_0x489465(0x13a)]=_0x4f1401[_0x489465(0x13a)];if(_0x4f1401[_0x489465(0x497)]!==undefined)this[_0x489465(0x4a2)][_0x489465(0x385)][_0x489465(0x497)][_0x489465(0x4ba)]=_0x4f1401['aperture'];if(_0x4f1401[_0x489465(0x2ee)]!==undefined)this[_0x489465(0x4a2)][_0x489465(0x385)]['maxblur']['value']=_0x4f1401['maxblur'];if(_0x4f1401[_0x489465(0x5ed)]!==undefined)this['bokehPass']['uniforms']['focus']['value']=_0x4f1401[_0x489465(0x5ed)];}[_0x49cdc8(0x2b9)](_0x1cda6f){const _0x67852=_0x49cdc8;if(!_0x1cda6f)return;if(_0x1cda6f[_0x67852(0x21d)])this[_0x67852(0x3c6)](_0x1cda6f[_0x67852(0x21d)]);if(_0x1cda6f[_0x67852(0x452)])this['updateHDR'](_0x1cda6f[_0x67852(0x452)]);}[_0x49cdc8(0x3c6)](_0xf02a37){const _0x50a337=_0x49cdc8;if(!_0xf02a37)return;this[_0x50a337(0x5af)]=_0xf02a37[_0x50a337(0x26f)];if(_0xf02a37[_0x50a337(0x26f)]==_0x50a337(0x229)){if(this['sky'])this['sky'][_0x50a337(0x592)]=![];if(this['scene']['background'])this[_0x50a337(0x563)][_0x50a337(0x21d)]=null;this['bgColor']=_0xf02a37[_0x50a337(0x4ba)],this[_0x50a337(0x4ac)][_0x50a337(0x3f8)](_0xf02a37['value']),this[_0x50a337(0x10b)]['clearColor']=_0xf02a37[_0x50a337(0x4ba)];}else{if(_0xf02a37['type']==_0x50a337(0x50d)){if(this['sky'])this['sky'][_0x50a337(0x592)]=![];this[_0x50a337(0x199)][_0x50a337(0x381)](this[_0x50a337(0x4a7)]+_0xf02a37[_0x50a337(0x4ba)],_0xca51c3=>{const _0x32fcfc=_0x50a337;this['scene']['background']=_0xca51c3;if(_0xf02a37[_0x32fcfc(0x15a)])for(const _0x550be8 in _0xf02a37[_0x32fcfc(0x15a)]){const _0x19cad1=_0xf02a37[_0x32fcfc(0x15a)][_0x550be8];this[_0x32fcfc(0x563)][_0x32fcfc(0x21d)][_0x550be8]=_0x19cad1;}});}else{if(_0xf02a37[_0x50a337(0x26f)]==_0x50a337(0x264)){if(this[_0x50a337(0x563)]['background'])this[_0x50a337(0x563)][_0x50a337(0x21d)]=null;if(!(_0xf02a37[_0x50a337(0x4ba)]instanceof Array))return;const _0x1d609b=_0xf02a37[_0x50a337(0x4ba)],_0x5bdf7a=_0xf02a37[_0x50a337(0x15a)][_0x50a337(0x17e)]?_0xf02a37['options']['scale']:0x1,_0x4648ce=_0xf02a37[_0x50a337(0x15a)]['rotation']?_0xf02a37[_0x50a337(0x15a)][_0x50a337(0x27e)]:[0x0,0x0,0x0],_0x51160f=_0xf02a37[_0x50a337(0x4f1)]!==undefined?_0xf02a37['fog']:![],_0x4e3461=0xc350;this['skyRadius']=_0x4e3461;if(_0x1d609b[_0x50a337(0x25b)]==0x6){const _0x27f7ad=[],_0x3a70f0=[];_0x1d609b['forEach'](_0x2c323a=>{const _0x38eeef=_0x50a337;_0x27f7ad[_0x38eeef(0x617)](loadTex(this[_0x38eeef(0x199)],this[_0x38eeef(0x4a7)]+_0x2c323a));}),Promise['all'](_0x27f7ad)[_0x50a337(0x1b1)](_0x70f2a9=>{const _0x5d642e=_0x50a337;_0x70f2a9[_0x5d642e(0x56d)](_0x26b0e8=>{const _0x132217=_0x5d642e,_0x14b638=new MeshBasicMaterial({'map':_0x26b0e8,'side':0x2,'transparent':!![],'opacity':0x1,'fog':_0x51160f});_0x3a70f0[_0x132217(0x617)](_0x14b638);});const _0x41d9ad=new BoxGeometry(_0x4e3461,_0x4e3461,_0x4e3461),_0x15b898=new Mesh(_0x41d9ad,_0x3a70f0);_0x15b898[_0x5d642e(0x17e)]['set'](_0x5bdf7a,_0x5bdf7a,_0x5bdf7a),_0x15b898[_0x5d642e(0x27e)][_0x5d642e(0x4ec)](degToRad(_0x4648ce[0x0]),degToRad(_0x4648ce[0x1]),degToRad(_0x4648ce[0x2])),_0x15b898[_0x5d642e(0x5a9)]=SKY_RENDER_ORDER,_0x15b898[_0x5d642e(0x26f)]='SkyBox',this[_0x5d642e(0xfd)]?(this[_0x5d642e(0xfd)]['geometry']=_0x41d9ad,this['sky']['material']=_0x3a70f0):(this[_0x5d642e(0x563)]['add'](_0x15b898),this['sky']=_0x15b898),this[_0x5d642e(0xfd)][_0x5d642e(0x3d7)]['value']=_0x1d609b,this[_0x5d642e(0xfd)][_0x5d642e(0x592)]=!![];});}else _0x1d609b['length']==0x1&&this[_0x50a337(0x199)][_0x50a337(0x381)](this[_0x50a337(0x4a7)]+_0x1d609b[0x0],_0x4459b9=>{const _0x52d161=_0x50a337,_0x2b1967=new MeshBasicMaterial({'map':_0x4459b9,'side':BackSide,'transparent':!![],'opacity':0x1,'fog':_0x51160f}),_0x538114=new SphereGeometry(_0x4e3461,0x3c,0x3c),_0x24919e=new Mesh(_0x538114,_0x2b1967);_0x24919e[_0x52d161(0x17e)]['set'](_0x5bdf7a,_0x5bdf7a,_0x5bdf7a),_0x24919e[_0x52d161(0x27e)][_0x52d161(0x4ec)](_0x4648ce[0x0]*Math['PI']/0xb4,_0x4648ce[0x1]*Math['PI']/0xb4,_0x4648ce[0x2]*Math['PI']/0xb4),_0x24919e['renderOrder']=SKY_RENDER_ORDER,_0x24919e[_0x52d161(0x26f)]=_0x52d161(0x5b4),this[_0x52d161(0xfd)]?(this[_0x52d161(0xfd)][_0x52d161(0x2d9)]=_0x538114,this['sky'][_0x52d161(0x4b8)]=_0x2b1967):(this[_0x52d161(0x563)][_0x52d161(0x4bc)](_0x24919e),this[_0x52d161(0xfd)]=_0x24919e),this[_0x52d161(0xfd)][_0x52d161(0x3d7)][_0x52d161(0x4ba)]=_0x1d609b,this[_0x52d161(0xfd)][_0x52d161(0x592)]=!![];});}}}}[_0x49cdc8(0x3be)](_0x931b75){const _0x553fd3=_0x49cdc8;if(!_0x931b75)return;this[_0x553fd3(0x226)](_0x931b75);}}class EventsController{['handlers'];constructor(){this['handlers']={};}['on'](_0x4aeba9,_0x10aade){const _0x293f29=_0x49cdc8;typeof this['handlers'][_0x4aeba9]==_0x293f29(0x45b)&&(this[_0x293f29(0x5d8)][_0x4aeba9]=[]),this['handlers'][_0x4aeba9][_0x293f29(0x617)](_0x10aade);}[_0x49cdc8(0x50e)](_0x226dd0){const _0x21a24d=_0x49cdc8;!_0x226dd0[_0x21a24d(0x507)]&&(_0x226dd0['target']=this);if(this['handlers'][_0x226dd0[_0x21a24d(0x26f)]]instanceof Array){const _0x5f3fd2=this[_0x21a24d(0x5d8)][_0x226dd0[_0x21a24d(0x26f)]];for(let _0x54ffb2=0x0;_0x54ffb2<_0x5f3fd2['length'];_0x54ffb2++){_0x5f3fd2[_0x54ffb2]!=undefined&&_0x5f3fd2[_0x54ffb2](_0x226dd0);}}}[_0x49cdc8(0x5bb)](_0x5e80a8,_0x1495e5){const _0x584412=_0x49cdc8;if(this[_0x584412(0x5d8)]===undefined)return;const _0x577dfe=this[_0x584412(0x5d8)],_0x5705cc=_0x577dfe[_0x5e80a8];if(_0x5705cc!==undefined){const _0x528170=_0x5705cc[_0x584412(0x48b)](_0x1495e5);_0x528170!==-0x1&&_0x5705cc[_0x584412(0x4db)](_0x528170,0x1);}}}var EventsBus=new EventsController();class Events{[_0x49cdc8(0x509)];['events'];[_0x49cdc8(0x479)];[_0x49cdc8(0x295)];[_0x49cdc8(0x548)];[_0x49cdc8(0x249)];[_0x49cdc8(0x5a1)];[_0x49cdc8(0x2f8)];['isDrag'];[_0x49cdc8(0x2c4)];[_0x49cdc8(0x45c)];[_0x49cdc8(0x13a)];['realCt'];constructor(_0x5c46b8,_0x2c6a99){const _0x288a34=_0x49cdc8;this[_0x288a34(0x509)]=_0x5c46b8,this['events']=EventsBus,this['enabled']={'dbclick':!![],'click':!![],'hover':!![]},this['realCt']=_0x2c6a99?_0x2c6a99:this['container'][_0x288a34(0x4ac)][_0x288a34(0x160)],this[_0x288a34(0x3b6)]();}set[_0x49cdc8(0x4c2)](_0xd73d6a){const _0xceefb1=_0x49cdc8;_0xd73d6a!=undefined?(this[_0xceefb1(0x479)]=_0xd73d6a,this[_0xceefb1(0x53d)]['on']('bolClick',this['click'])):(this[_0xceefb1(0x53d)][_0xceefb1(0x5bb)](_0xceefb1(0x34f),this[_0xceefb1(0x479)]),this[_0xceefb1(0x479)]=null);}get[_0x49cdc8(0x4c2)](){const _0x3d4d0d=_0x49cdc8;return this[_0x3d4d0d(0x479)];}set[_0x49cdc8(0x218)](_0x5af723){const _0x4666b9=_0x49cdc8;_0x5af723!=undefined?(this[_0x4666b9(0x295)]=_0x5af723,this[_0x4666b9(0x53d)]['on'](_0x4666b9(0x2bd),this[_0x4666b9(0x295)])):(this[_0x4666b9(0x53d)][_0x4666b9(0x5bb)]('bolDbClick',this[_0x4666b9(0x295)]),this['dbclick']=null);}get[_0x49cdc8(0x218)](){return this['dbclick'];}set[_0x49cdc8(0xf9)](_0x1cd82c){const _0x3beb38=_0x49cdc8;_0x1cd82c!=undefined?(this[_0x3beb38(0x548)]=_0x1cd82c,this['events']['on'](_0x3beb38(0x60d),this[_0x3beb38(0x548)])):(this['events'][_0x3beb38(0x5bb)]('bolHover',this[_0x3beb38(0x548)]),this['hover']=null);}get[_0x49cdc8(0xf9)](){const _0x15dcbd=_0x49cdc8;return this[_0x15dcbd(0x548)];}set[_0x49cdc8(0x3cf)](_0x2e3b3c){const _0x3f8b1f=_0x49cdc8;_0x2e3b3c!=undefined?(this[_0x3f8b1f(0x249)]=_0x2e3b3c,this[_0x3f8b1f(0x53d)]['on'](_0x3f8b1f(0x255),this['dragenter'])):(this['events']['off'](_0x3f8b1f(0x255),this['dragenter']),this[_0x3f8b1f(0x249)]=null);}get[_0x49cdc8(0x3cf)](){const _0x5d183e=_0x49cdc8;return this[_0x5d183e(0x249)];}set[_0x49cdc8(0x602)](_0x494305){const _0x4dfee1=_0x49cdc8;_0x494305!=undefined?(this[_0x4dfee1(0x5a1)]=_0x494305,this[_0x4dfee1(0x53d)]['on'](_0x4dfee1(0x5e5),this['dragend'])):(this[_0x4dfee1(0x53d)][_0x4dfee1(0x5bb)]('bolDragEnd',this[_0x4dfee1(0x5a1)]),this[_0x4dfee1(0x5a1)]=null);}get[_0x49cdc8(0x602)](){return this['dragend'];}['initEvents'](){const _0x545679=_0x49cdc8,_0x246dc2=this[_0x545679(0x509)][_0x545679(0x4ac)]['domElement'],_0x5e9c44=new Raycaster(),_0x3d4d94=new Vector2(),_0x19bbe3=this;_0x246dc2[_0x545679(0x5f4)]=_0x4354ff=>{const _0x49e6d2=_0x545679;if(_0x4354ff[_0x49e6d2(0x53f)]!=0x0)return;_0x19bbe3['dragTimer']=setTimeout(()=>{_0x19bbe3['isDrag']=!![];},0xc8);},_0x246dc2['onmouseup']=_0x15ee57=>{const _0x4b4232=_0x545679;if(_0x15ee57[_0x4b4232(0x53f)]!=0x0)return;const _0x5d31db=this[_0x4b4232(0x2c3)][_0x4b4232(0x576)],_0x5c0f17=this['realCt'][_0x4b4232(0x5d1)],{width:_0x307bc1,height:_0x54ad41,top:_0x73cd45,left:_0x547ab3}=this[_0x4b4232(0x2c3)][_0x4b4232(0x3f1)]();!_0x19bbe3['isDrag']&&(clearTimeout(_0x19bbe3[_0x4b4232(0x2f8)]),_0x19bbe3[_0x4b4232(0x2f8)]=setTimeout(()=>{const _0x2427d4=_0x4b4232;if(_0x19bbe3['container'][_0x2427d4(0x1ed)]==_0x2427d4(0x1a1)){_0x3d4d94['x']=(_0x15ee57[_0x2427d4(0x115)]-_0x547ab3+_0x5d31db)/_0x307bc1*0x2-0x1,_0x3d4d94['y']=-((_0x15ee57['clientY']-_0x73cd45+_0x5c0f17)/_0x54ad41)*0x2+0x1;const _0x567c3c=_0x19bbe3[_0x2427d4(0x509)][_0x2427d4(0x112)],_0x35f0f7=_0x19bbe3['container'][_0x2427d4(0x1db)];_0x5e9c44[_0x2427d4(0x450)](_0x3d4d94,_0x567c3c);const _0x45de25=_0x5e9c44['intersectObjects'](_0x35f0f7);_0x19bbe3[_0x2427d4(0x53d)][_0x2427d4(0x50e)]({'type':_0x2427d4(0x34f),'objects':_0x45de25,'event':_0x15ee57});}else{_0x3d4d94['x']=(_0x15ee57[_0x2427d4(0x115)]-_0x547ab3+_0x5d31db)/_0x307bc1*0x2-0x1,_0x3d4d94['y']=-((_0x15ee57[_0x2427d4(0x439)]-_0x73cd45+_0x5c0f17)/_0x54ad41)*0x2+0x1;const _0x49cdf7=_0x19bbe3[_0x2427d4(0x509)][_0x2427d4(0x128)],_0x388f93=_0x19bbe3[_0x2427d4(0x509)][_0x2427d4(0x1db)];_0x5e9c44['setFromCamera'](_0x3d4d94,_0x49cdf7);const _0x410478=_0x5e9c44[_0x2427d4(0x127)](_0x388f93);_0x19bbe3['events'][_0x2427d4(0x50e)]({'type':'bolClick','objects':_0x410478,'event':_0x15ee57});}},0xc8)),clearTimeout(_0x19bbe3['dragTimer']),_0x19bbe3[_0x4b4232(0x384)]=![];},_0x246dc2[_0x545679(0x261)]=_0x2308cc=>{const _0x5dda54=_0x545679;clearTimeout(_0x19bbe3[_0x5dda54(0x2f8)]);const _0x103cac=this['realCt'][_0x5dda54(0x576)],_0x2733a9=this['realCt'][_0x5dda54(0x5d1)],{width:_0x1207ad,height:_0x429700,top:_0x5b57b2,left:_0x4fe0dc}=this[_0x5dda54(0x2c3)][_0x5dda54(0x3f1)]();_0x3d4d94['x']=(_0x2308cc[_0x5dda54(0x115)]-_0x4fe0dc+_0x103cac)/_0x1207ad*0x2-0x1,_0x3d4d94['y']=-((_0x2308cc['clientY']-_0x5b57b2+_0x2733a9)/_0x429700)*0x2+0x1;if(_0x19bbe3['container'][_0x5dda54(0x1ed)]=='orbit'){const _0x251a20=_0x19bbe3['container'][_0x5dda54(0x112)],_0x126aa9=_0x19bbe3[_0x5dda54(0x509)][_0x5dda54(0x1db)];_0x5e9c44[_0x5dda54(0x450)](_0x3d4d94,_0x251a20);const _0x15e918=_0x5e9c44[_0x5dda54(0x127)](_0x126aa9);_0x19bbe3['events'][_0x5dda54(0x50e)]({'type':_0x5dda54(0x2bd),'objects':_0x15e918,'event':_0x2308cc});}else{const _0x50a5b0=_0x19bbe3[_0x5dda54(0x509)][_0x5dda54(0x128)],_0x10f200=_0x19bbe3[_0x5dda54(0x509)][_0x5dda54(0x1db)];_0x5e9c44[_0x5dda54(0x450)](_0x3d4d94,_0x50a5b0);const _0x17f7e8=_0x5e9c44[_0x5dda54(0x127)](_0x10f200);_0x19bbe3[_0x5dda54(0x53d)]['emit']({'type':'bolDbClick','objects':_0x17f7e8,'event':_0x2308cc});}},_0x246dc2[_0x545679(0x2d7)]=_0x324c2c=>{const _0xbc39cd=_0x545679;if(this[_0xbc39cd(0x45c)]||!this[_0xbc39cd(0x13a)][_0xbc39cd(0x548)])return;this[_0xbc39cd(0x45c)]=setTimeout(()=>{this['hoverTimer']=null;},0x1e);if(document[_0xbc39cd(0x157)])document[_0xbc39cd(0x157)][_0xbc39cd(0x2b7)][_0xbc39cd(0x275)]='auto';const _0x5274ab=this[_0xbc39cd(0x2c3)][_0xbc39cd(0x576)],_0x4a4b82=this[_0xbc39cd(0x2c3)]['offsetTop'],{width:_0x70f13f,height:_0x304238,top:_0x2b5ac4,left:_0x43ad64}=this['realCt'][_0xbc39cd(0x3f1)]();_0x3d4d94['x']=(_0x324c2c[_0xbc39cd(0x115)]-_0x43ad64+_0x5274ab)/_0x70f13f*0x2-0x1,_0x3d4d94['y']=-((_0x324c2c[_0xbc39cd(0x439)]-_0x2b5ac4+_0x4a4b82)/_0x304238)*0x2+0x1;let _0x1d33c7;if(_0x19bbe3[_0xbc39cd(0x509)]['viewState']==_0xbc39cd(0x1a1)){_0x1d33c7=_0x19bbe3[_0xbc39cd(0x509)][_0xbc39cd(0x112)];const _0x2911b1=_0x19bbe3['container'][_0xbc39cd(0x1db)];_0x5e9c44[_0xbc39cd(0x450)](_0x3d4d94,_0x1d33c7);const _0x68172a=_0x5e9c44[_0xbc39cd(0x127)](_0x2911b1);_0x19bbe3[_0xbc39cd(0x384)]?_0x19bbe3[_0xbc39cd(0x53d)]['emit']({'type':_0xbc39cd(0x612),'event':_0x324c2c}):_0x19bbe3[_0xbc39cd(0x53d)][_0xbc39cd(0x50e)]({'type':_0xbc39cd(0x60d),'objects':_0x68172a,'event':_0x324c2c});}else{_0x1d33c7=_0x19bbe3['container'][_0xbc39cd(0x128)];const _0x1765d2=_0x19bbe3[_0xbc39cd(0x509)][_0xbc39cd(0x1db)];_0x5e9c44['setFromCamera'](_0x3d4d94,_0x1d33c7);const _0x48b17d=_0x5e9c44[_0xbc39cd(0x127)](_0x1765d2);_0x19bbe3[_0xbc39cd(0x384)]?_0x19bbe3[_0xbc39cd(0x53d)][_0xbc39cd(0x50e)]({'type':_0xbc39cd(0x612),'event':_0x324c2c}):_0x19bbe3[_0xbc39cd(0x53d)][_0xbc39cd(0x50e)]({'type':_0xbc39cd(0x60d),'objects':_0x48b17d,'event':_0x324c2c});}},_0x246dc2[_0x545679(0x3cf)]=_0x32a599=>{const _0x148721=_0x545679,_0x32b379=this[_0x148721(0x2c3)][_0x148721(0x576)],_0x31eecf=this[_0x148721(0x2c3)][_0x148721(0x5d1)],{width:_0x2f68d6,height:_0x78a0cf,top:_0x2fffef,left:_0x6c842}=this[_0x148721(0x2c3)][_0x148721(0x3f1)]();_0x3d4d94['x']=(_0x32a599[_0x148721(0x115)]-_0x6c842+_0x32b379)/_0x2f68d6*0x2-0x1,_0x3d4d94['y']=-((_0x32a599['clientY']-_0x2fffef+_0x31eecf)/_0x78a0cf)*0x2+0x1;let _0x35a03c;if(_0x19bbe3['container'][_0x148721(0x1ed)]==_0x148721(0x1a1)){_0x35a03c=_0x19bbe3[_0x148721(0x509)][_0x148721(0x112)];const _0x37c0e2=_0x19bbe3[_0x148721(0x509)][_0x148721(0x1db)];_0x5e9c44[_0x148721(0x450)](_0x3d4d94,_0x35a03c);const _0x5f4759=_0x5e9c44[_0x148721(0x127)](_0x37c0e2);_0x19bbe3[_0x148721(0x53d)][_0x148721(0x50e)]({'type':_0x148721(0x255),'objects':_0x5f4759,'event':_0x32a599});}else{_0x35a03c=_0x19bbe3[_0x148721(0x509)][_0x148721(0x128)];const _0x2507f2=_0x19bbe3[_0x148721(0x509)][_0x148721(0x1db)];_0x5e9c44[_0x148721(0x450)](_0x3d4d94,_0x35a03c);const _0x370015=_0x5e9c44[_0x148721(0x127)](_0x2507f2);_0x19bbe3['events'][_0x148721(0x50e)]({'type':_0x148721(0x255),'objects':_0x370015,'event':_0x32a599});}},_0x246dc2[_0x545679(0x602)]=_0x1e1c82=>{const _0x43dd7b=_0x545679,_0x103a0b=this[_0x43dd7b(0x2c3)]['offsetLeft'],_0x6820f5=this['realCt']['offsetTop'],{width:_0x46afde,height:_0x1f3ccc,top:_0xfbe4f7,left:_0xc0cdba}=this[_0x43dd7b(0x2c3)][_0x43dd7b(0x3f1)]();_0x3d4d94['x']=(_0x1e1c82['clientX']-_0xc0cdba+_0x103a0b)/_0x46afde*0x2-0x1,_0x3d4d94['y']=-((_0x1e1c82[_0x43dd7b(0x439)]-_0xfbe4f7+_0x6820f5)/_0x1f3ccc)*0x2+0x1;let _0x16f93e;if(_0x19bbe3[_0x43dd7b(0x509)]['viewState']==_0x43dd7b(0x1a1)){_0x16f93e=_0x19bbe3[_0x43dd7b(0x509)]['orbitCamera'];const _0x513310=_0x19bbe3[_0x43dd7b(0x509)]['clickObjects'];_0x5e9c44[_0x43dd7b(0x450)](_0x3d4d94,_0x16f93e);const _0x52d30c=_0x5e9c44[_0x43dd7b(0x127)](_0x513310);_0x19bbe3[_0x43dd7b(0x53d)]['emit']({'type':_0x43dd7b(0x5e5),'objects':_0x52d30c,'event':_0x1e1c82});}else{_0x16f93e=_0x19bbe3[_0x43dd7b(0x509)][_0x43dd7b(0x128)];const _0x1feac8=_0x19bbe3[_0x43dd7b(0x509)][_0x43dd7b(0x1db)];_0x5e9c44[_0x43dd7b(0x450)](_0x3d4d94,_0x16f93e);const _0xdd7f78=_0x5e9c44[_0x43dd7b(0x127)](_0x1feac8);_0x19bbe3[_0x43dd7b(0x53d)][_0x43dd7b(0x50e)]({'type':_0x43dd7b(0x5e5),'objects':_0xdd7f78,'event':_0x1e1c82});}};}}class Text extends Sprite{['bg'];constructor(_0x4b8c3e){const _0x1aa0c4=_0x49cdc8;super();let _0x398e8a={'position':[0x0,0x0,0x0],'value':'','scale':0x14,'color':'#ffffff','width':0x12c,'lineHeight':0x14,'lineSpacing':0x0,'topSpacing':0x0,'background':'','textAlign':_0x1aa0c4(0x574),'backgroundColor':'#00ff00','sizeAttenuation':!![],'publicPath':'','bgScale':[0x1,0x1],'bgOffset':[0x0,0x0]};_0x398e8a=Object[_0x1aa0c4(0x402)](_0x398e8a,_0x4b8c3e);let _0x2bd258=typeof _0x398e8a['value']=='string'?fillText:fillText2;const {textCanvas:_0x56b32b,xScale:_0x25b635,yScale:_0x41d79c}=_0x2bd258({'text':_0x398e8a[_0x1aa0c4(0x4ba)],'fgColor':_0x398e8a['color'],'width':_0x398e8a['width'],'lineHeight':_0x398e8a[_0x1aa0c4(0x55b)],'lineSpacing':_0x398e8a['lineSpacing'],'topSpacing':_0x398e8a[_0x1aa0c4(0x1bf)],'textAlign':_0x398e8a[_0x1aa0c4(0x2b2)]}),_0x6c7563=new CanvasTexture(_0x56b32b),_0x4c9123=new SpriteMaterial({'map':_0x6c7563,'transparent':!![],'sizeAttenuation':_0x398e8a[_0x1aa0c4(0x20e)],'fog':![]});this[_0x1aa0c4(0x4b8)]=_0x4c9123,this[_0x1aa0c4(0x26e)][_0x1aa0c4(0x4ec)](_0x398e8a[_0x1aa0c4(0x26e)][0x0],_0x398e8a[_0x1aa0c4(0x26e)][0x1],_0x398e8a[_0x1aa0c4(0x26e)][0x2]),this[_0x1aa0c4(0x17e)][_0x1aa0c4(0x4ec)](_0x398e8a[_0x1aa0c4(0x17e)]*_0x25b635,_0x398e8a[_0x1aa0c4(0x17e)]*_0x41d79c,0x1),this['renderOrder']=TEXT_RENDER_ORDER+0x1,_0x398e8a[_0x1aa0c4(0x21d)]!=''&&new TextureLoader()[_0x1aa0c4(0x381)](_0x398e8a[_0x1aa0c4(0x4a7)]+_0x398e8a[_0x1aa0c4(0x21d)],_0x395def=>{const _0x4f61ad=_0x1aa0c4;_0x395def[_0x4f61ad(0x60a)]=new Vector2(_0x398e8a['bgOffset'][0x0],_0x398e8a[_0x4f61ad(0x585)][0x1]);const _0xfc4ba=new SpriteMaterial({'map':_0x395def,'transparent':!![],'color':_0x398e8a[_0x4f61ad(0x1ee)],'sizeAttenuation':_0x398e8a[_0x4f61ad(0x20e)],'fog':![]}),_0x122a89=new Sprite(_0xfc4ba);_0x122a89[_0x4f61ad(0x5a9)]=TEXT_RENDER_ORDER,_0x122a89[_0x4f61ad(0x17e)]['set'](_0x398e8a['bgScale'][0x0],_0x398e8a[_0x4f61ad(0x626)][0x1],0x1),this[_0x4f61ad(0x4bc)](_0x122a89);}),this[_0x1aa0c4(0x26f)]=_0x1aa0c4(0x435);}}function fillText(_0x4be42d){const _0x4f535d=_0x49cdc8;let _0x2aa9de=_0x4be42d&&_0x4be42d['text']!==undefined?_0x4be42d[_0x4f535d(0x4ad)]:'',_0xb74f6b=_0x4be42d&&_0x4be42d[_0x4f535d(0x25e)]!==undefined?_0x4be42d[_0x4f535d(0x25e)]:0xf,_0x477f97=_0x4be42d&&_0x4be42d[_0x4f535d(0x2bf)]!==undefined?_0x4be42d[_0x4f535d(0x2bf)]:0x32,_0x4f5052=_0x4be42d&&_0x4be42d[_0x4f535d(0x5a3)]!==undefined?_0x4be42d[_0x4f535d(0x5a3)]:0x14,_0x42d1e8=_0x4be42d&&_0x4be42d[_0x4f535d(0x34e)]!==undefined?_0x4be42d[_0x4f535d(0x34e)]:_0x4f535d(0x1eb),_0x726443=_0x4be42d&&_0x4be42d[_0x4f535d(0x417)]!==undefined?_0x4be42d['fontFamily']:'sans-serif';_0x4be42d&&_0x4be42d[_0x4f535d(0x2fc)]!==undefined?_0x4be42d[_0x4f535d(0x2fc)]:0x0;let _0x4a40aa=_0x4be42d&&_0x4be42d[_0x4f535d(0x414)]!==undefined?_0x4be42d[_0x4f535d(0x414)]:![],_0x907eef=_0x4be42d&&_0x4be42d[_0x4f535d(0x250)]!==undefined?_0x4be42d[_0x4f535d(0x250)]:![],_0x4fc447=_0x4be42d&&_0x4be42d[_0x4f535d(0x2b2)]!==undefined?_0x4be42d[_0x4f535d(0x2b2)]:_0x4f535d(0x574),_0x401cab=_0x4be42d&&_0x4be42d[_0x4f535d(0x55b)]!==undefined?_0x4be42d[_0x4f535d(0x55b)]:0x14,_0x174963=_0x4be42d&&_0x4be42d[_0x4f535d(0x3a0)]!==undefined?_0x4be42d[_0x4f535d(0x3a0)]:0x0,_0x43b096=_0x4be42d&&_0x4be42d[_0x4f535d(0x1bf)]!==undefined?_0x4be42d[_0x4f535d(0x1bf)]:0x5,_0xc744a8=_0x4be42d&&_0x4be42d[_0x4f535d(0x552)]!==undefined?_0x4be42d['width']:0xc8;_0x4a40aa=_0x4a40aa?'bold\x20':'',_0x907eef=_0x907eef?_0x4f535d(0x5b5):'';let _0x326f65=document[_0x4f535d(0x5b0)]('canvas'),_0x397a2d=_0x326f65['getContext']('2d');_0x397a2d['font']=_0x907eef+_0x4a40aa+_0x477f97+_0x4f535d(0x424)+_0x726443;const _0x225374=_0x397a2d[_0x4f535d(0x42d)](_0x2aa9de)['width'],_0x459ad4=Math['ceil'](_0x225374/_0xc744a8);let _0x1f89bd=_0xb74f6b/_0x477f97,_0x47bcb8=Math[_0x4f535d(0x2e8)](_0x4f5052/_0x1f89bd),_0x2d24a6=_0xc744a8,_0x184cd8=_0x2d24a6*_0x1f89bd,_0x3238a9=_0x184cd8+(_0x4f5052-_0xb74f6b);_0x326f65[_0x4f535d(0x552)]=_0xc744a8,_0x326f65[_0x4f535d(0x589)]=_0x47bcb8*_0x459ad4,_0x326f65['style']['width']=_0xc744a8+'px',_0x326f65[_0x4f535d(0x2b7)]['height']=_0x47bcb8*_0x459ad4+'px',_0x4f5052*=_0x459ad4,_0x397a2d['textAlign']='left',_0x397a2d[_0x4f535d(0x345)]=_0x4f535d(0x3a4),_0x397a2d[_0x4f535d(0x4ff)]=_0x42d1e8,_0x397a2d['font']=_0x907eef+_0x4a40aa+_0x401cab+_0x4f535d(0x424)+_0x726443;let _0x294896=0x0,_0x5e1cda=_0x43b096;for(let _0x29a140=0x0;_0x29a140<_0x2aa9de[_0x4f535d(0x25b)];_0x29a140++){const _0x4d99fc=_0x2aa9de[_0x4f535d(0x554)](_0x29a140,_0x29a140+0x1)['toString']();_0x397a2d['save'](),_0x397a2d[_0x4f535d(0x324)](_0x294896,_0x5e1cda),_0x397a2d['fillText'](_0x4d99fc,0x0,0x0),_0x397a2d[_0x4f535d(0x119)](),_0x294896+=_0x397a2d[_0x4f535d(0x42d)](_0x4d99fc)[_0x4f535d(0x552)];if(_0x294896+_0x397a2d[_0x4f535d(0x42d)](_0x4d99fc)[_0x4f535d(0x552)]>_0xc744a8){if(_0x4fc447==_0x4f535d(0x574))_0x294896=0x0;else{if(_0x4fc447==_0x4f535d(0x455)){const _0x5d9ee7=_0x2aa9de['slice'](_0x29a140+0x1,_0x2aa9de[_0x4f535d(0x25b)])[_0x4f535d(0x23c)](),_0x3e2bce=_0x397a2d[_0x4f535d(0x42d)](_0x5d9ee7)[_0x4f535d(0x552)];_0x3e2bce<_0xc744a8?_0x294896=(_0xc744a8-_0x3e2bce)/0x2:_0x294896=0x0;}else{if(_0x4fc447==_0x4f535d(0x621)){const _0x3ecf8c=_0x2aa9de[_0x4f535d(0x554)](_0x29a140+0x1,_0x2aa9de[_0x4f535d(0x25b)])[_0x4f535d(0x23c)](),_0x1f5841=_0x397a2d[_0x4f535d(0x42d)](_0x3ecf8c)[_0x4f535d(0x552)];_0x1f5841<_0xc744a8?_0x294896=_0xc744a8-_0x1f5841:_0x294896=0x0;}}}_0x5e1cda+=_0x401cab+_0x174963;}}return{'text':_0x2aa9de,'hWorldText':_0xb74f6b,'hPxText':_0x477f97,'hWorldAll':_0x4f5052,'wWorldAll':_0x3238a9,'fgColor':_0x42d1e8,'fontFamily':_0x726443,'textCanvas':_0x326f65,'xScale':_0xc744a8,'yScale':_0x47bcb8*_0x459ad4};}function fillText2(_0x20816b){const _0x405e2b=_0x49cdc8;let _0x2a8071=_0x20816b&&_0x20816b[_0x405e2b(0x4ad)]!==undefined?_0x20816b['text']:[],_0x2ce9ac=_0x20816b&&_0x20816b[_0x405e2b(0x25e)]!==undefined?_0x20816b[_0x405e2b(0x25e)]:0xf,_0x23decd=_0x20816b&&_0x20816b[_0x405e2b(0x2bf)]!==undefined?_0x20816b[_0x405e2b(0x2bf)]:0x32,_0x58cb2b=_0x20816b&&_0x20816b[_0x405e2b(0x5a3)]!==undefined?_0x20816b['hWorldAll']:0x14,_0x5867db=_0x20816b&&_0x20816b[_0x405e2b(0x34e)]!==undefined?_0x20816b[_0x405e2b(0x34e)]:_0x405e2b(0x1eb),_0xdd610b=_0x20816b&&_0x20816b[_0x405e2b(0x417)]!==undefined?_0x20816b[_0x405e2b(0x417)]:'sans-serif';_0x20816b&&_0x20816b[_0x405e2b(0x2fc)]!==undefined?_0x20816b[_0x405e2b(0x2fc)]:0x0;let _0x2efbc9=_0x20816b&&_0x20816b[_0x405e2b(0x414)]!==undefined?_0x20816b[_0x405e2b(0x414)]:![],_0x5296d4=_0x20816b&&_0x20816b['italic']!==undefined?_0x20816b[_0x405e2b(0x250)]:![],_0x5143cc=_0x20816b&&_0x20816b[_0x405e2b(0x2b2)]!==undefined?_0x20816b[_0x405e2b(0x2b2)]:_0x405e2b(0x574),_0x5b0afc=_0x20816b&&_0x20816b[_0x405e2b(0x55b)]!==undefined?_0x20816b[_0x405e2b(0x55b)]:0x14,_0x386d90=_0x20816b&&_0x20816b[_0x405e2b(0x3a0)]!==undefined?_0x20816b[_0x405e2b(0x3a0)]:0x0,_0x4c8741=_0x20816b&&_0x20816b[_0x405e2b(0x1bf)]!==undefined?_0x20816b['topSpacing']:0x5,_0x1dfd62=_0x20816b&&_0x20816b['width']!==undefined?_0x20816b[_0x405e2b(0x552)]:0xc8;_0x2efbc9=_0x2efbc9?'bold\x20':'',_0x5296d4=_0x5296d4?_0x405e2b(0x5b5):'';let _0x4cb993=document[_0x405e2b(0x5b0)](_0x405e2b(0x18c)),_0x589707=_0x4cb993[_0x405e2b(0x11b)]('2d');_0x589707[_0x405e2b(0x488)]=_0x5296d4+_0x2efbc9+_0x23decd+_0x405e2b(0x424)+_0xdd610b;const _0x37411f=_0x2a8071[_0x405e2b(0x25b)];let _0x373472=_0x2ce9ac/_0x23decd,_0x39fcd6=Math[_0x405e2b(0x2e8)](_0x58cb2b/_0x373472),_0x11f28e=_0x1dfd62,_0x5a9ebb=_0x11f28e*_0x373472,_0x3a4326=_0x5a9ebb+(_0x58cb2b-_0x2ce9ac);_0x4cb993[_0x405e2b(0x552)]=_0x1dfd62,_0x4cb993[_0x405e2b(0x589)]=_0x39fcd6*_0x37411f,_0x4cb993[_0x405e2b(0x2b7)][_0x405e2b(0x552)]=_0x1dfd62+'px',_0x4cb993[_0x405e2b(0x2b7)][_0x405e2b(0x589)]=_0x39fcd6*_0x37411f+'px',_0x58cb2b*=_0x37411f,_0x589707[_0x405e2b(0x345)]=_0x405e2b(0x3a4),_0x589707[_0x405e2b(0x4ff)]=_0x5867db,_0x589707[_0x405e2b(0x488)]=_0x5296d4+_0x2efbc9+_0x5b0afc+'px\x20'+_0xdd610b;let _0xb2ed51=0x0,_0x4876eb=_0x4c8741;for(let _0xd8331f=0x0;_0xd8331f<_0x2a8071['length'];_0xd8331f++){const _0x3f873a=_0x2a8071[_0xd8331f],_0x525321=_0x589707[_0x405e2b(0x42d)](_0x3f873a)['width'];if(_0x5143cc==_0x405e2b(0x574))_0xb2ed51=0x0;else{if(_0x5143cc==_0x405e2b(0x455))_0xb2ed51=(_0x1dfd62-_0x525321)/0x2;else _0x5143cc=='right'&&(_0xb2ed51=_0x1dfd62-_0x525321);}for(let _0x2d9317=0x0;_0x2d9317<_0x3f873a[_0x405e2b(0x25b)];_0x2d9317++){const _0x45c269=_0x3f873a['slice'](_0x2d9317,_0x2d9317+0x1)[_0x405e2b(0x23c)]();_0x589707[_0x405e2b(0x289)](),_0x589707[_0x405e2b(0x324)](_0xb2ed51,_0x4876eb),_0x589707[_0x405e2b(0x456)](_0x45c269,0x0,0x0),_0x589707[_0x405e2b(0x119)](),_0xb2ed51+=_0x589707[_0x405e2b(0x42d)](_0x45c269)[_0x405e2b(0x552)];}_0x4876eb+=_0x5b0afc+_0x386d90;}return{'text':_0x2a8071,'hWorldText':_0x2ce9ac,'hPxText':_0x23decd,'hWorldAll':_0x58cb2b,'wWorldAll':_0x3a4326,'fgColor':_0x5867db,'fontFamily':_0xdd610b,'textCanvas':_0x4cb993,'xScale':_0x1dfd62,'yScale':_0x39fcd6*_0x37411f};}const texLoader=new TextureLoader();class Icon extends Sprite{constructor(_0x8db9da){const _0x381420=_0x49cdc8;super();const _0x2dc26b=_0x8db9da[_0x381420(0x4aa)];let _0x16e419={'position':[0x0,0x0,0x0],'scale':[0x1,0x1],'sizeAttenuation':!![],'publicPath':'','cb':_0x278323=>{}};_0x16e419=Object[_0x381420(0x402)](_0x16e419,_0x8db9da),texLoader[_0x381420(0x381)](_0x16e419[_0x381420(0x4a7)]+_0x2dc26b,_0x3f50d5=>{const _0x46d81a=_0x381420;_0x3f50d5['encoding']=sRGBEncoding;const _0x50cc8c=new SpriteMaterial({'map':_0x3f50d5,'transparent':!![],'sizeAttenuation':_0x16e419[_0x46d81a(0x20e)],'fog':![]});if(_0x8db9da[_0x46d81a(0x229)]!=undefined)_0x50cc8c[_0x46d81a(0x229)]=new Color(_0x8db9da[_0x46d81a(0x229)]);this[_0x46d81a(0x4b8)]=_0x50cc8c,this['scale'][_0x46d81a(0x4ec)](_0x16e419['scale'][0x0]*(_0x3f50d5[_0x46d81a(0x15f)][_0x46d81a(0x552)]/_0x3f50d5[_0x46d81a(0x15f)][_0x46d81a(0x589)]),_0x16e419['scale'][0x1],0x1),this[_0x46d81a(0x26e)][_0x46d81a(0x4ec)](_0x16e419[_0x46d81a(0x26e)][0x0],_0x16e419[_0x46d81a(0x26e)][0x1],_0x16e419[_0x46d81a(0x26e)][0x2]),_0x16e419['cb']&&_0x16e419['cb'](_0x3f50d5);}),this['type']=_0x381420(0x33a),this[_0x381420(0x5a9)]=ICON_RENDER_ORDER;}}class CSS2DObject extends Object3D{constructor(_0x4d0ddc){const _0x36faaf=_0x49cdc8;super(),this[_0x36faaf(0x254)]=_0x4d0ddc||document[_0x36faaf(0x5b0)](_0x36faaf(0x186)),this['element']['style']['position']='absolute',this['element'][_0x36faaf(0x2b7)][_0x36faaf(0x201)]=_0x36faaf(0x134),this['element'][_0x36faaf(0x1bc)]('draggable',![]),this[_0x36faaf(0x44f)]('removed',function(){const _0x3937ab=_0x36faaf;this[_0x3937ab(0x1a6)](function(_0x5d094d){const _0xb6d808=_0x3937ab;_0x5d094d[_0xb6d808(0x254)]instanceof Element&&_0x5d094d['element'][_0xb6d808(0x369)]!==null&&_0x5d094d[_0xb6d808(0x254)][_0xb6d808(0x369)]['removeChild'](_0x5d094d[_0xb6d808(0x254)]);});});}[_0x49cdc8(0x613)](_0x18e945,_0x2db798){const _0xba089d=_0x49cdc8;return super[_0xba089d(0x613)](_0x18e945,_0x2db798),this['element']=_0x18e945[_0xba089d(0x254)][_0xba089d(0x57e)](!![]),this;}}CSS2DObject[_0x49cdc8(0x60f)]['isCSS2DObject']=!![],new Vector3(),new Matrix4(),new Matrix4(),new Vector3(),new Vector3();class Popup extends CSS2DObject{[_0x49cdc8(0x455)];constructor(_0xbfab0){const _0x542390=_0x49cdc8;let _0x41aaab={'value':'','position':[0x0,0x0,0x0],'className':'','style':'','closeVisible':_0x542390(0x592),'closeSize':0x1,'center':[-0.5,-0.5]};_0x41aaab=Object[_0x542390(0x402)](_0x41aaab,_0xbfab0);const _0x29cf30=document[_0x542390(0x5b0)](_0x542390(0x186));_0x29cf30[_0x542390(0x1d2)]=()=>{return![];},_0x29cf30[_0x542390(0x4f4)]=_0x41aaab[_0x542390(0x4ba)],_0x29cf30[_0x542390(0x60e)]=_0x41aaab['className'],_0x29cf30[_0x542390(0x1bc)]('style',_0x41aaab['style']);const _0x194e66=document[_0x542390(0x5b0)](_0x542390(0x186));_0x194e66[_0x542390(0x60e)]=_0x542390(0x494),document['styleSheets'][0x0][_0x542390(0x3f9)](_0x542390(0x586),0x0),_0x194e66['setAttribute']('style',_0x542390(0x396)+_0x41aaab[_0x542390(0x59a)]+')'),_0x194e66[_0x542390(0x2b7)][_0x542390(0x3c4)]=_0x41aaab['closeVisible'],_0x29cf30[_0x542390(0x2fd)](_0x194e66),super(_0x29cf30),this[_0x542390(0x26e)][_0x542390(0x4ec)](_0x41aaab[_0x542390(0x26e)][0x0],_0x41aaab[_0x542390(0x26e)][0x1],_0x41aaab[_0x542390(0x26e)][0x2]),this['center']=new Vector2(_0x41aaab[_0x542390(0x455)][0x0],_0x41aaab[_0x542390(0x455)][0x1]);const _0x1abbcb=this;_0x194e66[_0x542390(0x4c2)]=()=>{const _0x46c670=_0x542390;_0x1abbcb[_0x46c670(0x592)]=![];};}}class Gif extends Sprite{constructor(_0x19a1ef){const _0x1b4b91=_0x49cdc8;super();let _0x5c7575={'container':null,'publicPath':'','url':'','scale':0x1,'position':[0x0,0x0,0x0]};_0x5c7575=Object[_0x1b4b91(0x402)](_0x5c7575,_0x19a1ef),_0x5c7575['container']&&_0x5c7575[_0x1b4b91(0x509)][_0x1b4b91(0x14d)][_0x1b4b91(0x381)](_0x5c7575[_0x1b4b91(0x4a7)]+_0x5c7575[_0x1b4b91(0x4aa)],_0xd72fcc=>{const _0x238e7f=_0x1b4b91;this['material']=new SpriteMaterial({'map':_0xd72fcc,'transparent':!![],'sizeAttenuation':![],'fog':![]}),this[_0x238e7f(0x17e)][_0x238e7f(0x4ec)](_0x5c7575[_0x238e7f(0x17e)]*_0xd72fcc[_0x238e7f(0x15f)]['width']/_0xd72fcc[_0x238e7f(0x15f)][_0x238e7f(0x589)],_0x5c7575[_0x238e7f(0x17e)],0x1),this[_0x238e7f(0x26e)][_0x238e7f(0x4ec)](_0x5c7575['position'][0x0],_0x5c7575[_0x238e7f(0x26e)][0x1],_0x5c7575[_0x238e7f(0x26e)][0x2]),this['renderOrder']=ICON_RENDER_ORDER,_0x5c7575[_0x238e7f(0x509)]?.['gifTextures'][_0x238e7f(0x617)](_0xd72fcc);});}}class CSS3DObject extends Object3D{constructor(_0x5660cd){const _0x5a405a=_0x49cdc8;super(),this[_0x5a405a(0x254)]=_0x5660cd||document[_0x5a405a(0x5b0)]('div'),this[_0x5a405a(0x254)][_0x5a405a(0x2b7)][_0x5a405a(0x26e)]='absolute',this['element'][_0x5a405a(0x2b7)][_0x5a405a(0x52b)]=_0x5a405a(0x242),this[_0x5a405a(0x254)]['style'][_0x5a405a(0x201)]=_0x5a405a(0x134),this['element'][_0x5a405a(0x1bc)](_0x5a405a(0x34c),![]),this[_0x5a405a(0x44f)](_0x5a405a(0x1e3),function(){const _0x40ab60=_0x5a405a;this[_0x40ab60(0x1a6)](function(_0x469a77){const _0x3161d1=_0x40ab60;_0x469a77[_0x3161d1(0x254)]instanceof Element&&_0x469a77['element']['parentNode']!==null&&_0x469a77[_0x3161d1(0x254)]['parentNode'][_0x3161d1(0x4b4)](_0x469a77[_0x3161d1(0x254)]);});});}[_0x49cdc8(0x613)](_0x40b4a7,_0x3e63c6){const _0x32f708=_0x49cdc8;return super[_0x32f708(0x613)](_0x40b4a7,_0x3e63c6),this[_0x32f708(0x254)]=_0x40b4a7[_0x32f708(0x254)][_0x32f708(0x57e)](!![]),this;}}CSS3DObject[_0x49cdc8(0x60f)][_0x49cdc8(0x5b8)]=!![];class CSS3DSprite extends CSS3DObject{constructor(_0x42517e){const _0x33e8cb=_0x49cdc8;super(_0x42517e),this[_0x33e8cb(0x320)]=0x0;}[_0x49cdc8(0x613)](_0x299ecc,_0xe2c692){const _0x39ac56=_0x49cdc8;return super['copy'](_0x299ecc,_0xe2c692),this[_0x39ac56(0x320)]=_0x299ecc[_0x39ac56(0x320)],this;}}CSS3DSprite['prototype'][_0x49cdc8(0x5c2)]=!![],new Matrix4(),new Matrix4();class Popup3D extends CSS3DSprite{constructor(_0x467b9a){const _0x5956bf=_0x49cdc8;let _0x226686={'value':'','position':[0x0,0x0,0x0],'className':'','closeVisible':_0x5956bf(0x592),'scale':[0x1,0x1,0x1]};_0x226686=Object['assign'](_0x226686,_0x467b9a);const _0x1bbbc3=document[_0x5956bf(0x5b0)](_0x5956bf(0x186));_0x1bbbc3[_0x5956bf(0x4f4)]=_0x226686[_0x5956bf(0x4ba)],_0x1bbbc3[_0x5956bf(0x60e)]=_0x226686[_0x5956bf(0x60e)];const _0x292040=document[_0x5956bf(0x5b0)](_0x5956bf(0x186));_0x292040[_0x5956bf(0x60e)]=_0x5956bf(0x494),_0x292040['innerHTML']=_0x5956bf(0x395),_0x292040['setAttribute'](_0x5956bf(0x2b7),'color:white;height:\x2020px;\x20width:\x2020px;\x20position:\x20absolute;\x20right:\x200;\x20top:\x200;display:flex;align-items:center;justify-content:center;cursor:\x20pointer;pointer-events:\x20visible;'),_0x292040[_0x5956bf(0x2b7)][_0x5956bf(0x3c4)]=_0x226686[_0x5956bf(0x30f)],_0x1bbbc3[_0x5956bf(0x2fd)](_0x292040),_0x1bbbc3[_0x5956bf(0x44f)](_0x5956bf(0x368),_0xc330e0=>{const _0x113458=_0x5956bf;_0xc330e0[_0x113458(0x51f)]();}),super(_0x1bbbc3),this[_0x5956bf(0x26e)][_0x5956bf(0x4ec)](_0x226686['position'][0x0],_0x226686['position'][0x1],_0x226686['position'][0x2]),this['scale'][_0x5956bf(0x4ec)](_0x226686[_0x5956bf(0x17e)][0x0],_0x226686[_0x5956bf(0x17e)][0x1],_0x226686[_0x5956bf(0x17e)][0x2]);const _0x4c62c1=this;_0x292040['onclick']=()=>{_0x4c62c1['visible']=![];};}}const POI={'Text':Text,'Icon':Icon,'Popup':Popup,'Gif':Gif,'Popup3D':Popup3D},_box$1=new Box3(),_vector=new Vector3();class LineSegmentsGeometry extends InstancedBufferGeometry{constructor(){const _0x4408cf=_0x49cdc8;super(),this[_0x4408cf(0x26f)]=_0x4408cf(0x44d);const _0x3a6ebd=[-0x1,0x2,0x0,0x1,0x2,0x0,-0x1,0x1,0x0,0x1,0x1,0x0,-0x1,0x0,0x0,0x1,0x0,0x0,-0x1,-0x1,0x0,0x1,-0x1,0x0],_0x4b8d0a=[-0x1,0x2,0x1,0x2,-0x1,0x1,0x1,0x1,-0x1,-0x1,0x1,-0x1,-0x1,-0x2,0x1,-0x2],_0x567bfd=[0x0,0x2,0x1,0x2,0x3,0x1,0x2,0x4,0x3,0x4,0x5,0x3,0x4,0x6,0x5,0x6,0x7,0x5];this['setIndex'](_0x567bfd),this[_0x4408cf(0x1bc)]('position',new Float32BufferAttribute(_0x3a6ebd,0x3)),this[_0x4408cf(0x1bc)]('uv',new Float32BufferAttribute(_0x4b8d0a,0x2));}[_0x49cdc8(0x13e)](_0x3b1075){const _0xf6494d=_0x49cdc8,_0xf559ce=this['attributes'][_0xf6494d(0x18e)],_0x2c3dd5=this[_0xf6494d(0x1c6)][_0xf6494d(0x2a9)];return _0xf559ce!==undefined&&(_0xf559ce[_0xf6494d(0x13e)](_0x3b1075),_0x2c3dd5['applyMatrix4'](_0x3b1075),_0xf559ce[_0xf6494d(0x465)]=!![]),this[_0xf6494d(0x1ef)]!==null&&this['computeBoundingBox'](),this[_0xf6494d(0x20f)]!==null&&this[_0xf6494d(0x101)](),this;}[_0x49cdc8(0x5d2)](_0x29c620){const _0x14b44b=_0x49cdc8;let _0x497af8;if(_0x29c620 instanceof Float32Array)_0x497af8=_0x29c620;else Array[_0x14b44b(0x406)](_0x29c620)&&(_0x497af8=new Float32Array(_0x29c620));const _0x45034d=new InstancedInterleavedBuffer(_0x497af8,0x6,0x1);return this[_0x14b44b(0x1bc)](_0x14b44b(0x18e),new InterleavedBufferAttribute(_0x45034d,0x3,0x0)),this['setAttribute'](_0x14b44b(0x2a9),new InterleavedBufferAttribute(_0x45034d,0x3,0x3)),this['computeBoundingBox'](),this['computeBoundingSphere'](),this;}[_0x49cdc8(0x4d0)](_0xf0e14a){const _0x3fa016=_0x49cdc8;let _0x50eee0;if(_0xf0e14a instanceof Float32Array)_0x50eee0=_0xf0e14a;else Array[_0x3fa016(0x406)](_0xf0e14a)&&(_0x50eee0=new Float32Array(_0xf0e14a));const _0x1364de=new InstancedInterleavedBuffer(_0x50eee0,0x6,0x1);return this[_0x3fa016(0x1bc)]('instanceColorStart',new InterleavedBufferAttribute(_0x1364de,0x3,0x0)),this[_0x3fa016(0x1bc)](_0x3fa016(0x4a3),new InterleavedBufferAttribute(_0x1364de,0x3,0x3)),this;}[_0x49cdc8(0x482)](_0x3eb794){const _0x2ffa9d=_0x49cdc8;return this['setPositions'](_0x3eb794[_0x2ffa9d(0x1c6)][_0x2ffa9d(0x26e)][_0x2ffa9d(0x4cf)]),this;}[_0x49cdc8(0x408)](_0x5eaadc){const _0x338d76=_0x49cdc8;return this[_0x338d76(0x5d2)](_0x5eaadc[_0x338d76(0x1c6)][_0x338d76(0x26e)][_0x338d76(0x4cf)]),this;}['fromMesh'](_0x2c7653){const _0x4d9599=_0x49cdc8;return this[_0x4d9599(0x482)](new WireframeGeometry(_0x2c7653['geometry'])),this;}['fromLineSegments'](_0x50b927){const _0x403eb9=_0x49cdc8,_0x2aed72=_0x50b927[_0x403eb9(0x2d9)];if(_0x2aed72[_0x403eb9(0x277)]){console['error'](_0x403eb9(0x2ec));return;}else _0x2aed72[_0x403eb9(0x15d)]&&this[_0x403eb9(0x5d2)](_0x2aed72[_0x403eb9(0x1c6)]['position'][_0x403eb9(0x4cf)]);return this;}[_0x49cdc8(0x367)](){const _0x11d642=_0x49cdc8;this[_0x11d642(0x1ef)]===null&&(this[_0x11d642(0x1ef)]=new Box3());const _0x2905dd=this[_0x11d642(0x1c6)][_0x11d642(0x18e)],_0x38919f=this[_0x11d642(0x1c6)]['instanceEnd'];_0x2905dd!==undefined&&_0x38919f!==undefined&&(this[_0x11d642(0x1ef)][_0x11d642(0x1d4)](_0x2905dd),_box$1[_0x11d642(0x1d4)](_0x38919f),this[_0x11d642(0x1ef)][_0x11d642(0x49b)](_box$1));}[_0x49cdc8(0x101)](){const _0x682995=_0x49cdc8;this[_0x682995(0x20f)]===null&&(this[_0x682995(0x20f)]=new Sphere());this[_0x682995(0x1ef)]===null&&this[_0x682995(0x367)]();const _0x8711a=this[_0x682995(0x1c6)][_0x682995(0x18e)],_0x5f435b=this[_0x682995(0x1c6)]['instanceEnd'];if(_0x8711a!==undefined&&_0x5f435b!==undefined){const _0x405ab4=this['boundingSphere']['center'];this['boundingBox'][_0x682995(0x171)](_0x405ab4);let _0x3c5a31=0x0;for(let _0x5c3ccd=0x0,_0x4433ea=_0x8711a[_0x682995(0x111)];_0x5c3ccd<_0x4433ea;_0x5c3ccd++){_vector[_0x682995(0x328)](_0x8711a,_0x5c3ccd),_0x3c5a31=Math[_0x682995(0x105)](_0x3c5a31,_0x405ab4[_0x682995(0x583)](_vector)),_vector['fromBufferAttribute'](_0x5f435b,_0x5c3ccd),_0x3c5a31=Math[_0x682995(0x105)](_0x3c5a31,_0x405ab4[_0x682995(0x583)](_vector));}this[_0x682995(0x20f)][_0x682995(0x30d)]=Math[_0x682995(0x20d)](_0x3c5a31),isNaN(this[_0x682995(0x20f)][_0x682995(0x30d)])&&console[_0x682995(0x611)](_0x682995(0x2c2),this);}}[_0x49cdc8(0x1d0)](){}[_0x49cdc8(0x391)](_0x483b1e){const _0x2edebb=_0x49cdc8;return console[_0x2edebb(0x449)](_0x2edebb(0x445)),this[_0x2edebb(0x13e)](_0x483b1e);}}LineSegmentsGeometry[_0x49cdc8(0x60f)]['isLineSegmentsGeometry']=!![],UniformsLib$1[_0x49cdc8(0x616)]={'linewidth':{'value':0x1},'resolution':{'value':new Vector2(0x1,0x1)},'dashScale':{'value':0x1},'dashSize':{'value':0x1},'dashOffset':{'value':0x0},'gapSize':{'value':0x1},'opacity':{'value':0x1}},ShaderLib$1[_0x49cdc8(0x616)]={'uniforms':UniformsUtils$1[_0x49cdc8(0x3fd)]([UniformsLib$1[_0x49cdc8(0x52a)],UniformsLib$1[_0x49cdc8(0x4f1)],UniformsLib$1[_0x49cdc8(0x616)]]),'vertexShader':_0x49cdc8(0x54e),'fragmentShader':_0x49cdc8(0x126)};class LineMaterial extends ShaderMaterial{constructor(_0x2132f4){const _0x8de83c=_0x49cdc8;super({'type':'LineMaterial','uniforms':UniformsUtils$1[_0x8de83c(0x32a)](ShaderLib$1[_0x8de83c(0x616)][_0x8de83c(0x385)]),'vertexShader':ShaderLib$1[_0x8de83c(0x616)][_0x8de83c(0x628)],'fragmentShader':ShaderLib$1[_0x8de83c(0x616)][_0x8de83c(0x27b)],'clipping':!![]}),Object[_0x8de83c(0x4ef)](this,{'color':{'enumerable':!![],'get':function(){const _0x3ba4cc=_0x8de83c;return this['uniforms'][_0x3ba4cc(0x3ae)][_0x3ba4cc(0x4ba)];},'set':function(_0x460a5b){const _0x432127=_0x8de83c;this[_0x432127(0x385)][_0x432127(0x3ae)][_0x432127(0x4ba)]=_0x460a5b;}},'linewidth':{'enumerable':!![],'get':function(){const _0x3d4f2d=_0x8de83c;return this['uniforms'][_0x3d4f2d(0x428)][_0x3d4f2d(0x4ba)];},'set':function(_0x4c6a3f){const _0x48c3fe=_0x8de83c;this['uniforms']['linewidth'][_0x48c3fe(0x4ba)]=_0x4c6a3f;}},'dashed':{'enumerable':!![],'get':function(){const _0x360559=_0x8de83c;return Boolean(_0x360559(0x161)in this['defines']);},'set'(_0xcfcc3d){const _0x5546ac=_0x8de83c;Boolean(_0xcfcc3d)!==Boolean(_0x5546ac(0x161)in this[_0x5546ac(0x24f)])&&(this[_0x5546ac(0x465)]=!![]),_0xcfcc3d===!![]?this[_0x5546ac(0x24f)][_0x5546ac(0x161)]='':delete this[_0x5546ac(0x24f)][_0x5546ac(0x161)];}},'dashScale':{'enumerable':!![],'get':function(){const _0x278b8a=_0x8de83c;return this[_0x278b8a(0x385)]['dashScale'][_0x278b8a(0x4ba)];},'set':function(_0x6b950d){const _0x25a73c=_0x8de83c;this['uniforms'][_0x25a73c(0x312)][_0x25a73c(0x4ba)]=_0x6b950d;}},'dashSize':{'enumerable':!![],'get':function(){const _0x3744b5=_0x8de83c;return this[_0x3744b5(0x385)][_0x3744b5(0x10a)][_0x3744b5(0x4ba)];},'set':function(_0x3ee29b){const _0x5bf7db=_0x8de83c;this[_0x5bf7db(0x385)]['dashSize']['value']=_0x3ee29b;}},'dashOffset':{'enumerable':!![],'get':function(){const _0x1eedcb=_0x8de83c;return this[_0x1eedcb(0x385)][_0x1eedcb(0x56e)][_0x1eedcb(0x4ba)];},'set':function(_0x3982eb){const _0xc412c=_0x8de83c;this['uniforms'][_0xc412c(0x56e)][_0xc412c(0x4ba)]=_0x3982eb;}},'gapSize':{'enumerable':!![],'get':function(){const _0x41e103=_0x8de83c;return this[_0x41e103(0x385)][_0x41e103(0x350)]['value'];},'set':function(_0x1b476b){const _0x1d3f8b=_0x8de83c;this['uniforms'][_0x1d3f8b(0x350)][_0x1d3f8b(0x4ba)]=_0x1b476b;}},'opacity':{'enumerable':!![],'get':function(){const _0x5ed33a=_0x8de83c;return this['uniforms'][_0x5ed33a(0x313)]['value'];},'set':function(_0xf87099){const _0x10422f=_0x8de83c;this[_0x10422f(0x385)][_0x10422f(0x313)][_0x10422f(0x4ba)]=_0xf87099;}},'resolution':{'enumerable':!![],'get':function(){const _0x2ecb17=_0x8de83c;return this[_0x2ecb17(0x385)][_0x2ecb17(0x4e9)][_0x2ecb17(0x4ba)];},'set':function(_0x676660){const _0x5286be=_0x8de83c;this[_0x5286be(0x385)][_0x5286be(0x4e9)][_0x5286be(0x4ba)][_0x5286be(0x613)](_0x676660);}},'alphaToCoverage':{'enumerable':!![],'get':function(){const _0x4b2517=_0x8de83c;return Boolean(_0x4b2517(0x3a1)in this[_0x4b2517(0x24f)]);},'set':function(_0xdc2b1b){const _0x49bc5e=_0x8de83c;Boolean(_0xdc2b1b)!==Boolean('ALPHA_TO_COVERAGE'in this[_0x49bc5e(0x24f)])&&(this[_0x49bc5e(0x465)]=!![]),_0xdc2b1b===!![]?(this[_0x49bc5e(0x24f)][_0x49bc5e(0x3a1)]='',this[_0x49bc5e(0x19d)]['derivatives']=!![]):(delete this[_0x49bc5e(0x24f)][_0x49bc5e(0x3a1)],this['extensions']['derivatives']=![]);}}}),this[_0x8de83c(0x59b)](_0x2132f4);}}LineMaterial[_0x49cdc8(0x60f)][_0x49cdc8(0x447)]=!![];const _start=new Vector3(),_end=new Vector3(),_start4=new Vector4(),_end4=new Vector4(),_ssOrigin=new Vector4(),_ssOrigin3=new Vector3(),_mvMatrix=new Matrix4(),_line=new Line3(),_closestPoint=new Vector3(),_box=new Box3(),_sphere=new Sphere(),_clipToWorldVector=new Vector4();class LineSegments2 extends Mesh{constructor(_0x554116=new LineSegmentsGeometry(),_0x23be9d=new LineMaterial({'color':Math[_0x49cdc8(0x3ca)]()*0xffffff})){const _0x38dabc=_0x49cdc8;super(_0x554116,_0x23be9d),this[_0x38dabc(0x26f)]='LineSegments2';}[_0x49cdc8(0x5a5)](){const _0xb6894c=_0x49cdc8,_0x5e8ea8=this[_0xb6894c(0x2d9)],_0x4a6b6c=_0x5e8ea8['attributes'][_0xb6894c(0x18e)],_0x5b6c95=_0x5e8ea8['attributes'][_0xb6894c(0x2a9)],_0x5c69c5=new Float32Array(0x2*_0x4a6b6c[_0xb6894c(0x111)]);for(let _0x2c9743=0x0,_0x33c1e1=0x0,_0x24d107=_0x4a6b6c[_0xb6894c(0x111)];_0x2c9743<_0x24d107;_0x2c9743++,_0x33c1e1+=0x2){_start[_0xb6894c(0x328)](_0x4a6b6c,_0x2c9743),_end[_0xb6894c(0x328)](_0x5b6c95,_0x2c9743),_0x5c69c5[_0x33c1e1]=_0x33c1e1===0x0?0x0:_0x5c69c5[_0x33c1e1-0x1],_0x5c69c5[_0x33c1e1+0x1]=_0x5c69c5[_0x33c1e1]+_start[_0xb6894c(0x39b)](_end);}const _0x42e5da=new InstancedInterleavedBuffer(_0x5c69c5,0x2,0x1);return _0x5e8ea8['setAttribute'](_0xb6894c(0x233),new InterleavedBufferAttribute(_0x42e5da,0x1,0x0)),_0x5e8ea8[_0xb6894c(0x1bc)](_0xb6894c(0x2e5),new InterleavedBufferAttribute(_0x42e5da,0x1,0x1)),this;}['raycast'](_0x29eef5,_0x486df3){const _0x208f85=_0x49cdc8;_0x29eef5[_0x208f85(0x503)]===null&&console['error'](_0x208f85(0x239));const _0x52ac19=_0x29eef5['params'][_0x208f85(0x3b7)]!==undefined?_0x29eef5[_0x208f85(0x481)][_0x208f85(0x3b7)][_0x208f85(0x1e6)]||0x0:0x0,_0xd17f7=_0x29eef5['ray'],_0x2e866b=_0x29eef5[_0x208f85(0x503)],_0x34fc78=_0x2e866b[_0x208f85(0x243)],_0x11749e=this['matrixWorld'],_0x6fee9=this['geometry'],_0x1b0b33=this[_0x208f85(0x4b8)],_0x108316=_0x1b0b33[_0x208f85(0x4e9)],_0x2d045b=_0x1b0b33[_0x208f85(0x428)]+_0x52ac19,_0x32d2d9=_0x6fee9[_0x208f85(0x1c6)][_0x208f85(0x18e)],_0x2a4299=_0x6fee9[_0x208f85(0x1c6)]['instanceEnd'],_0x5ceb3f=-_0x2e866b[_0x208f85(0x129)],_0xb6bb79=0x2*Math[_0x208f85(0x105)](_0x2d045b/_0x108316['width'],_0x2d045b/_0x108316[_0x208f85(0x589)]);_0x6fee9[_0x208f85(0x20f)]===null&&_0x6fee9[_0x208f85(0x101)]();_sphere['copy'](_0x6fee9[_0x208f85(0x20f)])[_0x208f85(0x13e)](_0x11749e);const _0x2e4316=Math['max'](_0x2e866b['near'],_sphere[_0x208f85(0x214)](_0xd17f7[_0x208f85(0x529)]));_clipToWorldVector['set'](0x0,0x0,-_0x2e4316,0x1)['applyMatrix4'](_0x2e866b[_0x208f85(0x243)]),_clipToWorldVector[_0x208f85(0x3d1)](0x1/_clipToWorldVector['w']),_clipToWorldVector['applyMatrix4'](_0x2e866b[_0x208f85(0x352)]);const _0x532c5e=Math[_0x208f85(0x24e)](_0xb6bb79/_clipToWorldVector['w'])*0.5;_sphere[_0x208f85(0x30d)]+=_0x532c5e;if(_0x29eef5[_0x208f85(0x480)][_0x208f85(0x192)](_sphere)===![])return;_0x6fee9[_0x208f85(0x1ef)]===null&&_0x6fee9['computeBoundingBox']();_box['copy'](_0x6fee9['boundingBox'])[_0x208f85(0x13e)](_0x11749e);const _0xa67bc5=Math[_0x208f85(0x105)](_0x2e866b['near'],_box[_0x208f85(0x214)](_0xd17f7[_0x208f85(0x529)]));_clipToWorldVector['set'](0x0,0x0,-_0xa67bc5,0x1)['applyMatrix4'](_0x2e866b[_0x208f85(0x243)]),_clipToWorldVector[_0x208f85(0x3d1)](0x1/_clipToWorldVector['w']),_clipToWorldVector[_0x208f85(0x13e)](_0x2e866b[_0x208f85(0x352)]);const _0x51e046=Math[_0x208f85(0x24e)](_0xb6bb79/_clipToWorldVector['w'])*0.5;_box[_0x208f85(0x105)]['x']+=_0x51e046,_box[_0x208f85(0x105)]['y']+=_0x51e046,_box[_0x208f85(0x105)]['z']+=_0x51e046,_box[_0x208f85(0x3bb)]['x']-=_0x51e046,_box['min']['y']-=_0x51e046,_box[_0x208f85(0x3bb)]['z']-=_0x51e046;if(_0x29eef5[_0x208f85(0x480)][_0x208f85(0x265)](_box)===![])return;_0xd17f7['at'](0x1,_ssOrigin),_ssOrigin['w']=0x1,_ssOrigin[_0x208f85(0x13e)](_0x2e866b[_0x208f85(0x55d)]),_ssOrigin[_0x208f85(0x13e)](_0x34fc78),_ssOrigin[_0x208f85(0x3d1)](0x1/_ssOrigin['w']),_ssOrigin['x']*=_0x108316['x']/0x2,_ssOrigin['y']*=_0x108316['y']/0x2,_ssOrigin['z']=0x0,_ssOrigin3[_0x208f85(0x613)](_ssOrigin),_mvMatrix['multiplyMatrices'](_0x2e866b[_0x208f85(0x55d)],_0x11749e);for(let _0x1550a8=0x0,_0xba7ad8=_0x32d2d9['count'];_0x1550a8<_0xba7ad8;_0x1550a8++){_start4[_0x208f85(0x328)](_0x32d2d9,_0x1550a8),_end4[_0x208f85(0x328)](_0x2a4299,_0x1550a8),_start4['w']=0x1,_end4['w']=0x1,_start4[_0x208f85(0x13e)](_mvMatrix),_end4[_0x208f85(0x13e)](_mvMatrix);var _0x1c2a75=_start4['z']>_0x5ceb3f&&_end4['z']>_0x5ceb3f;if(_0x1c2a75)continue;if(_start4['z']>_0x5ceb3f){const _0x93d88=_start4['z']-_end4['z'],_0x416d18=(_start4['z']-_0x5ceb3f)/_0x93d88;_start4[_0x208f85(0x3f3)](_end4,_0x416d18);}else{if(_end4['z']>_0x5ceb3f){const _0x2f12bd=_end4['z']-_start4['z'],_0xfeb335=(_end4['z']-_0x5ceb3f)/_0x2f12bd;_end4[_0x208f85(0x3f3)](_start4,_0xfeb335);}}_start4[_0x208f85(0x13e)](_0x34fc78),_end4[_0x208f85(0x13e)](_0x34fc78),_start4[_0x208f85(0x3d1)](0x1/_start4['w']),_end4['multiplyScalar'](0x1/_end4['w']),_start4['x']*=_0x108316['x']/0x2,_start4['y']*=_0x108316['y']/0x2,_end4['x']*=_0x108316['x']/0x2,_end4['y']*=_0x108316['y']/0x2,_line[_0x208f85(0x3cb)][_0x208f85(0x613)](_start4),_line['start']['z']=0x0,_line[_0x208f85(0x5a8)][_0x208f85(0x613)](_end4),_line[_0x208f85(0x5a8)]['z']=0x0;const _0x2f2d0d=_line[_0x208f85(0x515)](_ssOrigin3,!![]);_line['at'](_0x2f2d0d,_closestPoint);const _0x1be7e2=MathUtils[_0x208f85(0x3f3)](_start4['z'],_end4['z'],_0x2f2d0d),_0x587186=_0x1be7e2>=-0x1&&_0x1be7e2<=0x1,_0x15e696=_ssOrigin3[_0x208f85(0x39b)](_closestPoint)<_0x2d045b*0.5;if(_0x587186&&_0x15e696){_line[_0x208f85(0x3cb)][_0x208f85(0x328)](_0x32d2d9,_0x1550a8),_line['end'][_0x208f85(0x328)](_0x2a4299,_0x1550a8),_line[_0x208f85(0x3cb)][_0x208f85(0x13e)](_0x11749e),_line['end'][_0x208f85(0x13e)](_0x11749e);const _0x431141=new Vector3(),_0x31e2d8=new Vector3();_0xd17f7['distanceSqToSegment'](_line['start'],_line[_0x208f85(0x5a8)],_0x31e2d8,_0x431141),_0x486df3[_0x208f85(0x617)]({'point':_0x31e2d8,'pointOnLine':_0x431141,'distance':_0xd17f7[_0x208f85(0x529)][_0x208f85(0x39b)](_0x31e2d8),'object':this,'face':null,'faceIndex':_0x1550a8,'uv':null,'uv2':null});}}}}LineSegments2[_0x49cdc8(0x60f)]['LineSegments2']=!![];class LineGeometry extends LineSegmentsGeometry{constructor(){const _0x422cf9=_0x49cdc8;super(),this['type']=_0x422cf9(0x50a);}[_0x49cdc8(0x5d2)](_0x768021){var _0x198cbb=_0x768021['length']-0x3,_0x1ab18d=new Float32Array(0x2*_0x198cbb);for(var _0xfbbc13=0x0;_0xfbbc13<_0x198cbb;_0xfbbc13+=0x3){_0x1ab18d[0x2*_0xfbbc13]=_0x768021[_0xfbbc13],_0x1ab18d[0x2*_0xfbbc13+0x1]=_0x768021[_0xfbbc13+0x1],_0x1ab18d[0x2*_0xfbbc13+0x2]=_0x768021[_0xfbbc13+0x2],_0x1ab18d[0x2*_0xfbbc13+0x3]=_0x768021[_0xfbbc13+0x3],_0x1ab18d[0x2*_0xfbbc13+0x4]=_0x768021[_0xfbbc13+0x4],_0x1ab18d[0x2*_0xfbbc13+0x5]=_0x768021[_0xfbbc13+0x5];}return super['setPositions'](_0x1ab18d),this;}[_0x49cdc8(0x4d0)](_0x2336ee){const _0x5197b=_0x49cdc8;var _0x4a260e=_0x2336ee[_0x5197b(0x25b)]-0x3,_0x5d380f=new Float32Array(0x2*_0x4a260e);for(var _0x3e71c1=0x0;_0x3e71c1<_0x4a260e;_0x3e71c1+=0x3){_0x5d380f[0x2*_0x3e71c1]=_0x2336ee[_0x3e71c1],_0x5d380f[0x2*_0x3e71c1+0x1]=_0x2336ee[_0x3e71c1+0x1],_0x5d380f[0x2*_0x3e71c1+0x2]=_0x2336ee[_0x3e71c1+0x2],_0x5d380f[0x2*_0x3e71c1+0x3]=_0x2336ee[_0x3e71c1+0x3],_0x5d380f[0x2*_0x3e71c1+0x4]=_0x2336ee[_0x3e71c1+0x4],_0x5d380f[0x2*_0x3e71c1+0x5]=_0x2336ee[_0x3e71c1+0x5];}return super['setColors'](_0x5d380f),this;}[_0x49cdc8(0x31c)](_0x50f601){const _0x4751fb=_0x49cdc8;var _0x992fe7=_0x50f601[_0x4751fb(0x2d9)];if(_0x992fe7['isGeometry']){console[_0x4751fb(0x611)](_0x4751fb(0x130));return;}else _0x992fe7[_0x4751fb(0x15d)]&&this[_0x4751fb(0x5d2)](_0x992fe7[_0x4751fb(0x1c6)][_0x4751fb(0x26e)]['array']);return this;}}LineGeometry['prototype']['isLineGeometry']=!![];class Line2 extends LineSegments2{constructor(_0x32467c=new LineGeometry(),_0xc0ca48=new LineMaterial({'color':Math[_0x49cdc8(0x3ca)]()*0xffffff})){const _0x4ec92d=_0x49cdc8;super(_0x32467c,_0xc0ca48),this['type']=_0x4ec92d(0x3b7);}}Line2[_0x49cdc8(0x60f)][_0x49cdc8(0x2de)]=!![];const vertexShader='\x0a#include\x20<common>\x0a#include\x20<color_pars_vertex>\x0a#include\x20<fog_pars_vertex>\x0a#include\x20<logdepthbuf_pars_vertex>\x0a#include\x20<clipping_planes_pars_vertex>\x0a\x0auniform\x20float\x20lineWidth;\x0auniform\x20vec2\x20resolution;\x0a\x0aattribute\x20vec3\x20instanceStart;\x0aattribute\x20vec3\x20instanceEnd;\x0a\x0aattribute\x20vec3\x20instanceColorStart;\x0aattribute\x20vec3\x20instanceColorEnd;\x0a\x0avarying\x20vec2\x20vUv;\x0a\x0a\x0a\x20\x20\x20\x20uniform\x20float\x20dashScale;\x0a\x20\x20\x20\x20attribute\x20float\x20instanceDistanceStart;\x0a\x20\x20\x20\x20attribute\x20float\x20instanceDistanceEnd;\x0a\x20\x20\x20\x20varying\x20float\x20vLineDistance;\x0a\x0a\x0avoid\x20trimSegment(\x20const\x20in\x20vec4\x20start,\x20inout\x20vec4\x20end\x20)\x20{\x0a\x0a\x20\x20\x20\x20//\x20trim\x20end\x20segment\x20so\x20it\x20terminates\x20between\x20the\x20camera\x20plane\x20and\x20the\x20near\x20plane\x0a\x0a\x20\x20\x20\x20//\x20conservative\x20estimate\x20of\x20the\x20near\x20plane\x0a\x20\x20\x20\x20float\x20a\x20=\x20projectionMatrix[\x202\x20][\x202\x20];\x20//\x203nd\x20entry\x20in\x203th\x20column\x0a\x20\x20\x20\x20float\x20b\x20=\x20projectionMatrix[\x203\x20][\x202\x20];\x20//\x203nd\x20entry\x20in\x204th\x20column\x0a\x20\x20\x20\x20float\x20nearEstimate\x20=\x20-\x200.5\x20*\x20b\x20/\x20a;\x0a\x0a\x20\x20\x20\x20float\x20alpha\x20=\x20(\x20nearEstimate\x20-\x20start.z\x20)\x20/\x20(\x20end.z\x20-\x20start.z\x20);\x0a\x0a\x20\x20\x20\x20end.xyz\x20=\x20mix(\x20start.xyz,\x20end.xyz,\x20alpha\x20);\x0a\x0a}\x0a\x0avoid\x20main()\x20{\x0a\x0a\x20\x20\x20\x20#ifdef\x20USE_COLOR\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20vColor.xyz\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20instanceColorStart\x20:\x20instanceColorEnd;\x0a\x0a\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20vLineDistance\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20dashScale\x20*\x20instanceDistanceStart\x20:\x20dashScale\x20*\x20instanceDistanceEnd;\x0a\x0a\x20\x20\x20\x20float\x20aspect\x20=\x20resolution.x\x20/\x20resolution.y;\x0a\x0a\x20\x20\x20\x20vUv\x20=\x20uv;\x0a\x0a\x20\x20\x20\x20//\x20camera\x20space\x0a\x20\x20\x20\x20vec4\x20start\x20=\x20modelViewMatrix\x20*\x20vec4(\x20instanceStart,\x201.0\x20);\x0a\x20\x20\x20\x20vec4\x20end\x20=\x20modelViewMatrix\x20*\x20vec4(\x20instanceEnd,\x201.0\x20);\x0a\x0a\x20\x20\x20\x20//\x20special\x20case\x20for\x20perspective\x20projection,\x20and\x20segments\x20that\x20terminate\x20either\x20in,\x20or\x20behind,\x20the\x20camera\x20plane\x0a\x20\x20\x20\x20//\x20clearly\x20the\x20gpu\x20firmware\x20has\x20a\x20way\x20of\x20addressing\x20this\x20issue\x20when\x20projecting\x20into\x20ndc\x20space\x0a\x20\x20\x20\x20//\x20but\x20we\x20need\x20to\x20perform\x20ndc-space\x20calculations\x20in\x20the\x20shader,\x20so\x20we\x20must\x20address\x20this\x20issue\x20directly\x0a\x20\x20\x20\x20//\x20perhaps\x20there\x20is\x20a\x20more\x20elegant\x20solution\x20--\x20WestLangley\x0a\x0a\x20\x20\x20\x20bool\x20perspective\x20=\x20(\x20projectionMatrix[\x202\x20][\x203\x20]\x20==\x20-\x201.0\x20);\x20//\x204th\x20entry\x20in\x20the\x203rd\x20column\x0a\x0a\x20\x20\x20\x20if\x20(\x20perspective\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20if\x20(\x20start.z\x20<\x200.0\x20&&\x20end.z\x20>=\x200.0\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20trimSegment(\x20start,\x20end\x20);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else\x20if\x20(\x20end.z\x20<\x200.0\x20&&\x20start.z\x20>=\x200.0\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20trimSegment(\x20end,\x20start\x20);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20//\x20clip\x20space\x0a\x20\x20\x20\x20vec4\x20clipStart\x20=\x20projectionMatrix\x20*\x20start;\x0a\x20\x20\x20\x20vec4\x20clipEnd\x20=\x20projectionMatrix\x20*\x20end;\x0a\x0a\x20\x20\x20\x20//\x20ndc\x20space\x0a\x20\x20\x20\x20vec2\x20ndcStart\x20=\x20clipStart.xy\x20/\x20clipStart.w;\x0a\x20\x20\x20\x20vec2\x20ndcEnd\x20=\x20clipEnd.xy\x20/\x20clipEnd.w;\x0a\x0a\x20\x20\x20\x20//\x20direction\x0a\x20\x20\x20\x20vec2\x20dir\x20=\x20ndcEnd\x20-\x20ndcStart;\x0a\x0a\x20\x20\x20\x20//\x20account\x20for\x20clip-space\x20aspect\x20ratio\x0a\x20\x20\x20\x20dir.x\x20*=\x20aspect;\x0a\x20\x20\x20\x20dir\x20=\x20normalize(\x20dir\x20);\x0a\x0a\x20\x20\x20\x20//\x20perpendicular\x20to\x20dir\x0a\x20\x20\x20\x20vec2\x20offset\x20=\x20vec2(\x20dir.y,\x20-\x20dir.x\x20);\x0a\x0a\x20\x20\x20\x20//\x20undo\x20aspect\x20ratio\x20adjustment\x0a\x20\x20\x20\x20dir.x\x20/=\x20aspect;\x0a\x20\x20\x20\x20offset.x\x20/=\x20aspect;\x0a\x0a\x20\x20\x20\x20//\x20sign\x20flip\x0a\x20\x20\x20\x20if\x20(\x20position.x\x20<\x200.0\x20)\x20offset\x20*=\x20-\x201.0;\x0a\x0a\x20\x20\x20\x20//\x20endcaps\x0a\x20\x20\x20\x20if\x20(\x20position.y\x20<\x200.0\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20offset\x20+=\x20-\x20dir;\x0a\x0a\x20\x20\x20\x20}\x20else\x20if\x20(\x20position.y\x20>\x201.0\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20offset\x20+=\x20dir;\x0a\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20//\x20adjust\x20for\x20lineWidth\x0a\x20\x20\x20\x20offset\x20*=\x20lineWidth;\x0a\x0a\x20\x20\x20\x20//\x20adjust\x20for\x20clip-space\x20to\x20screen-space\x20conversion\x20//\x20maybe\x20resolution\x20should\x20be\x20based\x20on\x20viewport\x20...\x0a\x20\x20\x20\x20offset\x20/=\x20resolution.y;\x0a\x0a\x20\x20\x20\x20//\x20select\x20end\x0a\x20\x20\x20\x20vec4\x20clip\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20clipStart\x20:\x20clipEnd;\x0a\x0a\x20\x20\x20\x20//\x20back\x20to\x20clip\x20space\x0a\x20\x20\x20\x20offset\x20*=\x20clip.w;\x0a\x0a\x20\x20\x20\x20clip.xy\x20+=\x20offset;\x0a\x0a\x20\x20\x20\x20gl_Position\x20=\x20clip;\x0a\x0a\x20\x20\x20\x20vec4\x20mvPosition\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20start\x20:\x20end;\x20//\x20this\x20is\x20an\x20approximation\x0a\x0a\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20#include\x20<clipping_planes_vertex>\x0a\x20\x20\x20\x20#include\x20<fog_vertex>\x0a\x0a}',fragmentShader=_0x49cdc8(0x2ca);class BaseLineMaterial extends ShaderMaterial{[_0x49cdc8(0x447)]=!![];constructor(_0xd2b585){const _0x1eb835=_0x49cdc8;super(),this['uniforms']=mergeUniforms([UniformsLib[_0x1eb835(0x52a)],UniformsLib[_0x1eb835(0x4f1)],cloneUniforms({'lineWidth':{'value':_0xd2b585?.[_0x1eb835(0x232)]},'resolution':{'value':new Vector2(window['innerWidth'],window[_0x1eb835(0x3dc)])},'dashScale':{'value':0x1},'dashSize':{'value':_0xd2b585?.['dashSize']},'dashOffset':{'value':_0xd2b585?.[_0x1eb835(0x56e)]},'gapSize':{'value':_0xd2b585?.[_0x1eb835(0x350)]},'opacity':{'value':0x1},'attenuation':{'value':_0xd2b585?.['attenuation']}})]),this[_0x1eb835(0x37c)]=!![],this[_0x1eb835(0x229)]=new Color(_0xd2b585?.['color']),this[_0x1eb835(0x628)]=vertexShader,this[_0x1eb835(0x27b)]=fragmentShader;}get[_0x49cdc8(0x229)](){const _0x2f937a=_0x49cdc8;return this[_0x2f937a(0x385)][_0x2f937a(0x3ae)][_0x2f937a(0x4ba)];}set[_0x49cdc8(0x229)](_0x1c56b6){const _0x19b7ff=_0x49cdc8;this[_0x19b7ff(0x385)][_0x19b7ff(0x3ae)][_0x19b7ff(0x4ba)]=_0x1c56b6;}get[_0x49cdc8(0x232)](){const _0x36a004=_0x49cdc8;return this[_0x36a004(0x385)][_0x36a004(0x232)][_0x36a004(0x4ba)];}set[_0x49cdc8(0x232)](_0x257c84){const _0x5cc588=_0x49cdc8;this[_0x5cc588(0x385)][_0x5cc588(0x232)][_0x5cc588(0x4ba)]=_0x257c84;}get[_0x49cdc8(0x2e3)](){const _0x55e1ce=_0x49cdc8;return Boolean(_0x55e1ce(0x161)in this[_0x55e1ce(0x24f)]);}set[_0x49cdc8(0x2e3)](_0x5dd245){const _0x3087b2=_0x49cdc8;Boolean(_0x5dd245)!==Boolean(_0x3087b2(0x161)in this[_0x3087b2(0x24f)])&&(this['needsUpdate']=!![]),_0x5dd245===!![]?this[_0x3087b2(0x24f)][_0x3087b2(0x161)]='':delete this[_0x3087b2(0x24f)][_0x3087b2(0x161)];}get[_0x49cdc8(0x312)](){const _0x3fc84e=_0x49cdc8;return this['uniforms'][_0x3fc84e(0x312)][_0x3fc84e(0x4ba)];}set['dashScale'](_0x564027){const _0x50aa53=_0x49cdc8;this[_0x50aa53(0x385)][_0x50aa53(0x312)]['value']=_0x564027;}get[_0x49cdc8(0x10a)](){const _0x43cc90=_0x49cdc8;return this[_0x43cc90(0x385)][_0x43cc90(0x10a)][_0x43cc90(0x4ba)];}set[_0x49cdc8(0x10a)](_0x3c831d){const _0x11f2d4=_0x49cdc8;this['uniforms'][_0x11f2d4(0x10a)][_0x11f2d4(0x4ba)]=_0x3c831d;}get[_0x49cdc8(0x56e)](){const _0x4064c0=_0x49cdc8;return this['uniforms']['dashOffset'][_0x4064c0(0x4ba)];}set[_0x49cdc8(0x56e)](_0x207084){const _0x523d0a=_0x49cdc8;this[_0x523d0a(0x385)]['dashOffset'][_0x523d0a(0x4ba)]=_0x207084;}get['gapSize'](){const _0x559623=_0x49cdc8;return this[_0x559623(0x385)][_0x559623(0x350)]['value'];}set[_0x49cdc8(0x350)](_0x3b824c){const _0x5e9160=_0x49cdc8;this['uniforms']['gapSize'][_0x5e9160(0x4ba)]=_0x3b824c;}get['resolution'](){const _0x17c0f7=_0x49cdc8;return this[_0x17c0f7(0x385)][_0x17c0f7(0x4e9)][_0x17c0f7(0x4ba)];}set[_0x49cdc8(0x4e9)](_0x4aebf9){const _0x43517b=_0x49cdc8;this[_0x43517b(0x385)]['resolution'][_0x43517b(0x4ba)][_0x43517b(0x613)](_0x4aebf9);}}class BaseLine extends Line2{[_0x49cdc8(0x4b8)];['totalDistance'];constructor(_0xa03e8b){const _0x4dec22=_0x49cdc8;super(),this['material']=new BaseLineMaterial(_0xa03e8b),this[_0x4dec22(0x2d9)]=new LineGeometry(),this[_0x4dec22(0x1a2)]=0x0;}[_0x49cdc8(0x5d2)](_0x1cd171){const _0x38e430=_0x49cdc8;this['geometry'][_0x38e430(0x5d2)](_0x1cd171),this['computeLineDistances'](),this[_0x38e430(0x1a2)]=0x0;for(let _0x4964b4=0x0;_0x4964b4<_0x1cd171['length']-0x3;_0x4964b4+=0x3){const _0x2edf31=new Vector3(_0x1cd171[_0x4964b4],_0x1cd171[_0x4964b4+0x1],_0x1cd171[_0x4964b4+0x2]),_0x2aa43f=new Vector3(_0x1cd171[_0x4964b4+0x3],_0x1cd171[_0x4964b4+0x1+0x3],_0x1cd171[_0x4964b4+0x2+0x3]),_0x7d08bc=_0x2edf31['distanceTo'](_0x2aa43f);this['totalDistance']+=_0x7d08bc;}this['material'][_0x38e430(0x10a)]=this[_0x38e430(0x1a2)]/0x2,this[_0x38e430(0x4b8)][_0x38e430(0x350)]=this[_0x38e430(0x1a2)]/0x2;}[_0x49cdc8(0x4d0)](_0x584b8d){const _0x5d4427=_0x49cdc8;this['geometry'][_0x5d4427(0x342)](_0x584b8d);}}var earcut_1=earcut,default_1=earcut;function earcut(_0x287229,_0x1334cc,_0x9000c4){const _0x281d86=_0x49cdc8;_0x9000c4=_0x9000c4||0x2;var _0x136166=_0x1334cc&&_0x1334cc[_0x281d86(0x25b)],_0x3801b4=_0x136166?_0x1334cc[0x0]*_0x9000c4:_0x287229[_0x281d86(0x25b)],_0xe9f3ef=linkedList(_0x287229,0x0,_0x3801b4,_0x9000c4,!![]),_0x5930e4=[];if(!_0xe9f3ef||_0xe9f3ef[_0x281d86(0x263)]===_0xe9f3ef[_0x281d86(0x278)])return _0x5930e4;var _0x1ad7ee,_0x50c334,_0x59861a,_0x3ac243,_0x456de2,_0x65835c,_0x497ecc;if(_0x136166)_0xe9f3ef=eliminateHoles(_0x287229,_0x1334cc,_0xe9f3ef,_0x9000c4);if(_0x287229[_0x281d86(0x25b)]>0x50*_0x9000c4){_0x1ad7ee=_0x59861a=_0x287229[0x0],_0x50c334=_0x3ac243=_0x287229[0x1];for(var _0x2462a8=_0x9000c4;_0x2462a8<_0x3801b4;_0x2462a8+=_0x9000c4){_0x456de2=_0x287229[_0x2462a8],_0x65835c=_0x287229[_0x2462a8+0x1];if(_0x456de2<_0x1ad7ee)_0x1ad7ee=_0x456de2;if(_0x65835c<_0x50c334)_0x50c334=_0x65835c;if(_0x456de2>_0x59861a)_0x59861a=_0x456de2;if(_0x65835c>_0x3ac243)_0x3ac243=_0x65835c;}_0x497ecc=Math[_0x281d86(0x105)](_0x59861a-_0x1ad7ee,_0x3ac243-_0x50c334),_0x497ecc=_0x497ecc!==0x0?0x7fff/_0x497ecc:0x0;}return earcutLinked(_0xe9f3ef,_0x5930e4,_0x9000c4,_0x1ad7ee,_0x50c334,_0x497ecc,0x0),_0x5930e4;}function linkedList(_0x380011,_0x5127b8,_0x21a74d,_0x1a0bf9,_0x585bb1){const _0x1048f9=_0x49cdc8;var _0x1db5e7,_0x34cbd0;if(_0x585bb1===signedArea(_0x380011,_0x5127b8,_0x21a74d,_0x1a0bf9)>0x0){for(_0x1db5e7=_0x5127b8;_0x1db5e7<_0x21a74d;_0x1db5e7+=_0x1a0bf9)_0x34cbd0=insertNode(_0x1db5e7,_0x380011[_0x1db5e7],_0x380011[_0x1db5e7+0x1],_0x34cbd0);}else{for(_0x1db5e7=_0x21a74d-_0x1a0bf9;_0x1db5e7>=_0x5127b8;_0x1db5e7-=_0x1a0bf9)_0x34cbd0=insertNode(_0x1db5e7,_0x380011[_0x1db5e7],_0x380011[_0x1db5e7+0x1],_0x34cbd0);}return _0x34cbd0&&equals(_0x34cbd0,_0x34cbd0[_0x1048f9(0x263)])&&(removeNode(_0x34cbd0),_0x34cbd0=_0x34cbd0[_0x1048f9(0x263)]),_0x34cbd0;}function filterPoints(_0x4d4315,_0x23d9d6){const _0x2bf02a=_0x49cdc8;if(!_0x4d4315)return _0x4d4315;if(!_0x23d9d6)_0x23d9d6=_0x4d4315;var _0x35b588=_0x4d4315,_0x579f79;do{_0x579f79=![];if(!_0x35b588[_0x2bf02a(0x469)]&&(equals(_0x35b588,_0x35b588[_0x2bf02a(0x263)])||area(_0x35b588[_0x2bf02a(0x278)],_0x35b588,_0x35b588[_0x2bf02a(0x263)])===0x0)){removeNode(_0x35b588),_0x35b588=_0x23d9d6=_0x35b588[_0x2bf02a(0x278)];if(_0x35b588===_0x35b588['next'])break;_0x579f79=!![];}else _0x35b588=_0x35b588['next'];}while(_0x579f79||_0x35b588!==_0x23d9d6);return _0x23d9d6;}function earcutLinked(_0x3c7bb4,_0x575150,_0x518e79,_0x58e870,_0x607858,_0x406289,_0x4401cd){const _0x34a366=_0x49cdc8;if(!_0x3c7bb4)return;if(!_0x4401cd&&_0x406289)indexCurve(_0x3c7bb4,_0x58e870,_0x607858,_0x406289);var _0x121846=_0x3c7bb4,_0x2cba90,_0x59a55a;while(_0x3c7bb4['prev']!==_0x3c7bb4[_0x34a366(0x263)]){_0x2cba90=_0x3c7bb4[_0x34a366(0x278)],_0x59a55a=_0x3c7bb4[_0x34a366(0x263)];if(_0x406289?isEarHashed(_0x3c7bb4,_0x58e870,_0x607858,_0x406289):isEar(_0x3c7bb4)){_0x575150['push'](_0x2cba90['i']/_0x518e79|0x0),_0x575150[_0x34a366(0x617)](_0x3c7bb4['i']/_0x518e79|0x0),_0x575150[_0x34a366(0x617)](_0x59a55a['i']/_0x518e79|0x0),removeNode(_0x3c7bb4),_0x3c7bb4=_0x59a55a[_0x34a366(0x263)],_0x121846=_0x59a55a['next'];continue;}_0x3c7bb4=_0x59a55a;if(_0x3c7bb4===_0x121846){if(!_0x4401cd)earcutLinked(filterPoints(_0x3c7bb4),_0x575150,_0x518e79,_0x58e870,_0x607858,_0x406289,0x1);else{if(_0x4401cd===0x1)_0x3c7bb4=cureLocalIntersections(filterPoints(_0x3c7bb4),_0x575150,_0x518e79),earcutLinked(_0x3c7bb4,_0x575150,_0x518e79,_0x58e870,_0x607858,_0x406289,0x2);else _0x4401cd===0x2&&splitEarcut(_0x3c7bb4,_0x575150,_0x518e79,_0x58e870,_0x607858,_0x406289);}break;}}}function _0x16a8(_0x413130,_0x3ac18a){const _0xdbb15c=_0x3de8();return _0x16a8=function(_0x52aeb4,_0x21ff80){_0x52aeb4=_0x52aeb4-0xf8;let _0x585aaf=_0xdbb15c[_0x52aeb4];return _0x585aaf;},_0x16a8(_0x413130,_0x3ac18a);}function isEar(_0x337d1d){const _0x345091=_0x49cdc8;var _0x242687=_0x337d1d[_0x345091(0x278)],_0x512082=_0x337d1d,_0x235225=_0x337d1d[_0x345091(0x263)];if(area(_0x242687,_0x512082,_0x235225)>=0x0)return![];var _0x3a0942=_0x242687['x'],_0x44764f=_0x512082['x'],_0x48af3a=_0x235225['x'],_0x56f265=_0x242687['y'],_0x57b573=_0x512082['y'],_0x45733f=_0x235225['y'],_0x40f106=_0x3a0942<_0x44764f?_0x3a0942<_0x48af3a?_0x3a0942:_0x48af3a:_0x44764f<_0x48af3a?_0x44764f:_0x48af3a,_0x572fb5=_0x56f265<_0x57b573?_0x56f265<_0x45733f?_0x56f265:_0x45733f:_0x57b573<_0x45733f?_0x57b573:_0x45733f,_0x182d0e=_0x3a0942>_0x44764f?_0x3a0942>_0x48af3a?_0x3a0942:_0x48af3a:_0x44764f>_0x48af3a?_0x44764f:_0x48af3a,_0x516acd=_0x56f265>_0x57b573?_0x56f265>_0x45733f?_0x56f265:_0x45733f:_0x57b573>_0x45733f?_0x57b573:_0x45733f,_0x510f82=_0x235225[_0x345091(0x263)];while(_0x510f82!==_0x242687){if(_0x510f82['x']>=_0x40f106&&_0x510f82['x']<=_0x182d0e&&_0x510f82['y']>=_0x572fb5&&_0x510f82['y']<=_0x516acd&&pointInTriangle(_0x3a0942,_0x56f265,_0x44764f,_0x57b573,_0x48af3a,_0x45733f,_0x510f82['x'],_0x510f82['y'])&&area(_0x510f82[_0x345091(0x278)],_0x510f82,_0x510f82[_0x345091(0x263)])>=0x0)return![];_0x510f82=_0x510f82[_0x345091(0x263)];}return!![];}function isEarHashed(_0x29f6c7,_0x26b040,_0x403a6e,_0x1643c8){const _0x1614ed=_0x49cdc8;var _0x4850af=_0x29f6c7[_0x1614ed(0x278)],_0x130a30=_0x29f6c7,_0x372083=_0x29f6c7['next'];if(area(_0x4850af,_0x130a30,_0x372083)>=0x0)return![];var _0x54b055=_0x4850af['x'],_0x2bedfc=_0x130a30['x'],_0x15f46e=_0x372083['x'],_0x48e0c4=_0x4850af['y'],_0x11361b=_0x130a30['y'],_0x15ba4e=_0x372083['y'],_0x30ea93=_0x54b055<_0x2bedfc?_0x54b055<_0x15f46e?_0x54b055:_0x15f46e:_0x2bedfc<_0x15f46e?_0x2bedfc:_0x15f46e,_0x29101e=_0x48e0c4<_0x11361b?_0x48e0c4<_0x15ba4e?_0x48e0c4:_0x15ba4e:_0x11361b<_0x15ba4e?_0x11361b:_0x15ba4e,_0x1b660e=_0x54b055>_0x2bedfc?_0x54b055>_0x15f46e?_0x54b055:_0x15f46e:_0x2bedfc>_0x15f46e?_0x2bedfc:_0x15f46e,_0x3c7fe2=_0x48e0c4>_0x11361b?_0x48e0c4>_0x15ba4e?_0x48e0c4:_0x15ba4e:_0x11361b>_0x15ba4e?_0x11361b:_0x15ba4e,_0x152ace=zOrder(_0x30ea93,_0x29101e,_0x26b040,_0x403a6e,_0x1643c8),_0x535bb7=zOrder(_0x1b660e,_0x3c7fe2,_0x26b040,_0x403a6e,_0x1643c8),_0x790bcc=_0x29f6c7[_0x1614ed(0x578)],_0x186300=_0x29f6c7[_0x1614ed(0x55a)];while(_0x790bcc&&_0x790bcc['z']>=_0x152ace&&_0x186300&&_0x186300['z']<=_0x535bb7){if(_0x790bcc['x']>=_0x30ea93&&_0x790bcc['x']<=_0x1b660e&&_0x790bcc['y']>=_0x29101e&&_0x790bcc['y']<=_0x3c7fe2&&_0x790bcc!==_0x4850af&&_0x790bcc!==_0x372083&&pointInTriangle(_0x54b055,_0x48e0c4,_0x2bedfc,_0x11361b,_0x15f46e,_0x15ba4e,_0x790bcc['x'],_0x790bcc['y'])&&area(_0x790bcc[_0x1614ed(0x278)],_0x790bcc,_0x790bcc[_0x1614ed(0x263)])>=0x0)return![];_0x790bcc=_0x790bcc['prevZ'];if(_0x186300['x']>=_0x30ea93&&_0x186300['x']<=_0x1b660e&&_0x186300['y']>=_0x29101e&&_0x186300['y']<=_0x3c7fe2&&_0x186300!==_0x4850af&&_0x186300!==_0x372083&&pointInTriangle(_0x54b055,_0x48e0c4,_0x2bedfc,_0x11361b,_0x15f46e,_0x15ba4e,_0x186300['x'],_0x186300['y'])&&area(_0x186300['prev'],_0x186300,_0x186300[_0x1614ed(0x263)])>=0x0)return![];_0x186300=_0x186300[_0x1614ed(0x55a)];}while(_0x790bcc&&_0x790bcc['z']>=_0x152ace){if(_0x790bcc['x']>=_0x30ea93&&_0x790bcc['x']<=_0x1b660e&&_0x790bcc['y']>=_0x29101e&&_0x790bcc['y']<=_0x3c7fe2&&_0x790bcc!==_0x4850af&&_0x790bcc!==_0x372083&&pointInTriangle(_0x54b055,_0x48e0c4,_0x2bedfc,_0x11361b,_0x15f46e,_0x15ba4e,_0x790bcc['x'],_0x790bcc['y'])&&area(_0x790bcc['prev'],_0x790bcc,_0x790bcc[_0x1614ed(0x263)])>=0x0)return![];_0x790bcc=_0x790bcc[_0x1614ed(0x578)];}while(_0x186300&&_0x186300['z']<=_0x535bb7){if(_0x186300['x']>=_0x30ea93&&_0x186300['x']<=_0x1b660e&&_0x186300['y']>=_0x29101e&&_0x186300['y']<=_0x3c7fe2&&_0x186300!==_0x4850af&&_0x186300!==_0x372083&&pointInTriangle(_0x54b055,_0x48e0c4,_0x2bedfc,_0x11361b,_0x15f46e,_0x15ba4e,_0x186300['x'],_0x186300['y'])&&area(_0x186300[_0x1614ed(0x278)],_0x186300,_0x186300['next'])>=0x0)return![];_0x186300=_0x186300[_0x1614ed(0x55a)];}return!![];}function cureLocalIntersections(_0x2fca7c,_0x450e62,_0x424006){const _0x1b5eab=_0x49cdc8;var _0x7d485a=_0x2fca7c;do{var _0x31baf4=_0x7d485a[_0x1b5eab(0x278)],_0x5e99a5=_0x7d485a[_0x1b5eab(0x263)][_0x1b5eab(0x263)];!equals(_0x31baf4,_0x5e99a5)&&intersects(_0x31baf4,_0x7d485a,_0x7d485a[_0x1b5eab(0x263)],_0x5e99a5)&&locallyInside(_0x31baf4,_0x5e99a5)&&locallyInside(_0x5e99a5,_0x31baf4)&&(_0x450e62[_0x1b5eab(0x617)](_0x31baf4['i']/_0x424006|0x0),_0x450e62['push'](_0x7d485a['i']/_0x424006|0x0),_0x450e62[_0x1b5eab(0x617)](_0x5e99a5['i']/_0x424006|0x0),removeNode(_0x7d485a),removeNode(_0x7d485a[_0x1b5eab(0x263)]),_0x7d485a=_0x2fca7c=_0x5e99a5),_0x7d485a=_0x7d485a[_0x1b5eab(0x263)];}while(_0x7d485a!==_0x2fca7c);return filterPoints(_0x7d485a);}function splitEarcut(_0x1e3bf1,_0x28aaef,_0x39db82,_0x19f17d,_0x42e91c,_0x45a915){const _0x5f5dee=_0x49cdc8;var _0x1b37b1=_0x1e3bf1;do{var _0x522f8a=_0x1b37b1[_0x5f5dee(0x263)][_0x5f5dee(0x263)];while(_0x522f8a!==_0x1b37b1[_0x5f5dee(0x278)]){if(_0x1b37b1['i']!==_0x522f8a['i']&&isValidDiagonal(_0x1b37b1,_0x522f8a)){var _0x1d820f=splitPolygon(_0x1b37b1,_0x522f8a);_0x1b37b1=filterPoints(_0x1b37b1,_0x1b37b1[_0x5f5dee(0x263)]),_0x1d820f=filterPoints(_0x1d820f,_0x1d820f['next']),earcutLinked(_0x1b37b1,_0x28aaef,_0x39db82,_0x19f17d,_0x42e91c,_0x45a915,0x0),earcutLinked(_0x1d820f,_0x28aaef,_0x39db82,_0x19f17d,_0x42e91c,_0x45a915,0x0);return;}_0x522f8a=_0x522f8a[_0x5f5dee(0x263)];}_0x1b37b1=_0x1b37b1[_0x5f5dee(0x263)];}while(_0x1b37b1!==_0x1e3bf1);}function eliminateHoles(_0x5be290,_0x2f5835,_0x5a40fc,_0xe5941f){const _0x5ef310=_0x49cdc8;var _0x4545bc=[],_0x178ffd,_0x56cf68,_0x11a717,_0xfb5ffe,_0x314c26;for(_0x178ffd=0x0,_0x56cf68=_0x2f5835[_0x5ef310(0x25b)];_0x178ffd<_0x56cf68;_0x178ffd++){_0x11a717=_0x2f5835[_0x178ffd]*_0xe5941f,_0xfb5ffe=_0x178ffd<_0x56cf68-0x1?_0x2f5835[_0x178ffd+0x1]*_0xe5941f:_0x5be290[_0x5ef310(0x25b)],_0x314c26=linkedList(_0x5be290,_0x11a717,_0xfb5ffe,_0xe5941f,![]);if(_0x314c26===_0x314c26['next'])_0x314c26[_0x5ef310(0x469)]=!![];_0x4545bc[_0x5ef310(0x617)](getLeftmost(_0x314c26));}_0x4545bc[_0x5ef310(0x58d)](compareX);for(_0x178ffd=0x0;_0x178ffd<_0x4545bc[_0x5ef310(0x25b)];_0x178ffd++){_0x5a40fc=eliminateHole(_0x4545bc[_0x178ffd],_0x5a40fc);}return _0x5a40fc;}function compareX(_0x4b24eb,_0x4ba824){return _0x4b24eb['x']-_0x4ba824['x'];}function eliminateHole(_0x241a73,_0x279a9b){const _0x1a9ad5=_0x49cdc8;var _0x139a40=findHoleBridge(_0x241a73,_0x279a9b);if(!_0x139a40)return _0x279a9b;var _0x1fb4ed=splitPolygon(_0x139a40,_0x241a73);return filterPoints(_0x1fb4ed,_0x1fb4ed['next']),filterPoints(_0x139a40,_0x139a40[_0x1a9ad5(0x263)]);}function findHoleBridge(_0x43a7a4,_0x678dc5){const _0x256753=_0x49cdc8;var _0x397a9d=_0x678dc5,_0x33907c=_0x43a7a4['x'],_0x3d55c3=_0x43a7a4['y'],_0x4b1285=-Infinity,_0xf57345;do{if(_0x3d55c3<=_0x397a9d['y']&&_0x3d55c3>=_0x397a9d[_0x256753(0x263)]['y']&&_0x397a9d[_0x256753(0x263)]['y']!==_0x397a9d['y']){var _0x3f3e9f=_0x397a9d['x']+(_0x3d55c3-_0x397a9d['y'])*(_0x397a9d[_0x256753(0x263)]['x']-_0x397a9d['x'])/(_0x397a9d['next']['y']-_0x397a9d['y']);if(_0x3f3e9f<=_0x33907c&&_0x3f3e9f>_0x4b1285){_0x4b1285=_0x3f3e9f,_0xf57345=_0x397a9d['x']<_0x397a9d[_0x256753(0x263)]['x']?_0x397a9d:_0x397a9d['next'];if(_0x3f3e9f===_0x33907c)return _0xf57345;}}_0x397a9d=_0x397a9d[_0x256753(0x263)];}while(_0x397a9d!==_0x678dc5);if(!_0xf57345)return null;var _0x4bee33=_0xf57345,_0x5b7825=_0xf57345['x'],_0x9cf0ad=_0xf57345['y'],_0x263c72=Infinity,_0x1f7162;_0x397a9d=_0xf57345;do{_0x33907c>=_0x397a9d['x']&&_0x397a9d['x']>=_0x5b7825&&_0x33907c!==_0x397a9d['x']&&pointInTriangle(_0x3d55c3<_0x9cf0ad?_0x33907c:_0x4b1285,_0x3d55c3,_0x5b7825,_0x9cf0ad,_0x3d55c3<_0x9cf0ad?_0x4b1285:_0x33907c,_0x3d55c3,_0x397a9d['x'],_0x397a9d['y'])&&(_0x1f7162=Math[_0x256753(0x24e)](_0x3d55c3-_0x397a9d['y'])/(_0x33907c-_0x397a9d['x']),locallyInside(_0x397a9d,_0x43a7a4)&&(_0x1f7162<_0x263c72||_0x1f7162===_0x263c72&&(_0x397a9d['x']>_0xf57345['x']||_0x397a9d['x']===_0xf57345['x']&&sectorContainsSector(_0xf57345,_0x397a9d)))&&(_0xf57345=_0x397a9d,_0x263c72=_0x1f7162)),_0x397a9d=_0x397a9d['next'];}while(_0x397a9d!==_0x4bee33);return _0xf57345;}function sectorContainsSector(_0x137e1e,_0x45e5b6){const _0x1b4b40=_0x49cdc8;return area(_0x137e1e[_0x1b4b40(0x278)],_0x137e1e,_0x45e5b6[_0x1b4b40(0x278)])<0x0&&area(_0x45e5b6[_0x1b4b40(0x263)],_0x137e1e,_0x137e1e['next'])<0x0;}function indexCurve(_0x136870,_0x2df500,_0x180917,_0x47606f){const _0x1c61bc=_0x49cdc8;var _0x1a15ee=_0x136870;do{if(_0x1a15ee['z']===0x0)_0x1a15ee['z']=zOrder(_0x1a15ee['x'],_0x1a15ee['y'],_0x2df500,_0x180917,_0x47606f);_0x1a15ee[_0x1c61bc(0x578)]=_0x1a15ee['prev'],_0x1a15ee[_0x1c61bc(0x55a)]=_0x1a15ee[_0x1c61bc(0x263)],_0x1a15ee=_0x1a15ee[_0x1c61bc(0x263)];}while(_0x1a15ee!==_0x136870);_0x1a15ee[_0x1c61bc(0x578)][_0x1c61bc(0x55a)]=null,_0x1a15ee['prevZ']=null,sortLinked(_0x1a15ee);}function sortLinked(_0x35acc7){const _0x55db37=_0x49cdc8;var _0x124d4d,_0x223763,_0x207119,_0x253211,_0x3f8e91,_0x47186e,_0x557f8c,_0x14e03c,_0x45d0b4=0x1;do{_0x223763=_0x35acc7,_0x35acc7=null,_0x3f8e91=null,_0x47186e=0x0;while(_0x223763){_0x47186e++,_0x207119=_0x223763,_0x557f8c=0x0;for(_0x124d4d=0x0;_0x124d4d<_0x45d0b4;_0x124d4d++){_0x557f8c++,_0x207119=_0x207119[_0x55db37(0x55a)];if(!_0x207119)break;}_0x14e03c=_0x45d0b4;while(_0x557f8c>0x0||_0x14e03c>0x0&&_0x207119){_0x557f8c!==0x0&&(_0x14e03c===0x0||!_0x207119||_0x223763['z']<=_0x207119['z'])?(_0x253211=_0x223763,_0x223763=_0x223763[_0x55db37(0x55a)],_0x557f8c--):(_0x253211=_0x207119,_0x207119=_0x207119['nextZ'],_0x14e03c--);if(_0x3f8e91)_0x3f8e91['nextZ']=_0x253211;else _0x35acc7=_0x253211;_0x253211[_0x55db37(0x578)]=_0x3f8e91,_0x3f8e91=_0x253211;}_0x223763=_0x207119;}_0x3f8e91[_0x55db37(0x55a)]=null,_0x45d0b4*=0x2;}while(_0x47186e>0x1);return _0x35acc7;}function zOrder(_0x1f86ee,_0xbbeee9,_0x3f0159,_0x2dc7e4,_0x50344c){return _0x1f86ee=(_0x1f86ee-_0x3f0159)*_0x50344c|0x0,_0xbbeee9=(_0xbbeee9-_0x2dc7e4)*_0x50344c|0x0,_0x1f86ee=(_0x1f86ee|_0x1f86ee<<0x8)&0xff00ff,_0x1f86ee=(_0x1f86ee|_0x1f86ee<<0x4)&0xf0f0f0f,_0x1f86ee=(_0x1f86ee|_0x1f86ee<<0x2)&0x33333333,_0x1f86ee=(_0x1f86ee|_0x1f86ee<<0x1)&0x55555555,_0xbbeee9=(_0xbbeee9|_0xbbeee9<<0x8)&0xff00ff,_0xbbeee9=(_0xbbeee9|_0xbbeee9<<0x4)&0xf0f0f0f,_0xbbeee9=(_0xbbeee9|_0xbbeee9<<0x2)&0x33333333,_0xbbeee9=(_0xbbeee9|_0xbbeee9<<0x1)&0x55555555,_0x1f86ee|_0xbbeee9<<0x1;}function getLeftmost(_0x1ad25b){const _0x17506a=_0x49cdc8;var _0x7ccafe=_0x1ad25b,_0x289033=_0x1ad25b;do{if(_0x7ccafe['x']<_0x289033['x']||_0x7ccafe['x']===_0x289033['x']&&_0x7ccafe['y']<_0x289033['y'])_0x289033=_0x7ccafe;_0x7ccafe=_0x7ccafe[_0x17506a(0x263)];}while(_0x7ccafe!==_0x1ad25b);return _0x289033;}function pointInTriangle(_0x19222a,_0x15337e,_0x24bf68,_0x1c08c9,_0x20256a,_0xf71d0,_0x2054d2,_0x3184e3){return(_0x20256a-_0x2054d2)*(_0x15337e-_0x3184e3)>=(_0x19222a-_0x2054d2)*(_0xf71d0-_0x3184e3)&&(_0x19222a-_0x2054d2)*(_0x1c08c9-_0x3184e3)>=(_0x24bf68-_0x2054d2)*(_0x15337e-_0x3184e3)&&(_0x24bf68-_0x2054d2)*(_0xf71d0-_0x3184e3)>=(_0x20256a-_0x2054d2)*(_0x1c08c9-_0x3184e3);}function isValidDiagonal(_0x141ae2,_0x37a610){const _0x1577ee=_0x49cdc8;return _0x141ae2[_0x1577ee(0x263)]['i']!==_0x37a610['i']&&_0x141ae2[_0x1577ee(0x278)]['i']!==_0x37a610['i']&&!intersectsPolygon(_0x141ae2,_0x37a610)&&(locallyInside(_0x141ae2,_0x37a610)&&locallyInside(_0x37a610,_0x141ae2)&&middleInside(_0x141ae2,_0x37a610)&&(area(_0x141ae2[_0x1577ee(0x278)],_0x141ae2,_0x37a610[_0x1577ee(0x278)])||area(_0x141ae2,_0x37a610[_0x1577ee(0x278)],_0x37a610))||equals(_0x141ae2,_0x37a610)&&area(_0x141ae2['prev'],_0x141ae2,_0x141ae2[_0x1577ee(0x263)])>0x0&&area(_0x37a610[_0x1577ee(0x278)],_0x37a610,_0x37a610[_0x1577ee(0x263)])>0x0);}function area(_0x9edfa2,_0x2a0a25,_0x428992){return(_0x2a0a25['y']-_0x9edfa2['y'])*(_0x428992['x']-_0x2a0a25['x'])-(_0x2a0a25['x']-_0x9edfa2['x'])*(_0x428992['y']-_0x2a0a25['y']);}function equals(_0x490153,_0x491a44){return _0x490153['x']===_0x491a44['x']&&_0x490153['y']===_0x491a44['y'];}function intersects(_0x49441f,_0x2c8b28,_0x43c6af,_0x59d302){var _0x1c3735=sign(area(_0x49441f,_0x2c8b28,_0x43c6af)),_0x11540c=sign(area(_0x49441f,_0x2c8b28,_0x59d302)),_0x2f2fd3=sign(area(_0x43c6af,_0x59d302,_0x49441f)),_0xf9f7f1=sign(area(_0x43c6af,_0x59d302,_0x2c8b28));if(_0x1c3735!==_0x11540c&&_0x2f2fd3!==_0xf9f7f1)return!![];if(_0x1c3735===0x0&&onSegment(_0x49441f,_0x43c6af,_0x2c8b28))return!![];if(_0x11540c===0x0&&onSegment(_0x49441f,_0x59d302,_0x2c8b28))return!![];if(_0x2f2fd3===0x0&&onSegment(_0x43c6af,_0x49441f,_0x59d302))return!![];if(_0xf9f7f1===0x0&&onSegment(_0x43c6af,_0x2c8b28,_0x59d302))return!![];return![];}function onSegment(_0x269723,_0x112fb5,_0x6f5fb1){const _0x49bb39=_0x49cdc8;return _0x112fb5['x']<=Math[_0x49bb39(0x105)](_0x269723['x'],_0x6f5fb1['x'])&&_0x112fb5['x']>=Math[_0x49bb39(0x3bb)](_0x269723['x'],_0x6f5fb1['x'])&&_0x112fb5['y']<=Math[_0x49bb39(0x105)](_0x269723['y'],_0x6f5fb1['y'])&&_0x112fb5['y']>=Math[_0x49bb39(0x3bb)](_0x269723['y'],_0x6f5fb1['y']);}function sign(_0x1173bf){return _0x1173bf>0x0?0x1:_0x1173bf<0x0?-0x1:0x0;}function intersectsPolygon(_0x100151,_0x5beac2){const _0x2cae32=_0x49cdc8;var _0x1081a8=_0x100151;do{if(_0x1081a8['i']!==_0x100151['i']&&_0x1081a8[_0x2cae32(0x263)]['i']!==_0x100151['i']&&_0x1081a8['i']!==_0x5beac2['i']&&_0x1081a8[_0x2cae32(0x263)]['i']!==_0x5beac2['i']&&intersects(_0x1081a8,_0x1081a8['next'],_0x100151,_0x5beac2))return!![];_0x1081a8=_0x1081a8[_0x2cae32(0x263)];}while(_0x1081a8!==_0x100151);return![];}function locallyInside(_0x5798d7,_0x47c59f){const _0x2ab8f3=_0x49cdc8;return area(_0x5798d7[_0x2ab8f3(0x278)],_0x5798d7,_0x5798d7[_0x2ab8f3(0x263)])<0x0?area(_0x5798d7,_0x47c59f,_0x5798d7['next'])>=0x0&&area(_0x5798d7,_0x5798d7[_0x2ab8f3(0x278)],_0x47c59f)>=0x0:area(_0x5798d7,_0x47c59f,_0x5798d7[_0x2ab8f3(0x278)])<0x0||area(_0x5798d7,_0x5798d7[_0x2ab8f3(0x263)],_0x47c59f)<0x0;}function middleInside(_0x569235,_0x4abe0b){const _0x30e77a=_0x49cdc8;var _0x42ed43=_0x569235,_0x848ce=![],_0x25e6f3=(_0x569235['x']+_0x4abe0b['x'])/0x2,_0x496d61=(_0x569235['y']+_0x4abe0b['y'])/0x2;do{if(_0x42ed43['y']>_0x496d61!==_0x42ed43['next']['y']>_0x496d61&&_0x42ed43[_0x30e77a(0x263)]['y']!==_0x42ed43['y']&&_0x25e6f3<(_0x42ed43[_0x30e77a(0x263)]['x']-_0x42ed43['x'])*(_0x496d61-_0x42ed43['y'])/(_0x42ed43[_0x30e77a(0x263)]['y']-_0x42ed43['y'])+_0x42ed43['x'])_0x848ce=!_0x848ce;_0x42ed43=_0x42ed43[_0x30e77a(0x263)];}while(_0x42ed43!==_0x569235);return _0x848ce;}function splitPolygon(_0x17c684,_0x37b970){const _0x9a524e=_0x49cdc8;var _0x3e4534=new Node(_0x17c684['i'],_0x17c684['x'],_0x17c684['y']),_0x51d336=new Node(_0x37b970['i'],_0x37b970['x'],_0x37b970['y']),_0x7c456a=_0x17c684[_0x9a524e(0x263)],_0x3fb186=_0x37b970[_0x9a524e(0x278)];return _0x17c684[_0x9a524e(0x263)]=_0x37b970,_0x37b970[_0x9a524e(0x278)]=_0x17c684,_0x3e4534[_0x9a524e(0x263)]=_0x7c456a,_0x7c456a[_0x9a524e(0x278)]=_0x3e4534,_0x51d336[_0x9a524e(0x263)]=_0x3e4534,_0x3e4534[_0x9a524e(0x278)]=_0x51d336,_0x3fb186['next']=_0x51d336,_0x51d336[_0x9a524e(0x278)]=_0x3fb186,_0x51d336;}function insertNode(_0x3fe3f1,_0x5cf908,_0x5bb231,_0x44a1d4){const _0x26b8d5=_0x49cdc8;var _0x5660f8=new Node(_0x3fe3f1,_0x5cf908,_0x5bb231);return!_0x44a1d4?(_0x5660f8['prev']=_0x5660f8,_0x5660f8['next']=_0x5660f8):(_0x5660f8['next']=_0x44a1d4[_0x26b8d5(0x263)],_0x5660f8[_0x26b8d5(0x278)]=_0x44a1d4,_0x44a1d4[_0x26b8d5(0x263)]['prev']=_0x5660f8,_0x44a1d4['next']=_0x5660f8),_0x5660f8;}function removeNode(_0x2b891e){const _0x5df216=_0x49cdc8;_0x2b891e[_0x5df216(0x263)]['prev']=_0x2b891e[_0x5df216(0x278)],_0x2b891e['prev']['next']=_0x2b891e['next'];if(_0x2b891e['prevZ'])_0x2b891e['prevZ'][_0x5df216(0x55a)]=_0x2b891e[_0x5df216(0x55a)];if(_0x2b891e[_0x5df216(0x55a)])_0x2b891e['nextZ'][_0x5df216(0x578)]=_0x2b891e[_0x5df216(0x578)];}function Node(_0xbeadd6,_0x2f4b48,_0x2f0ab9){const _0x325e12=_0x49cdc8;this['i']=_0xbeadd6,this['x']=_0x2f4b48,this['y']=_0x2f0ab9,this['prev']=null,this[_0x325e12(0x263)]=null,this['z']=0x0,this[_0x325e12(0x578)]=null,this['nextZ']=null,this[_0x325e12(0x469)]=![];}earcut['deviation']=function(_0x153153,_0xe38ec0,_0x120b46,_0x209ecd){const _0x3a5ada=_0x49cdc8;var _0x59d023=_0xe38ec0&&_0xe38ec0[_0x3a5ada(0x25b)],_0x1eafc2=_0x59d023?_0xe38ec0[0x0]*_0x120b46:_0x153153[_0x3a5ada(0x25b)],_0x1f563b=Math['abs'](signedArea(_0x153153,0x0,_0x1eafc2,_0x120b46));if(_0x59d023)for(var _0x394fea=0x0,_0x2d41b8=_0xe38ec0[_0x3a5ada(0x25b)];_0x394fea<_0x2d41b8;_0x394fea++){var _0x41ec37=_0xe38ec0[_0x394fea]*_0x120b46,_0x17b283=_0x394fea<_0x2d41b8-0x1?_0xe38ec0[_0x394fea+0x1]*_0x120b46:_0x153153[_0x3a5ada(0x25b)];_0x1f563b-=Math[_0x3a5ada(0x24e)](signedArea(_0x153153,_0x41ec37,_0x17b283,_0x120b46));}var _0x5bc82f=0x0;for(_0x394fea=0x0;_0x394fea<_0x209ecd['length'];_0x394fea+=0x3){var _0x10a3a0=_0x209ecd[_0x394fea]*_0x120b46,_0x2e9496=_0x209ecd[_0x394fea+0x1]*_0x120b46,_0x14fc9c=_0x209ecd[_0x394fea+0x2]*_0x120b46;_0x5bc82f+=Math[_0x3a5ada(0x24e)]((_0x153153[_0x10a3a0]-_0x153153[_0x14fc9c])*(_0x153153[_0x2e9496+0x1]-_0x153153[_0x10a3a0+0x1])-(_0x153153[_0x10a3a0]-_0x153153[_0x2e9496])*(_0x153153[_0x14fc9c+0x1]-_0x153153[_0x10a3a0+0x1]));}return _0x1f563b===0x0&&_0x5bc82f===0x0?0x0:Math[_0x3a5ada(0x24e)]((_0x5bc82f-_0x1f563b)/_0x1f563b);};function signedArea(_0x2faa04,_0x50c7e5,_0x48f535,_0x536cf2){var _0x2e37df=0x0;for(var _0x8454bd=_0x50c7e5,_0x3ce814=_0x48f535-_0x536cf2;_0x8454bd<_0x48f535;_0x8454bd+=_0x536cf2){_0x2e37df+=(_0x2faa04[_0x3ce814]-_0x2faa04[_0x8454bd])*(_0x2faa04[_0x8454bd+0x1]+_0x2faa04[_0x3ce814+0x1]),_0x3ce814=_0x8454bd;}return _0x2e37df;}earcut[_0x49cdc8(0x2d5)]=function(_0x156f23){const _0x1d150a=_0x49cdc8;var _0x20e4bd=_0x156f23[0x0][0x0][_0x1d150a(0x25b)],_0xe4adb={'vertices':[],'holes':[],'dimensions':_0x20e4bd},_0x422ea1=0x0;for(var _0xc4c877=0x0;_0xc4c877<_0x156f23[_0x1d150a(0x25b)];_0xc4c877++){for(var _0x35e100=0x0;_0x35e100<_0x156f23[_0xc4c877][_0x1d150a(0x25b)];_0x35e100++){for(var _0x2c9b0d=0x0;_0x2c9b0d<_0x20e4bd;_0x2c9b0d++)_0xe4adb['vertices'][_0x1d150a(0x617)](_0x156f23[_0xc4c877][_0x35e100][_0x2c9b0d]);}_0xc4c877>0x0&&(_0x422ea1+=_0x156f23[_0xc4c877-0x1]['length'],_0xe4adb[_0x1d150a(0x32e)][_0x1d150a(0x617)](_0x422ea1));}return _0xe4adb;},earcut_1['default']=default_1;class BaseExtrudeShape extends Mesh{['opts'];[_0x49cdc8(0x589)];['center'];['extrude'];constructor(_0x204ad7){const _0xae6e2f=_0x49cdc8;super(),this['opts']=Object[_0xae6e2f(0x402)]({'height':0xa,'color':'#ff0000','center':[0x0,0x0],'extrude':![],'gradient':'#00ffff','vertical':0x5dc0},_0x204ad7),this[_0xae6e2f(0x589)]=this[_0xae6e2f(0x508)][_0xae6e2f(0x589)]!==undefined?this['opts'][_0xae6e2f(0x589)]:0xa,this[_0xae6e2f(0x455)]=this[_0xae6e2f(0x508)][_0xae6e2f(0x455)]!==undefined?this[_0xae6e2f(0x508)][_0xae6e2f(0x455)]:[0x0,0x0],this[_0xae6e2f(0x220)]=this[_0xae6e2f(0x508)]['extrude']!==undefined?this['opts'][_0xae6e2f(0x220)]:![],this[_0xae6e2f(0x220)]?(this[_0xae6e2f(0x22b)](this[_0xae6e2f(0x508)]['points']),this[_0xae6e2f(0x2f4)](_0x204ad7)):(this[_0xae6e2f(0x272)](this['opts'][_0xae6e2f(0x1d7)]),this['loadMaterial'](_0x204ad7));}[_0x49cdc8(0x1c3)](_0x10bd4e){const _0x434afa=_0x49cdc8;this[_0x434afa(0x4b8)]=new ShaderMaterial({'transparent':!![],'side':0x2,'uniforms':{'color':{'value':new Color(_0x10bd4e[_0x434afa(0x229)])},'opacity':{'value':0x1},'height':{'value':this[_0x434afa(0x589)]},'gradient':{'value':new Color(_0x10bd4e['gradient'])},'uCenter':{'value':new Vector2(this[_0x434afa(0x2d9)][_0x434afa(0x20f)]?.['center']['x'],this[_0x434afa(0x2d9)][_0x434afa(0x20f)]?.[_0x434afa(0x455)]['z'])}},'vertexShader':_0x434afa(0x296),'fragmentShader':_0x434afa(0x4d7)});}['loadExtrudeMaterial'](_0x5953fa){const _0x57a469=_0x49cdc8;this['material']=new ShaderMaterial({'transparent':!![],'side':0x2,'uniforms':{'color':{'value':new Color(_0x5953fa[_0x57a469(0x229)])},'opacity':{'value':0x1},'height':{'value':this[_0x57a469(0x589)]},'gradient':{'value':new Color(_0x5953fa[_0x57a469(0x493)])},'vertical':{'value':this[_0x57a469(0x508)][_0x57a469(0x35a)]}},'vertexShader':_0x57a469(0x580),'fragmentShader':_0x57a469(0x16d)});}['loadExtrudeGeometry'](_0xee20dc){const _0x55177c=_0x49cdc8;let _0x318427=[],_0x2f12cb=[],_0x43ecf5=[];const _0x149efa=lnglat2mercator(this[_0x55177c(0x455)]);for(let _0x8e9416=0x0;_0x8e9416<_0xee20dc[_0x55177c(0x25b)];_0x8e9416++){const _0x5bd4bd=lnglat2mercator(_0xee20dc[_0x8e9416]);_0x318427=_0x318427[_0x55177c(0x56b)](_0x5bd4bd),_0x2f12cb=_0x2f12cb[_0x55177c(0x56b)](_0x5bd4bd[0x0]-_0x149efa[0x0],0x0,_0x5bd4bd[0x1]-_0x149efa[0x1]);}_0x43ecf5=earcut_1(_0x318427);const _0x3c1152=[];let _0x115e83=[];for(let _0x48b48e=0x0;_0x48b48e<_0x2f12cb[_0x55177c(0x25b)];_0x48b48e+=0x3){_0x3c1152[_0x55177c(0x617)](_0x2f12cb[_0x48b48e],_0x2f12cb[_0x48b48e+0x1]+this[_0x55177c(0x589)],_0x2f12cb[_0x48b48e+0x2]);}_0x115e83=_0x2f12cb[_0x55177c(0x554)]()[_0x55177c(0x56b)](_0x3c1152);const _0x23b5bc=[];let _0x540538=[];for(let _0x247c93=0x0;_0x247c93<_0x43ecf5[_0x55177c(0x25b)];_0x247c93+=0x3){_0x23b5bc[_0x55177c(0x617)](_0x43ecf5[_0x247c93]+_0x3c1152['length']/0x3,_0x43ecf5[_0x247c93+0x1]+_0x3c1152[_0x55177c(0x25b)]/0x3,_0x43ecf5[_0x247c93+0x2]+_0x3c1152[_0x55177c(0x25b)]/0x3);}_0x540538=_0x43ecf5[_0x55177c(0x56b)](_0x23b5bc);let _0x5e66b6=[];const _0x1971c7=[],_0x1c0ff2=_0x2f12cb[_0x55177c(0x554)]()[_0x55177c(0x56b)](_0x3c1152),_0x5ad4a8=_0x115e83['length']/0x3;for(let _0x2076e5=0x0;_0x2076e5<_0x2f12cb['length']/0x3;_0x2076e5++){_0x2076e5==_0x2f12cb[_0x55177c(0x25b)]/0x3-0x1?(_0x1971c7[_0x55177c(0x617)](_0x2076e5+_0x5ad4a8,0x0+_0x5ad4a8,_0x2076e5+_0x2f12cb[_0x55177c(0x25b)]/0x3+_0x5ad4a8),_0x1971c7['push'](_0x2076e5+_0x2f12cb[_0x55177c(0x25b)]/0x3+_0x5ad4a8,0x0+_0x5ad4a8,0x0+_0x2f12cb[_0x55177c(0x25b)]/0x3+_0x5ad4a8)):(_0x1971c7[_0x55177c(0x617)](_0x2076e5+_0x5ad4a8,_0x2076e5+0x1+_0x5ad4a8,_0x2076e5+_0x2f12cb[_0x55177c(0x25b)]/0x3+_0x5ad4a8),_0x1971c7[_0x55177c(0x617)](_0x2076e5+_0x2f12cb[_0x55177c(0x25b)]/0x3+_0x5ad4a8,_0x2076e5+0x1+_0x5ad4a8,_0x2076e5+0x1+_0x2f12cb['length']/0x3+_0x5ad4a8));}_0x115e83=_0x115e83[_0x55177c(0x554)]()['concat'](_0x1c0ff2),_0x540538=_0x540538[_0x55177c(0x554)]()[_0x55177c(0x56b)](_0x1971c7);for(let _0x2ae870=0x0;_0x2ae870<_0x540538[_0x55177c(0x25b)];_0x2ae870+=0x3){const _0x44048f=_0x540538[_0x2ae870],_0x399a7d=_0x540538[_0x2ae870+0x1],_0x46a6fc=_0x540538[_0x2ae870+0x2],_0x21a925=new Vector3(_0x115e83[_0x399a7d*0x3]-_0x115e83[_0x44048f*0x3],_0x115e83[_0x399a7d*0x3+0x1]-_0x115e83[_0x44048f*0x3+0x1],_0x115e83[_0x399a7d*0x3+0x2]-_0x115e83[_0x44048f*0x3+0x2])[_0x55177c(0x512)](),_0x10e24a=new Vector3(_0x115e83[_0x46a6fc*0x3]-_0x115e83[_0x44048f*0x3],_0x115e83[_0x46a6fc*0x3+0x1]-_0x115e83[_0x44048f*0x3+0x1],_0x115e83[_0x46a6fc*0x3+0x2]-_0x115e83[_0x44048f*0x3+0x2])[_0x55177c(0x512)](),_0x2b06a4=_0x21a925['clone']()[_0x55177c(0x380)](_0x10e24a)[_0x55177c(0x512)]();_0x5e66b6[_0x55177c(0x617)](_0x2b06a4['x'],_0x2b06a4['y'],_0x2b06a4['z'],_0x2b06a4['x'],_0x2b06a4['y'],_0x2b06a4['z'],_0x2b06a4['x'],_0x2b06a4['y'],_0x2b06a4['z']);}this[_0x55177c(0x2d9)]['setIndex'](_0x540538),this[_0x55177c(0x2d9)][_0x55177c(0x1bc)]('position',new Float32BufferAttribute(_0x115e83,0x3)),this[_0x55177c(0x2d9)][_0x55177c(0x1bc)]('normal',new Float32BufferAttribute(_0x5e66b6,0x3));if(this[_0x55177c(0x220)]){const _0x38a2fa=new BaseLine({'lineWidth':0x1,'color':_0x55177c(0x18d)});_0x38a2fa[_0x55177c(0x5d2)](_0x3c1152),this['add'](_0x38a2fa);}}[_0x49cdc8(0x272)](_0x4918dc){const _0x129856=_0x49cdc8;let _0x2a5b7b=[],_0x577ab2=[],_0x16c813=[],_0x30e0a2=[];const _0xe2be87=lnglat2mercator(this[_0x129856(0x455)]);for(let _0x9fdcb0=0x0;_0x9fdcb0<_0x4918dc['length'];_0x9fdcb0++){const _0x1bb574=lnglat2mercator(_0x4918dc[_0x9fdcb0]);_0x2a5b7b=_0x2a5b7b[_0x129856(0x56b)](_0x1bb574),_0x577ab2=_0x577ab2['concat'](_0x1bb574[0x0]-_0xe2be87[0x0],0x0,_0x1bb574[0x1]-_0xe2be87[0x1]),_0x16c813=_0x16c813[_0x129856(0x56b)](0x0,0x1,0x0);}_0x30e0a2=earcut_1(_0x2a5b7b),this[_0x129856(0x2d9)]['setIndex'](_0x30e0a2),this['geometry'][_0x129856(0x1bc)](_0x129856(0x26e),new Float32BufferAttribute(_0x577ab2,0x3)),this[_0x129856(0x2d9)]['setAttribute'](_0x129856(0x3fe),new Float32BufferAttribute(_0x16c813,0x3));const _0x337ea8=new BaseLine({'lineWidth':0x6,'color':_0x129856(0x18d)});_0x337ea8[_0x129856(0x5d2)](_0x577ab2),this[_0x129856(0x4bc)](_0x337ea8);}}class BaseCube extends Mesh{[_0x49cdc8(0x508)];[_0x49cdc8(0x552)];[_0x49cdc8(0x589)];[_0x49cdc8(0x125)];constructor(_0x139096){const _0x58e28f=_0x49cdc8;super(),this[_0x58e28f(0x508)]=Object[_0x58e28f(0x402)]({'width':0.015,'height':0.5,'depth':0.015,'color':_0x58e28f(0x4c3),'mixColor':'#0000ff','mixColor2':_0x58e28f(0x1eb),'type':0x0,'threshold':0x5dc,'lights':!![]},_0x139096),this[_0x58e28f(0x552)]=this[_0x58e28f(0x508)][_0x58e28f(0x552)]!==undefined?this[_0x58e28f(0x508)][_0x58e28f(0x552)]:0.015,this[_0x58e28f(0x589)]=this[_0x58e28f(0x508)][_0x58e28f(0x589)]!==undefined?this[_0x58e28f(0x508)][_0x58e28f(0x589)]:0.5,this['depth']=this[_0x58e28f(0x508)][_0x58e28f(0x125)]!==undefined?this[_0x58e28f(0x508)][_0x58e28f(0x125)]:0.015;const _0x3f1308=[-this[_0x58e28f(0x552)]/0x2,0x0,this[_0x58e28f(0x125)]/0x2,this['width']/0x2,0x0,this[_0x58e28f(0x125)]/0x2,this[_0x58e28f(0x552)]/0x2,0x0,-this[_0x58e28f(0x125)]/0x2,-this[_0x58e28f(0x552)]/0x2,0x0,-this[_0x58e28f(0x125)]/0x2],_0x5a83ec=[-this[_0x58e28f(0x552)]/0x2,this[_0x58e28f(0x589)],this[_0x58e28f(0x125)]/0x2,this[_0x58e28f(0x552)]/0x2,this[_0x58e28f(0x589)],this[_0x58e28f(0x125)]/0x2,this[_0x58e28f(0x552)]/0x2,this[_0x58e28f(0x589)],-this[_0x58e28f(0x125)]/0x2,-this[_0x58e28f(0x552)]/0x2,this[_0x58e28f(0x589)],-this[_0x58e28f(0x125)]/0x2],_0x1f0ca1=_0x3f1308[_0x58e28f(0x56b)](_0x5a83ec),_0x395a27=[0x0,0x1,0x3,0x3,0x1,0x2],_0x5b2b90=[0x4,0x5,0x7,0x7,0x5,0x6],_0x429675=[0x0,0x1,0x4,0x4,0x1,0x5,0x1,0x2,0x5,0x5,0x2,0x6,0x2,0x3,0x6,0x6,0x3,0x7,0x3,0x0,0x7,0x7,0x0,0x4],_0x52aa8d=_0x395a27['concat'](_0x5b2b90)['concat'](_0x429675),_0x85e6ef=[0x0,-0x1,0x0,0x0,-0x1,0x0,0x0,-0x1,0x0,0x0,-0x1,0x0],_0x40bc8e=[0x0,0x1,0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x0,0x1,0x0],_0x5dbea3=[0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x0,0x1,0x1,0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x0,0x1,0x0,0x0,0x0,0x0,-0x1,0x0,0x0,-0x1,0x0,0x0,-0x1,0x0,0x0,-0x1,-0x1,0x0,0x0,-0x1,0x0,0x0,-0x1,0x0,0x0,-0x1,0x0,0x0],_0x518465=_0x85e6ef['concat'](_0x40bc8e)[_0x58e28f(0x56b)](_0x5dbea3);this[_0x58e28f(0x2d9)][_0x58e28f(0x485)](_0x52aa8d),this[_0x58e28f(0x2d9)][_0x58e28f(0x1bc)]('position',new Float32BufferAttribute(_0x1f0ca1,0x3)),this['geometry'][_0x58e28f(0x1bc)](_0x58e28f(0x3fe),new Float32BufferAttribute(_0x518465,0x3)),this[_0x58e28f(0x4b8)]=new ShaderMaterial({'transparent':!![],'uniforms':{'color':{'value':new Color(this[_0x58e28f(0x508)][_0x58e28f(0x229)])},'height':{'value':this[_0x58e28f(0x508)][_0x58e28f(0x589)]},'threshold':{'value':this[_0x58e28f(0x508)][_0x58e28f(0x1e6)]},'type':{'value':this['opts'][_0x58e28f(0x26f)]},'opacity':{'value':0x1},'mixColor':{'value':new Color(this[_0x58e28f(0x508)][_0x58e28f(0x307)])},'mixColor2':{'value':new Color(this[_0x58e28f(0x508)][_0x58e28f(0x5de)])}},'vertexShader':_0x58e28f(0x544),'fragmentShader':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20mixColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20mixColor2;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20threshold;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20height;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20type;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightFront;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<packing>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv2_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<map_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<bsdfs>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<lights_pars_begin>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifndef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec4\x20diffuseColor\x20=\x20vec4(\x20color,\x20opacity\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ReflectedLight\x20reflectedLight\x20=\x20ReflectedLight(\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20)\x20);\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<map_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<alphatest_fragment>\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20+=\x20(\x20gl_FrontFacing\x20)\x20?\x20vIndirectFront\x20:\x20vIndirectBack;\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#else\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20+=\x20vIndirectFront;\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20*=\x20BRDF_Diffuse_Lambert(\x20diffuseColor.rgb\x20);\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20=\x20(\x20gl_FrontFacing\x20)\x20?\x20vLightFront\x20:\x20vLightBack;\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#else\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20=\x20vLightFront;\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20*=\x20BRDF_Diffuse_Lambert(\x20diffuseColor.rgb\x20);\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20modulation\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20outgoingLight\x20=\x20reflectedLight.directDiffuse\x20+\x20reflectedLight.indirectDiffuse;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(\x20outgoingLight,\x20diffuseColor.a\x20);\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(type\x20==\x200.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20vec3(mix(\x20vec3(0.),\x20mixColor,\x20vec3((2.\x20*\x20(vh+\x20threshold)\x20/\x20height\x20+\x201.)\x20/\x204.)));\x20\x20//\x200\x20~\x200.5\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20vec3(mix(\x20vec3(0.),\x20mixColor2,\x20vec3((\x20(vh\x20+\x20threshold)\x20/\x20height\x20+\x20.5)\x20/\x202.\x20+\x20.5)));\x20//\x200.5\x20~\x201\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(type\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(gl_FragColor.rgb,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<encodings_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<premultiplied_alpha_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifndef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(type\x20==\x200.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20vec3(mix(\x20color,\x20mixColor,\x20vec3((2.\x20*\x20vh\x20/\x20height\x20+\x201.)\x20/\x202.)));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20vec3(mix(\x20color,\x20mixColor2,\x20vec3((vh\x20/\x20height\x20+\x20.5)\x20/\x202.\x20+\x20.5)));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(type\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'}),this['material']['uniforms']=UniformsUtils[_0x58e28f(0x3fd)]([this[_0x58e28f(0x4b8)][_0x58e28f(0x385)],UniformsLib[_0x58e28f(0x279)]]);if(this[_0x58e28f(0x508)]['lights'])this[_0x58e28f(0x4b8)][_0x58e28f(0x24f)]={'LIGHTS':''};this[_0x58e28f(0x4b8)][_0x58e28f(0x279)]=this[_0x58e28f(0x508)]['lights'];}}const fragmentShaders=[_0x49cdc8(0x301),'\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20uClockwise;\x0auniform\x20float\x20ringWidth;\x0a\x0a#define\x20PI\x203.141592654\x0a#define\x20EPSILON\x201e-6\x0a\x0afloat\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20return\x20r;\x0a}\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20>\x20(.5\x20-\x20ringWidth)\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20vUv\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime)\x20-\x20dir.y\x20*\x20sin(uTime),\x20dir.x\x20*\x20sin(uTime)\x20+\x20dir.y\x20*\x20cos(uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20if(uClockwise\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x20(2.\x20*\x20PI\x20-\x20theta)\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(uClockwise\x20==\x20-1.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x20theta\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a',_0x49cdc8(0x48a),_0x49cdc8(0x496),_0x49cdc8(0x2fa),'\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20>\x20.35\x20&&\x20pct\x20<\x20.495){\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20pct\x20/\x20.35\x20-\x201.);\x0a\x20\x20\x20\x20}else\x20if(pct\x20>\x20.495\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x201.);\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a',_0x49cdc8(0x49d),'\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20if(pct\x20>\x20.4\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20pct\x20/\x20.5\x20-\x20.8);\x0a\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20}\x0a\x0a\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a','\x20\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20uClockwise;\x0a\x0a#define\x20PI\x203.141592654\x0a#define\x20EPSILON\x201e-6\x0a\x0afloat\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20return\x20r;\x0a}\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20>\x20.495\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20vUv\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime)\x20-\x20dir.y\x20*\x20sin(uTime),\x20dir.x\x20*\x20sin(uTime)\x20+\x20dir.y\x20*\x20cos(uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20if(theta\x20>\x200.\x20&&\x20theta\x20<\x20(PI\x20/\x202.)\x20){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else\x20if(theta\x20>\x20PI\x20&&\x20theta\x20<\x20(3.\x20*\x20PI\x20/\x202.)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uClockwise\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20mod(theta,\x20PI\x20/\x202.)\x20/\x20(\x20PI\x20/\x202.));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20abs(mod(PI\x20/\x202.\x20-\x20theta,\x20PI\x20/\x202.))\x20/\x20(\x20PI\x20/\x202.));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a',_0x49cdc8(0x293),_0x49cdc8(0x271),_0x49cdc8(0x357),_0x49cdc8(0x21b),_0x49cdc8(0x608)];class BaseCircle extends Mesh{['opts'];[_0x49cdc8(0x4b7)];['spreadReset'];[_0x49cdc8(0x442)];[_0x49cdc8(0x132)];['spreadSpeed'];['spreadEndHeight'];[_0x49cdc8(0x18a)];[_0x49cdc8(0x2c5)];[_0x49cdc8(0x332)];['rotateSpeed'];[_0x49cdc8(0x397)];constructor(_0x13731b){const _0x215567=_0x49cdc8;super(),this[_0x215567(0x508)]=Object['assign']({'radius':0x1,'color':_0x215567(0x18d),'type':0x0,'spreadReset':!![],'spreadStartRadius':0.02,'spreadEndRadius':0.4,'spreadSpeed':0x1,'clockwise':-0x1,'spreadEndHeight':0x0,'spreadStartHeight':0.5,'ringWidth':0.1,'rotateSpeed':0xa},_0x13731b),this['animationIndex']=-0x1,this[_0x215567(0x397)]=0x1,this['spreadReset']=this[_0x215567(0x508)][_0x215567(0x56c)]!==undefined?this[_0x215567(0x508)][_0x215567(0x56c)]:!![],this['ringWidth']=this[_0x215567(0x508)]['ringWidth']!==undefined?this[_0x215567(0x508)][_0x215567(0x2c5)]:0.1,this[_0x215567(0x442)]=this[_0x215567(0x508)]['spreadStartRadius']!==undefined?this[_0x215567(0x508)][_0x215567(0x442)]:0.02,this['spreadEndRadius']=this['opts'][_0x215567(0x132)]!==undefined?this['opts'][_0x215567(0x132)]:0.4,this[_0x215567(0x536)]=this[_0x215567(0x508)][_0x215567(0x536)]!==undefined?this[_0x215567(0x508)][_0x215567(0x536)]:0x1,this[_0x215567(0x332)]=this[_0x215567(0x508)]['clockwise']!==undefined?this[_0x215567(0x508)][_0x215567(0x332)]:-0x1,this['spreadEndHeight']=this[_0x215567(0x508)]['spreadEndHeight']!==undefined?this['opts']['spreadEndHeight']:0x0,this[_0x215567(0x18a)]=this['opts'][_0x215567(0x18a)]!==undefined?this['opts'][_0x215567(0x18a)]:0.5,this[_0x215567(0x4dc)]=this[_0x215567(0x508)][_0x215567(0x4dc)]!==undefined?this[_0x215567(0x508)][_0x215567(0x4dc)]:0xa,this['geometry']=new PlaneGeometry(this['opts'][_0x215567(0x30d)],this[_0x215567(0x508)]['radius'],0x1,0x1),this[_0x215567(0x2d9)][_0x215567(0x170)](Math['PI']/0x2),this['material']=new ShaderMaterial({'side':0x2,'transparent':!![],'uniforms':{'color':{'value':new Color(this[_0x215567(0x508)]['color'])},'uTime':{'value':0x0},'uClockwise':{'value':this[_0x215567(0x332)]},'opacity':{'value':0x1},'ringWidth':{'value':this[_0x215567(0x2c5)]},'rotateSpeed':{'value':this[_0x215567(0x4dc)]}},'vertexShader':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20vUv;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vUv\x20=\x20uv;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','fragmentShader':fragmentShaders[this['opts']['type']]});}['rotateAnimation8'](){const _0x2b4cb8=_0x49cdc8;this[_0x2b4cb8(0x4b7)]=requestAnimationFrame(this['rotateAnimation8']['bind'](this)),this['material'][_0x2b4cb8(0x385)]['uTime'][_0x2b4cb8(0x4ba)]-=0.01*this[_0x2b4cb8(0x332)],this[_0x2b4cb8(0x4b8)][_0x2b4cb8(0x385)][_0x2b4cb8(0x14a)][_0x2b4cb8(0x4ba)]%=Math['PI']*0x2;}[_0x49cdc8(0x50c)](){const _0x1f3fce=_0x49cdc8;if(this[_0x1f3fce(0x508)][_0x1f3fce(0x26f)]==0x8)this[_0x1f3fce(0x46f)]();}[_0x49cdc8(0x285)](){const _0x18a25=_0x49cdc8;this['animationIndex']=requestAnimationFrame(this['rotateAnimation'][_0x18a25(0x46e)](this)),this['material'][_0x18a25(0x385)][_0x18a25(0x14a)][_0x18a25(0x4ba)]-=0.01*this[_0x18a25(0x332)];}['startRotateAnimation'](){const _0x13db3d=_0x49cdc8;if(this['opts'][_0x13db3d(0x26f)]==0x0||this[_0x13db3d(0x508)]['type']==0x1||this[_0x13db3d(0x508)]['type']==0x2)this[_0x13db3d(0x285)]();}[_0x49cdc8(0x2d8)](){const _0x3a9357=_0x49cdc8;this[_0x3a9357(0x4b7)]=requestAnimationFrame(this[_0x3a9357(0x2d8)][_0x3a9357(0x46e)](this)),this[_0x3a9357(0x4b8)][_0x3a9357(0x385)][_0x3a9357(0x14a)][_0x3a9357(0x4ba)]+=0.001*this[_0x3a9357(0x536)],this[_0x3a9357(0x4b8)][_0x3a9357(0x385)][_0x3a9357(0x14a)][_0x3a9357(0x4ba)]>=this['spreadEndRadius']&&(this[_0x3a9357(0x4b8)][_0x3a9357(0x385)]['uTime'][_0x3a9357(0x4ba)]=this[_0x3a9357(0x56c)]?0x0:this[_0x3a9357(0x442)]);}[_0x49cdc8(0x15c)](){const _0x5e38c6=_0x49cdc8;(this[_0x5e38c6(0x508)][_0x5e38c6(0x26f)]==0x6||this[_0x5e38c6(0x508)][_0x5e38c6(0x26f)]==0xb)&&(this['material'][_0x5e38c6(0x385)][_0x5e38c6(0x14a)][_0x5e38c6(0x4ba)]=this['spreadStartRadius'],this[_0x5e38c6(0x2d8)]());}[_0x49cdc8(0x54a)](){const _0x37a080=_0x49cdc8;this[_0x37a080(0x4b7)]=requestAnimationFrame(this[_0x37a080(0x54a)][_0x37a080(0x46e)](this)),this[_0x37a080(0x4b8)]['uniforms'][_0x37a080(0x14a)][_0x37a080(0x4ba)]+=0.001*this[_0x37a080(0x397)]*this['spreadSpeed'],this[_0x37a080(0x26e)]['y']+=this[_0x37a080(0x397)]*this[_0x37a080(0x536)]*0.001,(this[_0x37a080(0x26e)]['y']>=this['spreadEndHeight']||this[_0x37a080(0x26e)]['y']<=this[_0x37a080(0x18a)])&&(this[_0x37a080(0x397)]*=-0x1);}['startRisingAnimationBounce'](){const _0x31f171=_0x49cdc8;this[_0x31f171(0x508)][_0x31f171(0x26f)]==0x9&&(this[_0x31f171(0x4b8)][_0x31f171(0x385)][_0x31f171(0x14a)]['value']=this[_0x31f171(0x442)],this['position']['y']=this[_0x31f171(0x18a)],this[_0x31f171(0x54a)]());}[_0x49cdc8(0xff)](){const _0x4f46da=_0x49cdc8;this[_0x4f46da(0x4b7)]=requestAnimationFrame(this[_0x4f46da(0xff)][_0x4f46da(0x46e)](this)),this[_0x4f46da(0x4b8)][_0x4f46da(0x385)][_0x4f46da(0x14a)]['value']+=0.001*this[_0x4f46da(0x536)],this['material']['uniforms']['opacity'][_0x4f46da(0x4ba)]-=0x1/((this[_0x4f46da(0x132)]-this[_0x4f46da(0x442)])/(0.001*this[_0x4f46da(0x536)])),this[_0x4f46da(0x26e)]['y']-=(this[_0x4f46da(0x18a)]-this[_0x4f46da(0x287)])/((this[_0x4f46da(0x132)]-this['spreadStartRadius'])/(0.001*this[_0x4f46da(0x536)])),this[_0x4f46da(0x4b8)][_0x4f46da(0x385)][_0x4f46da(0x14a)][_0x4f46da(0x4ba)]>=this['spreadEndRadius']&&(this[_0x4f46da(0x4b8)][_0x4f46da(0x385)][_0x4f46da(0x14a)][_0x4f46da(0x4ba)]=0x0,this[_0x4f46da(0x4b8)]['uniforms'][_0x4f46da(0x313)][_0x4f46da(0x4ba)]=0x1,this[_0x4f46da(0x26e)]['y']=this['spreadStartHeight']);}[_0x49cdc8(0x284)](){const _0x492777=_0x49cdc8;this[_0x492777(0x508)]['type']==0x9&&(this['material'][_0x492777(0x385)][_0x492777(0x14a)][_0x492777(0x4ba)]=this[_0x492777(0x442)],this[_0x492777(0x26e)]['y']=this['spreadStartHeight'],this['spreadAnimation2']());}[_0x49cdc8(0x26c)](){const _0x175c44=_0x49cdc8;this['animationIndex']=requestAnimationFrame(this[_0x175c44(0x26c)][_0x175c44(0x46e)](this)),this[_0x175c44(0x4b8)]['uniforms'][_0x175c44(0x14a)]['value']+=0.001*this[_0x175c44(0x536)],this[_0x175c44(0x4b8)][_0x175c44(0x385)][_0x175c44(0x313)][_0x175c44(0x4ba)]-=0x1/((this[_0x175c44(0x132)]-this[_0x175c44(0x442)])/(0.001*this[_0x175c44(0x536)])),this[_0x175c44(0x26e)]['y']+=0.001*this[_0x175c44(0x536)],this[_0x175c44(0x4b8)][_0x175c44(0x385)][_0x175c44(0x14a)][_0x175c44(0x4ba)]>=this[_0x175c44(0x132)]&&(this[_0x175c44(0x4b8)]['uniforms'][_0x175c44(0x14a)][_0x175c44(0x4ba)]=this[_0x175c44(0x56c)]?0x0:this[_0x175c44(0x442)],this[_0x175c44(0x4b8)][_0x175c44(0x385)]['opacity']['value']=0x1,this[_0x175c44(0x26e)]['y']=this[_0x175c44(0x56c)]?0x0:this['spreadStartHeight']);}[_0x49cdc8(0x524)](){const _0x1e59f4=_0x49cdc8;this[_0x1e59f4(0x508)][_0x1e59f4(0x26f)]==0xc&&(this[_0x1e59f4(0x4b8)][_0x1e59f4(0x385)]['uTime'][_0x1e59f4(0x4ba)]=this[_0x1e59f4(0x442)],this[_0x1e59f4(0x26e)]['y']=this[_0x1e59f4(0x18a)],this[_0x1e59f4(0x26c)]());}[_0x49cdc8(0x152)](){const _0x5b114a=_0x49cdc8;this[_0x5b114a(0x4b7)]=requestAnimationFrame(this[_0x5b114a(0x152)][_0x5b114a(0x46e)](this)),this[_0x5b114a(0x4b8)][_0x5b114a(0x385)][_0x5b114a(0x14a)][_0x5b114a(0x4ba)]+=0.001;}[_0x49cdc8(0x2bc)](){const _0x38f05d=_0x49cdc8;this['opts'][_0x38f05d(0x26f)]==0xd&&this['rotateAnimation13']();}[_0x49cdc8(0x138)](){const _0x3e3800=_0x49cdc8;cancelAnimationFrame(this[_0x3e3800(0x4b7)]),this[_0x3e3800(0x4b7)]=-0x1;}}const drawText$1=[drawTextCanvas,drawTextCanvas2,drawTextCanvas3,drawTextCanvas4,drawTextCanvas5,drawTextCanvas6],updateText=[updateTextCanvas];class BaseTitle extends Sprite{[_0x49cdc8(0x4ad)];['opts'];['_bgColor'];[_0x49cdc8(0x313)];[_0x49cdc8(0x5ba)];[_0x49cdc8(0x556)];[_0x49cdc8(0x34b)];[_0x49cdc8(0x589)];[_0x49cdc8(0x2f5)];['_size'];['_width'];['_height'];['canvasElement'];constructor(_0x47b93a){const _0x131cc5=_0x49cdc8;super(),this[_0x131cc5(0x5d6)]=new Color(_0x47b93a?.[_0x131cc5(0x147)]!==undefined?_0x47b93a?.[_0x131cc5(0x147)]:'#ff0000'),this[_0x131cc5(0x313)]=_0x47b93a?.[_0x131cc5(0x313)]!==undefined?_0x47b93a[_0x131cc5(0x313)]:0x1,this[_0x131cc5(0x5ba)]=_0x47b93a?.[_0x131cc5(0x5ba)]!==undefined?_0x47b93a?.[_0x131cc5(0x5ba)]:'#ffffff',this['strokeColor']=_0x47b93a?.['strokeColor']!==undefined?_0x47b93a?.[_0x131cc5(0x556)]:'#ff0000',this[_0x131cc5(0x4ad)]=_0x47b93a?.[_0x131cc5(0x4ad)]!==undefined?_0x47b93a?.[_0x131cc5(0x4ad)]:'标题',this['fontSize']=_0x47b93a?.[_0x131cc5(0x34b)]!==undefined?_0x47b93a?.[_0x131cc5(0x34b)]:0x40,this['height']=_0x47b93a?.['height']!==undefined?_0x47b93a?.['height']:0x0,this['textType']=_0x47b93a?.[_0x131cc5(0x26f)]!==undefined?_0x47b93a?.[_0x131cc5(0x26f)]:0x0,this['_size']=_0x47b93a?.[_0x131cc5(0x47b)]!==undefined?_0x47b93a?.[_0x131cc5(0x47b)]:0x1,this[_0x131cc5(0x508)]=Object[_0x131cc5(0x402)]({'text':this[_0x131cc5(0x4ad)],'fontColor':this[_0x131cc5(0x5ba)],'bgColor':this[_0x131cc5(0x147)],'strokeColor':this[_0x131cc5(0x556)],'fontSize':this[_0x131cc5(0x34b)],'height':this[_0x131cc5(0x589)],'size':this[_0x131cc5(0x3e4)],'type':this[_0x131cc5(0x2f5)]},_0x47b93a);const {canvas:_0x21bc13,width:_0x55930a,height:_0x41e997}=drawText$1[this[_0x131cc5(0x508)][_0x131cc5(0x26f)]]({'text':this[_0x131cc5(0x508)][_0x131cc5(0x4ad)],'fontColor':this[_0x131cc5(0x508)][_0x131cc5(0x5ba)],'bgColor':this[_0x131cc5(0x508)][_0x131cc5(0x147)],'strokeColor':this[_0x131cc5(0x508)][_0x131cc5(0x556)],'fontSize':this[_0x131cc5(0x508)][_0x131cc5(0x34b)]});this[_0x131cc5(0x5ca)]=_0x21bc13;const _0x577d3e=new CanvasTexture(_0x21bc13);_0x577d3e[_0x131cc5(0x52d)]=sRGBEncoding,this[_0x131cc5(0x4b8)]=new SpriteMaterial({'map':_0x577d3e,'transparent':!![],'opacity':0x1}),this['canvasWidth']=_0x55930a,this[_0x131cc5(0x3c1)]=_0x41e997,this[_0x131cc5(0x455)]['set'](0.5,0x0),this[_0x131cc5(0x26e)]['set'](0x0,this[_0x131cc5(0x589)],0x0),this[_0x131cc5(0x17e)][_0x131cc5(0x4ec)](this[_0x131cc5(0x3e4)]*this[_0x131cc5(0x3b8)]/this[_0x131cc5(0x3c1)],this[_0x131cc5(0x3e4)],0x1);}get[_0x49cdc8(0x147)](){const _0x272e61=_0x49cdc8;return _0x272e61(0x2c6)+this[_0x272e61(0x5d6)]['r']*0xff+','+this[_0x272e61(0x5d6)]['g']*0xff+','+this[_0x272e61(0x5d6)]['b']*0xff+','+this[_0x272e61(0x313)]+')';}set[_0x49cdc8(0x147)](_0x212b3c){const _0x1b977c=_0x49cdc8;this['_bgColor'][_0x1b977c(0x4ec)](_0x212b3c);}get['canvasSize'](){return this['_size'];}set[_0x49cdc8(0x3e4)](_0x36f4e2){const _0x23ed6e=_0x49cdc8;this[_0x23ed6e(0x5c6)]=_0x36f4e2;}get['canvasWidth'](){const _0x4bae22=_0x49cdc8;return this[_0x4bae22(0x33d)];}set[_0x49cdc8(0x3b8)](_0xde4d20){this['_width']=_0xde4d20;}get[_0x49cdc8(0x3c1)](){const _0x51ee89=_0x49cdc8;return this[_0x51ee89(0x100)];}set[_0x49cdc8(0x3c1)](_0x4161de){this['_height']=_0x4161de;}[_0x49cdc8(0x577)]({type:_0x23cb9a,text:_0x19a093,fontColor:_0x31d46b,bgColor:_0x1ef4a6,strokeColor:_0xc312fb,fontSize:_0x241c13,size:_0x20721c}){const _0x1c99ac=_0x49cdc8;if(!this[_0x1c99ac(0x5ca)])throw new Error(_0x1c99ac(0x2cc));if(_0x1ef4a6!==undefined)this[_0x1c99ac(0x147)]=_0x1ef4a6;this[_0x1c99ac(0x5ba)]=_0x31d46b!==undefined?_0x31d46b:this[_0x1c99ac(0x5ba)],this[_0x1c99ac(0x556)]=_0xc312fb!==undefined?_0xc312fb:this[_0x1c99ac(0x556)],this['text']=_0x19a093!==undefined?_0x19a093:this[_0x1c99ac(0x4ad)],this['fontSize']=_0x241c13!==undefined?_0x241c13:this[_0x1c99ac(0x34b)],this['textType']=_0x23cb9a!==undefined?_0x23cb9a:this[_0x1c99ac(0x2f5)],this[_0x1c99ac(0x3e4)]=_0x20721c!==undefined?_0x20721c:this[_0x1c99ac(0x3e4)];const _0x5d2ed9=Object[_0x1c99ac(0x402)]({'text':this['text'],'fontColor':this[_0x1c99ac(0x5ba)],'bgColor':this[_0x1c99ac(0x147)],'strokeColor':this[_0x1c99ac(0x556)],'fontSize':this[_0x1c99ac(0x34b)],'canvas':this[_0x1c99ac(0x5ca)]}),{width:_0x40c10c,height:_0x1afdf8}=updateText[this[_0x1c99ac(0x2f5)]](_0x5d2ed9);this[_0x1c99ac(0x3b8)]=_0x40c10c,this[_0x1c99ac(0x3c1)]=_0x1afdf8,this[_0x1c99ac(0x17e)]['set'](this[_0x1c99ac(0x3e4)]*this[_0x1c99ac(0x3b8)]/this[_0x1c99ac(0x3c1)],this['canvasSize'],0x1);if(this[_0x1c99ac(0x4b8)][_0x1c99ac(0x427)])this['material'][_0x1c99ac(0x427)][_0x1c99ac(0x465)]=!![];this[_0x1c99ac(0x4b8)][_0x1c99ac(0x465)]=!![];}}class BaseShapeVicGeometry extends BufferGeometry{constructor(){const _0x475c1=_0x49cdc8;super();const _0x59e21f=[0x0,0x0,0x0,0.25,0.5,0x0,0x0,0.3,0.1,0x0,0x0,0x0,0x0,0.3,0.1,-0.25,0.5,0x0,0x0,0x0,0x0,0x0,0.3,-0.1,0.25,0.5,0x0,0x0,0x0,0x0,-0.25,0.5,0x0,0x0,0.3,-0.1,0.25,0.5,0x0,0x0,0.3,-0.1,0x0,0.3,0.1,0x0,0.3,0.1,0x0,0.3,-0.1,-0.25,0.5,0x0],_0x2a4ef4=new Vector3(),_0xf4bbc8=new Vector3(),_0x2671b6=[];for(let _0x978acd=0x0;_0x978acd<_0x59e21f[_0x475c1(0x25b)];_0x978acd+=0x9){_0x2a4ef4['set'](_0x59e21f[_0x978acd+0x3]-_0x59e21f[_0x978acd],_0x59e21f[_0x978acd+0x4]-_0x59e21f[_0x978acd+0x1],_0x59e21f[_0x978acd+0x5]-_0x59e21f[_0x978acd+0x2]),_0xf4bbc8[_0x475c1(0x4ec)](_0x59e21f[_0x978acd+0x6]-_0x59e21f[_0x978acd],_0x59e21f[_0x978acd+0x7]-_0x59e21f[_0x978acd+0x1],_0x59e21f[_0x978acd+0x8]-_0x59e21f[_0x978acd+0x2]);const _0x5abd2f=_0x2a4ef4[_0x475c1(0x32a)]()[_0x475c1(0x380)](_0xf4bbc8)[_0x475c1(0x512)]();_0x2671b6['push'](_0x5abd2f['x'],_0x5abd2f['y'],_0x5abd2f['z'],_0x5abd2f['x'],_0x5abd2f['y'],_0x5abd2f['z'],_0x5abd2f['x'],_0x5abd2f['y'],_0x5abd2f['z']);}this[_0x475c1(0x1bc)]('position',new BufferAttribute(new Float32Array(_0x59e21f),0x3)),this['setAttribute'](_0x475c1(0x3fe),new BufferAttribute(new Float32Array(_0x2671b6),0x3));}}class BaseShapeVic extends Mesh{[_0x49cdc8(0x508)];[_0x49cdc8(0x4b7)];[_0x49cdc8(0x551)];constructor(_0xdc9d82){const _0x278867=_0x49cdc8;super(),this[_0x278867(0x508)]=Object[_0x278867(0x402)]({'color':_0x278867(0x4c3)},_0xdc9d82),this[_0x278867(0x2d9)]=new BaseShapeVicGeometry(),this['material']=new MeshStandardMaterial({'color':this[_0x278867(0x508)][_0x278867(0x229)],'transparent':!![],'side':0x2}),this[_0x278867(0x4b7)]=-0x1,this[_0x278867(0x551)]=this[_0x278867(0x508)][_0x278867(0x551)]!==undefined?this[_0x278867(0x508)]['speed']:0x1;}[_0x49cdc8(0x29a)](){const _0x154a53=_0x49cdc8;this['animationIndex']=requestAnimationFrame(this[_0x154a53(0x29a)][_0x154a53(0x46e)](this)),this[_0x154a53(0x27e)]['z']+=this['speed']*0.1/Math['PI'];}[_0x49cdc8(0x3cb)](){this['animate']();}['stop'](){cancelAnimationFrame(this['animationIndex']),this['animationIndex']=-0x1;}}class BaseSpreadCircle extends Mesh{[_0x49cdc8(0x4b7)];['speed'];[_0x49cdc8(0x180)];[_0x49cdc8(0x508)];constructor(_0xf1e7a1){const _0x435106=_0x49cdc8;super();let _0x2c7782={'radius':0x1,'color':'#ffffff','speed':0x1,'time':0x0};_0x2c7782=Object[_0x435106(0x402)](_0x2c7782,_0xf1e7a1),this[_0x435106(0x508)]=_0xf1e7a1,this[_0x435106(0x551)]=_0x2c7782[_0x435106(0x551)],this[_0x435106(0x180)]=_0x2c7782[_0x435106(0x180)];const _0x37563e=new PlaneGeometry(_0x2c7782[_0x435106(0x30d)],_0x2c7782[_0x435106(0x30d)],0x1,0x1),_0x21962b=_0x435106(0x336),_0x139c01=_0x435106(0x487);this[_0x435106(0x4b8)]=new ShaderMaterial({'side':0x2,'transparent':!![],'uniforms':{'color':{'value':new Color(_0x2c7782['color'])},'opacity':{'value':0x1},'uSpeed':{'value':0.25},'uSge':{'value':0x3},'uRadius':{'value':_0x2c7782['radius']/0x2},'time':{'value':_0x2c7782[_0x435106(0x180)]}},'vertexShader':_0x21962b,'fragmentShader':_0x139c01}),this[_0x435106(0x2d9)]=_0x37563e,this['geometry'][_0x435106(0x170)](Math['PI']/0x2);}[_0x49cdc8(0x29a)](){const _0x3e806b=_0x49cdc8;this['animationIndex']=requestAnimationFrame(this['animate']['bind'](this)),this[_0x3e806b(0x4b8)]['uniforms'][_0x3e806b(0x180)][_0x3e806b(0x4ba)]+=this[_0x3e806b(0x551)]*0.01;}[_0x49cdc8(0x3cb)](){const _0x1c1da3=_0x49cdc8;this[_0x1c1da3(0x29a)]();}[_0x49cdc8(0x4be)](){const _0x557c0e=_0x49cdc8;cancelAnimationFrame(this[_0x557c0e(0x4b7)]),this[_0x557c0e(0x4b7)]=null;}}const Primitives={'BaseLine':BaseLine,'BaseExtrudeShape':BaseExtrudeShape,'BaseCube':BaseCube,'BaseCircle':BaseCircle,'BaseTitle':BaseTitle,'BaseShapeVic':BaseShapeVic,'BaseSpreadCircle':BaseSpreadCircle};class BaseBuildingStripeMaterial extends ShaderMaterial{['opts'];constructor(_0x36a766){const _0x243041=_0x49cdc8;super(),this[_0x243041(0x508)]=Object[_0x243041(0x402)]({'color':_0x243041(0x3b4),'emissive':_0x243041(0x18d),'minHeight':-0x9b,'maxHeight':-0x24},_0x36a766),this[_0x243041(0x279)]=!![],this[_0x243041(0x37c)]=!![],this[_0x243041(0x466)]=!![],this['depthTest']=!![],this[_0x243041(0x385)]={'color':{'value':new Color(this[_0x243041(0x508)][_0x243041(0x229)])},'opacity':{'value':0x1},'emissive':{'value':new Color(this[_0x243041(0x508)][_0x243041(0x5cb)])},'minHeight':{'value':this[_0x243041(0x508)][_0x243041(0x531)]},'maxHeight':{'value':this[_0x243041(0x508)][_0x243041(0x446)]}},this[_0x243041(0x628)]=_0x243041(0x327),this[_0x243041(0x27b)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20precision\x20highp\x20float;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20v_position;\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20v_normal;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20emissive;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightFront;\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20minHeight;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20maxHeight;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<packing>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv2_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<map_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<bsdfs>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<lights_pars_begin>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20baseHeight\x20=\x20v_position.y;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20if(baseHeight\x20<\x20minHeight){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(color\x20/\x202.),\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20return;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20}else\x20if(baseHeight\x20<\x20-80.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(0.,0.,1.),\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20return;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20}else\x20if(baseHeight\x20<\x20maxHeight){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(0.,1.,1.),\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20return;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec4\x20diffuseColor\x20=\x20vec4(\x20color,\x20opacity\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20gl_FragColor\x20=\x20diffuseColor;\x20//\x20基础色\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ReflectedLight\x20reflectedLight\x20=\x20ReflectedLight(\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20)\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20totalEmissiveRadiance\x20=\x20emissive;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<map_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<alphatest_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20+=\x20(\x20gl_FrontFacing\x20)\x20?\x20vIndirectFront\x20:\x20vIndirectBack;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#else\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20+=\x20vIndirectFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20*=\x20BRDF_Diffuse_Lambert(\x20diffuseColor.rgb\x20);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20=\x20(\x20gl_FrontFacing\x20)\x20?\x20vLightFront\x20:\x20vLightBack;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#else\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20=\x20vLightFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20*=\x20BRDF_Diffuse_Lambert(\x20diffuseColor.rgb\x20);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20modulation\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20outgoingLight\x20=\x20reflectedLight.directDiffuse\x20+\x20reflectedLight.indirectDiffuse;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(\x20outgoingLight,\x20diffuseColor.a\x20);\x0a\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20centerY\x20=\x20(maxHeight\x20-\x20minHeight)\x20/\x202.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20ds\x20=\x20dot(v_normal,\x20vec3(0.,\x201.\x20,0.));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(baseHeight\x20>=\x20minHeight\x20&&\x20baseHeight\x20<=\x20maxHeight\x20&&\x20ds\x20<\x200.0001\x20&&\x20ds\x20>\x20-0.0001){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20rs\x20=\x20mod(abs(abs(centerY)\x20-\x20abs(baseHeight)),\x2010.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(rs\x20<=\x202.\x20&&\x20rs\x20>=\x20.2){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20totalEmissiveRadiance;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<encodings_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<premultiplied_alpha_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20',this[_0x243041(0x385)]=UniformsUtils[_0x243041(0x3fd)]([this[_0x243041(0x385)],UniformsLib['lights']]);}}class BaseBuildingGradientMaterial extends ShaderMaterial{[_0x49cdc8(0x508)];constructor(_0x728d2){const _0x4ff74c=_0x49cdc8;super(),this[_0x4ff74c(0x508)]=Object['assign']({'color':_0x4ff74c(0x3b4),'emissive':_0x4ff74c(0x18d),'minHeight':-0x9b,'maxHeight':-0x24,'mixColor':_0x4ff74c(0x4c3),'threshold':0x0},_0x728d2),this['lights']=!![],this['transparent']=!![],this[_0x4ff74c(0x385)]={'color':{'value':new Color(this[_0x4ff74c(0x508)][_0x4ff74c(0x229)])},'opacity':{'value':0x1},'emissive':{'value':new Color(this[_0x4ff74c(0x508)]['emissive'])},'minHeight':{'value':this[_0x4ff74c(0x508)][_0x4ff74c(0x531)]},'maxHeight':{'value':this['opts']['maxHeight']},'mixColor':{'value':new Color(this[_0x4ff74c(0x508)][_0x4ff74c(0x307)])},'threshold':{'value':this['opts'][_0x4ff74c(0x1e6)]}},this[_0x4ff74c(0x628)]=_0x4ff74c(0x327),this['fragmentShader']=_0x4ff74c(0x3d5),this[_0x4ff74c(0x385)]=UniformsUtils[_0x4ff74c(0x3fd)]([this[_0x4ff74c(0x385)],UniformsLib[_0x4ff74c(0x279)]]);}}const PrimitiveMaterial={'BaseLineMaterial':BaseLineMaterial,'BaseBuildingStripeMaterial':BaseBuildingStripeMaterial,'BaseBuildingGradientMaterial':BaseBuildingGradientMaterial};function getNodeKeyByName(_0x31594c){const _0x5b0bfb=_0x49cdc8;let _0x5c029c='';switch(_0x31594c){case _0x5b0bfb(0x366):_0x5c029c=_0x5b0bfb(0x60c);break;case _0x5b0bfb(0x4ca):_0x5c029c=_0x5b0bfb(0x392);break;case _0x5b0bfb(0x5ea):_0x5c029c=_0x5b0bfb(0x3c8);break;case _0x5b0bfb(0x166):_0x5c029c=_0x5b0bfb(0x42b);break;case'SpotLights':_0x5c029c=_0x5b0bfb(0x501);break;case _0x5b0bfb(0x490):_0x5c029c=_0x5b0bfb(0x4b3);break;case'RectAreaLights':_0x5c029c=_0x5b0bfb(0x54c);break;case'Shadow':_0x5c029c=_0x5b0bfb(0x56a);break;case _0x5b0bfb(0x4d5):_0x5c029c=_0x5b0bfb(0x21d);break;case _0x5b0bfb(0x2c7):_0x5c029c=_0x5b0bfb(0x3fa);break;case'Fog':_0x5c029c=_0x5b0bfb(0x4f1);break;case _0x5b0bfb(0x35f):_0x5c029c='msaa';break;case _0x5b0bfb(0x61c):_0x5c029c=_0x5b0bfb(0x19b);break;case _0x5b0bfb(0x1d8):_0x5c029c=_0x5b0bfb(0x520);break;case _0x5b0bfb(0x153):_0x5c029c=_0x5b0bfb(0x321);break;case'GammaPass':_0x5c029c=_0x5b0bfb(0x3aa);break;}if(_0x5c029c=='')throw new Error(_0x5b0bfb(0x542)+_0x31594c+_0x5b0bfb(0x472));return _0x5c029c;}const lightsType=[_0x49cdc8(0x392),_0x49cdc8(0x3c8),_0x49cdc8(0x501),_0x49cdc8(0x4b3),_0x49cdc8(0x42b),_0x49cdc8(0x54c)],passesType=[_0x49cdc8(0x19b),_0x49cdc8(0x321),'outline',_0x49cdc8(0x3aa),_0x49cdc8(0x398)];class JSONParser{[_0x49cdc8(0x26f)];[_0x49cdc8(0x26d)];constructor(){const _0x385791=_0x49cdc8;this[_0x385791(0x26f)]='JSONParser',this['json']={'template':{},'cameras':{'orbitCamera':{}},'lights':{}};}[_0x49cdc8(0x16e)](_0x20626c){const _0x3caec2=_0x49cdc8;for(const _0x5e8f08 in _0x20626c){const _0x287821=_0x20626c[_0x5e8f08];if(_0x287821[_0x3caec2(0x309)]===-0x1){const _0x369c7e=getNodeKeyByName(_0x287821[_0x3caec2(0x283)]);if(_0x369c7e==_0x3caec2(0x60c))this['json'][_0x369c7e][_0x3caec2(0x112)]=Object[_0x3caec2(0x402)]({},_0x287821[_0x3caec2(0x15a)]);else{if(lightsType[_0x3caec2(0x1d3)](_0x369c7e)){if(_0x369c7e=='ambientLight'||_0x369c7e==_0x3caec2(0x3c8))this['json']['lights'][_0x369c7e]=Object[_0x3caec2(0x402)]({},_0x287821[_0x3caec2(0x15a)]);else{if(!this['json'][_0x3caec2(0x279)][_0x369c7e])this[_0x3caec2(0x26d)][_0x3caec2(0x279)][_0x369c7e]=[];if(Object[_0x3caec2(0x1b6)](_0x287821['options'])[_0x3caec2(0x25b)]>0x0)this[_0x3caec2(0x26d)][_0x3caec2(0x279)][_0x369c7e][_0x3caec2(0x617)](Object[_0x3caec2(0x402)]({},_0x287821[_0x3caec2(0x15a)]));}}else{if(_0x369c7e=='shadow')this['json'][_0x3caec2(0x622)]=_0x287821[_0x3caec2(0x15a)][_0x3caec2(0x13a)];else{if(_0x369c7e==_0x3caec2(0x3fa))this[_0x3caec2(0x26d)]['hdrUrls']=_0x287821['options'][_0x3caec2(0x4ba)][_0x3caec2(0x554)]();else{if(passesType[_0x3caec2(0x1d3)](_0x369c7e)){this[_0x3caec2(0x26d)][_0x369c7e]=Object[_0x3caec2(0x402)]({},_0x287821[_0x3caec2(0x15a)]);if(_0x369c7e==_0x3caec2(0x19b))this[_0x3caec2(0x26d)][_0x3caec2(0x155)]=_0x287821[_0x3caec2(0x15a)]['enabled'];else{if(_0x369c7e==_0x3caec2(0x520))this['json'][_0x3caec2(0x432)]=_0x287821[_0x3caec2(0x15a)][_0x3caec2(0x13a)];else{if(_0x369c7e==_0x3caec2(0x321))this['json']['dofEnabled']=_0x287821[_0x3caec2(0x15a)][_0x3caec2(0x13a)];else _0x369c7e==_0x3caec2(0x3aa)&&(this[_0x3caec2(0x26d)]['gammaEnabled']=_0x287821['options'][_0x3caec2(0x13a)]);}}}else this['json'][_0x369c7e]=Object['assign']({},_0x287821[_0x3caec2(0x15a)]);}}}}}else{if(_0x287821['uuid']==-0x2);else this[_0x3caec2(0x26d)][_0x3caec2(0x3ef)][_0x287821[_0x3caec2(0x309)]]=Object['assign']({},_0x287821);}}return this['json'];}}class TemplateParser{[_0x49cdc8(0x26f)];[_0x49cdc8(0x528)];[_0x49cdc8(0x33e)];constructor(){const _0x3c0c=_0x49cdc8;this[_0x3c0c(0x26f)]=_0x3c0c(0x5c3),this[_0x3c0c(0x528)]=[],this[_0x3c0c(0x33e)]='';}['parse'](_0x2524e4){const _0x5e128b=_0x49cdc8,_0x51d2a2=_0x2524e4[_0x5e128b(0x23d)]&&_0x2524e4[_0x5e128b(0x23d)][_0x5e128b(0x4a7)]!==undefined?_0x2524e4['attrs']['publicPath']+_0x5e128b(0x4fa):'/edit';this[_0x5e128b(0x33e)]=_0x51d2a2;const _0x93eb40=_0x2524e4['attrs']&&_0x2524e4[_0x5e128b(0x23d)]['modelUrls']!==undefined?_0x2524e4[_0x5e128b(0x23d)][_0x5e128b(0x5b6)]:[];return _0x93eb40['forEach'](_0x333570=>{const _0x29f5ec=_0x5e128b;this['templateModels'][_0x29f5ec(0x617)](_0x333570);}),{'templateModels':this[_0x5e128b(0x528)],'templatePublic':this[_0x5e128b(0x33e)]};}}class BaseParticles extends Points{['opts'];[_0x49cdc8(0x25c)];['scales'];['opacities'];['animationTag'];[_0x49cdc8(0x4b7)];[_0x49cdc8(0x1d1)];['size'];[_0x49cdc8(0x552)];[_0x49cdc8(0x589)];['depth'];constructor(_0x19bfb7){const _0x368daf=_0x49cdc8;super(),this[_0x368daf(0x508)]=Object[_0x368daf(0x402)]({'color':_0x368daf(0x4c3),'size':0.1,'width':0.1,'height':0.5,'depth':0.1,'numbers':0x14},_0x19bfb7),this[_0x368daf(0x4b7)]=-0x1,this['numbers']=this[_0x368daf(0x508)][_0x368daf(0x1d1)]!==undefined?this['opts'][_0x368daf(0x1d1)]:0x14,this[_0x368daf(0x47b)]=this[_0x368daf(0x508)][_0x368daf(0x47b)]!==undefined?this[_0x368daf(0x508)][_0x368daf(0x47b)]:0.1,this[_0x368daf(0x552)]=this['opts'][_0x368daf(0x552)]!==undefined?this[_0x368daf(0x508)][_0x368daf(0x552)]:0.1,this[_0x368daf(0x589)]=this[_0x368daf(0x508)]['height']!==undefined?this[_0x368daf(0x508)][_0x368daf(0x589)]:0.5,this['depth']=this[_0x368daf(0x508)][_0x368daf(0x125)]!==undefined?this['opts']['depth']:0.1,this[_0x368daf(0x4b8)]=new ShaderMaterial({'transparent':!![],'vertexShader':_0x368daf(0x2d2),'fragmentShader':_0x368daf(0x468),'uniforms':{'size':{'value':this['opts']['size']},'color':{'value':new Color(this[_0x368daf(0x508)][_0x368daf(0x229)])}}}),this[_0x368daf(0x25c)]=[],this['scales']=[],this[_0x368daf(0x28c)]=[],this[_0x368daf(0x5a0)]=[];for(let _0x332f8c=0x0;_0x332f8c<this[_0x368daf(0x1d1)];_0x332f8c++){this[_0x368daf(0x25c)][_0x368daf(0x617)]((Math[_0x368daf(0x3ca)]()*0x2-0x1)*this[_0x368daf(0x552)]),this[_0x368daf(0x25c)][_0x368daf(0x617)](Math[_0x368daf(0x3ca)]()*this['height']),this[_0x368daf(0x25c)][_0x368daf(0x617)]((Math['random']()*0x2-0x1)*this[_0x368daf(0x125)]),this[_0x368daf(0x49c)]['push'](Math[_0x368daf(0x3ca)]()*0.2+0.2),this['opacities']['push'](Math[_0x368daf(0x3ca)]()+0.5),this[_0x368daf(0x5a0)][_0x368daf(0x617)](Math[_0x368daf(0x3ca)]()+0.5,Math['random']()+0.5,Math[_0x368daf(0x3ca)]()+0.5);}this[_0x368daf(0x2d9)][_0x368daf(0x1bc)]('position',new Float32BufferAttribute(this['positions'],0x3)),this[_0x368daf(0x2d9)][_0x368daf(0x1bc)](_0x368daf(0x17e),new Float32BufferAttribute(this[_0x368daf(0x49c)],0x1)),this[_0x368daf(0x2d9)][_0x368daf(0x1bc)](_0x368daf(0x313),new Float32BufferAttribute(this[_0x368daf(0x28c)],0x1));}[_0x49cdc8(0x1f5)](){const _0x21fc9e=_0x49cdc8;this[_0x21fc9e(0x4b7)]=requestAnimationFrame(this['risingAnimation2'][_0x21fc9e(0x46e)](this));const _0x3c7b3e=this[_0x21fc9e(0x2d9)][_0x21fc9e(0x1c6)][_0x21fc9e(0x26e)][_0x21fc9e(0x4cf)],_0x66561d=this[_0x21fc9e(0x2d9)][_0x21fc9e(0x1c6)][_0x21fc9e(0x313)]['array'];for(let _0x411f0f=0x0;_0x411f0f<this[_0x21fc9e(0x5a0)]['length'];_0x411f0f+=0x3){const _0x373585=_0x411f0f%0x2==0x0?0x1:-0x1;_0x3c7b3e[_0x411f0f]+=0.001*this[_0x21fc9e(0x5a0)][_0x411f0f]*_0x373585,_0x3c7b3e[_0x411f0f+0x1]+=0.0025*this[_0x21fc9e(0x5a0)][_0x411f0f+0x1],Math[_0x21fc9e(0x24e)](_0x3c7b3e[_0x411f0f+0x1])>this[_0x21fc9e(0x589)]&&(_0x3c7b3e[_0x411f0f]=this[_0x21fc9e(0x25c)][_0x411f0f],_0x3c7b3e[_0x411f0f+0x1]=0x0,_0x3c7b3e[_0x411f0f+0x2]=this[_0x21fc9e(0x25c)][_0x411f0f+0x2]),_0x3c7b3e[_0x411f0f+0x2]+=0.001*this[_0x21fc9e(0x5a0)][_0x411f0f+0x2]*_0x373585,_0x66561d[_0x411f0f/0x3]=(this[_0x21fc9e(0x589)]-_0x3c7b3e[_0x411f0f+0x1])/this[_0x21fc9e(0x589)];}this[_0x21fc9e(0x2d9)][_0x21fc9e(0x1c6)]['position'][_0x21fc9e(0x465)]=!![],this[_0x21fc9e(0x2d9)][_0x21fc9e(0x1c6)][_0x21fc9e(0x313)]['needsUpdate']=!![];}[_0x49cdc8(0x430)](){const _0x502ae7=_0x49cdc8;this[_0x502ae7(0x1f5)]();}[_0x49cdc8(0x61b)](){const _0x29bc8c=_0x49cdc8;this['animationIndex']=requestAnimationFrame(this[_0x29bc8c(0x61b)][_0x29bc8c(0x46e)](this));const _0x20e64e=this[_0x29bc8c(0x2d9)][_0x29bc8c(0x1c6)][_0x29bc8c(0x26e)][_0x29bc8c(0x4cf)],_0x3035fd=this['geometry'][_0x29bc8c(0x1c6)][_0x29bc8c(0x313)][_0x29bc8c(0x4cf)];for(let _0x27e7ef=0x0;_0x27e7ef<this[_0x29bc8c(0x5a0)][_0x29bc8c(0x25b)];_0x27e7ef+=0x3){_0x20e64e[_0x27e7ef]+=0.001*this[_0x29bc8c(0x5a0)][_0x27e7ef];if(Math['abs'](_0x20e64e[_0x27e7ef])>this[_0x29bc8c(0x552)])this[_0x29bc8c(0x5a0)][_0x27e7ef]*=-0x1;_0x20e64e[_0x27e7ef+0x1]+=0.0025*this['animationTag'][_0x27e7ef+0x1];if(Math[_0x29bc8c(0x24e)](_0x20e64e[_0x27e7ef+0x1])>this[_0x29bc8c(0x589)])_0x20e64e[_0x27e7ef+0x1]=0x0;_0x20e64e[_0x27e7ef+0x2]+=0.001*this[_0x29bc8c(0x5a0)][_0x27e7ef+0x2];if(Math['abs'](_0x20e64e[_0x27e7ef+0x2])>this[_0x29bc8c(0x125)])this[_0x29bc8c(0x5a0)][_0x27e7ef+0x2]*=-0x1;_0x3035fd[_0x27e7ef/0x3]=(this['height']-_0x20e64e[_0x27e7ef+0x1])/this['height'];}this[_0x29bc8c(0x2d9)][_0x29bc8c(0x1c6)]['position'][_0x29bc8c(0x465)]=!![],this[_0x29bc8c(0x2d9)]['attributes'][_0x29bc8c(0x313)][_0x29bc8c(0x465)]=!![];}['startRisingAnimation'](){const _0x208c3f=_0x49cdc8;this[_0x208c3f(0x61b)]();}[_0x49cdc8(0x138)](){const _0x1eb9e7=_0x49cdc8;cancelAnimationFrame(this[_0x1eb9e7(0x4b7)]),this[_0x1eb9e7(0x4b7)]=-0x1;}}class CompositeIcon extends Group$1{[_0x49cdc8(0x2a8)];constructor(){const _0x24c5fa=_0x49cdc8;super(),this[_0x24c5fa(0x2a8)]=!![];}}class CompositeIconTitle extends CompositeIcon{[_0x49cdc8(0x508)];['baseTitle'];constructor(_0x5d6c0b){const _0x2fa003=_0x49cdc8;super(),this[_0x2fa003(0x508)]=Object[_0x2fa003(0x402)]({'color':_0x2fa003(0x4c3),'opacity':0x1,'titleHeight':0x0,'titleSize':0x1,'title':'标题','type':0x0,'fontColor':'#ffffff','bgColor':_0x2fa003(0x4c3),'strokeColor':'#ffffff'},_0x5d6c0b);if(this[_0x2fa003(0x508)][_0x2fa003(0x26f)]==0x3){const _0x428bb4=new BaseSpreadCircle({'color':this[_0x2fa003(0x508)][_0x2fa003(0x229)]});this[_0x2fa003(0x4bc)](_0x428bb4),_0x428bb4['start']();const _0x5beb4b=new BaseShapeVic({'color':this['opts'][_0x2fa003(0x229)]});this[_0x2fa003(0x4bc)](_0x5beb4b);const _0x24e87a=()=>{const _0x1b1ee6=_0x2fa003;_0x5beb4b[_0x1b1ee6(0x27e)]['y']+=0.1/Math['PI'],requestAnimationFrame(_0x24e87a);};_0x24e87a(),this['baseTitle']=new BaseTitle({'text':this['opts'][_0x2fa003(0x4f5)],'bgColor':this[_0x2fa003(0x508)]['color'],'strokeColor':this[_0x2fa003(0x508)]['color'],'opacity':this[_0x2fa003(0x508)]['opacity'],'height':this[_0x2fa003(0x508)][_0x2fa003(0x2ba)],'size':this[_0x2fa003(0x508)][_0x2fa003(0x3e1)],'type':this[_0x2fa003(0x508)][_0x2fa003(0x26f)]}),this[_0x2fa003(0x4bc)](this[_0x2fa003(0x173)]);}else{if(this['opts'][_0x2fa003(0x26f)]==0x0||this[_0x2fa003(0x508)]['type']==0x1||this[_0x2fa003(0x508)][_0x2fa003(0x26f)]==0x2){const _0x146fee=new BaseCircle({'color':this['opts'][_0x2fa003(0x229)],'type':this[_0x2fa003(0x508)][_0x2fa003(0x26f)]});this['add'](_0x146fee),_0x146fee[_0x2fa003(0x2ed)](),this[_0x2fa003(0x173)]=new BaseTitle({'text':this[_0x2fa003(0x508)]['title'],'bgColor':this['opts'][_0x2fa003(0x147)],'strokeColor':this[_0x2fa003(0x508)]['strokeColor'],'fontColor':this['opts'][_0x2fa003(0x5ba)],'opacity':this[_0x2fa003(0x508)][_0x2fa003(0x313)],'height':this[_0x2fa003(0x508)]['titleHeight'],'size':this[_0x2fa003(0x508)][_0x2fa003(0x3e1)],'type':this[_0x2fa003(0x508)][_0x2fa003(0x26f)]}),this[_0x2fa003(0x4bc)](this[_0x2fa003(0x173)]);}}}[_0x49cdc8(0x4c1)](_0x5b5dba){const _0x15d04e=_0x49cdc8;this[_0x15d04e(0x173)]['update']({'text':_0x5b5dba});}[_0x49cdc8(0x123)](_0x1b8e90){const _0xa17428=_0x49cdc8;this['baseTitle'][_0xa17428(0x577)]({'size':_0x1b8e90});}}class BaseTag extends Sprite{[_0x49cdc8(0x508)];constructor(_0x3e3ff9){const _0x419773=_0x49cdc8;super(),this['opts']=Object[_0x419773(0x402)]({'text':'标题','fontColor':_0x419773(0x18d),'fontSize':0x40,'height':0x0,'size':0x1},_0x3e3ff9);const {canvas:_0x55a396,width:_0x2fb9bb,height:_0x4f513b}=drawTagCanvas({'text':this[_0x419773(0x508)][_0x419773(0x4ad)],'fontColor':this[_0x419773(0x508)][_0x419773(0x5ba)],'fontSize':this[_0x419773(0x508)][_0x419773(0x34b)]}),_0x5b1544=new CanvasTexture(_0x55a396);this[_0x419773(0x4b8)]=new SpriteMaterial({'map':_0x5b1544,'transparent':!![],'opacity':0x1}),this[_0x419773(0x455)]['set'](0.5,0x0),this[_0x419773(0x26e)]['set'](0x0,this[_0x419773(0x508)][_0x419773(0x589)],0x0),this['scale'][_0x419773(0x4ec)](this[_0x419773(0x508)]['size']*(0x1*_0x2fb9bb)/0x200,this[_0x419773(0x508)][_0x419773(0x47b)]*0.25,0x1);}}class BaseSquares extends Group$1{[_0x49cdc8(0x2a1)];[_0x49cdc8(0x508)];constructor(_0x173af2){const _0x2c6cf6=_0x49cdc8;super(),this[_0x2c6cf6(0x508)]=Object[_0x2c6cf6(0x402)]({'color':_0x2c6cf6(0x4c3)},_0x173af2),this[_0x2c6cf6(0x2a1)]=[];const _0x31d19f=new MeshBasicMaterial({'color':this['opts'][_0x2c6cf6(0x229)],'transparent':!![],'side':0x2});for(let _0x14adab=0x0;_0x14adab<0xa;_0x14adab++){const _0x3e90a7=Math[_0x2c6cf6(0x3ca)]()*0.04+0.02,_0x16a49d=new PlaneGeometry(_0x3e90a7,_0x3e90a7,0x1,0x1),_0x552268=new Mesh(_0x16a49d,_0x31d19f[_0x2c6cf6(0x32a)]());_0x552268['position'][_0x2c6cf6(0x4ec)](Math['random']()*0.7-0.35,Math[_0x2c6cf6(0x3ca)]()*0.5-0.5,Math[_0x2c6cf6(0x3ca)]()*0.7-0.35),this[_0x2c6cf6(0x4bc)](_0x552268),this[_0x2c6cf6(0x2a1)][_0x2c6cf6(0x617)](_0x552268);}const _0x492f77=()=>{const _0x151014=_0x2c6cf6;requestAnimationFrame(_0x492f77),this[_0x151014(0x2a1)][_0x151014(0x56d)](_0x1d69f4=>{const _0x41984a=_0x151014;_0x1d69f4['position']['y']>0x0&&(_0x1d69f4[_0x41984a(0x17e)][_0x41984a(0x4ec)](0x1,0x1,0x1),_0x1d69f4[_0x41984a(0x592)]=!![],_0x1d69f4[_0x41984a(0x4b8)][_0x41984a(0x313)]=0x1);_0x1d69f4[_0x41984a(0x26e)]['y']+=0.005;if(_0x1d69f4['position']['y']>0.35&&_0x1d69f4[_0x41984a(0x26e)]['y']<0.5)_0x1d69f4[_0x41984a(0x4b8)]['opacity']=(0.5-_0x1d69f4[_0x41984a(0x26e)]['y'])/0.5,_0x1d69f4['scale']['x']=(_0x1d69f4[_0x41984a(0x26e)]['y']+0.15)/(0.35+0.15),_0x1d69f4['scale']['y']=(_0x1d69f4[_0x41984a(0x26e)]['y']+0.15)/(0.35+0.15);else _0x1d69f4[_0x41984a(0x26e)]['y']>0.5&&(_0x1d69f4[_0x41984a(0x26e)]['y']=-0.2,_0x1d69f4[_0x41984a(0x592)]=![]);});};_0x492f77();}}class BaseDiamondGeometry extends BufferGeometry{constructor(){const _0x3b8027=_0x49cdc8;super();const _0x4ea5ed=[0x0,0x0,0x0,-0.5,0x1,0.5,0.5,0x1,0.5,0x0,0x0,0x0,0.5,0x1,0.5,0.5,0x1,-0.5,0x0,0x0,0x0,0.5,0x1,-0.5,-0.5,0x1,-0.5,0x0,0x0,0x0,-0.5,0x1,-0.5,-0.5,0x1,0.5,-0.5,0x1,0.5,0.5,0x1,0.5,-0.3,1.2,0.3,-0.3,1.2,0.3,0.5,0x1,0.5,0.3,1.2,0.3,0.5,0x1,0.5,0.5,0x1,-0.5,0.3,1.2,0.3,0.3,1.2,0.3,0.5,0x1,-0.5,0.3,1.2,-0.3,0.5,0x1,-0.5,-0.5,0x1,-0.5,0.3,1.2,-0.3,0.3,1.2,-0.3,-0.5,0x1,-0.5,-0.3,1.2,-0.3,-0.5,0x1,-0.5,-0.5,0x1,0.5,-0.3,1.2,-0.3,-0.3,1.2,-0.3,-0.5,0x1,0.5,-0.3,1.2,0.3,-0.3,1.2,0.3,0.3,1.2,0.3,-0.3,1.2,-0.3,-0.3,1.2,-0.3,0.3,1.2,0.3,0.3,1.2,-0.3],_0x1c0658=new Vector3(),_0x3f9b33=new Vector3(),_0x1a90de=[];for(let _0xa7e74f=0x0;_0xa7e74f<_0x4ea5ed[_0x3b8027(0x25b)];_0xa7e74f+=0x9){_0x1c0658[_0x3b8027(0x4ec)](_0x4ea5ed[_0xa7e74f+0x3]-_0x4ea5ed[_0xa7e74f],_0x4ea5ed[_0xa7e74f+0x4]-_0x4ea5ed[_0xa7e74f+0x1],_0x4ea5ed[_0xa7e74f+0x5]-_0x4ea5ed[_0xa7e74f+0x2]),_0x3f9b33[_0x3b8027(0x4ec)](_0x4ea5ed[_0xa7e74f+0x6]-_0x4ea5ed[_0xa7e74f],_0x4ea5ed[_0xa7e74f+0x7]-_0x4ea5ed[_0xa7e74f+0x1],_0x4ea5ed[_0xa7e74f+0x8]-_0x4ea5ed[_0xa7e74f+0x2]);const _0x47d8dd=_0x1c0658[_0x3b8027(0x32a)]()[_0x3b8027(0x380)](_0x3f9b33)[_0x3b8027(0x512)]();_0x1a90de['push'](_0x47d8dd['x'],_0x47d8dd['y'],_0x47d8dd['z'],_0x47d8dd['x'],_0x47d8dd['y'],_0x47d8dd['z'],_0x47d8dd['x'],_0x47d8dd['y'],_0x47d8dd['z']);}this['setAttribute'](_0x3b8027(0x26e),new BufferAttribute(new Float32Array(_0x4ea5ed),0x3)),this[_0x3b8027(0x1bc)](_0x3b8027(0x3fe),new BufferAttribute(new Float32Array(_0x1a90de),0x3));}}class BaseDiamond extends Mesh{[_0x49cdc8(0x508)];constructor(_0x523182){const _0x54c216=_0x49cdc8;super(),this['opts']=Object['assign']({'color':'#ff0000','opacity':0x1},_0x523182),this['geometry']=new BaseDiamondGeometry(),this[_0x54c216(0x4b8)]=new MeshStandardMaterial({'color':_0x54c216(0x4c3),'side':0x2,'transparent':this[_0x54c216(0x508)][_0x54c216(0x313)]!=0x1,'opacity':this[_0x54c216(0x508)][_0x54c216(0x313)]});}}class BaseStaff extends Group$1{[_0x49cdc8(0x508)];constructor(_0xb2e527){const _0x31ec4f=_0x49cdc8;super(),this[_0x31ec4f(0x508)]=Object['assign']({'color':_0x31ec4f(0x4c3),'opacity':0x1},_0xb2e527);const _0x2fec12=new SphereGeometry(0.05,0x20,0x10),_0xc5f702=new MeshStandardMaterial({'color':this[_0x31ec4f(0x508)]['color'],'transparent':!![],'roughness':0x0,'opacity':this[_0x31ec4f(0x508)][_0x31ec4f(0x313)]}),_0x2e8fa2=new Mesh(_0x2fec12,_0xc5f702);_0x2e8fa2[_0x31ec4f(0x26e)][_0x31ec4f(0x4ec)](0x0,0.2,0x0),this[_0x31ec4f(0x4bc)](_0x2e8fa2);const _0x2b8e4f=new SphereGeometry(0.1,0x20,0x10,Math['PI']*0x2,Math['PI']*0x2,Math['PI']/0x2,Math['PI']/0x2),_0x4f0c24=new MeshStandardMaterial({'color':this[_0x31ec4f(0x508)]['color'],'transparent':!![],'side':0x2,'roughness':0x0,'opacity':this['opts'][_0x31ec4f(0x313)]}),_0x200374=new Mesh(_0x2b8e4f,_0x4f0c24);_0x200374[_0x31ec4f(0x170)](Math['PI']),_0x200374[_0x31ec4f(0x26e)]['set'](0x0,0.035,0x0),this[_0x31ec4f(0x4bc)](_0x200374);}}class BaseCircularArraySquares extends Group$1{[_0x49cdc8(0x508)];['squares'];[_0x49cdc8(0x4b7)];constructor(_0x57bf59){const _0x4c3359=_0x49cdc8;super(),this['opts']=Object[_0x4c3359(0x402)]({'circleRadius':0.5,'squareRadius':0.05,'numbers':0x14,'rotateSpeed':0x1,'horseRaceAnimationSpeed':0x1,'color':_0x4c3359(0x4c3)},_0x57bf59),this['squares']=[];for(let _0x355bcc=0x0;_0x355bcc<this[_0x4c3359(0x508)]['numbers'];_0x355bcc++){const _0x1139f4=new PlaneGeometry(this['opts'][_0x4c3359(0x1e2)],this[_0x4c3359(0x508)][_0x4c3359(0x1e2)],0x1,0x1),_0x46bcce=new MeshBasicMaterial({'color':this[_0x4c3359(0x508)]['color'],'transparent':!![],'side':0x2}),_0xcc9569=new Mesh(_0x1139f4,_0x46bcce),_0x19cc72=Math[_0x4c3359(0x114)](_0x355bcc*0x2*Math['PI']/this[_0x4c3359(0x508)]['numbers'])*this[_0x4c3359(0x508)][_0x4c3359(0x15e)],_0x5af38a=Math[_0x4c3359(0x517)](_0x355bcc*0x2*Math['PI']/this[_0x4c3359(0x508)]['numbers'])*this[_0x4c3359(0x508)]['circleRadius'];_0xcc9569[_0x4c3359(0x26e)][_0x4c3359(0x4ec)](_0x19cc72,0x0,_0x5af38a),_0xcc9569[_0x4c3359(0x170)](Math['PI']/0x2),_0xcc9569[_0x4c3359(0x181)](_0x355bcc*0x2*Math['PI']/this[_0x4c3359(0x508)][_0x4c3359(0x1d1)]),_0xcc9569[_0x4c3359(0x3d7)][_0x4c3359(0x19f)]=_0x355bcc,this[_0x4c3359(0x2a1)][_0x4c3359(0x617)](_0xcc9569),this[_0x4c3359(0x4bc)](_0xcc9569);}}[_0x49cdc8(0x587)](){const _0x555f69=_0x49cdc8;this[_0x555f69(0x4b7)]=requestAnimationFrame(this[_0x555f69(0x587)][_0x555f69(0x46e)](this));for(let _0x41f7a8=0x0;_0x41f7a8<this[_0x555f69(0x508)][_0x555f69(0x1d1)];_0x41f7a8++){const _0x227087=this[_0x555f69(0x2a1)][_0x41f7a8];let _0x4aeef5=_0x227087[_0x555f69(0x3d7)][_0x555f69(0x19f)];_0x4aeef5+=0.025*(this[_0x555f69(0x508)]['rotateSpeed']?this[_0x555f69(0x508)][_0x555f69(0x4dc)]:0x1);const _0x295227=Math[_0x555f69(0x114)](_0x4aeef5*0x2*Math['PI']/this[_0x555f69(0x508)]['numbers'])*this['opts'][_0x555f69(0x15e)],_0x43b5dd=Math['sin'](_0x4aeef5*0x2*Math['PI']/this[_0x555f69(0x508)][_0x555f69(0x1d1)])*this['opts']['circleRadius'];_0x227087[_0x555f69(0x27e)]['z']=_0x4aeef5*0x2*Math['PI']/this[_0x555f69(0x508)][_0x555f69(0x1d1)],_0x227087[_0x555f69(0x3d7)]['animationLoc']=_0x4aeef5,_0x227087['position'][_0x555f69(0x4ec)](_0x295227,0x0,_0x43b5dd);}}['startRotatingAnimation'](){const _0xeee205=_0x49cdc8;this[_0xeee205(0x587)]();}[_0x49cdc8(0x41d)](){const _0x8be8f1=_0x49cdc8;this[_0x8be8f1(0x4b7)]=requestAnimationFrame(this[_0x8be8f1(0x41d)][_0x8be8f1(0x46e)](this));for(let _0x592475=0x0;_0x592475<this[_0x8be8f1(0x508)]['numbers'];_0x592475++){const _0x6b39de=this[_0x8be8f1(0x2a1)][_0x592475];let _0x29a04c=_0x6b39de[_0x8be8f1(0x3d7)][_0x8be8f1(0x19f)];_0x29a04c+=0.025*(this['opts'][_0x8be8f1(0x4dc)]?this['opts']['rotateSpeed']:0x1);const _0x4693c2=Math[_0x8be8f1(0x114)](_0x29a04c*0x2*Math['PI']/this[_0x8be8f1(0x508)][_0x8be8f1(0x1d1)])*this[_0x8be8f1(0x508)][_0x8be8f1(0x15e)],_0x2a7603=Math[_0x8be8f1(0x517)](_0x29a04c*0x2*Math['PI']/this[_0x8be8f1(0x508)][_0x8be8f1(0x1d1)])*this[_0x8be8f1(0x508)]['circleRadius'];_0x6b39de[_0x8be8f1(0x27e)]['z']=_0x29a04c*0x2*Math['PI']/this[_0x8be8f1(0x508)][_0x8be8f1(0x1d1)],_0x6b39de[_0x8be8f1(0x3d7)]['animationLoc']=_0x29a04c,_0x6b39de[_0x8be8f1(0x26e)]['set'](_0x4693c2,0x0,_0x2a7603),_0x6b39de['material'][_0x8be8f1(0x313)]=Math['abs'](Math[_0x8be8f1(0x517)](this[_0x8be8f1(0x2a1)][0x0][_0x8be8f1(0x3d7)][_0x8be8f1(0x19f)]));}}[_0x49cdc8(0x525)](){const _0xf13d0d=_0x49cdc8;this[_0xf13d0d(0x41d)]();}[_0x49cdc8(0x189)](){const _0x5ab4fd=_0x49cdc8;this[_0x5ab4fd(0x4b7)]=requestAnimationFrame(this[_0x5ab4fd(0x189)][_0x5ab4fd(0x46e)](this));for(let _0x3e4287=0x0;_0x3e4287<this[_0x5ab4fd(0x508)][_0x5ab4fd(0x1d1)];_0x3e4287++){const _0x704fd4=this['squares'][_0x3e4287];let _0x435462=_0x704fd4[_0x5ab4fd(0x3d7)][_0x5ab4fd(0x19f)];_0x435462+=0.25*(this['opts']['horseRaceAnimationSpeed']?this[_0x5ab4fd(0x508)][_0x5ab4fd(0x3f7)]:0x1),_0x435462%=this[_0x5ab4fd(0x508)][_0x5ab4fd(0x1d1)],_0x704fd4['userData'][_0x5ab4fd(0x19f)]=_0x435462,_0x704fd4[_0x5ab4fd(0x4b8)]['opacity']=_0x435462/this['opts']['numbers'];}}[_0x49cdc8(0x299)](){const _0x5cea52=_0x49cdc8;this[_0x5cea52(0x189)]();}['stopAnimation'](){const _0x116091=_0x49cdc8;cancelAnimationFrame(this[_0x116091(0x4b7)]),this[_0x116091(0x4b7)]=-0x1;}}class BaseTriangleGeometry extends BufferGeometry{[_0x49cdc8(0x508)];constructor(_0x358434){const _0x3b7915=_0x49cdc8;super(),this['opts']=Object[_0x3b7915(0x402)]({'size':0x1,'type':0x0},_0x358434);let _0x2cdc08=[];if(this[_0x3b7915(0x508)]['type']==0x0)_0x2cdc08=[0x0,0x0,0x0,this[_0x3b7915(0x508)][_0x3b7915(0x47b)]*1.732/0x2,0x0,this[_0x3b7915(0x508)][_0x3b7915(0x47b)]*0.5,this[_0x3b7915(0x508)][_0x3b7915(0x47b)]*1.732/0x2,0x0,this['opts']['size']*-0.5];else this[_0x3b7915(0x508)][_0x3b7915(0x26f)]==0x1&&(_0x2cdc08=[this[_0x3b7915(0x508)][_0x3b7915(0x47b)]*-0.5,0x0,this['opts'][_0x3b7915(0x47b)]/(0x2*1.732),this[_0x3b7915(0x508)][_0x3b7915(0x47b)]*0.5,0x0,this[_0x3b7915(0x508)][_0x3b7915(0x47b)]/(0x2*1.732),0x0,0x0,-this[_0x3b7915(0x508)][_0x3b7915(0x47b)]/1.732]);const _0x224991=[0x0,0x1,0x0,0x0,0x1,0x0,0x0,0x1,0x0];this[_0x3b7915(0x1bc)](_0x3b7915(0x26e),new BufferAttribute(new Float32Array(_0x2cdc08),0x3)),this['setAttribute']('normal',new BufferAttribute(new Float32Array(_0x224991),0x3));}}class BaseTriangle extends Mesh{[_0x49cdc8(0x508)];[_0x49cdc8(0x47b)];[_0x49cdc8(0x2f3)];['rotateSpeed'];[_0x49cdc8(0x4b7)];constructor(_0x242ab9){const _0x598140=_0x49cdc8;super(),this['opts']=Object[_0x598140(0x402)]({'color':_0x598140(0x4c3),'size':0x1,'type':0x0,'rotateSpeed':0x1},_0x242ab9),this['animationIndex']=-0x1,this[_0x598140(0x47b)]=this[_0x598140(0x508)][_0x598140(0x47b)]!==undefined?this[_0x598140(0x508)][_0x598140(0x47b)]:0x1,this[_0x598140(0x2f3)]=this[_0x598140(0x508)]['type']!==undefined?this['opts'][_0x598140(0x26f)]:0x0,this['rotateSpeed']=this[_0x598140(0x508)][_0x598140(0x4dc)]!==undefined?this[_0x598140(0x508)][_0x598140(0x4dc)]:0x1,this['geometry']=new BaseTriangleGeometry({'size':this[_0x598140(0x47b)],'type':this['triangleType']}),this[_0x598140(0x4b8)]=new MeshStandardMaterial({'color':this[_0x598140(0x508)][_0x598140(0x229)],'transparent':!![]});}['stopAnimation'](){const _0x2402e=_0x49cdc8;cancelAnimationFrame(this[_0x2402e(0x4b7)]),this[_0x2402e(0x4b7)]=-0x1;}['startRotateAnimation'](){const _0x1aded0=_0x49cdc8;if(this['opts'][_0x1aded0(0x26f)]==0x1)this['rotateAnimation']();}[_0x49cdc8(0x285)](){const _0x4ae2af=_0x49cdc8;this['animationIndex']=requestAnimationFrame(this['rotateAnimation'][_0x4ae2af(0x46e)](this)),this[_0x4ae2af(0x27e)]['y']+=0.01*this[_0x4ae2af(0x4dc)];}}class BaseCircularArrayArrows extends Group$1{['opts'];[_0x49cdc8(0x4b7)];[_0x49cdc8(0x58c)];[_0x49cdc8(0x1be)];['tagNumber'];constructor(_0x57b61c){const _0x280576=_0x49cdc8;super(),this[_0x280576(0x508)]=Object[_0x280576(0x402)]({'circleRadius':0.5,'triangleSize':0.15,'numbers':0x4,'color':_0x280576(0x4c3),'speed':0x1,'indicateRadius':1.5},_0x57b61c),this[_0x280576(0x4b7)]=-0x1,this[_0x280576(0x58c)]=[],this[_0x280576(0x1be)]=!![],this['tagNumber']=0x1;for(let _0x5890be=0x0;_0x5890be<this[_0x280576(0x508)][_0x280576(0x1d1)];_0x5890be++){const _0xfaca48=new BaseTriangle({'color':this[_0x280576(0x508)]['color']});_0xfaca48['scale'][_0x280576(0x4ec)](this['opts'][_0x280576(0x175)],this[_0x280576(0x508)]['triangleSize'],this[_0x280576(0x508)]['triangleSize']);const _0x7befa9=Math[_0x280576(0x114)](_0x5890be*0x2*Math['PI']/this[_0x280576(0x508)]['numbers'])*this[_0x280576(0x508)][_0x280576(0x15e)],_0x38185d=Math[_0x280576(0x517)](_0x5890be*0x2*Math['PI']/this[_0x280576(0x508)][_0x280576(0x1d1)])*this[_0x280576(0x508)][_0x280576(0x15e)];_0xfaca48['position']['set'](_0x7befa9,0x0,_0x38185d),_0xfaca48['rotateY'](-(_0x5890be*0x2*Math['PI'])/this[_0x280576(0x508)]['numbers']),this[_0x280576(0x4bc)](_0xfaca48),this[_0x280576(0x58c)][_0x280576(0x617)](_0xfaca48);}}['stopAnimation'](){const _0x11db6f=_0x49cdc8;cancelAnimationFrame(this['animationIndex']),this[_0x11db6f(0x4b7)]=-0x1;}[_0x49cdc8(0x2d0)](){const _0x3d3c64=_0x49cdc8;this[_0x3d3c64(0x4b7)]=requestAnimationFrame(this['indicateAnimation'][_0x3d3c64(0x46e)](this));for(let _0x21dba8=0x0;_0x21dba8<this['opts'][_0x3d3c64(0x1d1)];_0x21dba8++){const _0x480b24=this[_0x3d3c64(0x58c)][_0x21dba8];this[_0x3d3c64(0x1be)]?this[_0x3d3c64(0x58b)]+=Math[_0x3d3c64(0x114)](this[_0x3d3c64(0x58b)])*0.005*this[_0x3d3c64(0x508)][_0x3d3c64(0x551)]:this['tagNumber']-=Math[_0x3d3c64(0x114)](this['tagNumber'])*0.005*this[_0x3d3c64(0x508)][_0x3d3c64(0x551)];const _0x52cd5f=Math[_0x3d3c64(0x114)](_0x21dba8*0x2*Math['PI']/this[_0x3d3c64(0x508)]['numbers'])*this['opts'][_0x3d3c64(0x15e)]*this[_0x3d3c64(0x58b)],_0x42c732=Math[_0x3d3c64(0x517)](_0x21dba8*0x2*Math['PI']/this['opts']['numbers'])*this[_0x3d3c64(0x508)][_0x3d3c64(0x15e)]*this[_0x3d3c64(0x58b)];if(this[_0x3d3c64(0x58b)]>=this['opts'][_0x3d3c64(0x619)])this[_0x3d3c64(0x1be)]=![];else this[_0x3d3c64(0x58b)]<=0x1&&(this[_0x3d3c64(0x1be)]=!![]);_0x480b24['position'][_0x3d3c64(0x4ec)](_0x52cd5f,0x0,_0x42c732);}}[_0x49cdc8(0x139)](){this['indicateAnimation']();}}class BaseCubes extends Group$1{['opts'];[_0x49cdc8(0x1d1)];[_0x49cdc8(0x38b)];[_0x49cdc8(0x5e3)];[_0x49cdc8(0x349)];['animationIndex'];[_0x49cdc8(0x38f)];['risingSpeed'];['risingMaxHeight'];constructor(_0x2ff266){const _0x490594=_0x49cdc8;super(),this[_0x490594(0x508)]=Object[_0x490594(0x402)]({'positionRange':[0x1,0x1,0x1],'sizeRange':[0x1,0x1,0x1],'color':_0x490594(0x4c3),'numbers':0xc,'opacity':0x1,'risingSpeed':0x1,'risingMaxHeight':0x1},_0x2ff266),this['animationIndex']=-0x1,this['numbers']=this['opts']['numbers']!==undefined?this['opts'][_0x490594(0x1d1)]:0xc,this[_0x490594(0x38b)]=this['opts'][_0x490594(0x38b)]!==undefined?this[_0x490594(0x508)][_0x490594(0x38b)]:[0x1,0x1,0x1],this[_0x490594(0x5e3)]=this[_0x490594(0x508)][_0x490594(0x5e3)]!==undefined?this['opts']['sizeRange']:[0x1,0x1,0x1],this[_0x490594(0x349)]=this['opts'][_0x490594(0x349)]!==undefined?this['opts']['hasWireframe']:!![],this[_0x490594(0x53c)]=this['opts'][_0x490594(0x53c)]!==undefined?this[_0x490594(0x508)][_0x490594(0x53c)]:0x1,this[_0x490594(0x5cf)]=this[_0x490594(0x508)][_0x490594(0x5cf)]!==undefined?this[_0x490594(0x508)][_0x490594(0x5cf)]:0x1,this[_0x490594(0x38f)]=[];for(let _0x13ef40=0x0;_0x13ef40<this[_0x490594(0x1d1)];_0x13ef40++){const _0x25baba=Math[_0x490594(0x3ca)]()*this['sizeRange'][0x0]+this['sizeRange'][0x0],_0x150e45=Math['random']()*this[_0x490594(0x5e3)][0x1]+this[_0x490594(0x5e3)][0x1],_0x4ec0fe=Math[_0x490594(0x3ca)]()*this[_0x490594(0x5e3)][0x2]+this[_0x490594(0x5e3)][0x2],_0x71b541=new BoxGeometry(_0x25baba,_0x150e45,_0x4ec0fe),_0xd18a5=new MeshStandardMaterial({'color':this[_0x490594(0x508)][_0x490594(0x229)],'transparent':!![],'opacity':this['opts'][_0x490594(0x313)]}),_0x480d08=new Mesh(_0x71b541,_0xd18a5);_0x480d08[_0x490594(0x26e)][_0x490594(0x4ec)](Math[_0x490594(0x3ca)]()*0x2*this[_0x490594(0x38b)][0x0]-this[_0x490594(0x38b)][0x0],Math[_0x490594(0x3ca)]()*this['positionRange'][0x1]+_0x150e45/0x2,Math[_0x490594(0x3ca)]()*0x2*this[_0x490594(0x38b)][0x2]-this['positionRange'][0x2]),this[_0x490594(0x4bc)](_0x480d08),_0x480d08[_0x490594(0x3d7)][_0x490594(0x53c)]=(Math['random']()+0.5)*this[_0x490594(0x53c)],this[_0x490594(0x38f)][_0x490594(0x617)](_0x480d08);if(this[_0x490594(0x349)]){const _0x810961=new EdgesGeometry(_0x71b541),_0x72eedc=new LineBasicMaterial({'color':_0x490594(0x18d),'transparent':!![]}),_0x3c7b13=new LineSegments(_0x810961,_0x72eedc);_0x480d08[_0x490594(0x4bc)](_0x3c7b13);}}}[_0x49cdc8(0x61b)](){const _0xbd272c=_0x49cdc8;this[_0xbd272c(0x4b7)]=requestAnimationFrame(this[_0xbd272c(0x61b)]['bind'](this));for(let _0x482e39=0x0;_0x482e39<this[_0xbd272c(0x38f)][_0xbd272c(0x25b)];_0x482e39++){this[_0xbd272c(0x38f)][_0x482e39][_0xbd272c(0x26e)]['y']+=0.0025*this[_0xbd272c(0x38f)][_0x482e39]['userData'][_0xbd272c(0x53c)],this['cubes'][_0x482e39]['material'][_0xbd272c(0x313)]=(this['risingMaxHeight']-this[_0xbd272c(0x38f)][_0x482e39][_0xbd272c(0x26e)]['y'])/this[_0xbd272c(0x5cf)],this[_0xbd272c(0x38f)][_0x482e39][_0xbd272c(0x27e)]['x']-=0.005*this['cubes'][_0x482e39]['userData'][_0xbd272c(0x53c)],this[_0xbd272c(0x38f)][_0x482e39][_0xbd272c(0x27e)]['y']-=0.005*this['cubes'][_0x482e39][_0xbd272c(0x3d7)]['risingSpeed'],this[_0xbd272c(0x38f)][_0x482e39]['position']['y']>this[_0xbd272c(0x5cf)]&&(this[_0xbd272c(0x38f)][_0x482e39]['position']['y']=0x0,this[_0xbd272c(0x38f)][_0x482e39][_0xbd272c(0x27e)]['x']=0x0,this[_0xbd272c(0x38f)][_0x482e39][_0xbd272c(0x27e)]['y']=0x0,this[_0xbd272c(0x38f)][_0x482e39][_0xbd272c(0x4b8)][_0xbd272c(0x313)]=0x1);}}[_0x49cdc8(0x45f)](){this['risingAnimation']();}['stopAnimation'](){const _0xbe8bb0=_0x49cdc8;cancelAnimationFrame(this[_0xbe8bb0(0x4b7)]),this[_0xbe8bb0(0x4b7)]=-0x1;}}class BaseOctahedron extends Mesh{[_0x49cdc8(0x508)];constructor(_0x2b8bf4){const _0x2e5158=_0x49cdc8;super(),this['opts']=Object['assign']({'color':_0x2e5158(0x4c3),'radius':0.1},_0x2b8bf4),this[_0x2e5158(0x2d9)]=new OctahedronGeometry(this[_0x2e5158(0x508)]['radius']),this['material']=new MeshStandardMaterial({'color':this['opts']['color'],'transparent':!![]});const _0x561e6c=new EdgesGeometry(this['geometry']),_0x405a19=new LineBasicMaterial({'color':'#ffffff','transparent':!![]}),_0xebce3a=new LineSegments(_0x561e6c,_0x405a19);this[_0x2e5158(0x4bc)](_0xebce3a);}}class BaseTriangularPyramid extends Mesh{[_0x49cdc8(0x508)];['animationIndex'];[_0x49cdc8(0x4dc)];['hasWireframe'];constructor(_0x56a127){const _0x525986=_0x49cdc8;super(),this['opts']=Object[_0x525986(0x402)]({'color':_0x525986(0x4c3),'width':0x1,'height':0x1,'rotateSpeed':0x1,'hasWireframe':!![]},_0x56a127),this['animationIndex']=-0x1,this[_0x525986(0x4dc)]=this[_0x525986(0x508)]['rotateSpeed']!==undefined?this[_0x525986(0x508)]['rotateSpeed']:0x1,this[_0x525986(0x349)]=this[_0x525986(0x508)]['hasWireframe']!==undefined?this['opts']['hasWireframe']:!![],this[_0x525986(0x2d9)]=new ConeGeometry(this[_0x525986(0x508)][_0x525986(0x552)],this[_0x525986(0x508)][_0x525986(0x589)],0x3),this[_0x525986(0x2d9)]['rotateX'](Math['PI']),this['material']=new MeshStandardMaterial({'color':this['opts'][_0x525986(0x229)],'transparent':!![]});if(this[_0x525986(0x349)]){const _0x91acc3=new WireframeGeometry(this['geometry']),_0x4ed5f5=new MeshBasicMaterial({'color':'#ffffff','transparent':!![],'wireframe':!![]}),_0x20d9ac=new Mesh(_0x91acc3,_0x4ed5f5);this[_0x525986(0x4bc)](_0x20d9ac);}}[_0x49cdc8(0x138)](){const _0xf4a46d=_0x49cdc8;cancelAnimationFrame(this[_0xf4a46d(0x4b7)]),this[_0xf4a46d(0x4b7)]=-0x1;}[_0x49cdc8(0x2ed)](){const _0x296d28=_0x49cdc8;this[_0x296d28(0x285)]();}[_0x49cdc8(0x285)](){const _0x348373=_0x49cdc8;this[_0x348373(0x4b7)]=requestAnimationFrame(this[_0x348373(0x285)][_0x348373(0x46e)](this)),this[_0x348373(0x27e)]['y']+=0.01*this['rotateSpeed'];}}class BaseRectangularPyramid extends Mesh{[_0x49cdc8(0x508)];[_0x49cdc8(0x4b7)];[_0x49cdc8(0x4dc)];constructor(_0x35b505){const _0x5732f2=_0x49cdc8;super(),this[_0x5732f2(0x508)]=Object[_0x5732f2(0x402)]({'color':_0x5732f2(0x4c3),'width':0x1,'height':0x1,'rotateSpeed':0x1},_0x35b505),this[_0x5732f2(0x4b7)]=-0x1,this[_0x5732f2(0x4dc)]=this[_0x5732f2(0x508)][_0x5732f2(0x4dc)]!==undefined?this[_0x5732f2(0x508)][_0x5732f2(0x4dc)]:0x1,this[_0x5732f2(0x2d9)]=new ConeGeometry(this[_0x5732f2(0x508)][_0x5732f2(0x552)],this[_0x5732f2(0x508)][_0x5732f2(0x589)],0x4),this[_0x5732f2(0x2d9)][_0x5732f2(0x170)](Math['PI']),this[_0x5732f2(0x4b8)]=new MeshStandardMaterial({'color':this[_0x5732f2(0x508)][_0x5732f2(0x229)],'transparent':!![]});const _0x4a42b4=new WireframeGeometry(this[_0x5732f2(0x2d9)]),_0x3f6920=new MeshBasicMaterial({'color':'#ffffff','transparent':!![],'wireframe':!![]}),_0x4602ae=new Mesh(_0x4a42b4,_0x3f6920);this[_0x5732f2(0x4bc)](_0x4602ae);}[_0x49cdc8(0x138)](){const _0x24307f=_0x49cdc8;cancelAnimationFrame(this[_0x24307f(0x4b7)]),this[_0x24307f(0x4b7)]=-0x1;}['startRotateAnimation'](){this['rotateAnimation']();}[_0x49cdc8(0x285)](){const _0x2dab57=_0x49cdc8;this['animationIndex']=requestAnimationFrame(this[_0x2dab57(0x285)][_0x2dab57(0x46e)](this)),this[_0x2dab57(0x27e)]['y']+=0.01*this['rotateSpeed'];}}class BaseTriangleWall extends Mesh{['opts'];[_0x49cdc8(0x47b)];['color'];[_0x49cdc8(0x589)];constructor(_0xf8922f){const _0x15a058=_0x49cdc8;super(),this[_0x15a058(0x508)]=Object[_0x15a058(0x402)]({'color':_0x15a058(0x4c3),'size':0.25,'height':0.5},_0xf8922f),this[_0x15a058(0x47b)]=this['opts'][_0x15a058(0x47b)]!==undefined?this[_0x15a058(0x508)][_0x15a058(0x47b)]:0x1,this[_0x15a058(0x229)]=this['opts'][_0x15a058(0x229)]!==undefined?this[_0x15a058(0x508)][_0x15a058(0x229)]:_0x15a058(0x4c3),this[_0x15a058(0x589)]=this['opts'][_0x15a058(0x589)]!==undefined?this[_0x15a058(0x508)][_0x15a058(0x589)]:0x1;const _0x4c6926=[this[_0x15a058(0x47b)]*-0.5,0x0,this[_0x15a058(0x47b)]/(0x2*1.732),this[_0x15a058(0x47b)]*0.5,0x0,this[_0x15a058(0x47b)]/(0x2*1.732),0x0,0x0,-this['size']/1.732],_0x675c04=[];for(let _0x52ef17=0x0;_0x52ef17<_0x4c6926[_0x15a058(0x25b)]/0x3;_0x52ef17++){_0x52ef17==_0x4c6926[_0x15a058(0x25b)]/0x3-0x1?(_0x675c04[_0x15a058(0x617)](_0x4c6926[_0x52ef17*0x3],_0x4c6926[_0x52ef17*0x3+0x1],_0x4c6926[_0x52ef17*0x3+0x2],_0x4c6926[0x0],_0x4c6926[0x1],_0x4c6926[0x2],_0x4c6926[_0x52ef17*0x3],_0x4c6926[_0x52ef17*0x3+0x1]+this[_0x15a058(0x589)],_0x4c6926[_0x52ef17*0x3+0x2]),_0x675c04[_0x15a058(0x617)](_0x4c6926[_0x52ef17*0x3],_0x4c6926[_0x52ef17*0x3+0x1]+this[_0x15a058(0x589)],_0x4c6926[_0x52ef17*0x3+0x2],_0x4c6926[0x0],_0x4c6926[0x1],_0x4c6926[0x2],_0x4c6926[0x0],_0x4c6926[0x1]+this[_0x15a058(0x589)],_0x4c6926[0x2])):(_0x675c04[_0x15a058(0x617)](_0x4c6926[_0x52ef17*0x3],_0x4c6926[_0x52ef17*0x3+0x1],_0x4c6926[_0x52ef17*0x3+0x2],_0x4c6926[_0x52ef17*0x3+0x3],_0x4c6926[_0x52ef17*0x3+0x4],_0x4c6926[_0x52ef17*0x3+0x5],_0x4c6926[_0x52ef17*0x3],_0x4c6926[_0x52ef17*0x3+0x1]+this['height'],_0x4c6926[_0x52ef17*0x3+0x2]),_0x675c04[_0x15a058(0x617)](_0x4c6926[_0x52ef17*0x3],_0x4c6926[_0x52ef17*0x3+0x1]+this[_0x15a058(0x589)],_0x4c6926[_0x52ef17*0x3+0x2],_0x4c6926[_0x52ef17*0x3+0x3],_0x4c6926[_0x52ef17*0x3+0x4],_0x4c6926[_0x52ef17*0x3+0x5],_0x4c6926[_0x52ef17*0x3+0x3],_0x4c6926[_0x52ef17*0x3+0x4]+this['height'],_0x4c6926[_0x52ef17*0x3+0x5]));}const _0x838bf7=_0x675c04;this[_0x15a058(0x2d9)][_0x15a058(0x1bc)](_0x15a058(0x26e),new Float32BufferAttribute(_0x838bf7,0x3)),this['material']=new ShaderMaterial({'transparent':!![],'side':0x2,'uniforms':{'color':{'value':new Color(this['color'])},'height':{'value':this[_0x15a058(0x589)]},'uOpacity':{'value':0.35}},'vertexShader':_0x15a058(0x51d),'fragmentShader':_0x15a058(0x348)});}}class BaseTriangleWallParticles extends Group$1{['opts'];['pyramidHeight'];['animationIndex'];[_0x49cdc8(0x4dc)];constructor(_0x3c1534){const _0x348fb3=_0x49cdc8;super(),this['opts']=Object[_0x348fb3(0x402)]({'wallColor':_0x348fb3(0x4c3),'wallSize':0.25,'wallHeight':0.5,'particlesColor':'#ff0000','particlesSize':0.1,'particlesWidth':0.1,'particlesHeight':0.5,'particlesDepth':0.1,'particlesNumbers':0x14,'pyramidColor':_0x348fb3(0x4c3),'pyramidWidth':0.1,'pyramidHeight':0.25,'rotateSpeed':0x1},_0x3c1534),this[_0x348fb3(0x28a)]=this[_0x348fb3(0x508)][_0x348fb3(0x28a)]!==undefined?this['opts'][_0x348fb3(0x28a)]:0.25,this['animationIndex']=-0x1,this[_0x348fb3(0x4dc)]=this[_0x348fb3(0x508)]['rotateSpeed']!==undefined?this[_0x348fb3(0x508)][_0x348fb3(0x4dc)]:0x1;const _0x16ffc0=new BaseTriangleWall({'color':this['opts'][_0x348fb3(0x176)],'size':this[_0x348fb3(0x508)][_0x348fb3(0x13f)],'height':this[_0x348fb3(0x508)]['wallHeight']});_0x16ffc0[_0x348fb3(0x26e)][_0x348fb3(0x4ec)](0x0,this[_0x348fb3(0x28a)],0x0),this[_0x348fb3(0x4bc)](_0x16ffc0);const _0x53849a=new BaseParticles({'color':this['opts'][_0x348fb3(0x14b)],'numbers':this[_0x348fb3(0x508)]['particlesNumbers'],'width':this[_0x348fb3(0x508)][_0x348fb3(0x19c)],'height':this[_0x348fb3(0x508)][_0x348fb3(0x545)],'depth':this['opts'][_0x348fb3(0x28e)]});this[_0x348fb3(0x4bc)](_0x53849a),_0x53849a[_0x348fb3(0x26e)][_0x348fb3(0x4ec)](0x0,this[_0x348fb3(0x28a)],0x0),_0x53849a[_0x348fb3(0x45f)]();const _0x345706=new BaseTriangularPyramid({'width':this['opts'][_0x348fb3(0x3db)],'height':this[_0x348fb3(0x28a)],'color':this['opts'][_0x348fb3(0x1d5)]});_0x345706[_0x348fb3(0x26e)][_0x348fb3(0x4ec)](0x0,this[_0x348fb3(0x28a)]/0x2,0x0),this[_0x348fb3(0x4bc)](_0x345706);}['stopAnimation'](){const _0x5b2a89=_0x49cdc8;cancelAnimationFrame(this[_0x5b2a89(0x4b7)]),this[_0x5b2a89(0x4b7)]=-0x1;}[_0x49cdc8(0x2ed)](){const _0xac70bf=_0x49cdc8;this[_0xac70bf(0x285)]();}[_0x49cdc8(0x285)](){const _0x16141=_0x49cdc8;this[_0x16141(0x4b7)]=requestAnimationFrame(this[_0x16141(0x285)]['bind'](this)),this[_0x16141(0x27e)]['y']+=0.01*this[_0x16141(0x4dc)];}}class BaseBubble extends Mesh{['opts'];constructor(_0x25e40a){const _0x769ccc=_0x49cdc8;super(),this[_0x769ccc(0x508)]=Object[_0x769ccc(0x402)]({'color':_0x769ccc(0x4c3)},_0x25e40a);const _0x25ec62=new Float32Array([-0.5,-0.5,0x0,0x0,0x0,0.5,-0.5,0x0,0x1,0x0,0.5,0.5,0x0,0x1,0x1,-0.5,0.5,0x0,0x0,0x1]),_0x187e4b=new InterleavedBuffer(_0x25ec62,0x5);this['geometry'][_0x769ccc(0x485)]([0x0,0x1,0x2,0x0,0x2,0x3]),this['geometry']['setAttribute']('position',new InterleavedBufferAttribute(_0x187e4b,0x3,0x0,![])),this[_0x769ccc(0x2d9)][_0x769ccc(0x1bc)]('uv',new InterleavedBufferAttribute(_0x187e4b,0x2,0x3,![])),this[_0x769ccc(0x4b8)]=new ShaderMaterial({'transparent':!![],'uniforms':{'color':{'value':new Color(this[_0x769ccc(0x508)][_0x769ccc(0x229)])},'emissive':{'value':new Color(_0x769ccc(0x18d))},'opacity':{'value':0x1},'center':{'value':new Vector2(0.5,0.5)},'uTime':{'value':0x0}},'vertexShader':_0x769ccc(0x1a4),'fragmentShader':_0x769ccc(0x412)});let _0x382b7e=0x1;const _0x2da2dd=()=>{const _0x57ca64=_0x769ccc;requestAnimationFrame(_0x2da2dd);if(this[_0x57ca64(0x4b8)][_0x57ca64(0x385)]['uTime']['value']>0.08)_0x382b7e=-0x1;else this['material'][_0x57ca64(0x385)][_0x57ca64(0x14a)][_0x57ca64(0x4ba)]<0x0&&(_0x382b7e=0x1);this[_0x57ca64(0x4b8)]['uniforms']['uTime']['value']+=0.0025*_0x382b7e;};_0x2da2dd();}}class BaseCubicGuide extends Mesh{[_0x49cdc8(0x508)];constructor(_0x44b537){const _0x3471ba=_0x49cdc8;super(),this[_0x3471ba(0x508)]=Object['assign']({'width':0.015,'height':0.5,'depth':0.015,'color':_0x3471ba(0x4c3),'type':0x0},_0x44b537),this[_0x3471ba(0x2d9)]=new BoxGeometry(this[_0x3471ba(0x508)][_0x3471ba(0x552)],this[_0x3471ba(0x508)][_0x3471ba(0x589)],this['opts'][_0x3471ba(0x125)]),this[_0x3471ba(0x4b8)]=new ShaderMaterial({'transparent':!![],'depthWrite':!![],'uniforms':{'color':{'value':new Color(this['opts'][_0x3471ba(0x229)])},'height':{'value':this[_0x3471ba(0x508)][_0x3471ba(0x589)]},'type':{'value':this[_0x3471ba(0x508)][_0x3471ba(0x26f)]}},'vertexShader':_0x3471ba(0x453),'fragmentShader':_0x3471ba(0x3e2)});}}class BaseCylinder extends Mesh{[_0x49cdc8(0x508)];constructor(_0x7d2989){const _0x2156f3=_0x49cdc8;super(),this[_0x2156f3(0x508)]=Object[_0x2156f3(0x402)]({'color':_0x2156f3(0x4c3),'topRadius':0.5,'bottomRadius':0.2,'height':0.5,'openEnded':![],'opacity':0.75},_0x7d2989),this[_0x2156f3(0x2d9)]=new CylinderGeometry(this['opts']['topRadius'],this[_0x2156f3(0x508)][_0x2156f3(0x32d)],this[_0x2156f3(0x508)][_0x2156f3(0x589)],0x20,0x10,!![]),this[_0x2156f3(0x4b8)]=new ShaderMaterial({'transparent':!![],'depthTest':![],'side':0x2,'uniforms':{'color':{'value':new Color(this[_0x2156f3(0x508)][_0x2156f3(0x229)])},'opacity':{'value':this['opts']['opacity']},'height':{'value':this[_0x2156f3(0x508)][_0x2156f3(0x589)]}},'vertexShader':_0x2156f3(0x32b),'fragmentShader':_0x2156f3(0x46d)});}}class BaseCircularCone extends Mesh{['opts'];[_0x49cdc8(0x4b7)];['rotateSpeed'];[_0x49cdc8(0x349)];constructor(_0x4f2b59){const _0x3c00cb=_0x49cdc8;super(),this[_0x3c00cb(0x508)]=Object['assign']({'color':_0x3c00cb(0x4c3),'width':0x1,'height':0x1,'rotateSpeed':0x1,'hasWireframe':!![]},_0x4f2b59),this[_0x3c00cb(0x4b7)]=-0x1,this[_0x3c00cb(0x4dc)]=this[_0x3c00cb(0x508)][_0x3c00cb(0x4dc)]!==undefined?this[_0x3c00cb(0x508)]['rotateSpeed']:0x1,this[_0x3c00cb(0x349)]=this['opts'][_0x3c00cb(0x349)]!==undefined?this[_0x3c00cb(0x508)][_0x3c00cb(0x349)]:!![],this['geometry']=new ConeGeometry(this[_0x3c00cb(0x508)][_0x3c00cb(0x552)],this['opts'][_0x3c00cb(0x589)],0x20),this['geometry'][_0x3c00cb(0x170)](Math['PI']),this[_0x3c00cb(0x4b8)]=new MeshStandardMaterial({'color':this[_0x3c00cb(0x508)][_0x3c00cb(0x229)],'transparent':!![]});}}class BaseSphere extends Mesh{[_0x49cdc8(0x508)];constructor(_0x53ae9f){const _0x39c1a5=_0x49cdc8;super(),this['opts']=Object[_0x39c1a5(0x402)]({'color':_0x39c1a5(0x4c3),'radius':0.05,'opacity':0x1},_0x53ae9f),this['geometry']=new SphereGeometry(this['opts']['radius'],0x20,0x10),this[_0x39c1a5(0x4b8)]=new ShaderMaterial({'transparent':!![],'uniforms':{'color':{'value':new Color(this[_0x39c1a5(0x508)][_0x39c1a5(0x229)])},'opacity':{'value':this[_0x39c1a5(0x508)]['opacity']},'radius':{'value':this[_0x39c1a5(0x508)][_0x39c1a5(0x30d)]}},'vertexShader':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vh\x20=\x20position.y;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','fragmentShader':_0x39c1a5(0x1a7)});}}class BaseThermometer extends Group$1{['opts'];[_0x49cdc8(0x1ec)];constructor(_0x3cfcf6){const _0xe4072a=_0x49cdc8;super(),this[_0xe4072a(0x508)]=Object[_0xe4072a(0x402)]({'color':'#ff0000','sphereRadius':0.05},_0x3cfcf6),this[_0xe4072a(0x1ec)]=this[_0xe4072a(0x508)][_0xe4072a(0x1ec)]!==undefined?this[_0xe4072a(0x508)]['sphereRadius']:0.05;const _0x1e91de=new BaseCubicGuide({'color':this[_0xe4072a(0x508)]['color'],'type':0x1});_0x1e91de[_0xe4072a(0x26e)]['set'](0x0,0.5/0x2+0x2*this[_0xe4072a(0x1ec)]-this[_0xe4072a(0x1ec)]/0x2,0x0),this[_0xe4072a(0x4bc)](_0x1e91de);const _0x4b2cb6=new BaseSphere({'radius':this[_0xe4072a(0x508)][_0xe4072a(0x1ec)],'color':this[_0xe4072a(0x508)][_0xe4072a(0x229)]});_0x4b2cb6[_0xe4072a(0x26e)][_0xe4072a(0x4ec)](0x0,this[_0xe4072a(0x1ec)]/0x2,0x0),this['add'](_0x4b2cb6);}}class CompositeIconTag extends CompositeIcon{[_0x49cdc8(0x508)];[_0x49cdc8(0x564)];constructor(_0x1e9055){const _0x33c60a=_0x49cdc8;super(),this[_0x33c60a(0x508)]=Object[_0x33c60a(0x402)]({'color':_0x33c60a(0x4c3),'opacity':0x1,'titleHeight':0x0,'titleSize':0x1,'title':'标记','type':0x0,'fontColor':_0x33c60a(0x18d),'particleNumber':0x32,'particleSize':0.1},_0x1e9055);if(this[_0x33c60a(0x508)][_0x33c60a(0x26f)]==0x0){const _0x563000=new BaseDiamond({'color':this[_0x33c60a(0x508)]['color'],'opacity':this['opts'][_0x33c60a(0x313)]});_0x563000[_0x33c60a(0x17e)][_0x33c60a(0x4ec)](0.15,0.15,0.15),_0x563000[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.1,0x0),this[_0x33c60a(0x4bc)](_0x563000);const _0x583541=new BaseSpreadCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x583541),_0x583541[_0x33c60a(0x3cb)]();const _0x11d106=new BaseSquares({'color':this['opts'][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x11d106);}else{if(this[_0x33c60a(0x508)][_0x33c60a(0x26f)]==0x1){const _0xa01e1b=new BaseStaff({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'opacity':0.8});this[_0x33c60a(0x4bc)](_0xa01e1b);const _0x385d0b=new BaseCircularArraySquares({'circleRadius':0.5,'squareRadius':0.05,'numbers':0x18,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x385d0b),_0x385d0b['startRotatingAnimation']();const _0x425f51=new BaseCircularArraySquares({'circleRadius':0.3,'squareRadius':0.03,'numbers':0x12,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x425f51),_0x425f51[_0x33c60a(0x299)]();const _0x2095f7=new BaseCircle({'type':0x3,'color':this[_0x33c60a(0x508)]['color']});this[_0x33c60a(0x4bc)](_0x2095f7);}else{if(this['opts'][_0x33c60a(0x26f)]==0x2){const _0x38ab2f=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'type':0x4});this[_0x33c60a(0x4bc)](_0x38ab2f);const _0x2653c6=new BaseCircularArraySquares({'circleRadius':0.3,'squareRadius':0.03,'numbers':0x14,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x2653c6),_0x2653c6[_0x33c60a(0x13b)]();const _0x4d40fc=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'type':0x5,'radius':0.35});this['add'](_0x4d40fc),_0x4d40fc[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.05,0x0);const _0x38ced2=new BaseCircularArrayArrows({'circleRadius':0.175,'color':this[_0x33c60a(0x508)]['color'],'numbers':0x4,'triangleSize':0.065,'speed':0x1,'indicateRadius':1.5});this[_0x33c60a(0x4bc)](_0x38ced2),_0x38ced2[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.05,0x0),_0x38ced2[_0x33c60a(0x139)]();const _0xeaa8c7=new BaseShapeVic({'color':this['opts'][_0x33c60a(0x229)]});_0xeaa8c7[_0x33c60a(0x17e)][_0x33c60a(0x4ec)](0.5,0.5,0.5),_0xeaa8c7[_0x33c60a(0x26e)]['set'](0x0,0.1,0x0),this['add'](_0xeaa8c7);}else{if(this['opts'][_0x33c60a(0x26f)]==0x3){const _0x565c01=new BaseCircle({'color':this['opts']['color'],'type':0x6,'radius':0x1,'spreadEndRadius':0.3,'spreadSpeed':0x2});this[_0x33c60a(0x4bc)](_0x565c01),_0x565c01['startSpreadAnimation']();const _0x1ae25a=new BaseCircle({'color':this[_0x33c60a(0x508)]['color'],'type':0x6,'radius':0x1,'spreadStartRadius':0.15,'spreadEndRadius':0.3,'spreadSpeed':0x2});this[_0x33c60a(0x4bc)](_0x1ae25a),_0x1ae25a[_0x33c60a(0x15c)]();const _0x3f5915=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'type':0x7,'radius':0x1});this[_0x33c60a(0x4bc)](_0x3f5915);const _0x3c4a09=new BaseCubes({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'sizeRange':[0.05,0.02,0.05],'positionRange':[0.2,0.2,0.2],'numbers':0xc});this[_0x33c60a(0x4bc)](_0x3c4a09),_0x3c4a09[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.1,0x0);}else{if(this[_0x33c60a(0x508)][_0x33c60a(0x26f)]==0x4){const _0x5873c5=new BaseCircle({'color':this[_0x33c60a(0x508)]['color'],'type':0x6,'radius':0x1,'spreadStartRadius':0.15,'spreadEndRadius':0.2,'spreadSpeed':0x2});this[_0x33c60a(0x4bc)](_0x5873c5),_0x5873c5['startSpreadAnimation']();const _0x3b99b0=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'type':0x8,'radius':0.6});_0x3b99b0[_0x33c60a(0x50c)](),this[_0x33c60a(0x4bc)](_0x3b99b0);const _0x371438=new BaseCircle({'color':this[_0x33c60a(0x508)]['color'],'type':0x8,'radius':0x1,'clockwise':0x1});_0x371438[_0x33c60a(0x50c)](),this[_0x33c60a(0x4bc)](_0x371438);const _0x25e9e8=new BaseOctahedron({'color':this['opts'][_0x33c60a(0x229)],'radius':0.1});_0x25e9e8[_0x33c60a(0x26e)]['set'](0x0,0.1+0.1,0x0),this[_0x33c60a(0x4bc)](_0x25e9e8);}else{if(this[_0x33c60a(0x508)][_0x33c60a(0x26f)]==0x5){const _0x17552d=new BaseCircularArraySquares({'circleRadius':0.5,'squareRadius':0.05,'numbers':0x18,'color':this['opts'][_0x33c60a(0x229)],'rotateSpeed':0x2});_0x17552d[_0x33c60a(0x525)](),this['add'](_0x17552d);const _0x5b7d63=new BaseCubes({'positionRange':[0.2,0x0,0.2],'sizeRange':[0.025,0.135,0.025],'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'numbers':0xc,'opacity':0.5});this[_0x33c60a(0x4bc)](_0x5b7d63);const _0x1b6ab5=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'radius':0x1,'type':0x9,'spreadStartHeight':0.35,'spreadSpeed':0x2,'ringWidth':0.02});_0x1b6ab5[_0x33c60a(0x284)](),this[_0x33c60a(0x4bc)](_0x1b6ab5);}else{if(this['opts'][_0x33c60a(0x26f)]==0x6){const _0x42e46c=new BaseCircularArraySquares({'circleRadius':0.5,'squareRadius':0.05,'numbers':0x18,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x42e46c),_0x42e46c[_0x33c60a(0x13b)]();const _0x999d5e=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'type':0xa,'radius':0.85});this[_0x33c60a(0x4bc)](_0x999d5e);const _0x3a2760=new BaseTriangle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'size':0.1,'type':0x1,'rotateSpeed':0x2});this['add'](_0x3a2760),_0x3a2760[_0x33c60a(0x2ed)]();const _0x258ef8=new BaseTriangularPyramid({'width':0.1,'height':0.2,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'rotateSpeed':0x2});_0x258ef8[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.2/0x2+0.05,0x0),this[_0x33c60a(0x4bc)](_0x258ef8),_0x258ef8[_0x33c60a(0x2ed)]();}else{if(this[_0x33c60a(0x508)][_0x33c60a(0x26f)]==0x7){const _0x4813be=new BaseCircle({'type':0x1,'color':this['opts'][_0x33c60a(0x229)],'clockwise':0x1});this[_0x33c60a(0x4bc)](_0x4813be),_0x4813be[_0x33c60a(0x2ed)]();const _0x2687de=new BaseCircle({'type':0x1,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'radius':0.3});this[_0x33c60a(0x4bc)](_0x2687de),_0x2687de['startRotateAnimation']();const _0x294797=new BaseRectangularPyramid({'width':0.1,'height':0.2,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'rotateSpeed':0x2});_0x294797[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.2/0x2+0.05,0x0),this[_0x33c60a(0x4bc)](_0x294797),_0x294797[_0x33c60a(0x2ed)]();}else{if(this[_0x33c60a(0x508)]['type']==0x8){const _0x5baf1b=new BaseCircularArraySquares({'circleRadius':0.15,'squareRadius':0.02,'numbers':0x18,'color':this['opts'][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x5baf1b),_0x5baf1b[_0x33c60a(0x13b)]();const _0xcc165b=new BaseTriangleWallParticles({'wallColor':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'wallSize':0.25,'wallHeight':0.5,'particlesColor':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'pyramidColor':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'pyramidHeight':0.2,'pyramidWidth':0.15,'rotateSpeed':-1.5});_0xcc165b['startRotateAnimation'](),this['add'](_0xcc165b);}else{if(this['opts']['type']==0x9){const _0x5c3f8e=new BaseCircle({'type':0x1,'color':this[_0x33c60a(0x508)]['color'],'ringWidth':0.025});this[_0x33c60a(0x4bc)](_0x5c3f8e),_0x5c3f8e[_0x33c60a(0x2ed)]();const _0x314170=new BaseCircle({'type':0x1,'color':this['opts'][_0x33c60a(0x229)],'radius':0.3,'ringWidth':0.025});this['add'](_0x314170),_0x314170[_0x33c60a(0x2ed)]();const _0x2dbf96=new BaseCubicGuide({'color':this['opts'][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x2dbf96),_0x2dbf96[_0x33c60a(0x26e)]['set'](0x0,0.25,0x0);const _0x3c4832=new BaseBubble({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x3c4832),_0x3c4832[_0x33c60a(0x17e)][_0x33c60a(0x4ec)](0.15,0.15,0x1),_0x3c4832['position'][_0x33c60a(0x4ec)](0x0,0.5+0.075,0x0);}else{if(this[_0x33c60a(0x508)][_0x33c60a(0x26f)]==0xa){const _0x342e2b=new BaseCircularArraySquares({'circleRadius':0.18,'squareRadius':0.02,'numbers':0x10,'color':this[_0x33c60a(0x508)]['color']});this[_0x33c60a(0x4bc)](_0x342e2b),_0x342e2b[_0x33c60a(0x299)]();const _0x21dc53=new BaseCircle({'color':this['opts']['color'],'type':0x6,'radius':0x1,'spreadReset':![],'spreadStartRadius':0.2,'spreadEndRadius':0.4,'spreadSpeed':0x2});this[_0x33c60a(0x4bc)](_0x21dc53),_0x21dc53[_0x33c60a(0x15c)]();const _0x2e8cf5=new BaseCylinder({'height':0.55,'color':this['opts'][_0x33c60a(0x229)],'topRadius':0.35,'bottomRadius':0.2});this['add'](_0x2e8cf5),_0x2e8cf5[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.55/0x2,0x0);const _0x102bdd=new BaseCylinder({'height':0.35,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'topRadius':0.5,'bottomRadius':0.2});this[_0x33c60a(0x4bc)](_0x102bdd),_0x102bdd['position']['set'](0x0,0.35/0x2,0x0);const _0x991aab=new BaseParticles({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'numbers':this['opts']['particleNumber'],'size':this[_0x33c60a(0x508)][_0x33c60a(0x10d)]});this[_0x33c60a(0x4bc)](_0x991aab),_0x991aab['risingAnimation2']();}else{if(this['opts'][_0x33c60a(0x26f)]==0xb){const _0x2f6661=new BaseCircle({'color':this['opts']['color'],'type':0xb,'spreadStartRadius':0.1,'spreadSpeed':0x2,'ringWidth':0.005});this[_0x33c60a(0x4bc)](_0x2f6661),_0x2f6661[_0x33c60a(0x15c)]();const _0x33b5d7=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'type':0xb,'spreadStartRadius':0.3,'spreadSpeed':0x2,'ringWidth':0.005});this[_0x33c60a(0x4bc)](_0x33b5d7),_0x33b5d7[_0x33c60a(0x15c)]();const _0x3505f2=new BaseCircle({'color':this[_0x33c60a(0x508)]['color'],'type':0xc,'spreadStartRadius':0x0,'spreadEndRadius':0.15,'spreadStartHeight':0x0,'spreadEndHeight':0.3,'spreadSpeed':0x1,'ringWidth':0.005});this[_0x33c60a(0x4bc)](_0x3505f2),_0x3505f2['startSpreadAnimation3']();const _0x17d456=new BaseCircle({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'type':0xc,'spreadStartRadius':0.05,'spreadEndRadius':0.15,'spreadStartHeight':0.1,'spreadEndHeight':0.3,'spreadSpeed':0x1,'ringWidth':0.005});this[_0x33c60a(0x4bc)](_0x17d456),_0x17d456[_0x33c60a(0x524)]();const _0x28ea19=new BaseCircle({'color':this['opts'][_0x33c60a(0x229)],'type':0xc,'spreadStartRadius':0.1,'spreadEndRadius':0.15,'spreadStartHeight':0.2,'spreadEndHeight':0.3,'spreadSpeed':0x1,'ringWidth':0.005});this[_0x33c60a(0x4bc)](_0x28ea19),_0x28ea19[_0x33c60a(0x524)]();const _0x22da44=new BaseTriangularPyramid({'width':0.12,'height':0.24,'hasWireframe':![]});_0x22da44['material']['wireframe']=!![],_0x22da44[_0x33c60a(0x4b8)][_0x33c60a(0x5cb)]['set'](_0x33c60a(0x18d)),_0x22da44['startRotateAnimation'](),_0x22da44[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.24/0x2+0.15,0x0),this[_0x33c60a(0x4bc)](_0x22da44);const _0x11f5e2=new BaseCircularCone({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'width':0.05,'height':0.15});_0x11f5e2[_0x33c60a(0x26e)]['set'](0x0,0.15/0x2+0.15+(0.24-0.15)/0x2,0x0),this[_0x33c60a(0x4bc)](_0x11f5e2);}else{if(this[_0x33c60a(0x508)][_0x33c60a(0x26f)]==0xc){const _0x1ac391=new BaseCircle({'color':this[_0x33c60a(0x508)]['color'],'type':0x6,'radius':1.5,'spreadReset':![],'spreadStartRadius':0.15,'spreadEndRadius':0.4,'spreadSpeed':0x2});this['add'](_0x1ac391),_0x1ac391[_0x33c60a(0x15c)]();const _0x5c6e97=new BaseCircularArraySquares({'circleRadius':0.18,'squareRadius':0.02,'numbers':0x10,'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x5c6e97),_0x5c6e97[_0x33c60a(0x13b)]();const _0x496861=new BaseThermometer({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)]});this[_0x33c60a(0x4bc)](_0x496861);const _0x27938=new BaseCubes({'color':this['opts'][_0x33c60a(0x229)],'sizeRange':[0.01,0.01,0.01],'positionRange':[0.2,0.2,0.2],'hasWireframe':![],'risingMaxHeight':0.5});this[_0x33c60a(0x4bc)](_0x27938),_0x27938[_0x33c60a(0x45f)]();}else{if(this[_0x33c60a(0x508)]['type']==0xd){const _0x4c122a=new BaseCircle({'color':this['opts'][_0x33c60a(0x229)],'type':0x6,'radius':0x1,'ringWidth':0.075});_0x4c122a[_0x33c60a(0x4b8)]['uniforms'][_0x33c60a(0x14a)][_0x33c60a(0x4ba)]=0.28,this['add'](_0x4c122a);const _0xa55bd5=new BaseCircle({'color':this[_0x33c60a(0x508)]['color'],'type':0x1,'ringWidth':0.025});this[_0x33c60a(0x4bc)](_0xa55bd5),_0xa55bd5[_0x33c60a(0x2ed)]();const _0x328aa2=new BaseCylinder({'color':this[_0x33c60a(0x508)][_0x33c60a(0x229)],'topRadius':0.25,'bottomRadius':0.25,'height':0.5});_0x328aa2[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.5/0x2,0x0),this['add'](_0x328aa2);const _0x2de6ba=new BaseCylinder({'color':this['opts'][_0x33c60a(0x229)],'topRadius':0.4,'bottomRadius':0.32,'height':0.3});_0x2de6ba[_0x33c60a(0x26e)]['set'](0x0,0.3/0x2,0x0),this[_0x33c60a(0x4bc)](_0x2de6ba);const _0x5ef1ee=new BaseCircle({'color':_0x33c60a(0x18d),'type':0x9,'spreadStartHeight':0.4,'spreadEndHeight':0.5,'spreadStartRadius':0.075,'ringWidth':0.01});_0x5ef1ee[_0x33c60a(0x5cc)](),this['add'](_0x5ef1ee);const _0x13f58c=new BaseCircle({'color':_0x33c60a(0x18d),'type':0xd,'ringWidth':0.015});_0x13f58c[_0x33c60a(0x26e)][_0x33c60a(0x4ec)](0x0,0.5,0x0),this['add'](_0x13f58c),_0x13f58c['startRotateAnimation13']();}}}}}}}}}}}}}}this[_0x33c60a(0x564)]=new BaseTag({'text':this[_0x33c60a(0x508)][_0x33c60a(0x4f5)],'opacity':this['opts'][_0x33c60a(0x313)],'height':this[_0x33c60a(0x508)][_0x33c60a(0x2ba)],'size':this[_0x33c60a(0x508)]['titleSize'],'fontColor':this[_0x33c60a(0x508)][_0x33c60a(0x5ba)]}),this[_0x33c60a(0x4bc)](this[_0x33c60a(0x564)]);}['setTitle'](_0x2403bf){}}function _0x3de8(){const _0x3c3ea2=['risingAnimationBounce','MeshPhongMaterial','rectAreaLights','GLSL1','\x0a\x09\x09#include\x20<common>\x0a\x09\x09#include\x20<color_pars_vertex>\x0a\x09\x09#include\x20<fog_pars_vertex>\x0a\x09\x09#include\x20<logdepthbuf_pars_vertex>\x0a\x09\x09#include\x20<clipping_planes_pars_vertex>\x0a\x0a\x09\x09uniform\x20float\x20linewidth;\x0a\x09\x09uniform\x20vec2\x20resolution;\x0a\x0a\x09\x09attribute\x20vec3\x20instanceStart;\x0a\x09\x09attribute\x20vec3\x20instanceEnd;\x0a\x0a\x09\x09attribute\x20vec3\x20instanceColorStart;\x0a\x09\x09attribute\x20vec3\x20instanceColorEnd;\x0a\x0a\x09\x09varying\x20vec2\x20vUv;\x0a\x0a\x09\x09#ifdef\x20USE_DASH\x0a\x0a\x09\x09\x09uniform\x20float\x20dashScale;\x0a\x09\x09\x09attribute\x20float\x20instanceDistanceStart;\x0a\x09\x09\x09attribute\x20float\x20instanceDistanceEnd;\x0a\x09\x09\x09varying\x20float\x20vLineDistance;\x0a\x0a\x09\x09#endif\x0a\x0a\x09\x09void\x20trimSegment(\x20const\x20in\x20vec4\x20start,\x20inout\x20vec4\x20end\x20)\x20{\x0a\x0a\x09\x09\x09//\x20trim\x20end\x20segment\x20so\x20it\x20terminates\x20between\x20the\x20camera\x20plane\x20and\x20the\x20near\x20plane\x0a\x0a\x09\x09\x09//\x20conservative\x20estimate\x20of\x20the\x20near\x20plane\x0a\x09\x09\x09float\x20a\x20=\x20projectionMatrix[\x202\x20][\x202\x20];\x20//\x203nd\x20entry\x20in\x203th\x20column\x0a\x09\x09\x09float\x20b\x20=\x20projectionMatrix[\x203\x20][\x202\x20];\x20//\x203nd\x20entry\x20in\x204th\x20column\x0a\x09\x09\x09float\x20nearEstimate\x20=\x20-\x200.5\x20*\x20b\x20/\x20a;\x0a\x0a\x09\x09\x09float\x20alpha\x20=\x20(\x20nearEstimate\x20-\x20start.z\x20)\x20/\x20(\x20end.z\x20-\x20start.z\x20);\x0a\x0a\x09\x09\x09end.xyz\x20=\x20mix(\x20start.xyz,\x20end.xyz,\x20alpha\x20);\x0a\x0a\x09\x09}\x0a\x0a\x09\x09void\x20main()\x20{\x0a\x0a\x09\x09\x09#ifdef\x20USE_COLOR\x0a\x0a\x09\x09\x09\x09vColor.xyz\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20instanceColorStart\x20:\x20instanceColorEnd;\x0a\x0a\x09\x09\x09#endif\x0a\x0a\x09\x09\x09#ifdef\x20USE_DASH\x0a\x0a\x09\x09\x09\x09vLineDistance\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20dashScale\x20*\x20instanceDistanceStart\x20:\x20dashScale\x20*\x20instanceDistanceEnd;\x0a\x0a\x09\x09\x09#endif\x0a\x0a\x09\x09\x09float\x20aspect\x20=\x20resolution.x\x20/\x20resolution.y;\x0a\x0a\x09\x09\x09vUv\x20=\x20uv;\x0a\x0a\x09\x09\x09//\x20camera\x20space\x0a\x09\x09\x09vec4\x20start\x20=\x20modelViewMatrix\x20*\x20vec4(\x20instanceStart,\x201.0\x20);\x0a\x09\x09\x09vec4\x20end\x20=\x20modelViewMatrix\x20*\x20vec4(\x20instanceEnd,\x201.0\x20);\x0a\x0a\x09\x09\x09//\x20special\x20case\x20for\x20perspective\x20projection,\x20and\x20segments\x20that\x20terminate\x20either\x20in,\x20or\x20behind,\x20the\x20camera\x20plane\x0a\x09\x09\x09//\x20clearly\x20the\x20gpu\x20firmware\x20has\x20a\x20way\x20of\x20addressing\x20this\x20issue\x20when\x20projecting\x20into\x20ndc\x20space\x0a\x09\x09\x09//\x20but\x20we\x20need\x20to\x20perform\x20ndc-space\x20calculations\x20in\x20the\x20shader,\x20so\x20we\x20must\x20address\x20this\x20issue\x20directly\x0a\x09\x09\x09//\x20perhaps\x20there\x20is\x20a\x20more\x20elegant\x20solution\x20--\x20WestLangley\x0a\x0a\x09\x09\x09bool\x20perspective\x20=\x20(\x20projectionMatrix[\x202\x20][\x203\x20]\x20==\x20-\x201.0\x20);\x20//\x204th\x20entry\x20in\x20the\x203rd\x20column\x0a\x0a\x09\x09\x09if\x20(\x20perspective\x20)\x20{\x0a\x0a\x09\x09\x09\x09if\x20(\x20start.z\x20<\x200.0\x20&&\x20end.z\x20>=\x200.0\x20)\x20{\x0a\x0a\x09\x09\x09\x09\x09trimSegment(\x20start,\x20end\x20);\x0a\x0a\x09\x09\x09\x09}\x20else\x20if\x20(\x20end.z\x20<\x200.0\x20&&\x20start.z\x20>=\x200.0\x20)\x20{\x0a\x0a\x09\x09\x09\x09\x09trimSegment(\x20end,\x20start\x20);\x0a\x0a\x09\x09\x09\x09}\x0a\x0a\x09\x09\x09}\x0a\x0a\x09\x09\x09//\x20clip\x20space\x0a\x09\x09\x09vec4\x20clipStart\x20=\x20projectionMatrix\x20*\x20start;\x0a\x09\x09\x09vec4\x20clipEnd\x20=\x20projectionMatrix\x20*\x20end;\x0a\x0a\x09\x09\x09//\x20ndc\x20space\x0a\x09\x09\x09vec2\x20ndcStart\x20=\x20clipStart.xy\x20/\x20clipStart.w;\x0a\x09\x09\x09vec2\x20ndcEnd\x20=\x20clipEnd.xy\x20/\x20clipEnd.w;\x0a\x0a\x09\x09\x09//\x20direction\x0a\x09\x09\x09vec2\x20dir\x20=\x20ndcEnd\x20-\x20ndcStart;\x0a\x0a\x09\x09\x09//\x20account\x20for\x20clip-space\x20aspect\x20ratio\x0a\x09\x09\x09dir.x\x20*=\x20aspect;\x0a\x09\x09\x09dir\x20=\x20normalize(\x20dir\x20);\x0a\x0a\x09\x09\x09//\x20perpendicular\x20to\x20dir\x0a\x09\x09\x09vec2\x20offset\x20=\x20vec2(\x20dir.y,\x20-\x20dir.x\x20);\x0a\x0a\x09\x09\x09//\x20undo\x20aspect\x20ratio\x20adjustment\x0a\x09\x09\x09dir.x\x20/=\x20aspect;\x0a\x09\x09\x09offset.x\x20/=\x20aspect;\x0a\x0a\x09\x09\x09//\x20sign\x20flip\x0a\x09\x09\x09if\x20(\x20position.x\x20<\x200.0\x20)\x20offset\x20*=\x20-\x201.0;\x0a\x0a\x09\x09\x09//\x20endcaps\x0a\x09\x09\x09if\x20(\x20position.y\x20<\x200.0\x20)\x20{\x0a\x0a\x09\x09\x09\x09offset\x20+=\x20-\x20dir;\x0a\x0a\x09\x09\x09}\x20else\x20if\x20(\x20position.y\x20>\x201.0\x20)\x20{\x0a\x0a\x09\x09\x09\x09offset\x20+=\x20dir;\x0a\x0a\x09\x09\x09}\x0a\x0a\x09\x09\x09//\x20adjust\x20for\x20linewidth\x0a\x09\x09\x09offset\x20*=\x20linewidth;\x0a\x0a\x09\x09\x09//\x20adjust\x20for\x20clip-space\x20to\x20screen-space\x20conversion\x20//\x20maybe\x20resolution\x20should\x20be\x20based\x20on\x20viewport\x20...\x0a\x09\x09\x09offset\x20/=\x20resolution.y;\x0a\x0a\x09\x09\x09//\x20select\x20end\x0a\x09\x09\x09vec4\x20clip\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20clipStart\x20:\x20clipEnd;\x0a\x0a\x09\x09\x09//\x20back\x20to\x20clip\x20space\x0a\x09\x09\x09offset\x20*=\x20clip.w;\x0a\x0a\x09\x09\x09clip.xy\x20+=\x20offset;\x0a\x0a\x09\x09\x09gl_Position\x20=\x20clip;\x0a\x0a\x09\x09\x09vec4\x20mvPosition\x20=\x20(\x20position.y\x20<\x200.5\x20)\x20?\x20start\x20:\x20end;\x20//\x20this\x20is\x20an\x20approximation\x0a\x0a\x09\x09\x09#include\x20<logdepthbuf_vertex>\x0a\x09\x09\x09#include\x20<clipping_planes_vertex>\x0a\x09\x09\x09#include\x20<fog_vertex>\x0a\x0a\x09\x09}','angle','text/json','speed','width','RGB_S3TC_DXT1_Format','slice','visibleEdgeColor','strokeColor','baseTexture','setAnimationLoop','setFromNormalAndCoplanarPoint','nextZ','lineHeight','receiveShadow','matrixWorldInverse','WireframeHelper','ShapePath','bloomRadius','ReplaceStencilOp','Raycaster','scene','baseTag','ShapeUtils','SpotLight','CubeReflectionMapping','attach','\x0a\x09\x09uniform\x20mat4\x20textureMatrix;\x0a\x09\x09varying\x20vec4\x20vUv;\x0a\x0a\x09\x09#include\x20<common>\x0a\x09\x09#include\x20<logdepthbuf_pars_vertex>\x0a\x0a\x09\x09void\x20main()\x20{\x0a\x0a\x09\x09\x09vUv\x20=\x20textureMatrix\x20*\x20vec4(\x20position,\x201.0\x20);\x0a\x0a\x09\x09\x09gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(\x20position,\x201.0\x20);\x0a\x0a\x09\x09\x09#include\x20<logdepthbuf_vertex>\x0a\x0a\x09\x09}','shadow','concat','spreadReset','forEach','dashOffset','InvertStencilOp','objLoader','setColor','rgba(5,5,5,.5)','bloomComposer','left','minPolarAngle','offsetLeft','update','prevZ','ArrayCamera','#190a05','invert','isObject3D','compileEquirectangularShader','cloneNode','generateMipmaps','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20pos;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20pos\x20=\x20position;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','clear','CineonToneMapping','distanceToSquared','_viewState','bgOffset','.popup-close::before\x20{content:\x20\x22\x5c2716\x22;}','rotatingAnimation','isTagBase','height','StaticCopyUsage','tagNumber','triangles','sort','onBeforeRender','hideTitle','mirrorSampler','bloomPass','visible','InterleavedBufferAttribute','9qkXwiQ','InterpolateLinear','moveTo','WebGLMultisampleRenderTarget','RGBA_ASTC_5x4_Format','BoxHelper','closeSize','setValues','drawLine','Light','DataUtils','Color','animationTag','dragend','minDistance','hWorldAll','uColor','computeLineDistances','onProgress','findBoneTrackData','end','renderOrder','names','compileCubemapShader','sunDirection','SRGB8_ALPHA8_ASTC_8x6_Format','OneMinusSrcAlphaFactor','bgType','createElement','NearestFilter','castShadow','initModels','SkyBox','italic\x20','modelUrls','canvasTextAutoLine','isCSS3DObject','HemisphereLightHelper','fontColor','off','RGBA_ASTC_12x12_Format','MOUSE','outlineObjects','setDataType','spreadRange','isBox','isCSS3DSprite','TemplateParser','LinearToneMapping','LinearMipMapNearestFilter','_size','ArrowHelper','Frustum','play','canvasElement','emissive','startRisingAnimationBounce','lookAt','hdrLoader','risingMaxHeight','stroke','offsetTop','setPositions','Primitives','createObjectURL','renderPass','_bgColor','ACESFilmicToneMapping','handlers','SRGB8_ALPHA8_ASTC_10x6_Format','ParticleBasicMaterial','getBones','toneMappingType','AxesHelper','mixColor2','canvasContext','LoopPingPong','TriangleStripDrawMode','KeepStencilOp','sizeRange','MeshLambertMaterial','bolDragEnd','css2dRenderer','readAsArrayBuffer','magFilter','hip','HemisphereLight','GreaterEqualStencilFunc','retargetClip','focus','RGB_PVRTC_4BPPV1_Format','drawImage','dampingFactor','updateMSAAPass','lengthSq','SrcAlphaFactor','onmousedown','ddpPass','243530jJnhal','isWater','PictureDropdownTag','Skeleton','OneMinusSrcColorFactor','ParametricBufferGeometry','resize','CullFaceFrontBack','Line3','getDelta','Uint8BufferAttribute','constructor','ondragend','CurvePath','arc','quat','brightness','DodecahedronGeometry','\x0a\x20varying\x20vec2\x20vUv;\x0a\x20uniform\x20vec3\x20color;\x0a\x20uniform\x20float\x20uTime;\x0a\x20uniform\x20float\x20ringWidth;\x0a\x20uniform\x20float\x20rotateSpeed;\x0a\x20uniform\x20float\x20opacity;\x0a\x20\x0a\x20#define\x20PI\x203.141592654\x0a\x20#define\x20EPSILON\x201e-6\x0a\x20\x0a\x20float\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20\x20return\x20r;\x0a\x20}\x0a\x20\x0a\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x0a\x20void\x20main(){\x0a\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x20\x0a\x20\x20\x20\x20\x20if(pct\x20>\x20.5\x20-\x20ringWidth\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20vUv\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime\x20*\x20rotateSpeed)\x20-\x20dir.y\x20*\x20sin(uTime\x20*\x20rotateSpeed),\x20dir.x\x20*\x20sin(uTime\x20*\x20rotateSpeed)\x20+\x20dir.y\x20*\x20cos(uTime\x20*\x20rotateSpeed));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20if(theta\x20>\x200.\x20&&\x20theta\x20<\x20PI\x20/\x203.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(theta\x20>\x202.\x20*\x20PI\x20/\x203.\x20&&\x20theta\x20<\x20PI){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(theta\x20>\x204.\x20*\x20PI\x20/\x203.\x20&&\x20theta\x20<\x205.\x20*\x20PI\x20/\x203.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20}\x0a\x20\x0a\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20}\x0a\x20','toLowerCase','offset','changeColor','cameras','bolHover','className','prototype','Box3Helper','error','bolDrag','copy','RGBA_PVRTC_2BPPV1_Format','MultiMaterial','line','push','ZeroCurvatureEnding','indicateRadius','标题数据展示区','risingAnimation','BloomPass','clickAnimation','CompositeIconTitle','setDrawRange','ParticleSystemMaterial','right','enableShadow','OperatorNode','Spherical','RGIntegerFormat','bgScale','defaultPictureStatus','vertexShader','ssr','2559054FcWzRB','defaultResource','onhover','HalfFloatType','CubeTextureLoader','LoaderUtils','sky','SplineCurve','spreadAnimation2','_height','computeBoundingSphere','Events','pictureHeight','LineCurve','max','textureWidth','OneFactor','CubeUVRefractionMapping','/demos','dashSize','ssaaPass','SRGB8_ALPHA8_ASTC_12x10_Format','particleSize','children','actions','SRGB8_ALPHA8_ASTC_5x5_Format','count','orbitCamera','baseHeightValue','cos','clientX','px;font-weight:bold;align-items:center;\x27>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20style=\x27width:100%;text-align:center;white-space:nowrap;\x27>','mipmaps','ZeroStencilOp','restore','CustomToneMapping','getContext','FontLoader','setHeight','TetrahedronBufferGeometry','NearestMipmapLinearFilter','strokeStyle','downloadurl','orbitControls','setSize','alpha','depth','\x0a\x09\x09uniform\x20vec3\x20diffuse;\x0a\x09\x09uniform\x20float\x20opacity;\x0a\x0a\x09\x09#ifdef\x20USE_DASH\x0a\x0a\x09\x09\x09uniform\x20float\x20dashSize;\x0a\x09\x09\x09uniform\x20float\x20dashOffset;\x0a\x09\x09\x09uniform\x20float\x20gapSize;\x0a\x0a\x09\x09#endif\x0a\x0a\x09\x09varying\x20float\x20vLineDistance;\x0a\x0a\x09\x09#include\x20<common>\x0a\x09\x09#include\x20<color_pars_fragment>\x0a\x09\x09#include\x20<fog_pars_fragment>\x0a\x09\x09#include\x20<logdepthbuf_pars_fragment>\x0a\x09\x09#include\x20<clipping_planes_pars_fragment>\x0a\x0a\x09\x09varying\x20vec2\x20vUv;\x0a\x0a\x09\x09void\x20main()\x20{\x0a\x0a\x09\x09\x09#include\x20<clipping_planes_fragment>\x0a\x0a\x09\x09\x09#ifdef\x20USE_DASH\x0a\x0a\x09\x09\x09\x09if\x20(\x20vUv.y\x20<\x20-\x201.0\x20||\x20vUv.y\x20>\x201.0\x20)\x20discard;\x20//\x20discard\x20endcaps\x0a\x0a\x09\x09\x09\x09if\x20(\x20mod(\x20vLineDistance\x20+\x20dashOffset,\x20dashSize\x20+\x20gapSize\x20)\x20>\x20dashSize\x20)\x20discard;\x20//\x20todo\x20-\x20FIX\x0a\x0a\x09\x09\x09#endif\x0a\x0a\x09\x09\x09float\x20alpha\x20=\x201.0;\x0a\x0a\x09\x09\x09#ifdef\x20ALPHA_TO_COVERAGE\x0a\x0a\x09\x09\x09//\x20artifacts\x20appear\x20on\x20some\x20hardware\x20if\x20a\x20derivative\x20is\x20taken\x20within\x20a\x20conditional\x0a\x09\x09\x09float\x20a\x20=\x20vUv.x;\x0a\x09\x09\x09float\x20b\x20=\x20(\x20vUv.y\x20>\x200.0\x20)\x20?\x20vUv.y\x20-\x201.0\x20:\x20vUv.y\x20+\x201.0;\x0a\x09\x09\x09float\x20len2\x20=\x20a\x20*\x20a\x20+\x20b\x20*\x20b;\x0a\x09\x09\x09float\x20dlen\x20=\x20fwidth(\x20len2\x20);\x0a\x0a\x09\x09\x09if\x20(\x20abs(\x20vUv.y\x20)\x20>\x201.0\x20)\x20{\x0a\x0a\x09\x09\x09\x09alpha\x20=\x201.0\x20-\x20smoothstep(\x201.0\x20-\x20dlen,\x201.0\x20+\x20dlen,\x20len2\x20);\x0a\x0a\x09\x09\x09}\x0a\x0a\x09\x09\x09#else\x0a\x0a\x09\x09\x09if\x20(\x20abs(\x20vUv.y\x20)\x20>\x201.0\x20)\x20{\x0a\x0a\x09\x09\x09\x09float\x20a\x20=\x20vUv.x;\x0a\x09\x09\x09\x09float\x20b\x20=\x20(\x20vUv.y\x20>\x200.0\x20)\x20?\x20vUv.y\x20-\x201.0\x20:\x20vUv.y\x20+\x201.0;\x0a\x09\x09\x09\x09float\x20len2\x20=\x20a\x20*\x20a\x20+\x20b\x20*\x20b;\x0a\x0a\x09\x09\x09\x09if\x20(\x20len2\x20>\x201.0\x20)\x20discard;\x0a\x0a\x09\x09\x09}\x0a\x0a\x09\x09\x09#endif\x0a\x0a\x09\x09\x09vec4\x20diffuseColor\x20=\x20vec4(\x20diffuse,\x20opacity\x20*\x20alpha\x20);\x0a\x0a\x09\x09\x09#include\x20<logdepthbuf_fragment>\x0a\x09\x09\x09#include\x20<color_fragment>\x0a\x0a\x09\x09\x09gl_FragColor\x20=\x20diffuseColor;\x0a\x0a\x09\x09\x09#include\x20<tonemapping_fragment>\x0a\x09\x09\x09#include\x20<encodings_fragment>\x0a\x09\x09\x09#include\x20<fog_fragment>\x0a\x09\x09\x09#include\x20<premultiplied_alpha_fragment>\x0a\x0a\x09\x09}','intersectObjects','firstPersonCamera','near','10630836Zruebl','VSMShadowMap','initLights','Audio','CubicInterpolant','Box3','THREE.LineGeometry\x20no\x20longer\x20supports\x20Geometry.\x20Use\x20THREE.BufferGeometry\x20instead.','FlatShading','spreadEndRadius','gltfLoader','none','onerror','ShapeGeometry','popupBaseSize','stopAnimation','startIndicateAnimation','enabled','startRotatingAnimation','LinearEncoding','src','applyMatrix4','wallSize','roughness','input','AdditiveBlending','isPowerOfTwo','RGBA_ASTC_6x5_Format','StereoCamera','pmremGenerator','bgColor','sub','decompose','uTime','particlesColor','\x0a\x09\x09\x09\x09uniform\x20sampler2D\x20mirrorSampler;\x0a\x09\x09\x09\x09uniform\x20float\x20alpha;\x0a\x09\x09\x09\x09uniform\x20float\x20time;\x0a\x09\x09\x09\x09uniform\x20float\x20size;\x0a\x09\x09\x09\x09uniform\x20float\x20distortionScale;\x0a\x09\x09\x09\x09uniform\x20sampler2D\x20normalSampler;\x0a\x09\x09\x09\x09uniform\x20vec3\x20sunColor;\x0a\x09\x09\x09\x09uniform\x20vec3\x20sunDirection;\x0a\x09\x09\x09\x09uniform\x20vec3\x20eye;\x0a\x09\x09\x09\x09uniform\x20vec3\x20waterColor;\x0a\x0a\x09\x09\x09\x09varying\x20vec4\x20mirrorCoord;\x0a\x09\x09\x09\x09varying\x20vec4\x20worldPosition;\x0a\x0a\x09\x09\x09\x09vec4\x20getNoise(\x20vec2\x20uv\x20)\x20{\x0a\x09\x09\x09\x09\x09vec2\x20uv0\x20=\x20(\x20uv\x20/\x20103.0\x20)\x20+\x20vec2(time\x20/\x2017.0,\x20time\x20/\x2029.0);\x0a\x09\x09\x09\x09\x09vec2\x20uv1\x20=\x20uv\x20/\x20107.0-vec2(\x20time\x20/\x20-19.0,\x20time\x20/\x2031.0\x20);\x0a\x09\x09\x09\x09\x09vec2\x20uv2\x20=\x20uv\x20/\x20vec2(\x208907.0,\x209803.0\x20)\x20+\x20vec2(\x20time\x20/\x20101.0,\x20time\x20/\x2097.0\x20);\x0a\x09\x09\x09\x09\x09vec2\x20uv3\x20=\x20uv\x20/\x20vec2(\x201091.0,\x201027.0\x20)\x20-\x20vec2(\x20time\x20/\x20109.0,\x20time\x20/\x20-113.0\x20);\x0a\x09\x09\x09\x09\x09vec4\x20noise\x20=\x20texture2D(\x20normalSampler,\x20uv0\x20)\x20+\x0a\x09\x09\x09\x09\x09\x09texture2D(\x20normalSampler,\x20uv1\x20)\x20+\x0a\x09\x09\x09\x09\x09\x09texture2D(\x20normalSampler,\x20uv2\x20)\x20+\x0a\x09\x09\x09\x09\x09\x09texture2D(\x20normalSampler,\x20uv3\x20);\x0a\x09\x09\x09\x09\x09return\x20noise\x20*\x200.5\x20-\x201.0;\x0a\x09\x09\x09\x09}\x0a\x0a\x09\x09\x09\x09void\x20sunLight(\x20const\x20vec3\x20surfaceNormal,\x20const\x20vec3\x20eyeDirection,\x20float\x20shiny,\x20float\x20spec,\x20float\x20diffuse,\x20inout\x20vec3\x20diffuseColor,\x20inout\x20vec3\x20specularColor\x20)\x20{\x0a\x09\x09\x09\x09\x09vec3\x20reflection\x20=\x20normalize(\x20reflect(\x20-sunDirection,\x20surfaceNormal\x20)\x20);\x0a\x09\x09\x09\x09\x09float\x20direction\x20=\x20max(\x200.0,\x20dot(\x20eyeDirection,\x20reflection\x20)\x20);\x0a\x09\x09\x09\x09\x09specularColor\x20+=\x20pow(\x20direction,\x20shiny\x20)\x20*\x20sunColor\x20*\x20spec;\x0a\x09\x09\x09\x09\x09diffuseColor\x20+=\x20max(\x20dot(\x20sunDirection,\x20surfaceNormal\x20),\x200.0\x20)\x20*\x20sunColor\x20*\x20diffuse;\x0a\x09\x09\x09\x09}\x0a\x0a\x09\x09\x09\x09#include\x20<common>\x0a\x09\x09\x09\x09#include\x20<packing>\x0a\x09\x09\x09\x09#include\x20<bsdfs>\x0a\x09\x09\x09\x09#include\x20<fog_pars_fragment>\x0a\x09\x09\x09\x09#include\x20<logdepthbuf_pars_fragment>\x0a\x09\x09\x09\x09#include\x20<lights_pars_begin>\x0a\x09\x09\x09\x09#include\x20<shadowmap_pars_fragment>\x0a\x09\x09\x09\x09#include\x20<shadowmask_pars_fragment>\x0a\x0a\x09\x09\x09\x09void\x20main()\x20{\x0a\x0a\x09\x09\x09\x09\x09#include\x20<logdepthbuf_fragment>\x0a\x09\x09\x09\x09\x09vec4\x20noise\x20=\x20getNoise(\x20worldPosition.xz\x20*\x20size\x20);\x0a\x09\x09\x09\x09\x09vec3\x20surfaceNormal\x20=\x20normalize(\x20noise.xzy\x20*\x20vec3(\x201.5,\x201.0,\x201.5\x20)\x20);\x0a\x0a\x09\x09\x09\x09\x09vec3\x20diffuseLight\x20=\x20vec3(0.0);\x0a\x09\x09\x09\x09\x09vec3\x20specularLight\x20=\x20vec3(0.0);\x0a\x0a\x09\x09\x09\x09\x09vec3\x20worldToEye\x20=\x20eye-worldPosition.xyz;\x0a\x09\x09\x09\x09\x09vec3\x20eyeDirection\x20=\x20normalize(\x20worldToEye\x20);\x0a\x09\x09\x09\x09\x09sunLight(\x20surfaceNormal,\x20eyeDirection,\x20100.0,\x202.0,\x200.5,\x20diffuseLight,\x20specularLight\x20);\x0a\x0a\x09\x09\x09\x09\x09float\x20distance\x20=\x20length(worldToEye);\x0a\x0a\x09\x09\x09\x09\x09vec2\x20distortion\x20=\x20surfaceNormal.xz\x20*\x20(\x200.001\x20+\x201.0\x20/\x20distance\x20)\x20*\x20distortionScale;\x0a\x09\x09\x09\x09\x09vec3\x20reflectionSample\x20=\x20vec3(\x20texture2D(\x20mirrorSampler,\x20mirrorCoord.xy\x20/\x20mirrorCoord.w\x20+\x20distortion\x20)\x20);\x0a\x0a\x09\x09\x09\x09\x09float\x20theta\x20=\x20max(\x20dot(\x20eyeDirection,\x20surfaceNormal\x20),\x200.0\x20);\x0a\x09\x09\x09\x09\x09float\x20rf0\x20=\x200.3;\x0a\x09\x09\x09\x09\x09float\x20reflectance\x20=\x20rf0\x20+\x20(\x201.0\x20-\x20rf0\x20)\x20*\x20pow(\x20(\x201.0\x20-\x20theta\x20),\x205.0\x20);\x0a\x09\x09\x09\x09\x09vec3\x20scatter\x20=\x20max(\x200.0,\x20dot(\x20surfaceNormal,\x20eyeDirection\x20)\x20)\x20*\x20waterColor;\x0a\x09\x09\x09\x09\x09vec3\x20albedo\x20=\x20mix(\x20(\x20sunColor\x20*\x20diffuseLight\x20*\x200.3\x20+\x20scatter\x20)\x20*\x20getShadowMask(),\x20(\x20vec3(\x200.1\x20)\x20+\x20reflectionSample\x20*\x200.9\x20+\x20reflectionSample\x20*\x20specularLight\x20),\x20reflectance);\x0a\x09\x09\x09\x09\x09vec3\x20outgoingLight\x20=\x20albedo;\x0a\x09\x09\x09\x09\x09gl_FragColor\x20=\x20vec4(\x20outgoingLight,\x20alpha\x20);\x0a\x0a\x09\x09\x09\x09\x09#include\x20<tonemapping_fragment>\x0a\x09\x09\x09\x09\x09#include\x20<fog_fragment>\x0a\x09\x09\x09\x09}','gifLoader','useFirstFramePosition','RGBA_ETC2_EAC_Format','PolarGridHelper','EdgesGeometry','rotateAnimation13','DOFPass','mipmapCount','bloomEnabled','LessEqualStencilFunc','body','ReflectorNode','changeMode','options','dataset','startSpreadAnimation','isBufferGeometry','circleRadius','image','domElement','USE_DASH','getHelperFromSkeleton','setPosition','onLoad','setColorOfWall','DirectionLights','clipAction','MeshNormalMaterial','RGFormat','FileLoader','matOptions','MeshBasicMaterial','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20gradient;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20height;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20vertical;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20pos;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20gl_FragColor\x20=\x20vec4(\x20mix(color,\x20\x20vec3(0.)\x20,\x20vec3(\x20(height\x20-\x20vy)\x20/\x20height)\x20)\x20\x20,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20gl_FragColor\x20=\x20vec4(\x20mix(\x20mix(color,\x20\x20vec3(0.)\x20,\x20vec3(\x20(height\x20-\x20vy)\x20/\x20height)\x20),\x20color\x20,\x20vec3(\x20(height\x20-\x20vy)\x20/\x20height)\x20)\x20\x20,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(\x20mix(color,\x20\x20gradient\x20,\x20vec3(\x20(height\x20-\x20pos.y)\x20/\x20height)\x20)\x20\x20,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20vec3(\x20mix(color,\x20\x20gradient\x20,\x20vec3(\x20abs(vertical\x20+\x20pos.x)\x20/\x20vertical)\x20)\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','parse','Int32BufferAttribute','rotateX','getCenter','OrthographicCamera','baseTitle','\x20is\x20not\x20supported.','triangleSize','wallColor','contextBoxHeight','lon','ArcCurve','ssrtEnabled','ShortType','TorusGeometry','negate','scale','px\x20Microsoft\x20YaHei','time','rotateZ','LineCurve3','DecrementWrapStencilOp','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#define\x20PI\x203.14159265\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20uvu;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20uColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20startTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20vOpacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uSpeed;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uSge;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec2\x20spreadRange;\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20noise(in\x20float\x20x){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20abs(fract(114514.155677\x20*\x20sin(x)));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20difColor\x20=vec3(0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20len1\x20=\x20\x20length(uvu\x20-\x20vec2(.5));\x20\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(startTime\x20<\x200.45){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(len1\x20>\x20startTime\x20-\x200.05\x20&&\x20len1\x20<\x20startTime\x20+\x200.05){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20uColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=(1.-\x20smoothstep(startTime\x20-\x200.05,startTime\x20+\x200.04,len1));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uopacity>0.97)difColor\x20+=\x20vec3(1.)*0.1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uopacity\x20<0.98)uopacity\x20*=1.-\x20startTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//开场\x20动效end\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20扩散\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(len1\x20>\x200.01\x20&&\x20spreadRange.x\x20>\x20len1){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(fract(uTime)-0.01\x20>=spreadRange.x\x20/\x203.){\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20width\x20=\x201.-fract(15.\x20*\x20(1.-\x20fract(-uTime\x20+\x20len1)));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20len2\x20=1.-smoothstep(0.1,.3,width\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20+=\x20mix(vec3(0.),uColor\x20,len2);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=len2;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(difColor,uopacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','请输入内容','div','Loader','href','horseRaceLampAnimation','spreadStartHeight','images','canvas','#ffffff','instanceStart','layers','times','Triangle','intersectsSphere','SATURATION','parent','updateCameras','renderTarget2','DataTextureLoader','RawShaderMaterial','texLoader','VideoTexture','bloom','particlesWidth','extensions','MathUtils','animationLoc','BackSide','orbit','totalDistance','AlwaysStencilFunc','\x0a\x20\x20\x20\x20\x20\x20uniform\x20vec2\x20center;\x0a\x20\x20\x20\x20\x20\x20varying\x20vec2\x20vUv;\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20void\x20main()\x20{\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec4\x20mvPosition\x20=\x20modelViewMatrix\x20*\x20vec4(\x200.0,\x200.0,\x200.0,\x201.0\x20);\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20scale;\x0a\x20\x20\x20\x20\x20\x20\x20\x20scale.x\x20=\x20length(\x20vec3(\x20modelMatrix[\x200\x20].x,\x20modelMatrix[\x200\x20].y,\x20modelMatrix[\x200\x20].z\x20)\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20scale.y\x20=\x20length(\x20vec3(\x20modelMatrix[\x201\x20].x,\x20modelMatrix[\x201\x20].y,\x20modelMatrix[\x201\x20].z\x20)\x20);\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20alignedPosition\x20=\x20(\x20position.xy\x20-\x20(\x20center\x20-\x20vec2(\x200.5\x20)\x20)\x20)\x20*\x20scale;\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20mvPosition.xy\x20+=\x20alignedPosition;\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20mvPosition;\x0a\x20\x20\x20\x20\x20\x20\x20\x20vUv\x20=\x20uv;\x20\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_vertex>\x0a\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20}','SwitchNode','traverse','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20radius;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20mix(.045,\x20opacity,\x20(vh\x20/\x20radius\x20+\x201.)\x20/\x202.\x20));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','XHRLoader','CameraHelper','CullFaceFront','BinaryTextureLoader','Vector3','minFilter','viewport','lightWallOpts','glb','then','parentElement','EqualDepth','updateLights','pose','keys','setFromMatrixScale','CanvasTexture','gammaEnabled','ConeBufferGeometry','InstancedInterleavedBuffer','setAttribute','shader','directionTag','topSpacing','PlaneHelper','#98e10f','CullFaceBack','loadMaterial','cameraFocus','AddOperation','attributes','fov','Layers','Int16Attribute','(((.+)+)+)+$','isReflector','RedFormat','loadedFileResults','AnimationLoader','RGB_ETC1_Format','toJSON','numbers','oncontextmenu','includes','setFromBufferAttribute','pyramidColor','ColorKeyframeTrack','points','OutlinePass','AudioLoader','CubeRefractionMapping','clickObjects','LineStrip','RGBA_ASTC_10x10_Format','StringKeyframeTrack','fbx','lightMapIntensity','object','squareRadius','removed','AdditiveAnimationBlendMode','updateNode','threshold','stats','download','split','DefaultLoadingManager','#000000','sphereRadius','viewState','backgroundColor','boundingBox','icon-html','NeverStencilFunc','MinEquation','Int32Attribute','OneMinusDstAlphaFactor','risingAnimation2','fileName','DstAlphaFactor','initPasses','containerWidth','containerHeight','getBoneByName','MeshFaceMaterial','StreamCopyUsage','unbiased','TWEEN','SkeletonHelper','userSelect','outlinePass','ShadowMaterial','logarithmicDepthBuffer','mtlLoader','NormalMapNode','maxDistance','isCirclEfficiency','OctahedronBufferGeometry',';font-size:','OneMinusDstColorFactor','skyRadius','sqrt','sizeAttenuation','boundingSphere','bounds','lnglat2mercator','drawPicture','depthTest','distanceToPoint','setCenter','Group','RGBIntegerFormat','ondbclick','titleColor','setFromVector3','\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20uClockwise;\x0auniform\x20float\x20ringWidth;\x0auniform\x20float\x20rotateSpeed;\x0a\x0a#define\x20PI\x203.141592654\x0a#define\x20EPSILON\x201e-6\x0a\x0afloat\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20return\x20r;\x0a}\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20>\x20uTime\x20&&\x20pct\x20<\x20uTime\x20+\x20ringWidth){\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20vUv\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime\x20*\x20rotateSpeed)\x20-\x20dir.y\x20*\x20sin(uTime\x20*\x20rotateSpeed),\x20dir.x\x20*\x20sin(uTime\x20*\x20rotateSpeed)\x20+\x20dir.y\x20*\x20cos(uTime\x20*\x20rotateSpeed));\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20if(uClockwise\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20(2.\x20*\x20PI\x20-\x20theta)\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(uClockwise\x20==\x20-1.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20theta\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a','computedScanCircle','background','drawPictureBackground','Font','extrude','VIBRANCE','tDiffuse','autoUpdate','ObjectSpaceNormalMap','GridHelper','setHDR','isPicturePopup','WebGLMultipleRenderTargets','color','UniformsUtils','loadExtrudeGeometry','findObjectsByType','table','CubeCamera','isInformationPopup','IncrementWrapStencilOp','\x0a\x09\x09uniform\x20vec3\x20color;\x0a\x09\x09uniform\x20sampler2D\x20tDiffuse;\x0a\x09\x09uniform\x20float\x20opacity;\x0a\x09\x09varying\x20vec4\x20vUv;\x0a\x0a\x09\x09#include\x20<logdepthbuf_pars_fragment>\x0a\x0a\x09\x09float\x20blendOverlay(\x20float\x20base,\x20float\x20blend\x20)\x20{\x0a\x0a\x09\x09\x09return(\x20base\x20<\x200.5\x20?\x20(\x202.0\x20*\x20base\x20*\x20blend\x20)\x20:\x20(\x201.0\x20-\x202.0\x20*\x20(\x201.0\x20-\x20base\x20)\x20*\x20(\x201.0\x20-\x20blend\x20)\x20)\x20);\x0a\x0a\x09\x09}\x0a\x0a\x09\x09vec3\x20blendOverlay(\x20vec3\x20base,\x20vec3\x20blend\x20)\x20{\x0a\x0a\x09\x09\x09return\x20vec3(\x20blendOverlay(\x20base.r,\x20blend.r\x20),\x20blendOverlay(\x20base.g,\x20blend.g\x20),\x20blendOverlay(\x20base.b,\x20blend.b\x20)\x20);\x0a\x0a\x09\x09}\x0a\x0a\x09\x09void\x20main()\x20{\x0a\x0a\x09\x09\x09#include\x20<logdepthbuf_fragment>\x0a\x0a\x09\x09\x09vec4\x20base\x20=\x20texture2DProj(\x20tDiffuse,\x20vUv\x20);\x0a\x09\x09\x09gl_FragColor\x20=\x20vec4(\x20blendOverlay(\x20base.rgb,\x20color\x20),\x20opacity);\x0a\x0a\x09\x09}','lineWidth','instanceDistanceStart','IncrementStencilOp','canvasAnimation','lat','metalness','computedSpreadCircle','LineSegments2:\x20\x22Raycaster.camera\x22\x20needs\x20to\x20be\x20set\x20in\x20order\x20to\x20raycast\x20against\x20LineSegments2.','toArray','DepthTexture','toString','attrs','setDecoderPath','rgb(','useTargetMatrix','AlphaFormat','auto','projectionMatrix','100','EventDispatcher','stringify','preservePosition','UnsignedIntType','dragenter','Values\x20in\x20the\x202-0\x20','nodepass','MeshDistanceMaterial','dot','abs','defines','italic','NoColors','MixOperation','autoRotate','element','bolDragEnter','RGBEFormat','factor','MeshPhysicalMaterial','matrix','Euler','length','positions','distortionScale','hWorldText','updateOutlinePass','getDrawingBufferSize','ondblclick','ExtrudeBufferGeometry','next','panorama','intersectsBox','__proto__','initHDR','BaseParticles','PhongNodeMaterial','initScene','ssrtPass','spreadAnimation3','json','position','type','paused','\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20opacity;\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x0afloat\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0aif(pct\x20>\x20.48\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20gl_FragColor\x20=\x20vec4(color,\x20opacity);\x0a}\x20else{\x0a\x20\x20discard;\x0a}\x0a\x0a#include\x20<tonemapping_fragment>\x0a}\x0a','loadGeometry','initCameras','Mesh','cursor','guideHeight','isGeometry','prev','lights','URL','fragmentShader','picturePopupOpts','render','rotation','ReflectorRTT','Math','beginPath','Vector4','name','startSpreadAnimation2','rotateAnimation','ReinhardToneMapping','spreadEndHeight','setMask','save','pyramidHeight','Quaternion','opacities','wrapT','particlesDepth','htmlEle','initRender','ImageLoader','disable','\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20opacity;\x0auniform\x20float\x20ringWidth;\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x0afloat\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0aif(pct\x20>\x20uTime\x20&&\x20pct\x20<\x20(uTime\x20+\x20ringWidth)){\x0a\x20\x20gl_FragColor\x20=\x20vec4(color,\x20opacity);\x0a}\x20else{\x0a\x20\x20discard;\x0a}\x0a\x0a#include\x20<tonemapping_fragment>\x0a}\x0a','TriangleFanDrawMode','dbclick','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20vp;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vp\x20=\x20vec2(position.x,\x20position.z);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','normalSampler','exec','startHorseRaceLampAnimation','animate','SubtractiveBlending','NeverDepth','RingBufferGeometry','renderToScreen','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#define\x20EPSILON\x201e-6\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20uvu;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20uColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20startColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20startTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uTime;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20vOpacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uSpeed;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uSge;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20isCirclSpread;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec2\x20scanningRange;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20noise(in\x20float\x20x){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20abs(fract(114514.155677\x20*\x20sin(x)));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20PI\x20=\x203.14159265;\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20drawCircle(float\x20index,\x20float\x20range)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20opacity\x20=\x201.0;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if\x20(index\x20>=\x201.0\x20-\x20range)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opacity\x20=\x201.0\x20-\x20(index\x20-\x20(1.0\x20-\x20range))\x20/\x20range;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x20else\x20if(index\x20<=\x20range)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opacity\x20=\x20index\x20/\x20range;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20distanceTo(vec2\x20src,\x20vec2\x20dst)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20dx\x20=\x20src.x\x20-\x20dst.x;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20dy\x20=\x20src.y\x20-\x20dst.y;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20dv\x20=\x20dx\x20*\x20dx\x20+\x20dy\x20*\x20dy;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20sqrt(dv);\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20r;\x0a\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20difColor\x20=vec3(0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20uopacity\x20=\x201.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20len\x20=\x20\x20length(uvu\x20-\x20vec2(.5));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20开场\x20动效start\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(startTime\x20<\x200.45){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(len\x20>\x20startTime\x20-\x200.05\x20&&\x20len\x20<\x20startTime\x20+\x200.05){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20startColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=(1.-\x20smoothstep(startTime\x20-\x200.05,startTime\x20+\x200.04,len));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uopacity>0.97)difColor\x20+=\x20vec3(1.)*0.1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uopacity\x20<0.98)uopacity\x20*=1.-\x20startTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//开场\x20动效end\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(startTime>=0.45){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20柱状式2\x20效果\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(isCirclSpread\x20>0.99){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20中心圆\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uTime\x20<=2.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20time1\x20=\x20uTime\x20/\x202.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(len\x20<\x200.15){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20startColor\x20+\x200.2*vec3(1.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20*=\x20time1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(len\x20>=0.15\x20&&\x20len\x20<0.16){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20uColor\x20+\x200.1\x20*\x20vec3(1.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20*=\x20time1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=vec3(0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20扩散圆\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(len\x20<\x200.15){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20startColor\x20+\x200.2*vec3(1.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20扩散圆\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20iTime\x20=\x20-uTime\x20*\x20uSpeed;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20opacity\x20=\x200.0;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20len\x20=\x20distanceTo(vec2(0.5,\x200.5),\x20vec2(uvu.x,\x20uvu.y));\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20size\x20=\x201.0\x20/\x20uSge;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20range\x20=\x20vec2(0.35,\x200.75);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20index\x20=\x20mod(iTime\x20+\x20len,\x20size);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if\x20(index\x20<\x20size\x20&&\x20len\x20<=\x200.5)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20i\x20=\x20sin(index\x20/\x20size\x20*\x20PI);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20处理边缘锯齿\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if\x20(i\x20>=\x20range.x\x20&&\x20i\x20<=\x20range.y){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20归一\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20t\x20=\x20(i\x20-\x20range.x)\x20/\x20(range.y\x20-\x20range.x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20边缘锯齿范围\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20r\x20=\x200.1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opacity\x20=\x20drawCircle(t,\x20r);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20渐变\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opacity\x20*=\x20\x201.0\x20-\x20len\x20/\x200.5;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20};\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(\x20vOpacity\x20*\x20opacity\x20<=\x200.0){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20vec3(0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20uColor\x20+\x200.1\x20*\x20vec3(1.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x20vOpacity\x20*\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20等高线\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20float\x20newTime\x20=(.5\x20-\x20fract(uTime)/2.)/2.+0.15;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20float\x20heightLine\x20=\x20sin\x20(50.\x20*\x20newTime\x20*\x20len);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20float\x20len2\x20=1.-\x20smoothstep(0.,0.5,heightLine\x20>=0.?heightLine:-heightLine);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20difColor\x20=\x20mix(vec3(0.),color\x20+\x200.1*vec3(1.),len2);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20uopacity\x20=len2;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20扫描圆\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20pct\x20=\x20distance(uvu,\x20vec2(.5));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(pct\x20>\x20scanningRange.x\x20&&\x20pct\x20<\x20scanningRange.y){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20uvu\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime)\x20-\x20dir.y\x20*\x20sin(uTime),\x20dir.x\x20*\x20sin(uTime)\x20+\x20dir.y\x20*\x20cos(uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20uColor\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x20theta\x20/\x20(2.\x20*\x20PI);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20vec3(0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(difColor,uopacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','pictureDrawMode','squares','UnsignedShort565Type','NumberKeyframeTrack','Uint32Attribute','multiply','CircleGeometry','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(0.)\x20,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','isCompositeIcon','instanceEnd','LoadingManager','Matrix4','side','NearestMipmapNearestFilter','fill','dispose','spreadRoundOpts','UnsignedShortType','textAlign','emissiveIntensity','setText','AmbientLightProbe','drawText','style','setDRACOLoader','updateScenes','titleHeight','loadModelByUrls','startRotateAnimation13','bolDbClick','CubeUVReflectionMapping','hPxText','AnimationMixer','sceneComposer','THREE.LineSegmentsGeometry.computeBoundingSphere():\x20Computed\x20radius\x20is\x20NaN.\x20The\x20instanced\x20position\x20data\x20is\x20likely\x20to\x20have\x20NaN\x20values.','realCt','dragTimer','ringWidth','rgba(','HDR','format','hiddenEdgeColor','\x0auniform\x20vec3\x20diffuse;\x0auniform\x20float\x20opacity;\x0a\x0auniform\x20float\x20dashSize;\x0auniform\x20float\x20dashOffset;\x0auniform\x20float\x20gapSize;\x0a\x0auniform\x20float\x20attenuation;\x0a\x0avarying\x20float\x20vLineDistance;\x0a\x0a#include\x20<common>\x0a#include\x20<color_pars_fragment>\x0a#include\x20<fog_pars_fragment>\x0a#include\x20<logdepthbuf_pars_fragment>\x0a#include\x20<clipping_planes_pars_fragment>\x0a\x0avarying\x20vec2\x20vUv;\x0a\x0avoid\x20main()\x20{\x0a\x0a\x20\x20\x20\x20#include\x20<clipping_planes_fragment>\x0a\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20if\x20(\x20vUv.y\x20<\x20-\x201.0\x20||\x20vUv.y\x20>\x201.0\x20)\x20discard;\x20//\x20discard\x20endcaps\x0a\x0a\x0a\x0a\x20\x20\x20\x20float\x20alpha\x20=\x201.0;\x0a\x0a\x20\x20\x20\x20#ifdef\x20ALPHA_TO_COVERAGE\x0a\x0a\x20\x20\x20\x20//\x20artifacts\x20appear\x20on\x20some\x20hardware\x20if\x20a\x20derivative\x20is\x20taken\x20within\x20a\x20conditional\x0a\x20\x20\x20\x20float\x20a\x20=\x20vUv.x;\x0a\x20\x20\x20\x20float\x20b\x20=\x20(\x20vUv.y\x20>\x200.0\x20)\x20?\x20vUv.y\x20-\x201.0\x20:\x20vUv.y\x20+\x201.0;\x0a\x20\x20\x20\x20float\x20len2\x20=\x20a\x20*\x20a\x20+\x20b\x20*\x20b;\x0a\x20\x20\x20\x20float\x20dlen\x20=\x20fwidth(\x20len2\x20);\x0a\x0a\x20\x20\x20\x20if\x20(\x20abs(\x20vUv.y\x20)\x20>\x201.0\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20alpha\x20=\x201.0\x20-\x20smoothstep(\x201.0\x20-\x20dlen,\x201.0\x20+\x20dlen,\x20len2\x20);\x0a\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#else\x0a\x0a\x20\x20\x20\x20if\x20(\x20abs(\x20vUv.y\x20)\x20>\x201.0\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20a\x20=\x20vUv.x;\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20b\x20=\x20(\x20vUv.y\x20>\x200.0\x20)\x20?\x20vUv.y\x20-\x201.0\x20:\x20vUv.y\x20+\x201.0;\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20len2\x20=\x20a\x20*\x20a\x20+\x20b\x20*\x20b;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20if\x20(\x20len2\x20>\x201.0\x20)\x20discard;\x0a\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20//\x20vec4\x20diffuseColor\x20=\x20vec4(\x20diffuse,\x20opacity\x20*\x20alpha\x20);\x0a\x0a\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20#include\x20<color_fragment>\x0a\x20\x20\x20\x20\x0a\x20\x20\x20\x20if(attenuation\x20==\x200.0){\x0a\x20\x20\x20\x20\x20\x20if\x20(\x20mod(\x20vLineDistance\x20+\x20dashOffset,\x20dashSize\x20+\x20gapSize\x20)\x20>\x20dashSize\x20)\x20discard;\x20//\x20todo\x20-\x20FIX\x0a\x20\x20\x20\x20\x20\x20vec4\x20diffuseColor\x20=\x20vec4(\x20diffuse,\x20\x20opacity\x20*\x20mod(\x20vLineDistance\x20+\x20dashOffset,\x20dashSize\x20+\x20gapSize\x20)\x20/\x20dashSize\x20);\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20diffuseColor;\x09\x0a\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(\x20diffuse,\x20opacity\x20*\x20alpha\x20);\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20#include\x20<encodings_fragment>\x0a\x20\x20\x20\x20#include\x20<fog_fragment>\x0a\x20\x20\x20\x20#include\x20<premultiplied_alpha_fragment>\x0a\x0a}','ssrPass','title-update\x20needs\x20canvasElement','].quaternion','defaultPicture','scanRange','indicateAnimation','uncacheAction','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20size;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20attribute\x20float\x20scale;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20attribute\x20float\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vOpacity;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec4\x20mvPosition\x20=\x20modelViewMatrix\x20*\x20vec4(\x20position,\x201.0\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_PointSize\x20=\x20scale\x20*\x20size\x20*\x20(\x20300.0\x20/\x20-mvPosition.z\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20mvPosition;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vOpacity\x20=\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','cubeTexLoader','makeRotationFromEuler','flatten','ParticleSystem','onmousemove','spreadAnimation','geometry','devicePixelRatio','addPass','ssaaEnabled','AnimationUtils','isLine2','fromEquirectangular','elements','TransformControls','skeleton','dashed','CompositeIconTag','instanceDistanceEnd','InstancedBufferAttribute','Int8BufferAttribute','ceil','circleSwitch','GreaterEqualDepth','\x0a\x09\x09uniform\x20vec3\x20color;\x0a\x09\x09uniform\x20sampler2D\x20tDiffuse;\x0a\x09\x09varying\x20vec4\x20vUv;\x0a\x0a\x09\x09#include\x20<logdepthbuf_pars_fragment>\x0a\x0a\x09\x09float\x20blendOverlay(\x20float\x20base,\x20float\x20blend\x20)\x20{\x0a\x0a\x09\x09\x09return(\x20base\x20<\x200.5\x20?\x20(\x202.0\x20*\x20base\x20*\x20blend\x20)\x20:\x20(\x201.0\x20-\x202.0\x20*\x20(\x201.0\x20-\x20base\x20)\x20*\x20(\x201.0\x20-\x20blend\x20)\x20)\x20);\x0a\x0a\x09\x09}\x0a\x0a\x09\x09vec3\x20blendOverlay(\x20vec3\x20base,\x20vec3\x20blend\x20)\x20{\x0a\x0a\x09\x09\x09return\x20vec3(\x20blendOverlay(\x20base.r,\x20blend.r\x20),\x20blendOverlay(\x20base.g,\x20blend.g\x20),\x20blendOverlay(\x20base.b,\x20blend.b\x20)\x20);\x0a\x0a\x09\x09}\x0a\x0a\x09\x09void\x20main()\x20{\x0a\x0a\x09\x09\x09#include\x20<logdepthbuf_fragment>\x0a\x0a\x09\x09\x09vec4\x20base\x20=\x20texture2DProj(\x20tDiffuse,\x20vUv\x20);\x0a\x09\x09\x09gl_FragColor\x20=\x20vec4(\x20blendOverlay(\x20base.rgb,\x20color\x20),\x201.0\x20);\x0a\x0a\x09\x09}','THREE.LineSegmentsGeometry\x20no\x20longer\x20supports\x20Geometry.\x20Use\x20THREE.BufferGeometry\x20instead.','startRotateAnimation','maxblur','Float16BufferAttribute','all','dofEnabled','Wrong\x20path!','triangleType','loadExtrudeMaterial','textType','initMouseEvent','AudioListener','clickTimer','textureMatrix','\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20>\x20.35\x20&&\x20pct\x20<\x20.355){\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x201.);\x0a\x20\x20\x20\x20}else\x20if(pct\x20>\x20.355\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x201.\x20-\x20pct\x20/\x20.5);\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a','JSONParser','letterSpacing','appendChild','bone','changeText','LensFlare','\x20\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20uClockwise;\x0a\x0a#define\x20PI\x203.141592654\x0a#define\x20EPSILON\x201e-6\x0a\x0afloat\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20return\x20r;\x0a}\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20<\x20.25){\x0a\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x201.);\x0a\x20\x20\x20\x20}else\x20if(pct\x20>\x20.25\x20&&\x20pct\x20<\x20.38){\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}else\x20if(pct\x20>\x20.38\x20&&\x20pct\x20<\x20.4){\x0a\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x201.);\x0a\x20\x20\x20\x20}else\x20if(pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20vUv\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime)\x20-\x20dir.y\x20*\x20sin(uTime),\x20dir.x\x20*\x20sin(uTime)\x20+\x20dir.y\x20*\x20cos(uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20if(uClockwise\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x20(2.\x20*\x20PI\x20-\x20theta)\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(uClockwise\x20==\x20-1.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x20theta\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x0a}\x0a','BlurNode','time2','Uint16BufferAttribute','getEqualsBonesNames','changeDefaultPicture','mixColor','PerspectiveCamera','uuid','BRIGHTNESS','loadSkyBox','ConeGeometry','radius','WebGL1Renderer','closeVisible','44848530nPAgjz','MirroredRepeatWrapping','dashScale','opacity','createEvent','TextGeometry','DynamicDrawUsage','isWall','VectorKeyframeTrack','PointCloud','toneMappingExposure','ColumnarTag','fromLine','OctahedronGeometry','selectedObjects','onloadPicture','rotation2D','dof','RGBA_S3TC_DXT1_Format','Curve','translate','preserveHipPosition','SphericalHarmonics3','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20precision\x20highp\x20float;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20v_position;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20v_normal;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightFront;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectFront;\x0a\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv2_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<bsdfs>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<lights_pars_begin>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv2_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<beginnormal_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<defaultnormal_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<begin_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<project_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<worldpos_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<lights_lambert_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20v_position\x20=\x20position;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20v_normal\x20=\x20normal;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','fromBufferAttribute','ClampToEdgeWrapping','clone','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vh\x20=\x20position.y;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','boneInverses','bottomRadius','holes','lineTo','waterNormals','Line','clockwise','titleWidth','removeBloom','\x0a\x09\x09\x09\x09uniform\x20mat4\x20textureMatrix;\x0a\x09\x09\x09\x09uniform\x20float\x20time;\x0a\x0a\x09\x09\x09\x09varying\x20vec4\x20mirrorCoord;\x0a\x09\x09\x09\x09varying\x20vec4\x20worldPosition;\x0a\x0a\x09\x09\x09\x09#include\x20<common>\x0a\x09\x09\x09\x09#include\x20<fog_pars_vertex>\x0a\x09\x09\x09\x09#include\x20<shadowmap_pars_vertex>\x0a\x09\x09\x09\x09#include\x20<logdepthbuf_pars_vertex>\x0a\x0a\x09\x09\x09\x09void\x20main()\x20{\x0a\x09\x09\x09\x09\x09mirrorCoord\x20=\x20modelMatrix\x20*\x20vec4(\x20position,\x201.0\x20);\x0a\x09\x09\x09\x09\x09worldPosition\x20=\x20mirrorCoord.xyzw;\x0a\x09\x09\x09\x09\x09mirrorCoord\x20=\x20textureMatrix\x20*\x20mirrorCoord;\x0a\x09\x09\x09\x09\x09vec4\x20mvPosition\x20=\x20\x20modelViewMatrix\x20*\x20vec4(\x20position,\x201.0\x20);\x0a\x09\x09\x09\x09\x09gl_Position\x20=\x20projectionMatrix\x20*\x20mvPosition;\x0a\x0a\x09\x09\x09\x09#include\x20<beginnormal_vertex>\x0a\x09\x09\x09\x09#include\x20<defaultnormal_vertex>\x0a\x09\x09\x09\x09#include\x20<logdepthbuf_vertex>\x0a\x09\x09\x09\x09#include\x20<fog_vertex>\x0a\x09\x09\x09\x09#include\x20<shadowmap_vertex>\x0a\x09\x09\x09}','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20vUv;\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main()\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vUv\x20=\x20uv;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}','result','findObjectById','onload','Icon','toneMapping','trim','_width','templatePublic','.bones[','MultiplyBlending','SRGB8_ALPHA8_ASTC_8x5_Format','setFromPoints','SRGB8_ALPHA8_ASTC_12x12_Format','pow','textBaseline','subVectors','ByteType','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20height;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uOpacity;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20opc\x20=\x20(height\x20-\x20vh)\x20/\x20height;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20mix(.0,\x20uOpacity,\x20opc));\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','hasWireframe','onComplete','fontSize','draggable','AudioAnalyser','fgColor','bolClick','gapSize','addColorStop','projectionMatrixInverse','extends','mixers','pos','nodePassEnabled','\x20\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20ringWidth;\x0a\x0a#define\x20PI\x203.141592654\x0a#define\x20EPSILON\x201e-6\x0a\x0afloat\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20return\x20r;\x0a}\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20>\x20uTime\x20&&\x20pct\x20<\x20(uTime\x20+\x20ringWidth)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20vUv\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20if(theta\x20>\x200.\x20&&\x20theta\x20<\x20(PI\x20/\x202.)\x20){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else\x20if(theta\x20>\x20PI\x20&&\x20theta\x20<\x20(3.\x20*\x20PI\x20/\x202.)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20,\x20mod(theta,\x20PI\x20/\x202.)\x20/\x20(\x20PI\x20/\x202.));\x0a\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a','begin','transformControl','vertical','root_','lastIndexOf','fps','WebGLRenderer','MSAAPass','Fog','dracoLoader','hemiLight','sortObjects','POI','isMesh','Camera','computeBoundingBox','contextmenu','parentNode','RGBDEncoding','popupOpts','KeyframeTrack','updateGammaPass','mapSize','strength','ImageBitmapLoader','sunColor','antialias','clipBias','SkeletonUtils','SRGB8_ALPHA8_ASTC_6x5_Format','Reflector','getRenderTarget','model\x20name\x20should\x20be\x20uniqued.','enableDamping','DataTexture3D','highp','transparent','RGB_ETC2_Format','Bone','startTime','cross','load','search','152zFXIRc','isDrag','uniforms','updateMatrixWorld','controls','ShaderMaterial','ssrEnabled','decay','positionRange','textPopup','mixerActions','6125645vsobbR','cubes','loadHDR','applyMatrix','ambientLight','finalbloomPass','dragging-changed','&#10006','color:white;height:\x2020px;\x20width:\x2020px;\x20position:\x20absolute;\x20right:\x200;\x20top:\x200;display:flex;align-items:center;justify-content:center;cursor:\x20pointer;transform:scale(','bounceTag','msaa','bias','status','distanceTo','setRenderTarget','Path','cubeOpts','eye','lineSpacing','ALPHA_TO_COVERAGE','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','DynamicBufferAttribute','top','RGBA_ASTC_10x8_Format','414773JXkeNX','time1','getComputedStyle','FaceColors','gamma','setFromMatrixPosition','reflect','StreamReadUsage','diffuse','NearestMipMapLinearFilter','test','1920612PFLoDz','edgeThickness','PointLightHelper','#0000ff','envMap','initEvents','Line2','canvasWidth','RGBA_S3TC_DXT3_Format','FrontSide','min','UniformsLib','LatheGeometry','updateHDR','InstancedMesh','offsets','canvasHeight','frame','LoopOnce','visibility','outputEncoding','updateBackground','bloomTexture','hemisphereLight','circleOpts','random','start','Bold\x20','preserveMatrix','TextBufferGeometry','ondragenter','SpriteMaterial','multiplyScalar','switchMode','edgeGlow','autoClear','\x0a\x20\x20\x20\x20\x20\x20\x20\x20precision\x20highp\x20float;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20v_position;\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20v_normal;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20emissive;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20threshold;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightFront;\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20mixColor;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20minHeight;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20maxHeight;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<packing>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv2_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<map_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<bsdfs>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<lights_pars_begin>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_fragment>\x0a\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20baseHeight\x20=\x20v_position.y;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20if(baseHeight\x20<\x20minHeight){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(color\x20/\x202.),\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20return;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20}else\x20if(baseHeight\x20<\x20-80.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(0.,0.,1.),\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20return;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20}else\x20if(baseHeight\x20<\x20maxHeight){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(0.,1.,1.),\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20return;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec4\x20diffuseColor\x20=\x20vec4(\x20color,\x20opacity\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20gl_FragColor\x20=\x20diffuseColor;\x20//\x20基础色\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20ReflectedLight\x20reflectedLight\x20=\x20ReflectedLight(\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20),\x20vec3(\x200.0\x20)\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20totalEmissiveRadiance\x20=\x20emissive;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<map_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<alphatest_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20+=\x20(\x20gl_FrontFacing\x20)\x20?\x20vIndirectFront\x20:\x20vIndirectBack;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#else\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20+=\x20vIndirectFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.indirectDiffuse\x20*=\x20BRDF_Diffuse_Lambert(\x20diffuseColor.rgb\x20);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20=\x20(\x20gl_FrontFacing\x20)\x20?\x20vLightFront\x20:\x20vLightBack;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#else\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20=\x20vLightFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20reflectedLight.directDiffuse\x20*=\x20BRDF_Diffuse_Lambert(\x20diffuseColor.rgb\x20);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20modulation\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20outgoingLight\x20=\x20reflectedLight.directDiffuse\x20+\x20reflectedLight.indirectDiffuse;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(\x20outgoingLight,\x20diffuseColor.a\x20);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20interval\x20=\x20maxHeight\x20-\x20minHeight;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20offsetHeight\x20=\x20baseHeight\x20-\x20minHeight;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20dc\x20=\x20(offsetHeight\x20+\x20threshold)\x20/\x20interval;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20emissive\x20*\x20dc\x20/\x202.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor.rgb\x20+=\x20mixColor\x20*\x20(dc\x20/\x202.\x20+\x20.5);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20//\x20\x20\x20gl_FragColor.rgb\x20=\x20mix(mixColor\x20*\x20dc,\x20emissive\x20*\x20dc,\x20gl_FragColor.rgb);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<encodings_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<premultiplied_alpha_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','Container','userData','textureHeight','Box2','level','pyramidWidth','innerHeight','sceneAnimations','wrapS','RGBFormat','MeshToonMaterial','titleSize','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20height;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20type;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(type\x20==\x200.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20mix(.045,\x201.,\x20vh\x20/\x20height));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(type\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20mix(.045,\x201.,\x20(height\x20-\x20vh)\x20/\x20height));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','constant','canvasSize','LinePieces','MeshMatcapMaterial','drawTitle','PointLight','matrixWorld','AnimationClip','initialize','RGBA_S3TC_DXT5_Format','BoxGeometry','RGBA_BPTC_Format','template','Float32BufferAttribute','getBoundingClientRect','PlaneBufferGeometry','lerp','gltf','groundColor','isPictureDropdownTag','horseRaceAnimationSpeed','setClearColor','insertRule','hdr','Uint8Attribute','SRGB8_ALPHA8_ASTC_10x10_Format','merge','normal','LuminanceFormat','FloatType','msaaTarget','assign','root','JSONLoader','circleEfficiencyOpts','isArray','resourcePath','fromEdgesGeometry','RGBA_PVRTC_4BPPV1_Format','baseSize','setCallBack','RGBADepthPacking','css3dRenderer','sampleLevel','#0954ed','remove','isBone','\x0a\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20emissive;\x0a\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x20\x20\x20\x20\x20\x20uniform\x20float\x20uTime;\x0a\x20\x20\x20\x20\x20\x20varying\x20vec2\x20vUv;\x0a\x0a\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20void\x20main()\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20if(pct\x20<\x20.1){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(emissive,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else\x20if(pct\x20>\x20(.15\x20+\x20uTime)\x20&&\x20pct\x20<\x20(.16\x20+\x20uTime)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(emissive,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else\x20if(pct\x20>\x20.4\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20mix(.05,\x20opacity,\x20pct\x20/\x20.5\x20-\x20.8));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','RGBM16Encoding','bold','closePath','addBloom','fontFamily','changeTitle','FogExp2','PMREMGenerator','StreamDrawUsage','popupType','rotatingAnimation2','clickCallback','showTitle','RedIntegerFormat','contrast','rgb(100,100,100)','identity','px\x20','substring','{}.constructor(\x22return\x20this\x22)(\x20)','map','linewidth','resourcePicture','BufferAttribute','directionLights','init','measureText','AlwaysDepth','BasicShadowMap','startRisingAnimation2','CylinderGeometry','outlineEnabled','quaternion','bottom','Text','supersampling','penumbra','aspect','clientY','firstPerson','ObjectLoader','DirectionalLightHelper','RGBA_ASTC_4x4_Format','DiscreteInterpolant','waterColor','LineLoop','MeshStandardMaterial','spreadStartRadius','loadingBar','PolyhedronBufferGeometry','THREE.LineSegmentsGeometry:\x20applyMatrix()\x20has\x20been\x20renamed\x20to\x20applyMatrix4().','maxHeight','isLineMaterial','round','warn','loadModels','return\x20(function()\x20','setColorOfPopup','LineSegmentsGeometry','values','addEventListener','setFromCamera','spritPopupAttrs','hdrUrls','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vh\x20=\x20position.y;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','shadowMap','center','fillText','margin','state','findObjectsByName','apply','undefined','hoverTimer','vibrance','RGBA_ASTC_10x6_Format','startRisingAnimation','\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20uvu;\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,1.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uvu\x20=\x20uv;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','PCFSoftShadowMap','UnsignedShort5551Type','InformationTag','innerWidth','needsUpdate','depthWrite','bones','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vOpacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20d\x20=\x20distance(gl_PointCoord,\x20vec2(.5));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(d\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(\x20color,\x20vOpacity\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','steiner','gifTextures','PositionalAudio','RepeatWrapping','\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20height;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20oa\x20=\x20cos(.57\x20+\x20vh\x20/\x20height\x20+\x20.5)\x20/\x202.;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20gl_FragColor\x20=\x20vec4(color,\x20mix(.25,\x20opacity,\x20(height\x20-\x20vh)\x20/\x20height));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20\x20oa\x20);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','bind','rotateAnimation8','anisotropy','isSkinnedMesh','\x27\x20is\x20not\x20valid.','IcosahedronBufferGeometry','distance','data','SkinnedMesh','NoToneMapping','popupBaseHeight','click','setPixelRatio','size','setTextOfPopup','zIndex','sign','clientHeight','ray','params','fromWireframeGeometry','MultiplyOperation','initControls','setIndex','lookSpeed','\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20vUv;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uSpeed;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uSge;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20time;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20PI\x20=\x203.14159265;\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20drawCircle(float\x20index,\x20float\x20range)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20opaa\x20=\x201.0;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if\x20(index\x20>=\x201.0\x20-\x20range)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opaa\x20=\x201.0\x20-\x20(index\x20-\x20(1.0\x20-\x20range))\x20/\x20range;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x20else\x20if(index\x20<=\x20range)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opaa\x20=\x20index\x20/\x20range;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20opaa;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20distanceTo(vec2\x20src,\x20vec2\x20dst)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20dx\x20=\x20src.x\x20-\x20dst.x;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20dy\x20=\x20src.y\x20-\x20dst.y;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20dv\x20=\x20dx\x20*\x20dx\x20+\x20dy\x20*\x20dy;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20sqrt(dv);\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main()\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20iTime\x20=\x20-time\x20*\x20uSpeed;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20opa\x20=\x200.0;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20len\x20=\x20distanceTo(vec2(0.5,\x200.5),\x20vec2(vUv.x,\x20vUv.y));\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20size\x20=\x201.0\x20/\x20uSge;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20range\x20=\x20vec2(0.65,\x200.85);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20index\x20=\x20mod(iTime\x20+\x20len,\x20size);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if\x20(index\x20<\x20size\x20&&\x20len\x20<=\x200.5)\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20i\x20=\x20sin(index\x20/\x20size\x20*\x20PI);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20处理边缘锯齿\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if\x20(i\x20>=\x20range.x\x20&&\x20i\x20<=\x20range.y){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20归一\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20t\x20=\x20(i\x20-\x20range.x)\x20/\x20(range.y\x20-\x20range.x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20边缘锯齿范围\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20r\x20=\x200.3;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opa\x20=\x20drawCircle(t,\x20r);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20渐变\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20opa\x20*=\x20\x201.0\x20-\x20len\x20/\x200.5;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20};\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(\x20opacity\x20*\x20opa\x20<=\x200.0){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20opacity\x20*\x20opa);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20}','font','SRGB8_ALPHA8_ASTC_5x4_Format','\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20uClockwise;\x0a\x0a#define\x20PI\x203.141592654\x0a#define\x20EPSILON\x201e-6\x0a\x0afloat\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20return\x20r;\x0a}\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20<\x20.15){\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x201.);\x0a\x20\x20\x20\x20}else\x20if(pct>\x20.4\x20&&\x20pct\x20<\x20.5){\x0a\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20vUv\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime)\x20-\x20dir.y\x20*\x20sin(uTime),\x20dir.x\x20*\x20sin(uTime)\x20+\x20dir.y\x20*\x20cos(uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20if(uClockwise\x20==\x201.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x20(2.\x20*\x20PI\x20-\x20theta)\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(uClockwise\x20==\x20-1.){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime)),\x20theta\x20/\x20(2.\x20*\x20PI));\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a','indexOf','onloadDeafault','renderCamera','clearRect','CubeTexture','PointLights','isScanningCirle','canvasObject','gradient','popup-close','animations','\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20\x20\x20if(pct\x20<\x20.15){\x0a\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20.5);\x0a\x20\x20\x20\x20}else\x20if(pct>\x20.15\x20&&\x20pct\x20<\x20.1525){\x0a\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x201.);\x0a\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a','aperture','SRGB8_ALPHA8_ASTC_10x5_Format','SRGB8_ALPHA8_ASTC_10x8_Format','HemisphereLightProbe','union','scales','\x0avarying\x20vec2\x20vUv;\x0auniform\x20vec3\x20color;\x0auniform\x20float\x20uTime;\x0auniform\x20float\x20ringWidth;\x0a\x0a#include\x20<logdepthbuf_pars_fragment>\x0a\x0avoid\x20main(){\x0a#include\x20<logdepthbuf_fragment>\x0a\x20\x20float\x20pct\x20=\x20distance(vUv,\x20vec2(.5));\x0a\x0a\x20\x20if(pct\x20>\x20uTime\x20&&\x20pct\x20<\x20(uTime\x20+\x20ringWidth)){\x0a\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20pct\x20/\x20(uTime\x20+\x20ringWidth)\x20-\x20(uTime\x20/\x20(uTime\x20+\x20ringWidth)));\x0a\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20discard;\x0a\x20\x20}\x0a\x0a\x20\x20#include\x20<tonemapping_fragment>\x0a}\x0a','Int16BufferAttribute','Uniform','RGBAFormat','NotEqualDepth','bokehPass','instanceColorEnd','bindMatrix','skyColor','MaxEquation','publicPath','retarget','Int8Attribute','url','loadSceneByJSON','renderer','text','createLinearGradient','isSpreadRound','join','findObjectByName','WebGLUtils','pointLights','removeChild','MathNode','UnsignedByteType','animationIndex','material','setFromRotationMatrix','value','LinearFilter','add','PrimitiveMaterial','stop','CompositeIconPopup','UnsignedShort4444Type','setTitle','onclick','#ff0000','fbxLoader','draw','IcosahedronGeometry','CubicBezierCurve3','AddEquation','changeResourcePicture','AmbientLight','removeBloomSpecial','buffers','AudioContext','bloomStrength','array','setColors','Matrix3','FloatNode','BooleanKeyframeTrack','get','Background','relative','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20gradient;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20vp;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec2\x20uCenter;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#define\x20EPSILON\x201e-4\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#define\x20NUM\x201200\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#define\x20WIDTH\x20200\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20gl_FragColor\x20=\x20vec4(\x20mix(color,\x20\x20vec3(0.)\x20,\x20vec3(\x20(height\x20-\x20vy)\x20/\x20height)\x20)\x20\x20,\x20opacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//\x20gl_FragColor\x20=\x20vec4(\x20mix(\x20mix(color,\x20\x20vec3(0.)\x20,\x20vec3(\x20(height\x20-\x20vy)\x20/\x20height)\x20),\x20color\x20,\x20vec3(\x20(height\x20-\x20vy)\x20/\x20height)\x20)\x20\x20,\x20opacity);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20p\x20=\x20vp;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20opacity);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#pragma\x20unroll_loop_start\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20for\x20(\x20int\x20i\x20=\x200;\x20i\x20<\x20NUM;\x20i+=20\x20)\x20{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(i\x20==\x200){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(int(abs(uCenter.x\x20-\x20p.x))\x20>=\x20WIDTH\x20/\x202\x20*\x20i\x20&&\x20int(abs(uCenter.x\x20-\x20p.x))\x20<=\x20WIDTH\x20/\x202\x20*\x20(i\x20+\x201)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(1.),\x201.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(int(abs(uCenter.y\x20-\x20p.y))\x20>=\x20WIDTH\x20/\x202\x20*\x20i\x20&&\x20int(abs(uCenter.y\x20-\x20p.y))\x20<=\x20WIDTH\x20/\x202\x20*\x20(i\x20+\x201)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(1.),\x201.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(int(abs(uCenter.x\x20-\x20p.x))\x20>=\x20WIDTH\x20*\x20i\x20&&\x20int(abs(uCenter.x\x20-\x20p.x))\x20<=\x20WIDTH\x20*\x20(i\x20+\x201)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(1.),\x201.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else\x20if(int(abs(uCenter.y\x20-\x20p.y))\x20>=\x20WIDTH\x20*\x20i\x20&&\x20int(abs(uCenter.y\x20-\x20p.y))\x20<=\x20WIDTH\x20*\x20(i\x20+\x201)){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(vec3(1.),\x201.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#pragma\x20unroll_loop_end\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','LatheBufferGeometry','popupBaseScale','Plane','splice','rotateSpeed','InterleavedBuffer','updateDOFPass','TorusKnotBufferGeometry','ZeroFactor','firstPersonControls','BufferGeometryLoader','TorusBufferGeometry','DynamicReadUsage','movementSpeed','RGBA_ASTC_10x5_Format','GLSL3','flipY','resolution','ShaderChunk','LinearMipmapNearestFilter','set','Texture','SRGB8_ALPHA8_ASTC_4x4_Format','defineProperties','far','fog','Sprite','LinearInterpolant','innerHTML','title','sceneModels','PointsMaterial','RGBA_ASTC_6x6_Format','updateProjectionMatrix','/edit','LinearMipMapLinearFilter','pulsePeriod','PlaneGeometry','enable','fillStyle','ExpressionNode','spotLights',';min-width:160px;width:auto;height:40px;outline:\x201px\x20ridge\x20rgb(255,\x20255,\x20255);border-radius:\x201px;\x27>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x27display:flex;width:100%;;height:100%;text-align:center;color:','camera','updateBloomPass','fillRect','intensity','target','opts','container','LineGeometry','gammaPass','startRotateAnimation8','texture','emit','SRGB8_ALPHA8_ASTC_8x8_Format','DepthStencilFormat','Uint8ClampedBufferAttribute','normalize','Object3D','preload','closestPointToPointParameter','fromCubemap','sin','EllipseCurve','maxPolarAngle','extractRotation','RingGeometry','MouseEvents','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vh\x20=\x20position.y;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20','precision','preventDefault','outline','WebGLCubeRenderTarget','TubeBufferGeometry','envMapIntensity','startSpreadAnimation3','startRotatingAnimation2','PCFShadowMap','ssrSkyBox','templateModels','origin','common','pointerEvents','exception','encoding','rgb(250,250,250)','TorusKnotGeometry','LessDepth','minHeight','getNearestBone','popupAnimation','TextureLoader','].position','spreadSpeed','ParametricGeometry','\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','Vector2','Particle','REVISION','risingSpeed','events','updatePasses','button','isCirclSpread','QuaternionKeyframeTrack','function\x20getNodeKeyByName()\x27s\x20key\x20\x27','SubtractEquation','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightFront;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectFront;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20DOUBLE_SIDED\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vLightBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec3\x20vIndirectBack;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv2_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<bsdfs>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<lights_pars_begin>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifndef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20vh;\x0a\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifdef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<uv2_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<beginnormal_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<defaultnormal_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<begin_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<project_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_vertex>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<worldpos_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<lights_lambert_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#ifndef\x20LIGHTS\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#endif\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vh\x20=\x20position.y;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','particlesHeight','EquirectangularRefractionMapping','ReflectorShader','hover','SmoothShading'];_0x3de8=function(){return _0x3c3ea2;};return _0x3de8();}class CompositeIconPopup extends CompositeIcon{[_0x49cdc8(0x508)];constructor(_0xef638a){const _0x2f5c68=_0x49cdc8;super(),this['opts']=Object['assign']({'color':'#ff0000','guideHeight':0x2},_0xef638a);const _0x1fa848=new BaseCubicGuide({'color':this['opts'][_0x2f5c68(0x229)],'type':0x1,'width':0.015,'height':this[_0x2f5c68(0x508)][_0x2f5c68(0x276)],'depth':0.015});_0x1fa848[_0x2f5c68(0x26e)][_0x2f5c68(0x4ec)](0x0,this['opts'][_0x2f5c68(0x276)]/0x2,0x0),this[_0x2f5c68(0x4bc)](_0x1fa848);const _0x18588e=new BaseCircle({'color':this['opts'][_0x2f5c68(0x229)],'type':0x6,'radius':0x1,'spreadEndRadius':0.3,'spreadSpeed':0x2});this[_0x2f5c68(0x4bc)](_0x18588e),_0x18588e['startSpreadAnimation']();const _0x2a4d49=new BaseCircle({'color':this[_0x2f5c68(0x508)][_0x2f5c68(0x229)],'type':0x6,'radius':0x1,'spreadStartRadius':0.15,'spreadEndRadius':0.3,'spreadSpeed':0x2});this[_0x2f5c68(0x4bc)](_0x2a4d49),_0x2a4d49[_0x2f5c68(0x15c)]();}}class CompositeIconHTML extends CompositeIcon{[_0x49cdc8(0x508)];['_bgColor'];[_0x49cdc8(0x313)];[_0x49cdc8(0x28f)];constructor(_0x227de7){const _0x185cee=_0x49cdc8;super(),this['opts']=Object['assign']({'color':_0x185cee(0x4c3),'bgColor':'#ff0000','opacity':0x1,'title':_0x185cee(0x1f0),'titleHeight':0x1,'titleSize':0xe,'titleColor':_0x185cee(0x18d)},_0x227de7),this[_0x185cee(0x5d6)]=new Color(this[_0x185cee(0x508)][_0x185cee(0x147)]),this[_0x185cee(0x313)]=this[_0x185cee(0x508)]['opacity'];const _0x1cabb6=new BaseCircle({'color':this[_0x185cee(0x508)][_0x185cee(0x229)],'type':0x4});this['add'](_0x1cabb6);const _0x3fe568=new BaseCircularArraySquares({'circleRadius':0.3,'squareRadius':0.03,'numbers':0x14,'color':this['opts'][_0x185cee(0x229)]});this[_0x185cee(0x4bc)](_0x3fe568),_0x3fe568[_0x185cee(0x13b)]();const _0x1e73ce=new BaseCircle({'color':this[_0x185cee(0x508)][_0x185cee(0x229)],'type':0x5,'radius':0.35});this[_0x185cee(0x4bc)](_0x1e73ce),_0x1e73ce[_0x185cee(0x26e)][_0x185cee(0x4ec)](0x0,0.05,0x0);const _0x4e975f=new BaseCircularArrayArrows({'circleRadius':0.175,'color':this[_0x185cee(0x508)][_0x185cee(0x229)],'numbers':0x4,'triangleSize':0.065,'speed':0x1,'indicateRadius':1.5});this[_0x185cee(0x4bc)](_0x4e975f),_0x4e975f[_0x185cee(0x26e)][_0x185cee(0x4ec)](0x0,0.05,0x0),_0x4e975f[_0x185cee(0x139)]();const _0x51eae5=new BaseShapeVic({'color':this[_0x185cee(0x508)][_0x185cee(0x229)]});_0x51eae5[_0x185cee(0x17e)]['set'](0.5,0.5,0.5),_0x51eae5[_0x185cee(0x26e)]['set'](0x0,0.1,0x0),this[_0x185cee(0x4bc)](_0x51eae5),this[_0x185cee(0x28f)]=new Popup({'value':'<div\x20style=\x27pointer-events:none;background-color:'+this[_0x185cee(0x147)]+_0x185cee(0x502)+this[_0x185cee(0x508)][_0x185cee(0x219)]+_0x185cee(0x20a)+this[_0x185cee(0x508)]['titleSize']+_0x185cee(0x116)+this['opts'][_0x185cee(0x4f5)]+_0x185cee(0x3a2),'center':[-0.5,0x0],'position':[0x0,this['opts']['titleHeight'],0x0],'closeSize':0.8}),this[_0x185cee(0x4bc)](this['htmlEle']);}get[_0x49cdc8(0x147)](){const _0x318274=_0x49cdc8;return _0x318274(0x2c6)+this[_0x318274(0x5d6)]['r']*0xff+','+this[_0x318274(0x5d6)]['g']*0xff+','+this[_0x318274(0x5d6)]['b']*0xff+','+this['opacity']+')';}set['bgColor'](_0x45846c){const _0x14dfe0=_0x49cdc8;this['_bgColor'][_0x14dfe0(0x4ec)](_0x45846c);}[_0x49cdc8(0x41f)](){const _0x99756c=_0x49cdc8;this[_0x99756c(0x28f)][_0x99756c(0x592)]=!![];}[_0x49cdc8(0x58f)](){const _0x518635=_0x49cdc8;this[_0x518635(0x28f)][_0x518635(0x592)]=![];}}class TagBase extends Group$1{[_0x49cdc8(0x588)];constructor(){const _0x1898f1=_0x49cdc8;super(),this[_0x1898f1(0x588)]=!![];}}class Box extends Mesh{[_0x49cdc8(0x5c1)];constructor(_0x37f4cd){const _0x257377=_0x49cdc8;super();let _0x3fa654={'size':[0.5,0xa,0.5],'color':_0x257377(0x40f)};Object[_0x257377(0x402)](_0x3fa654,_0x37f4cd),this[_0x257377(0x5c1)]=!![],this[_0x257377(0x2d9)]=new BoxGeometry(..._0x3fa654[_0x257377(0x47b)]),this[_0x257377(0x4b8)]=new MeshStandardMaterial({'side':0x2,'transparent':![],'color':_0x3fa654[_0x257377(0x229)]}),this[_0x257377(0x26e)]['y']=_0x3fa654[_0x257377(0x47b)][0x1]/1.5;}}class LightWall extends Mesh{[_0x49cdc8(0x15a)];[_0x49cdc8(0x317)];constructor(_0x4d539b){const _0x3ea8e4=_0x49cdc8;super();let _0x161bcd={'size':[0x3,0x3,0x5],'color':_0x3ea8e4(0x40f),'opacity':0.8};Object['assign'](_0x161bcd,_0x4d539b),this['options']=_0x161bcd,this[_0x3ea8e4(0x317)]=!![];const _0x5651a1=new Color(_0x161bcd[_0x3ea8e4(0x229)]);Object['defineProperties'](this,{'color':{'configurable':!![],'enumerable':!![],'value':_0x5651a1}}),this[_0x3ea8e4(0x2d9)]=new CylinderGeometry(_0x161bcd['size'][0x0],_0x161bcd[_0x3ea8e4(0x47b)][0x1],_0x161bcd[_0x3ea8e4(0x47b)][0x2],0x40,0x40),this[_0x3ea8e4(0x2d9)][_0x3ea8e4(0x367)]();const _0x139f16=this[_0x3ea8e4(0x2d9)]['boundingBox'],{min:_0x137600,max:_0x327173}=_0x139f16;this[_0x3ea8e4(0x4b8)]=new ShaderMaterial({'transparent':!![],'side':DoubleSide,'uniforms':{'uopacity':{'value':_0x161bcd[_0x3ea8e4(0x313)]},'color':{'value':_0x5651a1},'height':{'value':_0x161bcd[_0x3ea8e4(0x47b)][0x2]},'uradius':{'value':_0x161bcd[_0x3ea8e4(0x47b)][0x0]},'uMin':{'value':_0x137600}},'vertexShader':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<common>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<color_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_pars_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20v_opacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20height;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uradius;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20uMin;\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main()\x20{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20minCenter\x20=\x20vec3(0.,uMin.y,0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20v_opacity\x20=\x20(1.\x20-\x20(position.y\x20+\x20height\x20/\x202.0\x20)\x20/\x20height);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(position.y\x20<\x20minCenter.y\x20+\x200.0001){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20v_opacity\x20*=\x20length(position\x20-\x20minCenter\x20)/\x20uradius\x20*\x200.1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(position,\x201.0);\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<clipping_planes_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<fog_vertex>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20','fragmentShader':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_pars_fragment>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20color;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uopacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20float\x20v_opacity;\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main()\x20{\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(color,\x20v_opacity\x20*\x20uopacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<logdepthbuf_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20'}),this[_0x3ea8e4(0x26e)]['y']=_0x161bcd[_0x3ea8e4(0x47b)][0x2]/0x2,this[_0x3ea8e4(0x5a9)]=0x2;}}class CircleLightEfficiency extends Mesh{[_0x49cdc8(0x508)];['speed'];[_0x49cdc8(0x208)];constructor(_0x4755d1){const _0x2435e6=_0x49cdc8;super();let _0x351e86={'radius':0x5,'color':_0x2435e6(0x40f),'speed':0.1,'isCirclSpread':![]};Object[_0x2435e6(0x402)](_0x351e86,_0x4755d1),this['opts']=_0x351e86,this[_0x2435e6(0x551)]=_0x351e86[_0x2435e6(0x551)],this[_0x2435e6(0x208)]=!![];let _0x1c6a0c=new Color(_0x351e86[_0x2435e6(0x229)]),_0x424f5b=new Vector2(0.19,0.24);Object[_0x2435e6(0x4ef)](this,{'uColor':{'configurable':!![],'enumerable':!![],'value':_0x1c6a0c},'scanRange':{'configurable':!![],'enumerable':!![],'value':_0x424f5b}}),this[_0x2435e6(0x2d9)]=new CircleGeometry(_0x351e86[_0x2435e6(0x30d)],0x80),this[_0x2435e6(0x170)](-Math['PI']/0x2),this[_0x2435e6(0x5a9)]=0x2,this[_0x2435e6(0x4b8)]=new ShaderMaterial({'side':0x2,'transparent':!![],'uniforms':{'uColor':{'value':_0x1c6a0c},'startColor':{'value':new Color('#0954ed')},'uTime':{'value':0x0},'startTime':{'value':0x0},'vOpacity':{'value':0x1},'uSpeed':{'value':_0x351e86[_0x2435e6(0x551)]},'uSge':{'value':0x4},'scanningRange':{'value':_0x424f5b},'isCirclSpread':{'value':_0x351e86['isCirclSpread']}},'vertexShader':_0x2435e6(0x460),'fragmentShader':_0x2435e6(0x29f)});const _0x43be62=()=>{const _0x49348c=_0x2435e6;this[_0x49348c(0x4b8)][_0x49348c(0x385)]['uTime'][_0x49348c(0x4ba)]+=this[_0x49348c(0x551)]/0x5;const _0x4c0d0e=this[_0x49348c(0x4b8)];if(_0x4c0d0e['uniforms'][_0x49348c(0x37f)]['value']<0.45)_0x4c0d0e[_0x49348c(0x385)]['startTime']['value']+=0.01;requestAnimationFrame(_0x43be62);};_0x43be62();}}const drawText=[drawTextCanvas5,drawTextCanvas6];class BaseTagPopup extends Sprite{[_0x49cdc8(0x508)];[_0x49cdc8(0x147)];[_0x49cdc8(0x47b)];constructor(_0x9a2bc0){const _0x35bd9=_0x49cdc8;super(),this[_0x35bd9(0x147)]=new Color(_0x9a2bc0?.[_0x35bd9(0x147)]?_0x9a2bc0[_0x35bd9(0x147)]:'#ff0000'),this[_0x35bd9(0x508)]=Object[_0x35bd9(0x402)]({'text':'标题','fontColor':_0x35bd9(0x18d),'bgColor':'rgba('+this[_0x35bd9(0x147)]['r']*0xff+','+this[_0x35bd9(0x147)]['g']*0xff+','+this[_0x35bd9(0x147)]['b']*0xff+','+(_0x9a2bc0?.[_0x35bd9(0x313)]?_0x9a2bc0[_0x35bd9(0x313)]:0x1)+')','strokeColor':_0x35bd9(0x4c3),'fontSize':0x40,'height':0x0,'size':0x1,'type':0x0},_0x9a2bc0);const {canvas:_0x2c28d1,width:_0x222607,height:_0x41157b}=drawText[this['opts'][_0x35bd9(0x26f)]]({'text':this[_0x35bd9(0x508)][_0x35bd9(0x4ad)],'fontColor':this[_0x35bd9(0x508)][_0x35bd9(0x5ba)],'bgColor':this['opts'][_0x35bd9(0x147)],'strokeColor':this[_0x35bd9(0x508)][_0x35bd9(0x556)],'fontSize':this[_0x35bd9(0x508)]['fontSize']}),_0x30e52b=new CanvasTexture(_0x2c28d1);this['material']=new SpriteMaterial({'map':_0x30e52b,'transparent':!![],'opacity':0x1}),this[_0x35bd9(0x47b)]=[_0x222607,_0x41157b],this[_0x35bd9(0x455)]['set'](0.5,0x0),this[_0x35bd9(0x26e)][_0x35bd9(0x4ec)](0x0,this['opts'][_0x35bd9(0x589)],0x0),this['scale']['set'](this[_0x35bd9(0x508)][_0x35bd9(0x47b)]*(0x1*_0x222607)/0x200,this[_0x35bd9(0x508)][_0x35bd9(0x47b)]*_0x41157b/0x200,0x1);}}class ColumnarTag extends TagBase{[_0x49cdc8(0x478)];[_0x49cdc8(0x137)];[_0x49cdc8(0x4d9)];[_0x49cdc8(0x451)];[_0x49cdc8(0x41c)];constructor(_0x4ebe55){const _0x440866=_0x49cdc8;super();let _0x18446a={'cubeOpts':{'size':[0.5,0xa,0.5],'color':_0x440866(0x40f)},'lightWallOpts':{'size':[0x3,0x3,0x5],'color':_0x440866(0x40f),'opacity':0.8},'circleEfficiencyOpts':{'radius':0x5,'color':_0x440866(0x40f),'speed':0.1,'isCirclSpread':![]},'popupOpts':{'text':_0x440866(0x61a),'fontColor':_0x440866(0x18d),'bgColor':_0x440866(0x40f),'strokeColor':_0x440866(0x40f),'fontSize':0x50,'height':0x0,'size':0x5,'type':0x0}};Object[_0x440866(0x402)](_0x18446a,_0x4ebe55),this[_0x440866(0x451)]=_0x18446a[_0x440866(0x36b)],this[_0x440866(0x41c)]=this[_0x440866(0x451)][_0x440866(0x26f)];const _0x4eabdd=new Box(_0x18446a[_0x440866(0x39e)]);this[_0x440866(0x4bc)](_0x4eabdd),_0x4eabdd[_0x440866(0x386)](),_0x4eabdd[_0x440866(0x2d9)][_0x440866(0x367)]();const {min:_0x5b1e8b,max:_0x26c29b}=_0x4eabdd['geometry'][_0x440866(0x1ef)];_0x26c29b[_0x440866(0x13e)](_0x4eabdd['matrixWorld']),this[_0x440866(0x478)]=_0x26c29b['y'];const _0x4bb335=new LightWall(_0x18446a[_0x440866(0x1af)]);this[_0x440866(0x4bc)](_0x4bb335);const _0x35bf2d=new CircleLightEfficiency(_0x18446a['circleEfficiencyOpts']);this[_0x440866(0x4bc)](_0x35bf2d);const _0x369a12=new BaseTagPopup(_0x18446a[_0x440866(0x36b)]);this[_0x440866(0x4bc)](_0x369a12),_0x369a12[_0x440866(0x3d7)][_0x440866(0x26f)]=_0x440866(0x38c),_0x369a12[_0x440866(0x26e)]['y']=this['popupBaseHeight']+0x1,this[_0x440866(0x137)]=[_0x369a12[_0x440866(0x17e)]['x'],_0x369a12[_0x440866(0x17e)]['y']],this[_0x440866(0x4d9)]=0x1,this[_0x440866(0x215)](_0x18446a[_0x440866(0x405)][_0x440866(0x540)]),this[_0x440866(0x21c)](_0x18446a[_0x440866(0x1af)]['size'][0x0],_0x18446a[_0x440866(0x405)][_0x440866(0x30d)],[0.35,0.45]);}[_0x49cdc8(0x21c)](_0x4c62aa,_0x4fd19f,_0x335dc7){const _0x32ba09=_0x49cdc8,_0x4e6428=_0x4c62aa/_0x4fd19f;this[_0x32ba09(0x1a6)](_0x37d3e3=>{const _0xa9358a=_0x32ba09;_0x37d3e3[_0xa9358a(0x208)]&&_0x37d3e3[_0xa9358a(0x2cf)][_0xa9358a(0x4ec)](_0x4e6428*_0x335dc7[0x0],_0x4e6428*_0x335dc7[0x1]);});}[_0x49cdc8(0x60b)](_0xa8862e){this['traverse'](_0x373fea=>{const _0x52f32e=_0x16a8;if(_0x373fea[_0x52f32e(0x5c1)])_0x373fea[_0x52f32e(0x4b8)][_0x52f32e(0x229)]=new Color(_0xa8862e);else{if(_0x373fea['isCirclEfficiency'])_0x373fea[_0x52f32e(0x5a4)]['set'](_0xa8862e);else _0x373fea['userData']?.[_0x52f32e(0x26f)]==_0x52f32e(0x38c)&&this['setColorOfPopup'](_0xa8862e);}});}[_0x49cdc8(0x2e9)](_0x54c430,_0x47b3b5){const _0x41f442=_0x49cdc8;this['traverse'](_0x593f2b=>{const _0x1547e4=_0x16a8;_0x593f2b[_0x1547e4(0x208)]&&(_0x593f2b[_0x1547e4(0x4b8)][_0x1547e4(0x385)][_0x1547e4(0x540)][_0x1547e4(0x4ba)]=_0x54c430,_0x593f2b['material'][_0x1547e4(0x385)][_0x1547e4(0x37f)][_0x1547e4(0x4ba)]=0x0,_0x593f2b[_0x1547e4(0x4b8)][_0x1547e4(0x385)][_0x1547e4(0x14a)][_0x1547e4(0x4ba)]=0x0);}),this[_0x41f442(0x41c)]=_0x54c430?0x1:0x0;if(_0x47b3b5)this[_0x41f442(0x41c)]=_0x47b3b5;this[_0x41f442(0x44c)](this[_0x41f442(0x451)][_0x41f442(0x147)]),this['setTextOfPopup'](this['spritPopupAttrs'][_0x41f442(0x4ad)]),this[_0x41f442(0x215)](_0x54c430);}[_0x49cdc8(0x123)](_0x2c6b34){const _0xb80897=_0x49cdc8,_0x5f3e65=Math[_0xb80897(0x105)](Math[_0xb80897(0x3bb)](_0x2c6b34,0x64),0x0);this[_0xb80897(0x4d9)]=_0x5f3e65,this[_0xb80897(0x1a6)](_0x23c79a=>{const _0x2c810c=_0xb80897;if(_0x23c79a[_0x2c810c(0x3d7)]?.[_0x2c810c(0x26f)]==_0x2c810c(0x38c))_0x23c79a['scale'][_0x2c810c(0x4ec)](this[_0x2c810c(0x137)][0x0]*_0x5f3e65,this[_0x2c810c(0x137)][0x1]*_0x5f3e65);});}[_0x49cdc8(0x11d)](_0x2e401d){const _0x5db361=_0x49cdc8,_0x3e470c=Math[_0x5db361(0x105)](Math['min'](_0x2e401d,0x64),0x0);this['traverse'](_0x358e7c=>{const _0x10ef88=_0x5db361;if(_0x358e7c[_0x10ef88(0x3d7)]?.[_0x10ef88(0x26f)]==_0x10ef88(0x38c))_0x358e7c['position']['y']=this['popupBaseHeight']+_0x3e470c;});}[_0x49cdc8(0x44c)](_0x1dd565){const _0x1bea67=_0x49cdc8;this[_0x1bea67(0x451)][_0x1bea67(0x147)]=_0x1dd565,this[_0x1bea67(0x451)]['strokeColor']=_0x1dd565,this[_0x1bea67(0x451)]['type']=this[_0x1bea67(0x41c)];const _0x578e38=new BaseTagPopup(this[_0x1bea67(0x451)]),_0x1d432b=_0x578e38['material'][_0x1bea67(0x427)]['clone']();this[_0x1bea67(0x1a6)](_0x3cc404=>{const _0x34d254=_0x1bea67;if(_0x3cc404[_0x34d254(0x3d7)]?.[_0x34d254(0x26f)]==_0x34d254(0x38c))_0x3cc404['material'][_0x34d254(0x427)]=_0x1d432b;});}[_0x49cdc8(0x165)](_0x177ce0){const _0x1ce98f=_0x49cdc8;this[_0x1ce98f(0x1a6)](_0x360e65=>{const _0x535a29=_0x1ce98f;if(_0x360e65[_0x535a29(0x317)])_0x360e65[_0x535a29(0x229)]['set'](_0x177ce0);});}[_0x49cdc8(0x215)](_0x33a05a){const _0x12ad42=_0x49cdc8;this[_0x12ad42(0x1a6)](_0x89fddb=>{const _0x398e17=_0x12ad42;if(_0x89fddb[_0x398e17(0x3d7)]?.[_0x398e17(0x26f)]==_0x398e17(0x38c))_0x89fddb['center']['x']=_0x33a05a?0x0:0.5;});}[_0x49cdc8(0x47c)](_0x325c2c){const _0x1df37e=_0x49cdc8,_0x2b7c8b=_0x325c2c[_0x1df37e(0x33c)]();if(_0x2b7c8b&&_0x2b7c8b[_0x1df37e(0x25b)]<0x1)return;this[_0x1df37e(0x451)][_0x1df37e(0x4ad)]=_0x2b7c8b[_0x1df37e(0x425)](0x0,Math[_0x1df37e(0x3bb)](0x12,_0x2b7c8b[_0x1df37e(0x25b)]));const _0x4f5b2d=new BaseTagPopup(this[_0x1df37e(0x451)]),_0x26619b=_0x4f5b2d[_0x1df37e(0x4b8)][_0x1df37e(0x427)][_0x1df37e(0x32a)]();this[_0x1df37e(0x1a6)](_0x1d8bf9=>{const _0x3e972b=_0x1df37e;_0x1d8bf9[_0x3e972b(0x3d7)]?.[_0x3e972b(0x26f)]==_0x3e972b(0x38c)&&(_0x1d8bf9[_0x3e972b(0x4b8)][_0x3e972b(0x427)]=_0x26619b,this[_0x3e972b(0x137)]=[_0x4f5b2d['scale']['x'],_0x4f5b2d[_0x3e972b(0x17e)]['y']]);});}}class ScanningCirle extends Mesh{['opts'];['speed'];[_0x49cdc8(0x491)];constructor(_0x3c1288){const _0x5e0d74=_0x49cdc8;super();let _0x343582={'radius':0x5,'color':'#0954ed','speed':0.1};Object[_0x5e0d74(0x402)](_0x343582,_0x3c1288),this[_0x5e0d74(0x508)]=_0x343582,this[_0x5e0d74(0x551)]=_0x343582[_0x5e0d74(0x551)],this[_0x5e0d74(0x491)]=!![];let _0xed59c2=new Color(_0x343582[_0x5e0d74(0x229)]),_0x36d7c5=new Vector2(0.19,0.24);Object[_0x5e0d74(0x4ef)](this,{'uColor':{'configurable':!![],'enumerable':!![],'value':_0xed59c2},'scanRange':{'configurable':!![],'enumerable':!![],'value':_0x36d7c5}}),this[_0x5e0d74(0x2d9)]=new CircleGeometry(_0x343582[_0x5e0d74(0x30d)],0x80),this[_0x5e0d74(0x170)](-Math['PI']/0x2),this[_0x5e0d74(0x5a9)]=0x2,this[_0x5e0d74(0x4b8)]=new ShaderMaterial({'side':0x2,'transparent':!![],'uniforms':{'uColor':{'value':_0xed59c2},'uTime':{'value':0x0},'startTime':{'value':0x0},'vOpacity':{'value':0x1},'uSpeed':{'value':_0x343582[_0x5e0d74(0x551)]},'scanningRange':{'value':_0x36d7c5}},'vertexShader':_0x5e0d74(0x460),'fragmentShader':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20#define\x20EPSILON\x201e-6\x0a\x20\x20\x20\x20\x20\x20\x20\x20#define\x20PI\x203.14159265\x0a\x20\x20\x20\x20\x20\x20\x20\x20varying\x20vec2\x20uvu;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec3\x20uColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20startTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20vOpacity;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20vec2\x20scanningRange;\x0a\x20\x20\x20\x20\x20\x20\x20\x20uniform\x20float\x20uSpeed;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20float\x20atan2(in\x20float\x20y,in\x20float\x20x){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20ax\x20=\x20abs(x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20ay\x20=\x20abs(y);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20a\x20=\x20min(ax,\x20ay)\x20/\x20(max(ax,\x20ay)\x20+\x20EPSILON);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20s\x20=\x20a*a;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20r\x20=\x20((-.0464964749\x20*\x20s\x20+\x20.15931422)\x20*\x20s\x20-\x20.327622764)\x20*\x20s\x20*\x20a\x20+\x20a;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(ay\x20>\x20ax)\x20r\x20=\x20PI\x20/\x202.\x20-\x20r;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(x\x20<\x200.\x20)\x20r\x20=\x20PI\x20-\x20r;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(y\x20<\x200.\x20)\x20r\x20=\x202.\x20*\x20PI\x20-\x20r;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20return\x20r;\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20void\x20main(){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec3\x20difColor\x20=vec3(0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20uopacity\x20=\x201.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20pct\x20=\x20distance(uvu,\x20vec2(.5));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20time1\x20=\x20cos(uTime);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(startTime\x20<\x200.45){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(pct\x20>\x20startTime\x20-\x200.05\x20&&\x20pct\x20<\x20startTime\x20+\x200.05){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20uColor;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=(1.-\x20smoothstep(startTime\x20-\x200.05,startTime\x20+\x200.04,pct));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uopacity>0.97)difColor\x20+=\x20vec3(1.)*0.1;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(uopacity\x20<0.98)uopacity\x20*=1.-\x20startTime;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20//开场\x20动效end\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}else{\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(pct\x20>\x20scanningRange.x\x20&&\x20pct\x20<\x20scanningRange.y){\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20vec2\x20dir\x20=\x20uvu\x20-\x20vec2(.5);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20dir\x20=\x20vec2(dir.x\x20*\x20cos(uTime)\x20-\x20dir.y\x20*\x20sin(uTime),\x20dir.x\x20*\x20sin(uTime)\x20+\x20dir.y\x20*\x20cos(uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20float\x20theta\x20=\x20atan2(dir.y\x20,dir.x);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20uColor\x20*\x20(2.4\x20+\x20sin(2.2\x20*\x20uTime));\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x20theta\x20/\x20(2.\x20*\x20PI);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x20else{\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20difColor\x20=\x20vec3(0.);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20uopacity\x20=\x200.;\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20if(time1\x20>0.\x20)uopacity\x20*=\x20time1;\x20//\x20闪烁\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20gl_FragColor\x20=\x20vec4(difColor,uopacity);\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20#include\x20<tonemapping_fragment>\x0a\x20\x20\x20\x20\x20\x20\x20\x20}\x0a\x20\x20\x20\x20\x20\x20'});const _0x27dbb6=()=>{const _0x55d5ce=_0x5e0d74;this[_0x55d5ce(0x4b8)][_0x55d5ce(0x385)]['uTime'][_0x55d5ce(0x4ba)]+=this[_0x55d5ce(0x551)]/0x5;const _0x3473ca=this['material'];if(_0x3473ca['uniforms']['startTime'][_0x55d5ce(0x4ba)]<0.45)_0x3473ca[_0x55d5ce(0x385)][_0x55d5ce(0x37f)][_0x55d5ce(0x4ba)]+=0.01;requestAnimationFrame(_0x27dbb6);};_0x27dbb6();}}class RealtimeCavans{[_0x49cdc8(0x508)];[_0x49cdc8(0x147)];['canvas'];[_0x49cdc8(0x552)];[_0x49cdc8(0x589)];[_0x49cdc8(0x39a)];[_0x49cdc8(0x3a7)];[_0x49cdc8(0x303)];[_0x49cdc8(0x5df)];['titleWidth'];['contextBoxHeight'];[_0x49cdc8(0x41e)];constructor(_0x536a27){const _0x33352f=_0x49cdc8;this['bgColor']=new Color(_0x536a27?.[_0x33352f(0x147)]?_0x536a27[_0x33352f(0x147)]:_0x33352f(0x4c3)),this['opts']=Object[_0x33352f(0x402)]({'title':'标题','text':'请输入内容','fontColor':'#ffffff','bgColor':_0x33352f(0x2c6)+this[_0x33352f(0x147)]['r']*0xff+','+this[_0x33352f(0x147)]['g']*0xff+','+this[_0x33352f(0x147)]['b']*0xff+','+(_0x536a27?.[_0x33352f(0x313)]?_0x536a27[_0x33352f(0x313)]:0x1)+')','strokeColor':'#ff0000','fontSize':0x40,'speed':0x5,'opacity':0x1},_0x536a27);let _0x72c8cd=document[_0x33352f(0x5b0)](_0x33352f(0x18c));this[_0x33352f(0x552)]=0x400,this[_0x33352f(0x589)]=0x200,this[_0x33352f(0x333)]=0x0,this[_0x33352f(0x177)]=0x0,_0x72c8cd[_0x33352f(0x552)]=this['width'],_0x72c8cd[_0x33352f(0x589)]=this['height'],_0x72c8cd[_0x33352f(0x2b7)]['width']=this[_0x33352f(0x552)]/0x2+'px',_0x72c8cd['style'][_0x33352f(0x589)]=this['height']/0x2+'px';const _0x3a712c=_0x72c8cd[_0x33352f(0x11b)]('2d');this['canvasContext']=_0x3a712c,this[_0x33352f(0x18c)]=_0x72c8cd,this[_0x33352f(0x39a)]=0x0,this[_0x33352f(0x3a7)]=0x200,this[_0x33352f(0x303)]=0xa;const _0x40a898=()=>{const _0x39b066=_0x33352f;requestAnimationFrame(_0x40a898);if(this[_0x39b066(0x39a)]==0x0){if(this['time1']<0x401)this[_0x39b066(0x3e7)](this[_0x39b066(0x3a7)]);this[_0x39b066(0x3a7)]+=this['opts']['speed'],this[_0x39b066(0x3a7)]>0x400&&(this[_0x39b066(0x2b6)](this['time2']),this['time2']+=this[_0x39b066(0x508)][_0x39b066(0x551)],this[_0x39b066(0x303)]>0x18e&&(this[_0x39b066(0x39a)]=0x2,this[_0x39b066(0x3a7)]=0x200,this[_0x39b066(0x303)]=0xa));}else{if(this[_0x39b066(0x39a)]==0x1){if(this[_0x39b066(0x303)]<0x18f&&this[_0x39b066(0x303)]>0x9)this[_0x39b066(0x2b6)](this[_0x39b066(0x303)]);this[_0x39b066(0x303)]-=this[_0x39b066(0x508)]['speed'];if(this['time2']<0xa){if(this['time1']<0x401)this[_0x39b066(0x3e7)](this[_0x39b066(0x3a7)]);this[_0x39b066(0x3a7)]-=this[_0x39b066(0x508)]['speed'],this[_0x39b066(0x3a7)]<0x200&&(this[_0x39b066(0x39a)]=0x2,this[_0x39b066(0x3a7)]=0x200,this[_0x39b066(0x303)]=0xa,this[_0x39b066(0x41e)]&&this[_0x39b066(0x41e)]());}}}};_0x40a898();}[_0x49cdc8(0x3e7)](_0x339dd0){const _0x193c48=_0x49cdc8;if(_0x339dd0>0x400)return;this['titleWidth']=_0x339dd0,this[_0x193c48(0x5df)][_0x193c48(0x488)]=_0x193c48(0x3cc)+this[_0x193c48(0x508)][_0x193c48(0x34b)]+_0x193c48(0x17f);const _0x1f16a6=ColorRGBA[_0x193c48(0x16e)](this[_0x193c48(0x508)][_0x193c48(0x556)]),_0x1eb86a=ColorRGBA[_0x193c48(0x16e)](this[_0x193c48(0x508)][_0x193c48(0x147)]);let _0x234e1b=this['canvasContext'][_0x193c48(0x42d)](this['opts'][_0x193c48(0x4f5)])[_0x193c48(0x552)];_0x234e1b=Math[_0x193c48(0x105)](0x40,Math['min'](_0x234e1b,0x400-0x80));const _0x592899=this[_0x193c48(0x552)]/0x2,_0x368755=_0x193c48(0x23f)+(_0x1f16a6['r']+0.2)*0xff+','+(_0x1f16a6['g']+0.2)*0xff+','+(_0x1f16a6['b']+0.2)*0xff+')';this[_0x193c48(0x5df)][_0x193c48(0x48e)](0x0,0x0,this[_0x193c48(0x552)],0x80),this['canvasContext'][_0x193c48(0x4ff)]=this[_0x193c48(0x508)][_0x193c48(0x147)],this['canvasContext']['fillRect'](this[_0x193c48(0x552)]/0x2-_0x339dd0/0x2,0x40,_0x339dd0,0x32),this['canvasContext']['beginPath'](),this[_0x193c48(0x5df)][_0x193c48(0x4ff)]=_0x193c48(0x23f)+(_0x1eb86a['r']-0.1)*0xff+','+(_0x1eb86a['g']-0.1)*0xff+','+(_0x1eb86a['b']-0.1)*0xff+')',this[_0x193c48(0x5df)]['moveTo'](_0x592899-_0x234e1b*0.6,0x0),this[_0x193c48(0x5df)][_0x193c48(0x32f)](_0x592899-_0x234e1b*0.6,0x80/0x2),this[_0x193c48(0x5df)][_0x193c48(0x32f)](_0x592899-_0x234e1b*0.6-0x80/0x2,0x80/0x2),this[_0x193c48(0x5df)][_0x193c48(0x120)]=_0x368755,this[_0x193c48(0x5df)][_0x193c48(0x232)]=0x1,this['canvasContext']['closePath'](),this[_0x193c48(0x5df)]['fill'](),this[_0x193c48(0x5df)][_0x193c48(0x5d0)](),this[_0x193c48(0x5df)]['beginPath'](),this[_0x193c48(0x5df)][_0x193c48(0x596)](_0x592899+_0x234e1b*0.6+0.1,0x0),this['canvasContext'][_0x193c48(0x32f)](_0x592899+_0x234e1b*0.6+0.1,0x80/0x2),this[_0x193c48(0x5df)]['lineTo'](_0x592899+_0x234e1b*0.6+0x80/0x2+0.1,0x80/0x2),this[_0x193c48(0x5df)][_0x193c48(0x120)]=_0x368755,this[_0x193c48(0x5df)]['lineWidth']=0x1,this[_0x193c48(0x5df)][_0x193c48(0x415)](),this[_0x193c48(0x5df)][_0x193c48(0x2ae)](),this[_0x193c48(0x5df)][_0x193c48(0x5d0)](),this[_0x193c48(0x5df)][_0x193c48(0x281)](),this['canvasContext'][_0x193c48(0x4ff)]=_0x193c48(0x23f)+(_0x1eb86a['r']+0.2)*0xff+','+(_0x1eb86a['g']+0.2)*0xff+','+(_0x1eb86a['b']+0.2)*0xff+')',this[_0x193c48(0x5df)][_0x193c48(0x596)](_0x592899-_0x234e1b*0.6,0x0),this['canvasContext'][_0x193c48(0x32f)](_0x592899+_0x234e1b*0.6,0x0),this[_0x193c48(0x5df)][_0x193c48(0x32f)](_0x592899+_0x234e1b*0.6,0x80/0x3*0x2),this[_0x193c48(0x5df)][_0x193c48(0x604)](_0x592899+_0x234e1b*0.6-0x14,0x80/0x3*0x2,0x14,0x0,Math['PI']/0x2),this[_0x193c48(0x5df)][_0x193c48(0x32f)](_0x592899-_0x234e1b*0.6+0x14,0x80/0x3*0x2+0x14),this[_0x193c48(0x5df)][_0x193c48(0x604)](_0x592899-_0x234e1b*0.6+0x14,0x80/0x3*0x2,0x14,Math['PI']/0x2,Math['PI']),this['canvasContext']['lineTo'](_0x592899-_0x234e1b*0.6,0x0),this[_0x193c48(0x5df)][_0x193c48(0x120)]=_0x368755,this['canvasContext'][_0x193c48(0x232)]=0x1,this[_0x193c48(0x5df)][_0x193c48(0x415)](),this[_0x193c48(0x5df)][_0x193c48(0x2ae)](),this[_0x193c48(0x5df)][_0x193c48(0x5d0)](),this[_0x193c48(0x5df)][_0x193c48(0x488)]='Bold\x20'+this[_0x193c48(0x508)][_0x193c48(0x34b)]/0x2+'px\x20Microsoft\x20YaHei',this[_0x193c48(0x5df)][_0x193c48(0x345)]=_0x193c48(0x3a4),this[_0x193c48(0x5df)][_0x193c48(0x4ff)]=this[_0x193c48(0x508)]['fontColor'],this[_0x193c48(0x5df)][_0x193c48(0x456)](this[_0x193c48(0x508)]['title'],(this[_0x193c48(0x552)]-this[_0x193c48(0x5df)][_0x193c48(0x42d)](this[_0x193c48(0x508)][_0x193c48(0x4f5)])[_0x193c48(0x552)])/0x2,1.2*(0x80-this[_0x193c48(0x508)][_0x193c48(0x34b)])/0x2);}['drawText'](_0x5e8b54){const _0x3ea4a5=_0x49cdc8;if(_0x5e8b54>0x18e||_0x5e8b54<0xa)return;this[_0x3ea4a5(0x177)]=_0x5e8b54;const _0x3a7bc8=ColorRGBA[_0x3ea4a5(0x16e)](this['opts'][_0x3ea4a5(0x147)]);this[_0x3ea4a5(0x3e7)](0x400),this['canvasContext']['clearRect'](0x0,0x40+0x32,this['width'],this[_0x3ea4a5(0x589)]-0x40-0x32),this[_0x3ea4a5(0x5df)][_0x3ea4a5(0x4ff)]=this['opts'][_0x3ea4a5(0x147)],this[_0x3ea4a5(0x5df)][_0x3ea4a5(0x505)](0x0,0x40+0x32,this[_0x3ea4a5(0x552)],_0x5e8b54);const _0x5ea8f7=_0x3ea4a5(0x23f)+_0x3a7bc8['r']*0.1*0xff+','+_0x3a7bc8['g']*0.1*0xff+','+_0x3a7bc8['b']*0.1*0xff+')',_0x3fb225=_0x5e8b54-0xa;_0x3fb225>0xa?(this[_0x3ea4a5(0x5df)][_0x3ea4a5(0x4ff)]=_0x5ea8f7,this[_0x3ea4a5(0x5df)][_0x3ea4a5(0x505)](0xa,0x40+0x32,this[_0x3ea4a5(0x552)]-0x14,_0x5e8b54-0xa)):this[_0x3ea4a5(0x5df)][_0x3ea4a5(0x48e)](0x0,0x40+0x32,this[_0x3ea4a5(0x552)],0x64),_0x3fb225>this[_0x3ea4a5(0x508)][_0x3ea4a5(0x34b)]/0x4&&(this[_0x3ea4a5(0x5df)][_0x3ea4a5(0x488)]=_0x3ea4a5(0x3cc)+this[_0x3ea4a5(0x508)][_0x3ea4a5(0x34b)]/0x4+_0x3ea4a5(0x17f),this[_0x3ea4a5(0x5df)][_0x3ea4a5(0x345)]=_0x3ea4a5(0x3a4),this[_0x3ea4a5(0x5df)]['fillStyle']=this[_0x3ea4a5(0x508)][_0x3ea4a5(0x5ba)],this[_0x3ea4a5(0x5b7)](this[_0x3ea4a5(0x508)][_0x3ea4a5(0x4ad)],0xa+0x2,0x40+0x32+0x2,this[_0x3ea4a5(0x508)][_0x3ea4a5(0x34b)]/0x4));}[_0x49cdc8(0x5b7)](_0x54536c,_0x471eea,_0x1b97fe,_0x3bbe5e){const _0x3a3336=_0x49cdc8;let _0x104daa=0x0,_0x265441=this[_0x3a3336(0x552)]-0x19,_0x4dd3b8=0x0;for(let _0x1a9079=0x0;_0x1a9079<_0x54536c[_0x3a3336(0x25b)];_0x1a9079++){_0x104daa+=this[_0x3a3336(0x5df)][_0x3a3336(0x42d)](_0x54536c[_0x1a9079])[_0x3a3336(0x552)],_0x104daa>_0x265441-_0x471eea&&(this[_0x3a3336(0x5df)][_0x3a3336(0x456)](_0x54536c[_0x3a3336(0x425)](_0x4dd3b8,_0x1a9079),_0x471eea,_0x1b97fe),_0x1b97fe+=_0x3bbe5e+0x2,_0x104daa=0x0,_0x4dd3b8=_0x1a9079),_0x1a9079==_0x54536c['length']-0x1&&this[_0x3a3336(0x5df)][_0x3a3336(0x456)](_0x54536c['substring'](_0x4dd3b8,_0x1a9079+0x1),_0x471eea,_0x1b97fe);}}[_0x49cdc8(0x235)](_0x10935d){const _0x934399=_0x49cdc8;this[_0x934399(0x3a7)]=_0x10935d?0x400:0x200,this['time2']=_0x10935d?0x18e:0xa,this[_0x934399(0x39a)]=_0x10935d?0x1:0x0;}[_0x49cdc8(0x4c1)](_0x23327b){const _0x37666a=_0x49cdc8;if(_0x23327b[_0x37666a(0x25b)]<0x1)return;this[_0x37666a(0x508)][_0x37666a(0x4f5)]=_0x23327b[_0x37666a(0x33c)](),this[_0x37666a(0x3e7)](this['titleWidth']),this[_0x37666a(0x2b6)](this[_0x37666a(0x177)]);}[_0x49cdc8(0x2b4)](_0x4d56e0){const _0x148b45=_0x49cdc8;if(_0x4d56e0[_0x148b45(0x25b)]<0x1)return;this[_0x148b45(0x508)][_0x148b45(0x4ad)]=_0x4d56e0[_0x148b45(0x33c)]();if(this[_0x148b45(0x177)]=0x18e)this['drawText'](0x18e);}[_0x49cdc8(0x571)](_0x27c807){const _0x33449f=_0x49cdc8,_0x583f5e=new Color(_0x27c807);this[_0x33449f(0x508)]['bgColor']=_0x33449f(0x2c6)+_0x583f5e['r']*0xff+','+_0x583f5e['g']*0xff+','+_0x583f5e['b']*0xff+','+this[_0x33449f(0x508)][_0x33449f(0x313)]+')',this[_0x33449f(0x3e7)](this['titleWidth']),this['drawText'](this[_0x33449f(0x177)]);}}class InformationPopup extends Sprite{[_0x49cdc8(0x22f)];[_0x49cdc8(0x508)];[_0x49cdc8(0x147)];['size'];[_0x49cdc8(0x492)];['baseSize'];constructor(_0x1bdc4a){const _0x2a7985=_0x49cdc8;super(),this[_0x2a7985(0x147)]=new Color(_0x1bdc4a?.['bgColor']?_0x1bdc4a[_0x2a7985(0x147)]:_0x2a7985(0x4c3)),this[_0x2a7985(0x508)]=Object[_0x2a7985(0x402)]({'title':'标题','text':'请输入内容','fontColor':_0x2a7985(0x18d),'bgColor':_0x2a7985(0x2c6)+this[_0x2a7985(0x147)]['r']*0xff+','+this[_0x2a7985(0x147)]['g']*0xff+','+this[_0x2a7985(0x147)]['b']*0xff+','+(_0x1bdc4a?.[_0x2a7985(0x313)]?_0x1bdc4a[_0x2a7985(0x313)]:0x1)+')','strokeColor':'#ff0000','fontSize':0x40,'height':0x0,'size':0x1,'type':0x0,'speed':0x5},_0x1bdc4a),this[_0x2a7985(0x22f)]=!![];const _0x391df5=new RealtimeCavans(this[_0x2a7985(0x508)]),_0x2a27dd=new CanvasTexture(_0x391df5['canvas']);this[_0x2a7985(0x4b8)]=new SpriteMaterial({'map':_0x2a27dd,'transparent':!![],'opacity':0x1}),this[_0x2a7985(0x47b)]=[_0x391df5[_0x2a7985(0x552)],_0x391df5[_0x2a7985(0x589)]],this['center']['set'](0.5,0x0),this[_0x2a7985(0x26e)][_0x2a7985(0x4ec)](0x0,this[_0x2a7985(0x508)][_0x2a7985(0x589)],0x0),this[_0x2a7985(0x17e)][_0x2a7985(0x4ec)](this[_0x2a7985(0x508)][_0x2a7985(0x47b)]*_0x391df5[_0x2a7985(0x552)]/0x200,this[_0x2a7985(0x508)][_0x2a7985(0x47b)]*_0x391df5[_0x2a7985(0x589)]/0x200,0x1),this[_0x2a7985(0x40a)]=[this[_0x2a7985(0x17e)]['x'],this[_0x2a7985(0x17e)]['y']],this['canvasObject']=_0x391df5;const _0x592f20=()=>{const _0x374eae=_0x2a7985;requestAnimationFrame(_0x592f20),this[_0x374eae(0x4b8)][_0x374eae(0x427)]=new CanvasTexture(_0x391df5[_0x374eae(0x18c)]);};_0x592f20();}[_0x49cdc8(0x533)](_0x430177){const _0x55ddc3=_0x49cdc8;this['canvasObject'][_0x55ddc3(0x235)](_0x430177);}['setTitle'](_0x24530c){const _0x1bcc2b=_0x49cdc8;this[_0x1bcc2b(0x492)][_0x1bcc2b(0x4c1)](_0x24530c);}[_0x49cdc8(0x2b4)](_0x225d04){const _0x22b160=_0x49cdc8;this['canvasObject'][_0x22b160(0x2b4)](_0x225d04);}['setColor'](_0x1c3929){const _0x1cd658=_0x49cdc8;this[_0x1cd658(0x492)][_0x1cd658(0x571)](_0x1c3929);}[_0x49cdc8(0x40b)](_0x2ebb7d){const _0x4bd517=_0x49cdc8;this[_0x4bd517(0x492)][_0x4bd517(0x41e)]=_0x2ebb7d;}}class InformationTag extends TagBase{['isInformationTag'];['baseHeightValue'];constructor(_0x4e26ae){const _0x2583bf=_0x49cdc8;super(),this['isInformationTag']=!![];let _0x4d10ca={'lightWallOpts':{'size':[0x3,0x3,0x5],'color':'#0954ed','opacity':0.8},'circleOpts':{'radius':0x5,'color':_0x2583bf(0x40f),'speed':0.1},'popupOpts':{'title':'标题','text':_0x2583bf(0x185),'fontColor':_0x2583bf(0x18d),'bgColor':_0x2583bf(0x40f),'strokeColor':_0x2583bf(0x40f),'fontSize':0x3c,'height':0x0,'size':0x5,'type':0x0,'speed':0x14}};Object[_0x2583bf(0x402)](_0x4d10ca,_0x4e26ae);const _0x309e26=new LightWall(_0x4d10ca[_0x2583bf(0x1af)]);this[_0x2583bf(0x4bc)](_0x309e26);const _0x3e0ce5=new ScanningCirle(_0x4d10ca[_0x2583bf(0x3c9)]);this[_0x2583bf(0x4bc)](_0x3e0ce5);const _0x3f2bd3=new InformationPopup(_0x4d10ca[_0x2583bf(0x36b)]);this[_0x2583bf(0x4bc)](_0x3f2bd3),_0x3f2bd3['position']['y']=0x1,this['baseHeightValue']=0x1;}['clickAnimation'](_0x32b4f1){const _0x5dd74b=_0x49cdc8;this[_0x5dd74b(0x1a6)](_0x2b038f=>{const _0x845f4=_0x5dd74b;_0x2b038f['isInformationPopup']&&(!_0x32b4f1?new Tween(_0x2b038f['position'])['to']({'y':this[_0x845f4(0x113)]})[_0x845f4(0x3cb)]()[_0x845f4(0x34a)](()=>{const _0x53cfb8=_0x845f4;_0x2b038f[_0x53cfb8(0x533)](_0x32b4f1);}):(_0x2b038f[_0x845f4(0x533)](_0x32b4f1),_0x2b038f[_0x845f4(0x40b)](()=>{const _0x4e3f67=_0x845f4;new Tween(_0x2b038f['position'])['to']({'y':this[_0x4e3f67(0x113)]-0x2})[_0x4e3f67(0x3cb)]();})));});}[_0x49cdc8(0x418)](_0x3e40de){const _0xa83e35=_0x49cdc8;if(_0x3e40de[_0xa83e35(0x33c)]()['length']>0xc)return;this['traverse'](_0x158866=>{const _0x34fa0e=_0xa83e35;if(_0x158866[_0x34fa0e(0x22f)])_0x158866['setTitle'](_0x3e40de[_0x34fa0e(0x33c)]());});}[_0x49cdc8(0x2ff)](_0x175b10){const _0x3bdace=_0x49cdc8;this[_0x3bdace(0x1a6)](_0x192900=>{const _0x9cd8b7=_0x3bdace;if(_0x192900[_0x9cd8b7(0x22f)])_0x192900[_0x9cd8b7(0x2b4)](_0x175b10);});}[_0x49cdc8(0x60b)](_0x531082){const _0x3a58f6=_0x49cdc8;this[_0x3a58f6(0x1a6)](_0x3115f0=>{const _0x331b3f=_0x3a58f6;if(_0x3115f0[_0x331b3f(0x22f)])_0x3115f0[_0x331b3f(0x571)](_0x531082);if(_0x3115f0[_0x331b3f(0x491)])_0x3115f0[_0x331b3f(0x5a4)][_0x331b3f(0x4ec)](_0x531082);});}[_0x49cdc8(0x11d)](_0x2afa86){const _0x495a8f=_0x49cdc8,_0x4a9a82=Math[_0x495a8f(0x105)](0x0,Math[_0x495a8f(0x3bb)](_0x2afa86,0x64));this[_0x495a8f(0x113)]=_0x4a9a82,this[_0x495a8f(0x1a6)](_0x4fa8c3=>{const _0x49816c=_0x495a8f;if(_0x4fa8c3[_0x49816c(0x22f)])_0x4fa8c3['position']['y']=this['baseHeightValue'];});}[_0x49cdc8(0x123)](_0x7d5763){const _0x321c5c=_0x49cdc8,_0x463448=Math[_0x321c5c(0x105)](0x0,Math['min'](_0x7d5763,0x64));this[_0x321c5c(0x1a6)](_0x1bec58=>{const _0x12e15c=_0x321c5c;if(_0x1bec58[_0x12e15c(0x22f)])_0x1bec58[_0x12e15c(0x17e)][_0x12e15c(0x4ec)](_0x1bec58[_0x12e15c(0x40a)][0x0]*_0x463448,_0x1bec58[_0x12e15c(0x40a)][0x1]*_0x463448);});}[_0x49cdc8(0x165)](_0x306a82){const _0x34acca=_0x49cdc8;this[_0x34acca(0x1a6)](_0x2d0bc8=>{const _0x13679d=_0x34acca;if(_0x2d0bc8[_0x13679d(0x317)])_0x2d0bc8[_0x13679d(0x229)][_0x13679d(0x4ec)](_0x306a82);});}}class SpreadRound extends Mesh{['opts'];[_0x49cdc8(0x551)];[_0x49cdc8(0x4af)];constructor(_0x5f3b76){const _0x5ccd13=_0x49cdc8;super();let _0x5ed7b3={'radius':0x5,'color':_0x5ccd13(0x40f),'speed':0.1};Object[_0x5ccd13(0x402)](_0x5ed7b3,_0x5f3b76),this[_0x5ccd13(0x508)]=_0x5ed7b3,this[_0x5ccd13(0x551)]=_0x5ed7b3[_0x5ccd13(0x551)],this[_0x5ccd13(0x4af)]=!![];let _0x1e728f=new Color(_0x5ed7b3[_0x5ccd13(0x229)]),_0x3ff25d=new Vector2(0x1,0x1);Object['defineProperties'](this,{'uColor':{'configurable':!![],'enumerable':!![],'value':_0x1e728f},'spreadRange':{'configurable':!![],'enumerable':!![],'value':_0x3ff25d}}),this['geometry']=new CircleGeometry(_0x5ed7b3[_0x5ccd13(0x30d)],0x80),this['rotateX'](-Math['PI']/0x2),this[_0x5ccd13(0x5a9)]=0x2,this[_0x5ccd13(0x4b8)]=new ShaderMaterial({'side':0x2,'transparent':!![],'uniforms':{'uColor':{'value':_0x1e728f},'uTime':{'value':0x0},'startTime':{'value':0x0},'vOpacity':{'value':0x1},'uSpeed':{'value':_0x5ed7b3[_0x5ccd13(0x551)]},'uSge':{'value':0x4},'spreadRange':{'value':_0x3ff25d}},'vertexShader':_0x5ccd13(0x460),'fragmentShader':_0x5ccd13(0x184)});const _0x29d324=()=>{const _0x1c00fe=_0x5ccd13;this['material'][_0x1c00fe(0x385)]['uTime']['value']+=this['speed']/0x14;const _0x7579f7=this[_0x1c00fe(0x4b8)];if(_0x7579f7[_0x1c00fe(0x385)][_0x1c00fe(0x37f)]['value']<0.45)_0x7579f7[_0x1c00fe(0x385)][_0x1c00fe(0x37f)][_0x1c00fe(0x4ba)]+=0.01;requestAnimationFrame(_0x29d324);};_0x29d324();}}class PictureDropdownCanvas{[_0x49cdc8(0x508)];['bgColor'];[_0x49cdc8(0x18c)];[_0x49cdc8(0x552)];[_0x49cdc8(0x589)];[_0x49cdc8(0x39a)];[_0x49cdc8(0x3a7)];[_0x49cdc8(0x303)];[_0x49cdc8(0x5df)];[_0x49cdc8(0x2ba)];[_0x49cdc8(0x429)];['resourcePictureStatus'];[_0x49cdc8(0x2ce)];['defaultPictureStatus'];[_0x49cdc8(0x2a0)];[_0x49cdc8(0x103)];constructor(_0x453af3){const _0x5438bf=_0x49cdc8;this[_0x5438bf(0x147)]=new Color(_0x453af3?.[_0x5438bf(0x147)]?_0x453af3[_0x5438bf(0x147)]:_0x5438bf(0x4c3)),this[_0x5438bf(0x508)]=Object[_0x5438bf(0x402)]({'title':'标题','resourcePath':'','defaultResource':'','fontColor':_0x5438bf(0x18d),'bgColor':_0x5438bf(0x2c6)+this[_0x5438bf(0x147)]['r']*0xff+','+this[_0x5438bf(0x147)]['g']*0xff+','+this[_0x5438bf(0x147)]['b']*0xff+','+(_0x453af3?.[_0x5438bf(0x313)]?_0x453af3[_0x5438bf(0x313)]:0x1)+')','strokeColor':_0x5438bf(0x4c3),'fontSize':0x40,'speed':0x14,'opacity':0x1},_0x453af3);let _0x461e93=document[_0x5438bf(0x5b0)](_0x5438bf(0x18c));this[_0x5438bf(0x508)][_0x5438bf(0x407)][_0x5438bf(0x33c)]()[_0x5438bf(0x25b)]>0x0&&(this[_0x5438bf(0x429)]=new Image(),this[_0x5438bf(0x429)][_0x5438bf(0x13d)]=this[_0x5438bf(0x508)]['resourcePath']);this[_0x5438bf(0x508)]['defaultResource'][_0x5438bf(0x33c)]()['length']>0x0&&(this[_0x5438bf(0x2ce)]=new Image(),this[_0x5438bf(0x2ce)][_0x5438bf(0x13d)]=this[_0x5438bf(0x508)][_0x5438bf(0xf8)]);this[_0x5438bf(0x552)]=0x400,this['height']=0x400,this[_0x5438bf(0x2ba)]=0x0,_0x461e93['width']=this['width'],_0x461e93[_0x5438bf(0x589)]=this[_0x5438bf(0x589)],_0x461e93[_0x5438bf(0x2b7)]['width']=this[_0x5438bf(0x552)]/0x2+'px',_0x461e93[_0x5438bf(0x2b7)][_0x5438bf(0x589)]=this[_0x5438bf(0x589)]/0x2+'px';const _0x51a908=_0x461e93[_0x5438bf(0x11b)]('2d');this[_0x5438bf(0x5df)]=_0x51a908,this[_0x5438bf(0x18c)]=_0x461e93,this[_0x5438bf(0x39a)]=0x0,this[_0x5438bf(0x3a7)]=0x280,this['time2']=0x0,this[_0x5438bf(0x2a0)]=0x0,this['drawLine'](),this[_0x5438bf(0x103)]=0x80;const _0xf34352=()=>{const _0xf12a12=_0x5438bf;requestAnimationFrame(_0xf34352);if(this[_0xf12a12(0x39a)]==0x0){if(this['time1']>=0x0&&this['time1']<=0x280)this[_0xf12a12(0x2b6)](this[_0xf12a12(0x3a7)]);this['time1']-=this[_0xf12a12(0x508)]['speed'],this['time1']<0x0&&(this[_0xf12a12(0x21e)](this[_0xf12a12(0x303)]),this['time2']+=this['opts'][_0xf12a12(0x551)],this[_0xf12a12(0x303)]>0x280&&(this['time1']=0x280,this['time2']=0x0,this[_0xf12a12(0x39a)]=0x2));}else{if(this['status']==0x1){if(this[_0xf12a12(0x303)]>0x0&&this[_0xf12a12(0x303)]<0x280)this[_0xf12a12(0x21e)](this[_0xf12a12(0x303)]);this[_0xf12a12(0x303)]-=this[_0xf12a12(0x508)][_0xf12a12(0x551)];if(this[_0xf12a12(0x303)]<0x0){if(this[_0xf12a12(0x3a7)]>=0x0&&this[_0xf12a12(0x3a7)]<=0x280)this[_0xf12a12(0x2b6)](this['time1']);this[_0xf12a12(0x3a7)]+=this[_0xf12a12(0x508)]['speed'],this['time1']>0x280&&(this['time1']=0x280,this['time2']=0x0,this[_0xf12a12(0x39a)]=0x2);}}}};_0xf34352();}[_0x49cdc8(0x2b6)](_0x445af5){const _0x3a80c2=_0x49cdc8;if(_0x445af5<0x0||_0x445af5>0x280)return;this[_0x3a80c2(0x2ba)]=_0x445af5,this[_0x3a80c2(0x5df)][_0x3a80c2(0x488)]='Bold\x20'+this[_0x3a80c2(0x508)]['fontSize']+_0x3a80c2(0x17f),ColorRGBA['parse'](this[_0x3a80c2(0x508)][_0x3a80c2(0x556)]);const _0x1bd8aa=ColorRGBA[_0x3a80c2(0x16e)](this[_0x3a80c2(0x508)][_0x3a80c2(0x147)]);let _0x4c27ce=this['canvasContext']['measureText'](this[_0x3a80c2(0x508)][_0x3a80c2(0x4f5)])[_0x3a80c2(0x552)];_0x4c27ce=Math[_0x3a80c2(0x105)](0x40,Math[_0x3a80c2(0x3bb)](_0x4c27ce,0x400-0x80)),this['canvasContext'][_0x3a80c2(0x48e)](0x0,0x0,this[_0x3a80c2(0x552)],0x80+0x280),this[_0x3a80c2(0x5df)][_0x3a80c2(0x4ff)]=this[_0x3a80c2(0x508)][_0x3a80c2(0x147)],this[_0x3a80c2(0x5df)][_0x3a80c2(0x505)](this[_0x3a80c2(0x552)]/0x2-_0x4c27ce*0.6,_0x445af5,_0x4c27ce*1.2,0x80);const _0x21032f=_0x3a80c2(0x23f)+(_0x1bd8aa['r']+0.1)*0xff+','+(_0x1bd8aa['g']+0.1)*0xff+','+(_0x1bd8aa['b']+0.1)*0xff+')';this['canvasContext'][_0x3a80c2(0x4ff)]=_0x21032f,this['canvasContext']['fillRect'](this['width']/0x2-_0x4c27ce*0.6,_0x445af5+0x14,0x8,0x80-0x28);let _0x3455a6=this[_0x3a80c2(0x5df)][_0x3a80c2(0x4ae)](this[_0x3a80c2(0x552)]/0x2-_0x4c27ce*0.6,_0x445af5,this[_0x3a80c2(0x552)]/0x2+_0x4c27ce*0.6,_0x445af5);_0x3455a6[_0x3a80c2(0x351)](0x0,_0x21032f),_0x3455a6[_0x3a80c2(0x351)](0x1,this['opts']['bgColor']),this[_0x3a80c2(0x5df)]['fillStyle']=_0x3455a6,this['canvasContext'][_0x3a80c2(0x505)](this[_0x3a80c2(0x552)]/0x2-_0x4c27ce*0.6,_0x445af5,_0x4c27ce*1.2,0x4),this['canvasContext'][_0x3a80c2(0x505)](this[_0x3a80c2(0x552)]/0x2-_0x4c27ce*0.6,_0x445af5+0x80-0x5,_0x4c27ce*1.2,0x4);for(let _0x3abe5e=0x0;_0x3abe5e<0xa;_0x3abe5e++){this[_0x3a80c2(0x5df)][_0x3a80c2(0x505)](this[_0x3a80c2(0x552)]/0x2-_0x4c27ce*0.6+_0x4c27ce*1.2/0xb*(_0x3abe5e+0x1),_0x445af5,0x2,0x80);}for(let _0x530af8=0x0;_0x530af8<0x3;_0x530af8++){this[_0x3a80c2(0x5df)][_0x3a80c2(0x505)](this[_0x3a80c2(0x552)]/0x2-_0x4c27ce*0.6+_0x4c27ce*1.2/0x3,_0x445af5+0x80/0x4*(_0x530af8+0x1),_0x4c27ce*1.2/0x3,0x2);}this[_0x3a80c2(0x5df)]['font']=_0x3a80c2(0x3cc)+this[_0x3a80c2(0x508)][_0x3a80c2(0x34b)]+_0x3a80c2(0x17f),this[_0x3a80c2(0x5df)]['textBaseline']=_0x3a80c2(0x3a4),this[_0x3a80c2(0x5df)]['fillStyle']=this[_0x3a80c2(0x508)]['fontColor'],this[_0x3a80c2(0x5df)][_0x3a80c2(0x456)](this[_0x3a80c2(0x508)]['title'],(this[_0x3a80c2(0x552)]-this[_0x3a80c2(0x5df)][_0x3a80c2(0x42d)](this[_0x3a80c2(0x508)][_0x3a80c2(0x4f5)])[_0x3a80c2(0x552)])/0x2,_0x445af5+0x40-this[_0x3a80c2(0x508)]['fontSize']/0x2);}[_0x49cdc8(0x21e)](_0x2a3817){const _0x4fa7c5=_0x49cdc8;if(_0x2a3817<0x0||_0x2a3817>0x280)return;this[_0x4fa7c5(0x5df)]['clearRect'](0x0,0x80,this['width'],0x280),this[_0x4fa7c5(0x5df)][_0x4fa7c5(0x4ff)]=_0x4fa7c5(0x572),this[_0x4fa7c5(0x5df)]['fillRect'](0x0,0x80,this[_0x4fa7c5(0x552)],_0x2a3817),this['drawPicture'](_0x2a3817);}[_0x49cdc8(0x59c)](){const _0xd62ef3=_0x49cdc8;this[_0xd62ef3(0x5df)][_0xd62ef3(0x48e)](0x0,0x300,this[_0xd62ef3(0x552)],0x400-0x300),this[_0xd62ef3(0x5df)][_0xd62ef3(0x4ff)]=_0xd62ef3(0x52e),this[_0xd62ef3(0x5df)][_0xd62ef3(0x505)](this['width']/0x2-0xa,0x2f6,0x14,0x28),this['canvasContext'][_0xd62ef3(0x505)](this[_0xd62ef3(0x552)]/0x2-0x4,0x31e,0x8,0x400-0x31e-0x32),this[_0xd62ef3(0x5df)][_0xd62ef3(0x120)]='rgb(250,250,250)',this['canvasContext'][_0xd62ef3(0x281)](),this['canvasContext'][_0xd62ef3(0x596)](this[_0xd62ef3(0x552)]/0x2-0x14,this['height']-0x2d),this['canvasContext'][_0xd62ef3(0x32f)](this[_0xd62ef3(0x552)]/0x2+0x14,this[_0xd62ef3(0x589)]-0x5),this['canvasContext'][_0xd62ef3(0x596)](this[_0xd62ef3(0x552)]/0x2+0x14,this[_0xd62ef3(0x589)]-0x2d),this[_0xd62ef3(0x5df)][_0xd62ef3(0x32f)](this[_0xd62ef3(0x552)]/0x2-0x14,this[_0xd62ef3(0x589)]-0x5),this[_0xd62ef3(0x5df)][_0xd62ef3(0x232)]=0x4,this[_0xd62ef3(0x5df)][_0xd62ef3(0x5d0)](),this[_0xd62ef3(0x5df)][_0xd62ef3(0x4ff)]=_0xd62ef3(0x422),this[_0xd62ef3(0x5df)]['strokeStyle']='rgb(100,100,100)',this['canvasContext'][_0xd62ef3(0x281)](),this[_0xd62ef3(0x5df)][_0xd62ef3(0x596)](this['width']/0x2,this[_0xd62ef3(0x589)]-0x32),this['canvasContext'][_0xd62ef3(0x32f)](this[_0xd62ef3(0x552)]/0x2,this[_0xd62ef3(0x589)]-0x28),this[_0xd62ef3(0x5df)][_0xd62ef3(0x596)](this['width']/0x2-1.5,this[_0xd62ef3(0x589)]-0xa),this[_0xd62ef3(0x5df)]['lineTo'](this[_0xd62ef3(0x552)]/0x2-1.5,this['height']),this[_0xd62ef3(0x5df)][_0xd62ef3(0x596)](this[_0xd62ef3(0x552)]/0x2-0x28,this[_0xd62ef3(0x589)]-0x17),this[_0xd62ef3(0x5df)]['lineTo'](this[_0xd62ef3(0x552)]/0x2-0xa,this[_0xd62ef3(0x589)]-0x17),this['canvasContext'][_0xd62ef3(0x596)](this[_0xd62ef3(0x552)]/0x2+0x28,this[_0xd62ef3(0x589)]-0x17),this[_0xd62ef3(0x5df)]['lineTo'](this[_0xd62ef3(0x552)]/0x2+0xa,this['height']-0x17),this[_0xd62ef3(0x5df)][_0xd62ef3(0x232)]=0x3,this[_0xd62ef3(0x5df)][_0xd62ef3(0x5d0)]();}[_0x49cdc8(0x212)](_0x343720){const _0x145c30=_0x49cdc8;if(_0x343720<=0x0)return;if(this[_0x145c30(0x508)][_0x145c30(0x407)][_0x145c30(0x33c)]()[_0x145c30(0x25b)]<0x1&&this[_0x145c30(0x508)]['defaultResource'][_0x145c30(0x33c)]()[_0x145c30(0x25b)]<0x1)return;const _0x553b9c=this['pictureDrawMode'];let _0xd0e645=this[_0x145c30(0x508)][_0x145c30(0x407)][_0x145c30(0x33c)]()['length']>0x1?this['resourcePicture']:this[_0x145c30(0x2ce)];const _0x150870=this[_0x145c30(0x552)],_0xdcff43=_0xd0e645['width']/_0x150870>0x1?0x1:_0xd0e645[_0x145c30(0x552)]/_0x150870,_0x5b65c4=Math[_0x145c30(0x105)](0xa,_0x150870/0x2-_0xdcff43*_0x150870/0x2);let _0x3cb429=0x8a,_0x144947=Math[_0x145c30(0x3bb)](0x276,_0x343720);this['pictureHeight']=_0x144947,_0xd0e645[_0x145c30(0x589)]/_0x144947>0x1?0x1:_0xd0e645[_0x145c30(0x589)]/_0x144947;if(_0x553b9c==0x0)this[_0x145c30(0x5df)][_0x145c30(0x5ef)](_0xd0e645,_0x5b65c4,_0x3cb429,Math[_0x145c30(0x3bb)](this[_0x145c30(0x552)]-0xa,_0xdcff43*_0x150870),_0x144947);else{if(_0x553b9c==0x1)this['canvasContext'][_0x145c30(0x5ef)](_0xd0e645,_0xd0e645[_0x145c30(0x552)]/0x4,_0xd0e645[_0x145c30(0x589)]/0x4,_0xd0e645[_0x145c30(0x552)]/0x2,_0xd0e645[_0x145c30(0x589)]/0x2,0xa,_0x3cb429,this['width']-0x14,_0x144947);else _0x553b9c==0x2&&this[_0x145c30(0x5df)][_0x145c30(0x5ef)](_0xd0e645,0xa,_0x3cb429,this[_0x145c30(0x552)]-0x14,_0x144947);}}['onloadDeafault'](_0x2e148a){const _0x557aa4=_0x49cdc8,_0x290d1e=_0x2e148a['trim']();if(_0x290d1e[_0x557aa4(0x25b)]<0x1)return console['warn'](_0x557aa4(0x2f2));this[_0x557aa4(0x627)]=0x0,this['defaultPicture'][_0x557aa4(0x13d)]=_0x290d1e,this['defaultPicture'][_0x557aa4(0x339)]=()=>{const _0x38ce2a=_0x557aa4;this[_0x38ce2a(0x627)]=0x1;if(this[_0x38ce2a(0x429)][_0x38ce2a(0x13d)][_0x38ce2a(0x25b)]<0x1){if(this[_0x38ce2a(0x103)]==0x276)this[_0x38ce2a(0x21e)](0x280);}},this['defaultPicture'][_0x557aa4(0x135)]=()=>{const _0x49372a=_0x557aa4;this[_0x49372a(0x627)]=0x2;};}[_0x49cdc8(0x31f)](_0x142622){const _0x134274=_0x49cdc8,_0x3191f2=_0x142622['trim']();if(_0x3191f2[_0x134274(0x25b)]<0x1)return console['warn'](_0x134274(0x2f2));this['resourcePictureStatus']=0x0,this['resourcePicture'][_0x134274(0x13d)]=_0x3191f2,this[_0x134274(0x429)][_0x134274(0x339)]=()=>{const _0x2701c7=_0x134274;this['resourcePictureStatus']=0x1;if(this[_0x2701c7(0x103)]==0x276)this[_0x2701c7(0x21e)](0x280);},this['resourcePicture'][_0x134274(0x135)]=()=>{this['resourcePictureStatus']=0x2;};}['switchMode'](_0x348e0b){const _0x56683f=_0x49cdc8;if(_0x348e0b>0x2||_0x348e0b<0x0)return console[_0x56683f(0x449)](_0x56683f(0x24a));this[_0x56683f(0x2a0)]=_0x348e0b,this[_0x56683f(0x103)]==0x276&&this['drawPictureBackground'](0x280);}[_0x49cdc8(0x418)](_0x3fbce6){const _0xd54a80=_0x49cdc8,_0x1b0bcb=_0x3fbce6[_0xd54a80(0x33c)]();if(_0x1b0bcb[_0xd54a80(0x25b)]<0x1||_0x1b0bcb[_0xd54a80(0x25b)]>0x12)return;this[_0xd54a80(0x508)][_0xd54a80(0x4f5)]=_0x1b0bcb,console['log'](this[_0xd54a80(0x2ba)]);this[_0xd54a80(0x2ba)]==0xa&&(this[_0xd54a80(0x2b6)](this['titleHeight']),this[_0xd54a80(0x21e)](0x280));if(this[_0xd54a80(0x2ba)]==0x276)this[_0xd54a80(0x2b6)](this['titleHeight']);}[_0x49cdc8(0x60b)](_0x187889){const _0x70afc2=_0x49cdc8,_0x297c73=new Color(_0x187889);this[_0x70afc2(0x508)][_0x70afc2(0x147)]=_0x70afc2(0x2c6)+_0x297c73['r']*0xff+','+_0x297c73['g']*0xff+','+_0x297c73['b']*0xff+','+this[_0x70afc2(0x508)][_0x70afc2(0x313)]+')';this[_0x70afc2(0x2ba)]==0xa&&(this['drawText'](this[_0x70afc2(0x2ba)]),this['drawPictureBackground'](0x280));if(this[_0x70afc2(0x2ba)]==0x276)this[_0x70afc2(0x2b6)](this[_0x70afc2(0x2ba)]);}[_0x49cdc8(0x235)](_0x35e776){const _0x312f46=_0x49cdc8;this[_0x312f46(0x3a7)]=_0x35e776?0x0:0x280,this[_0x312f46(0x303)]=_0x35e776?0x280:0x0,this[_0x312f46(0x39a)]=_0x35e776?0x1:0x0;}}class PicturePopup extends Sprite{['isPicturePopup'];['opts'];[_0x49cdc8(0x147)];['size'];[_0x49cdc8(0x492)];[_0x49cdc8(0x40a)];constructor(_0xa6aa3f){const _0x26b2ed=_0x49cdc8;super(),this[_0x26b2ed(0x147)]=new Color(_0xa6aa3f?.[_0x26b2ed(0x147)]?_0xa6aa3f[_0x26b2ed(0x147)]:_0x26b2ed(0x4c3)),this[_0x26b2ed(0x508)]=Object[_0x26b2ed(0x402)]({'title':'标题','resourcePath':'','defaultResource':'','fontColor':_0x26b2ed(0x18d),'bgColor':'rgba('+this['bgColor']['r']*0xff+','+this[_0x26b2ed(0x147)]['g']*0xff+','+this[_0x26b2ed(0x147)]['b']*0xff+','+(_0xa6aa3f?.[_0x26b2ed(0x313)]?_0xa6aa3f[_0x26b2ed(0x313)]:0x1)+')','strokeColor':'#ff0000','fontSize':0x40,'height':0x0,'size':0x1,'type':0x0,'speed':0x5},_0xa6aa3f),this['isPicturePopup']=!![];const _0x57846e=new PictureDropdownCanvas(this[_0x26b2ed(0x508)]),_0x22b95b=new CanvasTexture(_0x57846e['canvas']);this[_0x26b2ed(0x4b8)]=new SpriteMaterial({'map':_0x22b95b,'transparent':!![],'opacity':0x1}),this[_0x26b2ed(0x47b)]=[_0x57846e[_0x26b2ed(0x552)],_0x57846e[_0x26b2ed(0x589)]],this['center'][_0x26b2ed(0x4ec)](0.5,0x0),this[_0x26b2ed(0x26e)][_0x26b2ed(0x4ec)](0x0,this['opts'][_0x26b2ed(0x589)],0x0),this[_0x26b2ed(0x17e)]['set'](this['opts'][_0x26b2ed(0x47b)]*_0x57846e[_0x26b2ed(0x552)]/0x200,this[_0x26b2ed(0x508)]['size']*_0x57846e[_0x26b2ed(0x589)]/0x200,0x1),this[_0x26b2ed(0x40a)]=[this['scale']['x'],this[_0x26b2ed(0x17e)]['y']],this[_0x26b2ed(0x492)]=_0x57846e;const _0x2548cd=()=>{const _0x1f9881=_0x26b2ed;requestAnimationFrame(_0x2548cd),this[_0x1f9881(0x4b8)][_0x1f9881(0x427)]=new CanvasTexture(_0x57846e[_0x1f9881(0x18c)]);};_0x2548cd();}[_0x49cdc8(0x533)](_0xe34f75){const _0x509375=_0x49cdc8;this[_0x509375(0x492)][_0x509375(0x235)](_0xe34f75);}['setTitle'](_0x180c9d){const _0x5a58b7=_0x49cdc8;this[_0x5a58b7(0x492)]['changeTitle'](_0x180c9d);}[_0x49cdc8(0x571)](_0x50783){const _0x563551=_0x49cdc8;this[_0x563551(0x492)][_0x563551(0x60b)](_0x50783);}[_0x49cdc8(0x159)](_0x1e12c8){const _0x4097d8=_0x49cdc8;if(_0x1e12c8<0x0||_0x1e12c8>0x2)return;this[_0x4097d8(0x492)][_0x4097d8(0x3d2)](_0x1e12c8);}['changeDefaultPicture'](_0x1e4187){const _0x29eec0=_0x49cdc8;this[_0x29eec0(0x492)][_0x29eec0(0x48c)](_0x1e4187);}['changeResourcePicture'](_0x58aef6){const _0x32254d=_0x49cdc8;this[_0x32254d(0x492)][_0x32254d(0x31f)](_0x58aef6);}}class PictureDropdownTag extends TagBase{[_0x49cdc8(0x3f6)];[_0x49cdc8(0x113)];constructor(_0x26c44e){const _0x15e95f=_0x49cdc8;super();let _0x4a55f4={'lightWallOpts':{'size':[0x3,0x3,0x5],'color':_0x15e95f(0x40f),'opacity':0.8},'spreadRoundOpts':{'radius':0x5,'color':_0x15e95f(0x40f),'speed':0.1},'picturePopupOpts':{'title':'标题','resourcePath':'','defaultResource':'','fontColor':_0x15e95f(0x18d),'bgColor':_0x15e95f(0x40f),'strokeColor':'#ff0000','fontSize':0x40,'height':0x0,'size':0x5,'type':0x0,'speed':0x1e}};this['isPictureDropdownTag']=!![],Object[_0x15e95f(0x402)](_0x4a55f4,_0x26c44e);const _0x4dfb9c=new LightWall(_0x4a55f4['lightWallOpts']);this['add'](_0x4dfb9c);const _0x26b060=new SpreadRound(_0x4a55f4[_0x15e95f(0x2b0)]);this['add'](_0x26b060);const _0x969b63=new PicturePopup(_0x4a55f4[_0x15e95f(0x27c)]);this[_0x15e95f(0x4bc)](_0x969b63),_0x969b63[_0x15e95f(0x26e)]['y']=0x4,this[_0x15e95f(0x113)]=0x4,this[_0x15e95f(0x238)](_0x4a55f4[_0x15e95f(0x1af)][_0x15e95f(0x47b)][0x0],_0x4a55f4['spreadRoundOpts'][_0x15e95f(0x30d)]);}['computedSpreadCircle'](_0x2fdc87,_0x3a8a24){const _0x4801c0=_0x49cdc8,_0x3c5433=_0x2fdc87/_0x3a8a24;this[_0x4801c0(0x1a6)](_0x56bb73=>{const _0x4a9daf=_0x4801c0;_0x56bb73[_0x4a9daf(0x4af)]&&_0x56bb73[_0x4a9daf(0x5c0)][_0x4a9daf(0x4ec)](_0x3c5433*0.5,_0x3c5433*0.5);});}[_0x49cdc8(0x61d)](_0x32adc5){this['traverse'](_0x5f2163=>{const _0x21c0bf=_0x16a8;if(_0x5f2163[_0x21c0bf(0x227)])_0x5f2163['popupAnimation'](_0x32adc5);});}[_0x49cdc8(0x418)](_0x541664){this['traverse'](_0x3cf8b8=>{const _0x50fbf0=_0x16a8;if(_0x3cf8b8[_0x50fbf0(0x227)])_0x3cf8b8[_0x50fbf0(0x4c1)](_0x541664);});}['changeColor'](_0x3484d1){this['traverse'](_0x184b1d=>{const _0x3a5dfc=_0x16a8;if(_0x184b1d[_0x3a5dfc(0x227)])_0x184b1d[_0x3a5dfc(0x571)](_0x3484d1);if(_0x184b1d[_0x3a5dfc(0x4af)])_0x184b1d[_0x3a5dfc(0x5a4)][_0x3a5dfc(0x4ec)](_0x3484d1);});}[_0x49cdc8(0x159)](_0x1d7d34){const _0x5a6ee0=_0x49cdc8;this[_0x5a6ee0(0x1a6)](_0xcb022a=>{const _0x488f07=_0x5a6ee0;if(_0xcb022a[_0x488f07(0x227)])_0xcb022a[_0x488f07(0x159)](_0x1d7d34);});}[_0x49cdc8(0x306)](_0x404708){const _0x5d4a16=_0x49cdc8;this[_0x5d4a16(0x1a6)](_0x44ea2c=>{const _0x8f49b2=_0x5d4a16;if(_0x44ea2c['isPicturePopup'])_0x44ea2c[_0x8f49b2(0x306)](_0x404708);});}[_0x49cdc8(0x4c9)](_0x1732b8){const _0x1019be=_0x49cdc8;this[_0x1019be(0x1a6)](_0x109538=>{const _0xd12815=_0x1019be;if(_0x109538[_0xd12815(0x227)])_0x109538['changeResourcePicture'](_0x1732b8);});}['setSize'](_0x2d5473){const _0x231f40=_0x49cdc8,_0x291766=Math['max'](0x0,Math[_0x231f40(0x3bb)](_0x2d5473,0x64));this[_0x231f40(0x1a6)](_0x29d1d0=>{const _0x4ff9d5=_0x231f40;if(_0x29d1d0['isPicturePopup'])_0x29d1d0[_0x4ff9d5(0x17e)][_0x4ff9d5(0x4ec)](_0x29d1d0[_0x4ff9d5(0x40a)][0x0]*_0x291766,_0x29d1d0['baseSize'][0x1]*_0x291766);});}[_0x49cdc8(0x11d)](_0x3b892a){const _0x39853b=_0x49cdc8,_0x495471=Math[_0x39853b(0x105)](0x0,Math[_0x39853b(0x3bb)](_0x3b892a,0x64));this['baseHeightValue']=_0x495471,this[_0x39853b(0x1a6)](_0x544244=>{const _0x1d7075=_0x39853b;if(_0x544244['isPicturePopup'])_0x544244['position']['y']=this[_0x1d7075(0x113)];});}}class Water extends Mesh{constructor(_0x52bf1e,_0x463345={}){const _0x2e0d52=_0x49cdc8;super(_0x52bf1e);const _0x2a4bd0=this,_0x548024=_0x463345[_0x2e0d52(0x106)]!==undefined?_0x463345[_0x2e0d52(0x106)]:0x200,_0x1c2bde=_0x463345[_0x2e0d52(0x3d8)]!==undefined?_0x463345[_0x2e0d52(0x3d8)]:0x200,_0x1c4cfe=_0x463345[_0x2e0d52(0x373)]!==undefined?_0x463345[_0x2e0d52(0x373)]:0x0,_0x4e2b43=_0x463345[_0x2e0d52(0x124)]!==undefined?_0x463345[_0x2e0d52(0x124)]:0x1,_0x2f72e9=_0x463345[_0x2e0d52(0x180)]!==undefined?_0x463345[_0x2e0d52(0x180)]:0x0,_0x209e2a=_0x463345[_0x2e0d52(0x330)]!==undefined?_0x463345[_0x2e0d52(0x330)]:null,_0x38a43a=_0x463345[_0x2e0d52(0x5ac)]!==undefined?_0x463345[_0x2e0d52(0x5ac)]:new Vector3(0.70707,0.70707,0x0),_0x445f72=new Color(_0x463345['sunColor']!==undefined?_0x463345[_0x2e0d52(0x371)]:0xffffff),_0x35bc33=new Color(_0x463345['waterColor']!==undefined?_0x463345['waterColor']:0x7f7f7f),_0x7e854f=_0x463345[_0x2e0d52(0x39f)]!==undefined?_0x463345['eye']:new Vector3(0x0,0x0,0x0),_0x8600ae=_0x463345[_0x2e0d52(0x25d)]!==undefined?_0x463345[_0x2e0d52(0x25d)]:0x14,_0x51dd23=_0x463345[_0x2e0d52(0x2ac)]!==undefined?_0x463345[_0x2e0d52(0x2ac)]:FrontSide,_0x29e2f4=_0x463345[_0x2e0d52(0x4f1)]!==undefined?_0x463345[_0x2e0d52(0x4f1)]:![],_0xc9fa8d=new Plane(),_0x501d47=new Vector3(),_0x386a83=new Vector3(),_0x179f79=new Vector3(),_0x4d5529=new Matrix4(),_0x5d6ca9=new Vector3(0x0,0x0,-0x1),_0xa1f8ce=new Vector4(),_0x4270d7=new Vector3(),_0x1128e3=new Vector3(),_0x429b80=new Vector4(),_0x45a685=new Matrix4(),_0x42b02b=new PerspectiveCamera(),_0x503f4a={'minFilter':LinearFilter,'magFilter':LinearFilter,'format':RGBFormat},_0x4be1ee=new WebGLRenderTarget(_0x548024,_0x1c2bde,_0x503f4a);(!MathUtils[_0x2e0d52(0x143)](_0x548024)||!MathUtils[_0x2e0d52(0x143)](_0x1c2bde))&&(_0x4be1ee[_0x2e0d52(0x50d)]['generateMipmaps']=![]);const _0x476064={'uniforms':UniformsUtils$1[_0x2e0d52(0x3fd)]([UniformsLib$1[_0x2e0d52(0x4f1)],UniformsLib$1[_0x2e0d52(0x279)],{'normalSampler':{'value':null},'mirrorSampler':{'value':null},'alpha':{'value':0x1},'time':{'value':0x0},'size':{'value':0x1},'distortionScale':{'value':0x14},'textureMatrix':{'value':new Matrix4()},'sunColor':{'value':new Color(0x7f7f7f)},'sunDirection':{'value':new Vector3(0.70707,0.70707,0x0)},'eye':{'value':new Vector3()},'waterColor':{'value':new Color(0x555555)}}]),'vertexShader':_0x2e0d52(0x335),'fragmentShader':_0x2e0d52(0x14c)},_0x5c9553=new ShaderMaterial({'fragmentShader':_0x476064[_0x2e0d52(0x27b)],'vertexShader':_0x476064[_0x2e0d52(0x628)],'uniforms':UniformsUtils$1[_0x2e0d52(0x32a)](_0x476064[_0x2e0d52(0x385)]),'lights':!![],'side':_0x51dd23,'fog':_0x29e2f4});_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x590)]['value']=_0x4be1ee['texture'],_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x2f9)]['value']=_0x45a685,_0x5c9553['uniforms'][_0x2e0d52(0x124)][_0x2e0d52(0x4ba)]=_0x4e2b43,_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x180)][_0x2e0d52(0x4ba)]=_0x2f72e9,_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x297)][_0x2e0d52(0x4ba)]=_0x209e2a,_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x371)][_0x2e0d52(0x4ba)]=_0x445f72,_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x43f)][_0x2e0d52(0x4ba)]=_0x35bc33,_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x5ac)]['value']=_0x38a43a,_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x25d)][_0x2e0d52(0x4ba)]=_0x8600ae,_0x5c9553[_0x2e0d52(0x385)][_0x2e0d52(0x39f)][_0x2e0d52(0x4ba)]=_0x7e854f,_0x2a4bd0[_0x2e0d52(0x4b8)]=_0x5c9553,_0x2a4bd0[_0x2e0d52(0x58e)]=function(_0x52d6d3,_0x2961e9,_0x368e68){const _0x1d68f4=_0x2e0d52;_0x386a83['setFromMatrixPosition'](_0x2a4bd0[_0x1d68f4(0x3e9)]),_0x179f79['setFromMatrixPosition'](_0x368e68[_0x1d68f4(0x3e9)]),_0x4d5529[_0x1d68f4(0x51a)](_0x2a4bd0[_0x1d68f4(0x3e9)]),_0x501d47[_0x1d68f4(0x4ec)](0x0,0x0,0x1),_0x501d47[_0x1d68f4(0x13e)](_0x4d5529),_0x4270d7[_0x1d68f4(0x346)](_0x386a83,_0x179f79);if(_0x4270d7['dot'](_0x501d47)>0x0)return;_0x4270d7['reflect'](_0x501d47)['negate'](),_0x4270d7[_0x1d68f4(0x4bc)](_0x386a83),_0x4d5529[_0x1d68f4(0x51a)](_0x368e68['matrixWorld']),_0x5d6ca9[_0x1d68f4(0x4ec)](0x0,0x0,-0x1),_0x5d6ca9[_0x1d68f4(0x13e)](_0x4d5529),_0x5d6ca9['add'](_0x179f79),_0x1128e3['subVectors'](_0x386a83,_0x5d6ca9),_0x1128e3[_0x1d68f4(0x3ac)](_0x501d47)[_0x1d68f4(0x17d)](),_0x1128e3[_0x1d68f4(0x4bc)](_0x386a83),_0x42b02b[_0x1d68f4(0x26e)]['copy'](_0x4270d7),_0x42b02b['up']['set'](0x0,0x1,0x0),_0x42b02b['up'][_0x1d68f4(0x13e)](_0x4d5529),_0x42b02b['up']['reflect'](_0x501d47),_0x42b02b[_0x1d68f4(0x5cd)](_0x1128e3),_0x42b02b[_0x1d68f4(0x4f0)]=_0x368e68[_0x1d68f4(0x4f0)],_0x42b02b['updateMatrixWorld'](),_0x42b02b[_0x1d68f4(0x243)][_0x1d68f4(0x613)](_0x368e68[_0x1d68f4(0x243)]),_0x45a685[_0x1d68f4(0x4ec)](0.5,0x0,0x0,0.5,0x0,0.5,0x0,0.5,0x0,0x0,0.5,0.5,0x0,0x0,0x0,0x1),_0x45a685[_0x1d68f4(0x2a5)](_0x42b02b[_0x1d68f4(0x243)]),_0x45a685[_0x1d68f4(0x2a5)](_0x42b02b['matrixWorldInverse']),_0xc9fa8d[_0x1d68f4(0x559)](_0x501d47,_0x386a83),_0xc9fa8d[_0x1d68f4(0x13e)](_0x42b02b[_0x1d68f4(0x55d)]),_0xa1f8ce[_0x1d68f4(0x4ec)](_0xc9fa8d['normal']['x'],_0xc9fa8d[_0x1d68f4(0x3fe)]['y'],_0xc9fa8d[_0x1d68f4(0x3fe)]['z'],_0xc9fa8d[_0x1d68f4(0x3e3)]);const _0x534997=_0x42b02b[_0x1d68f4(0x243)];_0x429b80['x']=(Math[_0x1d68f4(0x47e)](_0xa1f8ce['x'])+_0x534997[_0x1d68f4(0x2e0)][0x8])/_0x534997[_0x1d68f4(0x2e0)][0x0],_0x429b80['y']=(Math['sign'](_0xa1f8ce['y'])+_0x534997['elements'][0x9])/_0x534997['elements'][0x5],_0x429b80['z']=-0x1,_0x429b80['w']=(0x1+_0x534997[_0x1d68f4(0x2e0)][0xa])/_0x534997[_0x1d68f4(0x2e0)][0xe],_0xa1f8ce[_0x1d68f4(0x3d1)](0x2/_0xa1f8ce[_0x1d68f4(0x24d)](_0x429b80)),_0x534997[_0x1d68f4(0x2e0)][0x2]=_0xa1f8ce['x'],_0x534997[_0x1d68f4(0x2e0)][0x6]=_0xa1f8ce['y'],_0x534997[_0x1d68f4(0x2e0)][0xa]=_0xa1f8ce['z']+0x1-_0x1c4cfe,_0x534997[_0x1d68f4(0x2e0)][0xe]=_0xa1f8ce['w'],_0x7e854f[_0x1d68f4(0x3ab)](_0x368e68[_0x1d68f4(0x3e9)]);const _0x31f71d=_0x52d6d3[_0x1d68f4(0x377)](),_0x1d9f95=_0x52d6d3['xr']['enabled'],_0x44b74b=_0x52d6d3['shadowMap'][_0x1d68f4(0x223)];_0x2a4bd0[_0x1d68f4(0x592)]=![],_0x52d6d3['xr']['enabled']=![],_0x52d6d3['shadowMap'][_0x1d68f4(0x223)]=![],_0x52d6d3[_0x1d68f4(0x39c)](_0x4be1ee),_0x52d6d3[_0x1d68f4(0x458)][_0x1d68f4(0x4cc)][_0x1d68f4(0x125)][_0x1d68f4(0x288)](!![]);if(_0x52d6d3[_0x1d68f4(0x3d4)]===![])_0x52d6d3[_0x1d68f4(0x581)]();_0x52d6d3[_0x1d68f4(0x27d)](_0x2961e9,_0x42b02b),_0x2a4bd0[_0x1d68f4(0x592)]=!![],_0x52d6d3['xr'][_0x1d68f4(0x13a)]=_0x1d9f95,_0x52d6d3[_0x1d68f4(0x454)][_0x1d68f4(0x223)]=_0x44b74b,_0x52d6d3[_0x1d68f4(0x39c)](_0x31f71d);const _0x570267=_0x368e68[_0x1d68f4(0x1ae)];_0x570267!==undefined&&_0x52d6d3[_0x1d68f4(0x458)]['viewport'](_0x570267);};}}Water[_0x49cdc8(0x60f)]['isWater']=!![];class Reflector$1 extends Mesh{constructor(_0x2c70f7,_0x1b43e7={}){const _0x4d9f7a=_0x49cdc8;super(_0x2c70f7),this[_0x4d9f7a(0x26f)]=_0x4d9f7a(0x376);const _0x155023=this,_0x1191db=_0x1b43e7[_0x4d9f7a(0x229)]!==undefined?new Color(_0x1b43e7[_0x4d9f7a(0x229)]):new Color(0x7f7f7f),_0x331615=_0x1b43e7[_0x4d9f7a(0x106)]||0x200,_0x53321c=_0x1b43e7[_0x4d9f7a(0x3d8)]||0x200,_0x48ec4d=_0x1b43e7['clipBias']||0x0,_0x235b74=_0x1b43e7[_0x4d9f7a(0x1bd)]||Reflector$1[_0x4d9f7a(0x547)],_0x356f1f=new Plane(),_0x3ee4eb=new Vector3(),_0x1bb297=new Vector3(),_0x4c6476=new Vector3(),_0x1fa56e=new Matrix4(),_0x425e48=new Vector3(0x0,0x0,-0x1),_0x37761a=new Vector4(),_0x79253f=new Vector3(),_0x36dab5=new Vector3(),_0x45cb12=new Vector4(),_0x33fb69=new Matrix4(),_0x440603=new PerspectiveCamera(),_0x434241={'minFilter':LinearFilter,'magFilter':LinearFilter,'format':RGBFormat},_0x337388=new WebGLRenderTarget(_0x331615,_0x53321c,_0x434241);(!MathUtils[_0x4d9f7a(0x143)](_0x331615)||!MathUtils[_0x4d9f7a(0x143)](_0x53321c))&&(_0x337388[_0x4d9f7a(0x50d)][_0x4d9f7a(0x57f)]=![]);const _0x38e5ff=new ShaderMaterial({'uniforms':UniformsUtils$1[_0x4d9f7a(0x32a)](_0x235b74['uniforms']),'fragmentShader':_0x235b74[_0x4d9f7a(0x27b)],'vertexShader':_0x235b74[_0x4d9f7a(0x628)]});_0x38e5ff[_0x4d9f7a(0x385)][_0x4d9f7a(0x222)][_0x4d9f7a(0x4ba)]=_0x337388[_0x4d9f7a(0x50d)],_0x38e5ff[_0x4d9f7a(0x385)][_0x4d9f7a(0x229)][_0x4d9f7a(0x4ba)]=_0x1191db,_0x38e5ff['uniforms'][_0x4d9f7a(0x2f9)][_0x4d9f7a(0x4ba)]=_0x33fb69,this[_0x4d9f7a(0x4b8)]=_0x38e5ff,this[_0x4d9f7a(0x58e)]=function(_0x8e4be9,_0x1479d8,_0x336bf8){const _0x3864a3=_0x4d9f7a;_0x1bb297['setFromMatrixPosition'](_0x155023[_0x3864a3(0x3e9)]),_0x4c6476[_0x3864a3(0x3ab)](_0x336bf8[_0x3864a3(0x3e9)]),_0x1fa56e[_0x3864a3(0x51a)](_0x155023[_0x3864a3(0x3e9)]),_0x3ee4eb[_0x3864a3(0x4ec)](0x0,0x0,0x1),_0x3ee4eb[_0x3864a3(0x13e)](_0x1fa56e),_0x79253f[_0x3864a3(0x346)](_0x1bb297,_0x4c6476);if(_0x79253f[_0x3864a3(0x24d)](_0x3ee4eb)>0x0)return;_0x79253f[_0x3864a3(0x3ac)](_0x3ee4eb)[_0x3864a3(0x17d)](),_0x79253f[_0x3864a3(0x4bc)](_0x1bb297),_0x1fa56e[_0x3864a3(0x51a)](_0x336bf8[_0x3864a3(0x3e9)]),_0x425e48[_0x3864a3(0x4ec)](0x0,0x0,-0x1),_0x425e48['applyMatrix4'](_0x1fa56e),_0x425e48[_0x3864a3(0x4bc)](_0x4c6476),_0x36dab5[_0x3864a3(0x346)](_0x1bb297,_0x425e48),_0x36dab5[_0x3864a3(0x3ac)](_0x3ee4eb)[_0x3864a3(0x17d)](),_0x36dab5[_0x3864a3(0x4bc)](_0x1bb297),_0x440603[_0x3864a3(0x26e)][_0x3864a3(0x613)](_0x79253f),_0x440603['up']['set'](0x0,0x1,0x0),_0x440603['up']['applyMatrix4'](_0x1fa56e),_0x440603['up'][_0x3864a3(0x3ac)](_0x3ee4eb),_0x440603[_0x3864a3(0x5cd)](_0x36dab5),_0x440603[_0x3864a3(0x4f0)]=_0x336bf8['far'],_0x440603[_0x3864a3(0x386)](),_0x440603[_0x3864a3(0x243)][_0x3864a3(0x613)](_0x336bf8[_0x3864a3(0x243)]),_0x33fb69['set'](0.5,0x0,0x0,0.5,0x0,0.5,0x0,0.5,0x0,0x0,0.5,0.5,0x0,0x0,0x0,0x1),_0x33fb69[_0x3864a3(0x2a5)](_0x440603['projectionMatrix']),_0x33fb69[_0x3864a3(0x2a5)](_0x440603[_0x3864a3(0x55d)]),_0x33fb69[_0x3864a3(0x2a5)](_0x155023['matrixWorld']),_0x356f1f[_0x3864a3(0x559)](_0x3ee4eb,_0x1bb297),_0x356f1f['applyMatrix4'](_0x440603[_0x3864a3(0x55d)]),_0x37761a[_0x3864a3(0x4ec)](_0x356f1f[_0x3864a3(0x3fe)]['x'],_0x356f1f[_0x3864a3(0x3fe)]['y'],_0x356f1f[_0x3864a3(0x3fe)]['z'],_0x356f1f['constant']);const _0x7923b7=_0x440603[_0x3864a3(0x243)];_0x45cb12['x']=(Math[_0x3864a3(0x47e)](_0x37761a['x'])+_0x7923b7[_0x3864a3(0x2e0)][0x8])/_0x7923b7[_0x3864a3(0x2e0)][0x0],_0x45cb12['y']=(Math[_0x3864a3(0x47e)](_0x37761a['y'])+_0x7923b7[_0x3864a3(0x2e0)][0x9])/_0x7923b7[_0x3864a3(0x2e0)][0x5],_0x45cb12['z']=-0x1,_0x45cb12['w']=(0x1+_0x7923b7['elements'][0xa])/_0x7923b7['elements'][0xe],_0x37761a['multiplyScalar'](0x2/_0x37761a[_0x3864a3(0x24d)](_0x45cb12)),_0x7923b7[_0x3864a3(0x2e0)][0x2]=_0x37761a['x'],_0x7923b7['elements'][0x6]=_0x37761a['y'],_0x7923b7['elements'][0xa]=_0x37761a['z']+0x1-_0x48ec4d,_0x7923b7['elements'][0xe]=_0x37761a['w'],_0x337388[_0x3864a3(0x50d)]['encoding']=_0x8e4be9[_0x3864a3(0x3c5)],_0x155023[_0x3864a3(0x592)]=![];const _0x36c576=_0x8e4be9[_0x3864a3(0x377)](),_0x5c1b6f=_0x8e4be9['xr'][_0x3864a3(0x13a)],_0x16e461=_0x8e4be9[_0x3864a3(0x454)][_0x3864a3(0x223)];_0x8e4be9['xr'][_0x3864a3(0x13a)]=![],_0x8e4be9['shadowMap'][_0x3864a3(0x223)]=![],_0x8e4be9[_0x3864a3(0x39c)](_0x337388),_0x8e4be9['state'][_0x3864a3(0x4cc)]['depth'][_0x3864a3(0x288)](!![]);if(_0x8e4be9[_0x3864a3(0x3d4)]===![])_0x8e4be9[_0x3864a3(0x581)]();_0x8e4be9[_0x3864a3(0x27d)](_0x1479d8,_0x440603),_0x8e4be9['xr']['enabled']=_0x5c1b6f,_0x8e4be9[_0x3864a3(0x454)][_0x3864a3(0x223)]=_0x16e461,_0x8e4be9[_0x3864a3(0x39c)](_0x36c576);const _0x33e934=_0x336bf8[_0x3864a3(0x1ae)];_0x33e934!==undefined&&_0x8e4be9['state'][_0x3864a3(0x1ae)](_0x33e934),_0x155023[_0x3864a3(0x592)]=!![];},this[_0x4d9f7a(0x377)]=function(){return _0x337388;};}}Reflector$1[_0x49cdc8(0x60f)][_0x49cdc8(0x1cb)]=!![],Reflector$1['ReflectorShader']={'uniforms':{'color':{'value':null},'tDiffuse':{'value':null},'textureMatrix':{'value':null}},'vertexShader':_0x49cdc8(0x569),'fragmentShader':_0x49cdc8(0x2eb)};class ReflectorRTT extends Reflector$1{constructor(_0x5bcf30,_0x36dab1){const _0x1c5af1=_0x49cdc8;super(_0x5bcf30,_0x36dab1),this[_0x1c5af1(0x2d9)][_0x1c5af1(0x61f)](0x0,0x0);}}class Reflector extends Mesh{constructor(_0x33f424,_0xabc679={}){const _0x3108f1=_0x49cdc8;super(_0x33f424),this[_0x3108f1(0x26f)]=_0x3108f1(0x376);const _0x276ea6=this,_0x6a7aed=_0xabc679['color']!==undefined?new Color(_0xabc679[_0x3108f1(0x229)]):new Color(0x7f7f7f),_0x258b81=_0xabc679['textureWidth']||0x200,_0x2a5431=_0xabc679[_0x3108f1(0x3d8)]||0x200,_0x49cda5=_0xabc679['clipBias']||0x0,_0x191971=_0xabc679[_0x3108f1(0x1bd)]||Reflector[_0x3108f1(0x547)],_0x51e0d0=new Plane(),_0x42f786=new Vector3(),_0x1d9896=new Vector3(),_0x25ffd4=new Vector3(),_0x57cea0=new Matrix4(),_0x24fd61=new Vector3(0x0,0x0,-0x1),_0x5dcb82=new Vector4(),_0x4f9dd7=new Vector3(),_0x250c98=new Vector3(),_0x5071c0=new Vector4(),_0x56bba4=new Matrix4(),_0x436ff7=new PerspectiveCamera(),_0x2d22c9={'minFilter':LinearFilter,'magFilter':LinearFilter,'format':RGBFormat},_0x3a9df5=new WebGLRenderTarget(_0x258b81,_0x2a5431,_0x2d22c9);(!MathUtils['isPowerOfTwo'](_0x258b81)||!MathUtils['isPowerOfTwo'](_0x2a5431))&&(_0x3a9df5[_0x3108f1(0x50d)][_0x3108f1(0x57f)]=![]);const _0x13a69c=new ShaderMaterial({'transparent':!![],'uniforms':UniformsUtils$1[_0x3108f1(0x32a)](_0x191971['uniforms']),'fragmentShader':_0x191971[_0x3108f1(0x27b)],'vertexShader':_0x191971[_0x3108f1(0x628)]});_0x13a69c[_0x3108f1(0x385)]['tDiffuse'][_0x3108f1(0x4ba)]=_0x3a9df5['texture'],_0x13a69c[_0x3108f1(0x385)]['color'][_0x3108f1(0x4ba)]=_0x6a7aed,_0x13a69c['uniforms']['textureMatrix'][_0x3108f1(0x4ba)]=_0x56bba4,_0x13a69c[_0x3108f1(0x385)][_0x3108f1(0x313)][_0x3108f1(0x4ba)]=0x1,this[_0x3108f1(0x4b8)]=_0x13a69c,this[_0x3108f1(0x58e)]=function(_0x19c658,_0x319050,_0x8b55d9){const _0x1254c0=_0x3108f1;_0x1d9896['setFromMatrixPosition'](_0x276ea6['matrixWorld']),_0x25ffd4[_0x1254c0(0x3ab)](_0x8b55d9['matrixWorld']),_0x57cea0['extractRotation'](_0x276ea6['matrixWorld']),_0x42f786[_0x1254c0(0x4ec)](0x0,0x0,0x1),_0x42f786[_0x1254c0(0x13e)](_0x57cea0),_0x4f9dd7[_0x1254c0(0x346)](_0x1d9896,_0x25ffd4);if(_0x4f9dd7[_0x1254c0(0x24d)](_0x42f786)>0x0)return;_0x4f9dd7[_0x1254c0(0x3ac)](_0x42f786)[_0x1254c0(0x17d)](),_0x4f9dd7[_0x1254c0(0x4bc)](_0x1d9896),_0x57cea0[_0x1254c0(0x51a)](_0x8b55d9['matrixWorld']),_0x24fd61[_0x1254c0(0x4ec)](0x0,0x0,-0x1),_0x24fd61[_0x1254c0(0x13e)](_0x57cea0),_0x24fd61[_0x1254c0(0x4bc)](_0x25ffd4),_0x250c98[_0x1254c0(0x346)](_0x1d9896,_0x24fd61),_0x250c98['reflect'](_0x42f786)[_0x1254c0(0x17d)](),_0x250c98[_0x1254c0(0x4bc)](_0x1d9896),_0x436ff7[_0x1254c0(0x26e)]['copy'](_0x4f9dd7),_0x436ff7['up'][_0x1254c0(0x4ec)](0x0,0x1,0x0),_0x436ff7['up'][_0x1254c0(0x13e)](_0x57cea0),_0x436ff7['up'][_0x1254c0(0x3ac)](_0x42f786),_0x436ff7[_0x1254c0(0x5cd)](_0x250c98),_0x436ff7[_0x1254c0(0x4f0)]=_0x8b55d9[_0x1254c0(0x4f0)],_0x436ff7[_0x1254c0(0x386)](),_0x436ff7[_0x1254c0(0x243)][_0x1254c0(0x613)](_0x8b55d9[_0x1254c0(0x243)]),_0x56bba4[_0x1254c0(0x4ec)](0.5,0x0,0x0,0.5,0x0,0.5,0x0,0.5,0x0,0x0,0.5,0.5,0x0,0x0,0x0,0x1),_0x56bba4[_0x1254c0(0x2a5)](_0x436ff7['projectionMatrix']),_0x56bba4[_0x1254c0(0x2a5)](_0x436ff7['matrixWorldInverse']),_0x56bba4['multiply'](_0x276ea6['matrixWorld']),_0x51e0d0[_0x1254c0(0x559)](_0x42f786,_0x1d9896),_0x51e0d0['applyMatrix4'](_0x436ff7['matrixWorldInverse']),_0x5dcb82['set'](_0x51e0d0[_0x1254c0(0x3fe)]['x'],_0x51e0d0[_0x1254c0(0x3fe)]['y'],_0x51e0d0[_0x1254c0(0x3fe)]['z'],_0x51e0d0[_0x1254c0(0x3e3)]);const _0x546baf=_0x436ff7[_0x1254c0(0x243)];_0x5071c0['x']=(Math[_0x1254c0(0x47e)](_0x5dcb82['x'])+_0x546baf[_0x1254c0(0x2e0)][0x8])/_0x546baf[_0x1254c0(0x2e0)][0x0],_0x5071c0['y']=(Math[_0x1254c0(0x47e)](_0x5dcb82['y'])+_0x546baf[_0x1254c0(0x2e0)][0x9])/_0x546baf[_0x1254c0(0x2e0)][0x5],_0x5071c0['z']=-0x1,_0x5071c0['w']=(0x1+_0x546baf['elements'][0xa])/_0x546baf[_0x1254c0(0x2e0)][0xe],_0x5dcb82[_0x1254c0(0x3d1)](0x2/_0x5dcb82['dot'](_0x5071c0)),_0x546baf[_0x1254c0(0x2e0)][0x2]=_0x5dcb82['x'],_0x546baf[_0x1254c0(0x2e0)][0x6]=_0x5dcb82['y'],_0x546baf['elements'][0xa]=_0x5dcb82['z']+0x1-_0x49cda5,_0x546baf[_0x1254c0(0x2e0)][0xe]=_0x5dcb82['w'],_0x3a9df5[_0x1254c0(0x50d)][_0x1254c0(0x52d)]=_0x19c658[_0x1254c0(0x3c5)],_0x276ea6['visible']=![];const _0x37514a=_0x19c658['getRenderTarget'](),_0xbdfa44=_0x19c658['xr'][_0x1254c0(0x13a)],_0x8ee674=_0x19c658['shadowMap'][_0x1254c0(0x223)];_0x19c658['xr'][_0x1254c0(0x13a)]=![],_0x19c658[_0x1254c0(0x454)][_0x1254c0(0x223)]=![],_0x19c658['setRenderTarget'](_0x3a9df5),_0x19c658[_0x1254c0(0x458)][_0x1254c0(0x4cc)][_0x1254c0(0x125)]['setMask'](!![]);if(_0x19c658[_0x1254c0(0x3d4)]===![])_0x19c658[_0x1254c0(0x581)]();_0x19c658[_0x1254c0(0x27d)](_0x319050,_0x436ff7),_0x19c658['xr'][_0x1254c0(0x13a)]=_0xbdfa44,_0x19c658['shadowMap']['autoUpdate']=_0x8ee674,_0x19c658[_0x1254c0(0x39c)](_0x37514a);const _0x26b653=_0x8b55d9[_0x1254c0(0x1ae)];_0x26b653!==undefined&&_0x19c658[_0x1254c0(0x458)][_0x1254c0(0x1ae)](_0x26b653),_0x276ea6[_0x1254c0(0x592)]=!![];},this[_0x3108f1(0x377)]=function(){return _0x3a9df5;};}}Reflector[_0x49cdc8(0x60f)]['isReflector']=!![],Reflector['ReflectorShader']={'uniforms':{'color':{'value':null},'tDiffuse':{'value':null},'textureMatrix':{'value':null},'opacity':{'value':0x1}},'vertexShader':'\x0a\x09\x09uniform\x20mat4\x20textureMatrix;\x0a\x09\x09varying\x20vec4\x20vUv;\x0a\x0a\x09\x09#include\x20<common>\x0a\x09\x09#include\x20<logdepthbuf_pars_vertex>\x0a\x0a\x09\x09void\x20main()\x20{\x0a\x0a\x09\x09\x09vUv\x20=\x20textureMatrix\x20*\x20vec4(\x20position,\x201.0\x20);\x0a\x0a\x09\x09\x09gl_Position\x20=\x20projectionMatrix\x20*\x20modelViewMatrix\x20*\x20vec4(\x20position,\x201.0\x20);\x0a\x0a\x09\x09\x09#include\x20<logdepthbuf_vertex>\x0a\x0a\x09\x09}','fragmentShader':_0x49cdc8(0x231)};class SkeletonUtils{static[_0x49cdc8(0x4a8)](_0x51e53d,_0x1cadf5,_0x5a84f3={}){const _0x60756b=_0x49cdc8,_0xec46a=new Vector3(),_0x4aa546=new Quaternion(),_0x175c15=new Vector3(),_0x25861e=new Matrix4(),_0x152e77=new Matrix4(),_0x4a7c0a=new Matrix4();_0x5a84f3['preserveMatrix']=_0x5a84f3[_0x60756b(0x3cd)]!==undefined?_0x5a84f3[_0x60756b(0x3cd)]:!![],_0x5a84f3[_0x60756b(0x247)]=_0x5a84f3[_0x60756b(0x247)]!==undefined?_0x5a84f3[_0x60756b(0x247)]:!![],_0x5a84f3['preserveHipPosition']=_0x5a84f3[_0x60756b(0x325)]!==undefined?_0x5a84f3[_0x60756b(0x325)]:![],_0x5a84f3[_0x60756b(0x240)]=_0x5a84f3[_0x60756b(0x240)]!==undefined?_0x5a84f3[_0x60756b(0x240)]:![],_0x5a84f3[_0x60756b(0x5e9)]=_0x5a84f3['hip']!==undefined?_0x5a84f3[_0x60756b(0x5e9)]:_0x60756b(0x5e9),_0x5a84f3[_0x60756b(0x5aa)]=_0x5a84f3[_0x60756b(0x5aa)]||{};const _0x357e71=_0x1cadf5['isObject3D']?_0x1cadf5['skeleton'][_0x60756b(0x467)]:this[_0x60756b(0x5db)](_0x1cadf5),_0x133f35=_0x51e53d[_0x60756b(0x57c)]?_0x51e53d[_0x60756b(0x2e2)]['bones']:this[_0x60756b(0x5db)](_0x51e53d);let _0x548649,_0x4c9557,_0x38ba04,_0xc8f907,_0x3acf78;_0x51e53d[_0x60756b(0x57c)]?_0x51e53d[_0x60756b(0x2e2)]['pose']():(_0x5a84f3['useTargetMatrix']=!![],_0x5a84f3[_0x60756b(0x3cd)]=![]);if(_0x5a84f3[_0x60756b(0x247)]){_0x3acf78=[];for(let _0x8b8fbf=0x0;_0x8b8fbf<_0x133f35['length'];_0x8b8fbf++){_0x3acf78['push'](_0x133f35[_0x8b8fbf][_0x60756b(0x26e)]['clone']());}}if(_0x5a84f3[_0x60756b(0x3cd)]){_0x51e53d[_0x60756b(0x386)](),_0x51e53d[_0x60756b(0x3e9)][_0x60756b(0x423)]();for(let _0x5a5cd2=0x0;_0x5a5cd2<_0x51e53d['children']['length'];++_0x5a5cd2){_0x51e53d[_0x60756b(0x10e)][_0x5a5cd2]['updateMatrixWorld'](!![]);}}if(_0x5a84f3['offsets']){_0x548649=[];for(let _0x3df862=0x0;_0x3df862<_0x133f35[_0x60756b(0x25b)];++_0x3df862){_0x4c9557=_0x133f35[_0x3df862],_0x38ba04=_0x5a84f3[_0x60756b(0x5aa)][_0x4c9557[_0x60756b(0x283)]]||_0x4c9557[_0x60756b(0x283)],_0x5a84f3[_0x60756b(0x3c0)]&&_0x5a84f3[_0x60756b(0x3c0)][_0x38ba04]&&(_0x4c9557[_0x60756b(0x259)][_0x60756b(0x2a5)](_0x5a84f3[_0x60756b(0x3c0)][_0x38ba04]),_0x4c9557['matrix'][_0x60756b(0x149)](_0x4c9557[_0x60756b(0x26e)],_0x4c9557[_0x60756b(0x433)],_0x4c9557[_0x60756b(0x17e)]),_0x4c9557['updateMatrixWorld']()),_0x548649[_0x60756b(0x617)](_0x4c9557['matrixWorld'][_0x60756b(0x32a)]());}}for(let _0x444cab=0x0;_0x444cab<_0x133f35[_0x60756b(0x25b)];++_0x444cab){_0x4c9557=_0x133f35[_0x444cab],_0x38ba04=_0x5a84f3[_0x60756b(0x5aa)][_0x4c9557[_0x60756b(0x283)]]||_0x4c9557['name'],_0xc8f907=this[_0x60756b(0x1fb)](_0x38ba04,_0x357e71),_0x4a7c0a[_0x60756b(0x613)](_0x4c9557[_0x60756b(0x3e9)]);if(_0xc8f907){_0xc8f907[_0x60756b(0x386)]();_0x5a84f3[_0x60756b(0x240)]?_0x152e77[_0x60756b(0x613)](_0xc8f907[_0x60756b(0x3e9)]):(_0x152e77['copy'](_0x51e53d['matrixWorld'])[_0x60756b(0x57b)](),_0x152e77[_0x60756b(0x2a5)](_0xc8f907[_0x60756b(0x3e9)]));_0x175c15[_0x60756b(0x1b7)](_0x152e77),_0x152e77[_0x60756b(0x17e)](_0x175c15[_0x60756b(0x4ec)](0x1/_0x175c15['x'],0x1/_0x175c15['y'],0x1/_0x175c15['z'])),_0x4a7c0a['makeRotationFromQuaternion'](_0x4aa546[_0x60756b(0x4b9)](_0x152e77));if(_0x51e53d['isObject3D']){const _0x2ff614=_0x133f35[_0x60756b(0x48b)](_0x4c9557),_0x4292f5=_0x548649?_0x548649[_0x2ff614]:_0x25861e[_0x60756b(0x613)](_0x51e53d[_0x60756b(0x2e2)][_0x60756b(0x32c)][_0x2ff614])['invert']();_0x4a7c0a[_0x60756b(0x2a5)](_0x4292f5);}_0x4a7c0a['copyPosition'](_0x152e77);}_0x4c9557[_0x60756b(0x194)]&&_0x4c9557['parent'][_0x60756b(0x411)]?(_0x4c9557['matrix'][_0x60756b(0x613)](_0x4c9557[_0x60756b(0x194)]['matrixWorld'])['invert'](),_0x4c9557[_0x60756b(0x259)]['multiply'](_0x4a7c0a)):_0x4c9557['matrix'][_0x60756b(0x613)](_0x4a7c0a),_0x5a84f3[_0x60756b(0x325)]&&_0x38ba04===_0x5a84f3['hip']&&_0x4c9557[_0x60756b(0x259)][_0x60756b(0x163)](_0xec46a['set'](0x0,_0x4c9557[_0x60756b(0x26e)]['y'],0x0)),_0x4c9557[_0x60756b(0x259)]['decompose'](_0x4c9557['position'],_0x4c9557[_0x60756b(0x433)],_0x4c9557['scale']),_0x4c9557[_0x60756b(0x386)]();}if(_0x5a84f3['preservePosition'])for(let _0x2c924d=0x0;_0x2c924d<_0x133f35['length'];++_0x2c924d){_0x4c9557=_0x133f35[_0x2c924d],_0x38ba04=_0x5a84f3[_0x60756b(0x5aa)][_0x4c9557[_0x60756b(0x283)]]||_0x4c9557[_0x60756b(0x283)],_0x38ba04!==_0x5a84f3[_0x60756b(0x5e9)]&&_0x4c9557['position'][_0x60756b(0x613)](_0x3acf78[_0x2c924d]);}_0x5a84f3[_0x60756b(0x3cd)]&&_0x51e53d[_0x60756b(0x386)](!![]);}static[_0x49cdc8(0x5ec)](_0x2c35cc,_0x27a78a,_0x3919a7,_0x4e6a36={}){const _0x267490=_0x49cdc8;_0x4e6a36[_0x267490(0x14e)]=_0x4e6a36[_0x267490(0x14e)]!==undefined?_0x4e6a36[_0x267490(0x14e)]:![],_0x4e6a36['fps']=_0x4e6a36[_0x267490(0x35d)]!==undefined?_0x4e6a36[_0x267490(0x35d)]:0x1e,_0x4e6a36[_0x267490(0x5aa)]=_0x4e6a36[_0x267490(0x5aa)]||[];!_0x27a78a[_0x267490(0x57c)]&&(_0x27a78a=this[_0x267490(0x162)](_0x27a78a));const _0x391b24=Math['round'](_0x3919a7['duration']*(_0x4e6a36[_0x267490(0x35d)]/0x3e8)*0x3e8),_0x416322=0x1/_0x4e6a36[_0x267490(0x35d)],_0x34cb13=[],_0x38459e=new AnimationMixer(_0x27a78a),_0x291d69=this[_0x267490(0x5db)](_0x2c35cc['skeleton']),_0x335f85=[];let _0x5953d9,_0x49524c,_0x5428e2,_0x4d4dbb,_0x3e834d;_0x38459e[_0x267490(0x167)](_0x3919a7)[_0x267490(0x5c9)](),_0x38459e[_0x267490(0x577)](0x0),_0x27a78a['updateMatrixWorld']();for(let _0x49320d=0x0;_0x49320d<_0x391b24;++_0x49320d){const _0x5c3c57=_0x49320d*_0x416322;this[_0x267490(0x4a8)](_0x2c35cc,_0x27a78a,_0x4e6a36);for(let _0x3568a0=0x0;_0x3568a0<_0x291d69['length'];++_0x3568a0){_0x3e834d=_0x4e6a36[_0x267490(0x5aa)][_0x291d69[_0x3568a0][_0x267490(0x283)]]||_0x291d69[_0x3568a0][_0x267490(0x283)],_0x5428e2=this['getBoneByName'](_0x3e834d,_0x27a78a[_0x267490(0x2e2)]),_0x5428e2&&(_0x49524c=_0x291d69[_0x3568a0],_0x4d4dbb=_0x335f85[_0x3568a0]=_0x335f85[_0x3568a0]||{'bone':_0x49524c},_0x4e6a36[_0x267490(0x5e9)]===_0x3e834d&&(!_0x4d4dbb['pos']&&(_0x4d4dbb[_0x267490(0x355)]={'times':new Float32Array(_0x391b24),'values':new Float32Array(_0x391b24*0x3)}),_0x4e6a36[_0x267490(0x14e)]&&(_0x49320d===0x0&&(_0x5953d9=_0x49524c[_0x267490(0x26e)][_0x267490(0x32a)]()),_0x49524c[_0x267490(0x26e)][_0x267490(0x148)](_0x5953d9)),_0x4d4dbb[_0x267490(0x355)][_0x267490(0x190)][_0x49320d]=_0x5c3c57,_0x49524c[_0x267490(0x26e)][_0x267490(0x23a)](_0x4d4dbb[_0x267490(0x355)][_0x267490(0x44e)],_0x49320d*0x3)),!_0x4d4dbb[_0x267490(0x605)]&&(_0x4d4dbb[_0x267490(0x605)]={'times':new Float32Array(_0x391b24),'values':new Float32Array(_0x391b24*0x4)}),_0x4d4dbb[_0x267490(0x605)][_0x267490(0x190)][_0x49320d]=_0x5c3c57,_0x49524c[_0x267490(0x433)][_0x267490(0x23a)](_0x4d4dbb['quat'][_0x267490(0x44e)],_0x49320d*0x4));}_0x38459e[_0x267490(0x577)](_0x416322),_0x27a78a[_0x267490(0x386)]();}for(let _0x1fdaae=0x0;_0x1fdaae<_0x335f85[_0x267490(0x25b)];++_0x1fdaae){_0x4d4dbb=_0x335f85[_0x1fdaae],_0x4d4dbb&&(_0x4d4dbb['pos']&&_0x34cb13[_0x267490(0x617)](new VectorKeyframeTrack(_0x267490(0x33f)+_0x4d4dbb[_0x267490(0x2fe)][_0x267490(0x283)]+_0x267490(0x535),_0x4d4dbb[_0x267490(0x355)][_0x267490(0x190)],_0x4d4dbb['pos'][_0x267490(0x44e)])),_0x34cb13[_0x267490(0x617)](new QuaternionKeyframeTrack(_0x267490(0x33f)+_0x4d4dbb['bone'][_0x267490(0x283)]+_0x267490(0x2cd),_0x4d4dbb[_0x267490(0x605)]['times'],_0x4d4dbb[_0x267490(0x605)][_0x267490(0x44e)])));}return _0x38459e[_0x267490(0x2d1)](_0x3919a7),new AnimationClip(_0x3919a7[_0x267490(0x283)],-0x1,_0x34cb13);}static[_0x49cdc8(0x162)](_0x3a1283){const _0x4c1ea2=_0x49cdc8,_0x3591a1=new SkeletonHelper(_0x3a1283[_0x4c1ea2(0x467)][0x0]);return _0x3591a1[_0x4c1ea2(0x2e2)]=_0x3a1283,_0x3591a1;}static['getSkeletonOffsets'](_0x1ce638,_0x126f89,_0x47fd0c={}){const _0x2446b5=_0x49cdc8,_0x179987=new Vector3(),_0x5927c7=new Vector3(),_0x92b273=new Vector3(),_0x48ce99=new Vector3(),_0xf58874=new Vector2(),_0x2bedcb=new Vector2();_0x47fd0c[_0x2446b5(0x5e9)]=_0x47fd0c['hip']!==undefined?_0x47fd0c['hip']:'hip',_0x47fd0c[_0x2446b5(0x5aa)]=_0x47fd0c[_0x2446b5(0x5aa)]||{};!_0x126f89[_0x2446b5(0x57c)]&&(_0x126f89=this[_0x2446b5(0x162)](_0x126f89));const _0x50b15a=Object['keys'](_0x47fd0c[_0x2446b5(0x5aa)]),_0x162e7f=Object[_0x2446b5(0x44e)](_0x47fd0c[_0x2446b5(0x5aa)]),_0x11d60d=_0x126f89[_0x2446b5(0x57c)]?_0x126f89[_0x2446b5(0x2e2)]['bones']:this[_0x2446b5(0x5db)](_0x126f89),_0x45eadf=_0x1ce638['isObject3D']?_0x1ce638[_0x2446b5(0x2e2)][_0x2446b5(0x467)]:this[_0x2446b5(0x5db)](_0x1ce638),_0x4f940d=[];let _0x3187aa,_0x4a47e2,_0x5be14d,_0x57f3c2;_0x1ce638[_0x2446b5(0x2e2)][_0x2446b5(0x1b5)]();for(_0x57f3c2=0x0;_0x57f3c2<_0x45eadf[_0x2446b5(0x25b)];++_0x57f3c2){_0x3187aa=_0x45eadf[_0x57f3c2],_0x5be14d=_0x47fd0c[_0x2446b5(0x5aa)][_0x3187aa[_0x2446b5(0x283)]]||_0x3187aa['name'],_0x4a47e2=this[_0x2446b5(0x1fb)](_0x5be14d,_0x11d60d);if(_0x4a47e2&&_0x5be14d!==_0x47fd0c[_0x2446b5(0x5e9)]){const _0x104745=this[_0x2446b5(0x532)](_0x3187aa[_0x2446b5(0x194)],_0x50b15a),_0x51b7ec=this[_0x2446b5(0x532)](_0x4a47e2[_0x2446b5(0x194)],_0x162e7f);_0x104745[_0x2446b5(0x386)](),_0x51b7ec[_0x2446b5(0x386)](),_0x179987[_0x2446b5(0x3ab)](_0x104745[_0x2446b5(0x3e9)]),_0x5927c7['setFromMatrixPosition'](_0x3187aa[_0x2446b5(0x3e9)]),_0x92b273[_0x2446b5(0x3ab)](_0x51b7ec[_0x2446b5(0x3e9)]),_0x48ce99['setFromMatrixPosition'](_0x4a47e2[_0x2446b5(0x3e9)]),_0xf58874[_0x2446b5(0x346)](new Vector2(_0x5927c7['x'],_0x5927c7['y']),new Vector2(_0x179987['x'],_0x179987['y']))[_0x2446b5(0x512)](),_0x2bedcb[_0x2446b5(0x346)](new Vector2(_0x48ce99['x'],_0x48ce99['y']),new Vector2(_0x92b273['x'],_0x92b273['y']))[_0x2446b5(0x512)]();const _0x39f960=_0xf58874[_0x2446b5(0x54f)]()-_0x2bedcb['angle'](),_0xbc10a8=new Matrix4()[_0x2446b5(0x2d4)](new Euler(0x0,0x0,_0x39f960));_0x3187aa[_0x2446b5(0x259)][_0x2446b5(0x2a5)](_0xbc10a8),_0x3187aa[_0x2446b5(0x259)][_0x2446b5(0x149)](_0x3187aa['position'],_0x3187aa[_0x2446b5(0x433)],_0x3187aa[_0x2446b5(0x17e)]),_0x3187aa['updateMatrixWorld'](),_0x4f940d[_0x5be14d]=_0xbc10a8;}}return _0x4f940d;}static['renameBones'](_0x5a4905,_0x618323){const _0x3bd284=_0x49cdc8,_0x320b98=this['getBones'](_0x5a4905);for(let _0x321a96=0x0;_0x321a96<_0x320b98[_0x3bd284(0x25b)];++_0x321a96){const _0xa62cc=_0x320b98[_0x321a96];_0x618323[_0xa62cc[_0x3bd284(0x283)]]&&(_0xa62cc[_0x3bd284(0x283)]=_0x618323[_0xa62cc['name']]);}return this;}static['getBones'](_0x2f3edb){const _0x32768a=_0x49cdc8;return Array[_0x32768a(0x406)](_0x2f3edb)?_0x2f3edb:_0x2f3edb[_0x32768a(0x467)];}static[_0x49cdc8(0x1fb)](_0x1d4f49,_0x42e4db){const _0x421412=_0x49cdc8;for(let _0x22e3e0=0x0,_0x3b07a3=this[_0x421412(0x5db)](_0x42e4db);_0x22e3e0<_0x3b07a3[_0x421412(0x25b)];_0x22e3e0++){if(_0x1d4f49===_0x3b07a3[_0x22e3e0][_0x421412(0x283)])return _0x3b07a3[_0x22e3e0];}}static[_0x49cdc8(0x532)](_0x5c81c0,_0x380d68){const _0x262a9f=_0x49cdc8;while(_0x5c81c0['isBone']){if(_0x380d68[_0x262a9f(0x48b)](_0x5c81c0[_0x262a9f(0x283)])!==-0x1)return _0x5c81c0;_0x5c81c0=_0x5c81c0[_0x262a9f(0x194)];}}static[_0x49cdc8(0x5a7)](_0x1a59ee,_0x25c7ec){const _0x13a6f7=_0x49cdc8,_0x164d7f=/\[(.*)\]\.(.*)/,_0x5a0f9e={'name':_0x1a59ee};for(let _0x676a3d=0x0;_0x676a3d<_0x25c7ec[_0x13a6f7(0x25b)];++_0x676a3d){const _0x5f179a=_0x164d7f[_0x13a6f7(0x298)](_0x25c7ec[_0x676a3d]['name']);_0x5f179a&&_0x1a59ee===_0x5f179a[0x1]&&(_0x5a0f9e[_0x5f179a[0x2]]=_0x676a3d);}return _0x5a0f9e;}static[_0x49cdc8(0x305)](_0x8715db,_0x14ddcb){const _0x193bae=_0x49cdc8,_0x2fde3f=this[_0x193bae(0x5db)](_0x8715db),_0x2e95bb=this[_0x193bae(0x5db)](_0x14ddcb),_0x27323e=[];_0x4ce7dd:for(let _0x2d4b0b=0x0;_0x2d4b0b<_0x2fde3f['length'];_0x2d4b0b++){const _0x13f718=_0x2fde3f[_0x2d4b0b][_0x193bae(0x283)];for(let _0x4a8e3f=0x0;_0x4a8e3f<_0x2e95bb[_0x193bae(0x25b)];_0x4a8e3f++){if(_0x13f718===_0x2e95bb[_0x4a8e3f][_0x193bae(0x283)]){_0x27323e[_0x193bae(0x617)](_0x13f718);continue _0x4ce7dd;}}}return _0x27323e;}static['clone'](_0x209396){const _0x39a174=_0x49cdc8,_0x2be5be=new Map(),_0x10409d=new Map(),_0x2b27b9=_0x209396['clone']();return parallelTraverse(_0x209396,_0x2b27b9,function(_0x3c6b3b,_0x5c81b9){const _0x4d1ac1=_0x16a8;_0x2be5be[_0x4d1ac1(0x4ec)](_0x5c81b9,_0x3c6b3b),_0x10409d['set'](_0x3c6b3b,_0x5c81b9);}),_0x2b27b9[_0x39a174(0x1a6)](function(_0x3754d5){const _0x53ec90=_0x39a174;if(!_0x3754d5[_0x53ec90(0x471)])return;const _0x4754cd=_0x3754d5,_0x2cf787=_0x2be5be[_0x53ec90(0x4d4)](_0x3754d5),_0xf68ff6=_0x2cf787[_0x53ec90(0x2e2)][_0x53ec90(0x467)];_0x4754cd[_0x53ec90(0x2e2)]=_0x2cf787['skeleton'][_0x53ec90(0x32a)](),_0x4754cd[_0x53ec90(0x4a4)][_0x53ec90(0x613)](_0x2cf787[_0x53ec90(0x4a4)]),_0x4754cd['skeleton'][_0x53ec90(0x467)]=_0xf68ff6[_0x53ec90(0x427)](function(_0x5b9269){const _0x273094=_0x53ec90;return _0x10409d[_0x273094(0x4d4)](_0x5b9269);}),_0x4754cd['bind'](_0x4754cd[_0x53ec90(0x2e2)],_0x4754cd['bindMatrix']);}),_0x2b27b9;}}function parallelTraverse(_0x512c08,_0x31c5d7,_0x42f35e){const _0xba7d21=_0x49cdc8;_0x42f35e(_0x512c08,_0x31c5d7);for(let _0x5605bb=0x0;_0x5605bb<_0x512c08[_0xba7d21(0x10e)][_0xba7d21(0x25b)];_0x5605bb++){parallelTraverse(_0x512c08[_0xba7d21(0x10e)][_0x5605bb],_0x31c5d7['children'][_0x5605bb],_0x42f35e);}}exports[_0x49cdc8(0x5d7)]=ACESFilmicToneMapping,exports[_0x49cdc8(0x4c8)]=AddEquation,exports[_0x49cdc8(0x1c5)]=AddOperation,exports[_0x49cdc8(0x1e4)]=AdditiveAnimationBlendMode,exports[_0x49cdc8(0x142)]=AdditiveBlending,exports[_0x49cdc8(0x241)]=AlphaFormat,exports[_0x49cdc8(0x42e)]=AlwaysDepth,exports[_0x49cdc8(0x1a3)]=AlwaysStencilFunc,exports[_0x49cdc8(0x4ca)]=AmbientLight,exports[_0x49cdc8(0x2b5)]=AmbientLightProbe,exports[_0x49cdc8(0x3ea)]=AnimationClip,exports[_0x49cdc8(0x1ce)]=AnimationLoader,exports[_0x49cdc8(0x2c0)]=AnimationMixer,exports['AnimationObjectGroup']=AnimationObjectGroup,exports[_0x49cdc8(0x2dd)]=AnimationUtils,exports[_0x49cdc8(0x179)]=ArcCurve,exports[_0x49cdc8(0x579)]=ArrayCamera,exports[_0x49cdc8(0x5c7)]=ArrowHelper,exports[_0x49cdc8(0x12d)]=Audio,exports[_0x49cdc8(0x34d)]=AudioAnalyser,exports[_0x49cdc8(0x4cd)]=AudioContext,exports[_0x49cdc8(0x2f7)]=AudioListener,exports[_0x49cdc8(0x1d9)]=AudioLoader,exports[_0x49cdc8(0x5dd)]=AxesHelper,exports['AxisHelper']=AxisHelper,exports[_0x49cdc8(0x1a0)]=BackSide,exports[_0x49cdc8(0x268)]=BaseParticles,exports['BasicDepthPacking']=BasicDepthPacking,exports[_0x49cdc8(0x42f)]=BasicShadowMap,exports[_0x49cdc8(0x1ab)]=BinaryTextureLoader,exports[_0x49cdc8(0x302)]=BlurNode,exports[_0x49cdc8(0x37e)]=Bone,exports[_0x49cdc8(0x4d3)]=BooleanKeyframeTrack,exports['BoundingBoxHelper']=BoundingBoxHelper,exports[_0x49cdc8(0x3d9)]=Box2,exports[_0x49cdc8(0x12f)]=Box3,exports[_0x49cdc8(0x610)]=Box3Helper,exports['BoxBufferGeometry']=BoxGeometry,exports[_0x49cdc8(0x3ed)]=BoxGeometry,exports[_0x49cdc8(0x599)]=BoxHelper,exports[_0x49cdc8(0x42a)]=BufferAttribute,exports['BufferGeometry']=BufferGeometry,exports[_0x49cdc8(0x4e2)]=BufferGeometryLoader,exports[_0x49cdc8(0x347)]=ByteType,exports['Cache']=Cache,exports[_0x49cdc8(0x366)]=Camera,exports[_0x49cdc8(0x1a9)]=CameraHelper,exports['CanvasRenderer']=CanvasRenderer,exports[_0x49cdc8(0x1b8)]=CanvasTexture,exports['CatmullRomCurve3']=CatmullRomCurve3,exports[_0x49cdc8(0x582)]=CineonToneMapping,exports['CircleBufferGeometry']=CircleGeometry,exports[_0x49cdc8(0x2a6)]=CircleGeometry,exports[_0x49cdc8(0x329)]=ClampToEdgeWrapping,exports['Clock']=Clock,exports[_0x49cdc8(0x59f)]=Color,exports[_0x49cdc8(0x1d6)]=ColorKeyframeTrack,exports[_0x49cdc8(0x31b)]=ColumnarTag,exports['CompositeIconHTML']=CompositeIconHTML,exports[_0x49cdc8(0x4bf)]=CompositeIconPopup,exports[_0x49cdc8(0x2e4)]=CompositeIconTag,exports[_0x49cdc8(0x61e)]=CompositeIconTitle,exports['CompressedTexture']=CompressedTexture,exports['CompressedTextureLoader']=CompressedTextureLoader,exports[_0x49cdc8(0x1ba)]=ConeGeometry,exports[_0x49cdc8(0x30c)]=ConeGeometry,exports[_0x49cdc8(0x3d6)]=Container,exports[_0x49cdc8(0x22e)]=CubeCamera,exports[_0x49cdc8(0x567)]=CubeReflectionMapping,exports[_0x49cdc8(0x1da)]=CubeRefractionMapping,exports[_0x49cdc8(0x48f)]=CubeTexture,exports[_0x49cdc8(0xfb)]=CubeTextureLoader,exports[_0x49cdc8(0x2be)]=CubeUVReflectionMapping,exports[_0x49cdc8(0x108)]=CubeUVRefractionMapping,exports['CubicBezierCurve']=CubicBezierCurve,exports[_0x49cdc8(0x4c7)]=CubicBezierCurve3,exports[_0x49cdc8(0x12e)]=CubicInterpolant,exports[_0x49cdc8(0x1c2)]=CullFaceBack,exports[_0x49cdc8(0x1aa)]=CullFaceFront,exports[_0x49cdc8(0x5fd)]=CullFaceFrontBack,exports['CullFaceNone']=CullFaceNone,exports[_0x49cdc8(0x323)]=Curve,exports[_0x49cdc8(0x603)]=CurvePath,exports['CustomBlending']=CustomBlending,exports[_0x49cdc8(0x11a)]=CustomToneMapping,exports['CylinderBufferGeometry']=CylinderGeometry,exports[_0x49cdc8(0x431)]=CylinderGeometry,exports['Cylindrical']=Cylindrical,exports['DataTexture']=DataTexture,exports['DataTexture2DArray']=DataTexture2DArray,exports[_0x49cdc8(0x37a)]=DataTexture3D,exports[_0x49cdc8(0x197)]=DataTextureLoader,exports[_0x49cdc8(0x59e)]=DataUtils,exports['DecrementStencilOp']=DecrementStencilOp,exports[_0x49cdc8(0x183)]=DecrementWrapStencilOp,exports[_0x49cdc8(0x1ea)]=DefaultLoadingManager,exports['DepthFormat']=DepthFormat,exports[_0x49cdc8(0x510)]=DepthStencilFormat,exports[_0x49cdc8(0x23b)]=DepthTexture,exports['DirectionalLight']=DirectionalLight,exports[_0x49cdc8(0x43c)]=DirectionalLightHelper,exports[_0x49cdc8(0x43e)]=DiscreteInterpolant,exports['DodecahedronBufferGeometry']=DodecahedronGeometry,exports[_0x49cdc8(0x607)]=DodecahedronGeometry,exports['DoubleSide']=DoubleSide,exports[_0x49cdc8(0x1f7)]=DstAlphaFactor,exports['DstColorFactor']=DstColorFactor,exports[_0x49cdc8(0x3a3)]=DynamicBufferAttribute,exports['DynamicCopyUsage']=DynamicCopyUsage,exports[_0x49cdc8(0x316)]=DynamicDrawUsage,exports[_0x49cdc8(0x4e4)]=DynamicReadUsage,exports[_0x49cdc8(0x151)]=EdgesGeometry,exports['EdgesHelper']=EdgesHelper,exports[_0x49cdc8(0x518)]=EllipseCurve,exports[_0x49cdc8(0x1b3)]=EqualDepth,exports['EqualStencilFunc']=EqualStencilFunc,exports['EquirectangularReflectionMapping']=EquirectangularReflectionMapping,exports[_0x49cdc8(0x546)]=EquirectangularRefractionMapping,exports[_0x49cdc8(0x25a)]=Euler,exports[_0x49cdc8(0x245)]=EventDispatcher,exports[_0x49cdc8(0x102)]=Events,exports[_0x49cdc8(0x500)]=ExpressionNode,exports[_0x49cdc8(0x262)]=ExtrudeGeometry,exports['ExtrudeGeometry']=ExtrudeGeometry,exports[_0x49cdc8(0x3a9)]=FaceColors,exports[_0x49cdc8(0x16a)]=FileLoader,exports[_0x49cdc8(0x131)]=FlatShading,exports[_0x49cdc8(0x2ef)]=Float16BufferAttribute,exports['Float32Attribute']=Float32Attribute,exports[_0x49cdc8(0x3f0)]=Float32BufferAttribute,exports['Float64Attribute']=Float64Attribute,exports['Float64BufferAttribute']=Float64BufferAttribute,exports[_0x49cdc8(0x4d2)]=FloatNode,exports[_0x49cdc8(0x400)]=FloatType,exports[_0x49cdc8(0x360)]=Fog,exports[_0x49cdc8(0x419)]=FogExp2,exports[_0x49cdc8(0x21f)]=Font,exports[_0x49cdc8(0x11c)]=FontLoader,exports[_0x49cdc8(0x3ba)]=FrontSide,exports[_0x49cdc8(0x5c8)]=Frustum,exports['GLBufferAttribute']=GLBufferAttribute,exports[_0x49cdc8(0x54d)]=GLSL1,exports[_0x49cdc8(0x4e7)]=GLSL3,exports['GammaEncoding']=GammaEncoding,exports['GreaterDepth']=GreaterDepth,exports[_0x49cdc8(0x2ea)]=GreaterEqualDepth,exports[_0x49cdc8(0x5eb)]=GreaterEqualStencilFunc,exports['GreaterStencilFunc']=GreaterStencilFunc,exports[_0x49cdc8(0x225)]=GridHelper,exports[_0x49cdc8(0x216)]=Group$1,exports[_0x49cdc8(0xfa)]=HalfFloatType,exports['HemisphereLight']=HemisphereLight,exports[_0x49cdc8(0x5b9)]=HemisphereLightHelper,exports[_0x49cdc8(0x49a)]=HemisphereLightProbe,exports[_0x49cdc8(0x473)]=IcosahedronGeometry,exports[_0x49cdc8(0x4c6)]=IcosahedronGeometry,exports[_0x49cdc8(0x370)]=ImageBitmapLoader,exports[_0x49cdc8(0x291)]=ImageLoader,exports['ImageUtils']=ImageUtils,exports['ImmediateRenderObject']=ImmediateRenderObject,exports[_0x49cdc8(0x234)]=IncrementStencilOp,exports[_0x49cdc8(0x230)]=IncrementWrapStencilOp,exports[_0x49cdc8(0x463)]=InformationTag,exports[_0x49cdc8(0x2e6)]=InstancedBufferAttribute,exports['InstancedBufferGeometry']=InstancedBufferGeometry,exports[_0x49cdc8(0x1bb)]=InstancedInterleavedBuffer,exports[_0x49cdc8(0x3bf)]=InstancedMesh,exports[_0x49cdc8(0x1c9)]=Int16Attribute,exports[_0x49cdc8(0x49e)]=Int16BufferAttribute,exports[_0x49cdc8(0x1f3)]=Int32Attribute,exports[_0x49cdc8(0x16f)]=Int32BufferAttribute,exports[_0x49cdc8(0x4a9)]=Int8Attribute,exports[_0x49cdc8(0x2e7)]=Int8BufferAttribute,exports['IntType']=IntType,exports[_0x49cdc8(0x4dd)]=InterleavedBuffer,exports[_0x49cdc8(0x593)]=InterleavedBufferAttribute,exports['Interpolant']=Interpolant,exports['InterpolateDiscrete']=InterpolateDiscrete,exports[_0x49cdc8(0x595)]=InterpolateLinear,exports['InterpolateSmooth']=InterpolateSmooth,exports[_0x49cdc8(0x56f)]=InvertStencilOp,exports[_0x49cdc8(0x404)]=JSONLoader,exports[_0x49cdc8(0x2fb)]=JSONParser,exports[_0x49cdc8(0x5e2)]=KeepStencilOp,exports[_0x49cdc8(0x36c)]=KeyframeTrack,exports['LOD']=LOD,exports[_0x49cdc8(0x4d8)]=LatheGeometry,exports[_0x49cdc8(0x3bd)]=LatheGeometry,exports[_0x49cdc8(0x1c8)]=Layers,exports[_0x49cdc8(0x300)]=LensFlare,exports[_0x49cdc8(0x530)]=LessDepth,exports['LessEqualDepth']=LessEqualDepth,exports[_0x49cdc8(0x156)]=LessEqualStencilFunc,exports['LessStencilFunc']=LessStencilFunc,exports[_0x49cdc8(0x59d)]=Light,exports['LightProbe']=LightProbe,exports[_0x49cdc8(0x331)]=Line,exports[_0x49cdc8(0x5fe)]=Line3,exports['LineBasicMaterial']=LineBasicMaterial,exports[_0x49cdc8(0x104)]=LineCurve,exports[_0x49cdc8(0x182)]=LineCurve3,exports['LineDashedMaterial']=LineDashedMaterial,exports['LineGeometry']=LineGeometry,exports[_0x49cdc8(0x440)]=LineLoop,exports[_0x49cdc8(0x3e5)]=LinePieces,exports['LineSegments']=LineSegments,exports[_0x49cdc8(0x1dc)]=LineStrip,exports[_0x49cdc8(0x13c)]=LinearEncoding,exports[_0x49cdc8(0x4bb)]=LinearFilter,exports[_0x49cdc8(0x4f3)]=LinearInterpolant,exports[_0x49cdc8(0x4fb)]=LinearMipMapLinearFilter,exports[_0x49cdc8(0x5c5)]=LinearMipMapNearestFilter,exports['LinearMipmapLinearFilter']=LinearMipmapLinearFilter,exports[_0x49cdc8(0x4eb)]=LinearMipmapNearestFilter,exports['LinearToneMapping']=LinearToneMapping,exports[_0x49cdc8(0x187)]=Loader,exports[_0x49cdc8(0xfc)]=LoaderUtils,exports[_0x49cdc8(0x2aa)]=LoadingManager,exports['LogLuvEncoding']=LogLuvEncoding,exports[_0x49cdc8(0x3c3)]=LoopOnce,exports[_0x49cdc8(0x5e0)]=LoopPingPong,exports['LoopRepeat']=LoopRepeat,exports['LuminanceAlphaFormat']=LuminanceAlphaFormat,exports[_0x49cdc8(0x3ff)]=LuminanceFormat,exports[_0x49cdc8(0x5bd)]=MOUSE,exports['Material']=Material,exports['MaterialLoader']=MaterialLoader,exports[_0x49cdc8(0x280)]=MathUtils,exports[_0x49cdc8(0x4b5)]=MathNode,exports[_0x49cdc8(0x19e)]=MathUtils,exports[_0x49cdc8(0x4d1)]=Matrix3,exports[_0x49cdc8(0x2ab)]=Matrix4,exports[_0x49cdc8(0x4a6)]=MaxEquation,exports[_0x49cdc8(0x274)]=Mesh,exports[_0x49cdc8(0x16c)]=MeshBasicMaterial,exports['MeshDepthMaterial']=MeshDepthMaterial,exports[_0x49cdc8(0x24c)]=MeshDistanceMaterial,exports[_0x49cdc8(0x1fc)]=MeshFaceMaterial,exports[_0x49cdc8(0x5e4)]=MeshLambertMaterial,exports[_0x49cdc8(0x3e6)]=MeshMatcapMaterial,exports[_0x49cdc8(0x168)]=MeshNormalMaterial,exports[_0x49cdc8(0x54b)]=MeshPhongMaterial,exports[_0x49cdc8(0x258)]=MeshPhysicalMaterial,exports[_0x49cdc8(0x441)]=MeshStandardMaterial,exports[_0x49cdc8(0x3e0)]=MeshToonMaterial,exports[_0x49cdc8(0x1f2)]=MinEquation,exports[_0x49cdc8(0x311)]=MirroredRepeatWrapping,exports[_0x49cdc8(0x252)]=MixOperation,exports[_0x49cdc8(0x615)]=MultiMaterial,exports[_0x49cdc8(0x340)]=MultiplyBlending,exports[_0x49cdc8(0x483)]=MultiplyOperation,exports[_0x49cdc8(0x5b1)]=NearestFilter,exports[_0x49cdc8(0x3af)]=NearestMipMapLinearFilter,exports['NearestMipMapNearestFilter']=NearestMipMapNearestFilter,exports[_0x49cdc8(0x11f)]=NearestMipmapLinearFilter,exports[_0x49cdc8(0x2ad)]=NearestMipmapNearestFilter,exports[_0x49cdc8(0x29c)]=NeverDepth,exports[_0x49cdc8(0x1f1)]=NeverStencilFunc,exports['NoBlending']=NoBlending,exports[_0x49cdc8(0x251)]=NoColors,exports[_0x49cdc8(0x477)]=NoToneMapping,exports['NodeFrame']=NodeFrame,exports['NormalAnimationBlendMode']=NormalAnimationBlendMode,exports['NormalBlending']=NormalBlending,exports[_0x49cdc8(0x206)]=NormalMapNode,exports[_0x49cdc8(0x4a1)]=NotEqualDepth,exports['NotEqualStencilFunc']=NotEqualStencilFunc,exports[_0x49cdc8(0x2a3)]=NumberKeyframeTrack,exports[_0x49cdc8(0x513)]=Object3D,exports[_0x49cdc8(0x43b)]=ObjectLoader,exports[_0x49cdc8(0x224)]=ObjectSpaceNormalMap,exports[_0x49cdc8(0x209)]=OctahedronGeometry,exports[_0x49cdc8(0x31d)]=OctahedronGeometry,exports[_0x49cdc8(0x107)]=OneFactor,exports[_0x49cdc8(0x1f4)]=OneMinusDstAlphaFactor,exports[_0x49cdc8(0x20b)]=OneMinusDstColorFactor,exports[_0x49cdc8(0x5ae)]=OneMinusSrcAlphaFactor,exports[_0x49cdc8(0x5fa)]=OneMinusSrcColorFactor,exports[_0x49cdc8(0x623)]=OperatorNode,exports[_0x49cdc8(0x172)]=OrthographicCamera,exports[_0x49cdc8(0x526)]=PCFShadowMap,exports[_0x49cdc8(0x461)]=PCFSoftShadowMap,exports[_0x49cdc8(0x41a)]=PMREMGenerator,exports[_0x49cdc8(0x364)]=POI,exports[_0x49cdc8(0x5fb)]=ParametricGeometry,exports[_0x49cdc8(0x537)]=ParametricGeometry,exports[_0x49cdc8(0x53a)]=Particle,exports[_0x49cdc8(0x5da)]=ParticleBasicMaterial,exports[_0x49cdc8(0x2d6)]=ParticleSystem,exports[_0x49cdc8(0x620)]=ParticleSystemMaterial,exports[_0x49cdc8(0x39d)]=Path,exports[_0x49cdc8(0x308)]=PerspectiveCamera,exports[_0x49cdc8(0x269)]=PhongNodeMaterial,exports[_0x49cdc8(0x5f8)]=PictureDropdownTag,exports[_0x49cdc8(0x4da)]=Plane,exports[_0x49cdc8(0x3f2)]=PlaneGeometry,exports[_0x49cdc8(0x4fd)]=PlaneGeometry,exports[_0x49cdc8(0x1c0)]=PlaneHelper,exports[_0x49cdc8(0x319)]=PointCloud,exports['PointCloudMaterial']=PointCloudMaterial,exports[_0x49cdc8(0x3e8)]=PointLight,exports[_0x49cdc8(0x3b3)]=PointLightHelper,exports['Points']=Points,exports[_0x49cdc8(0x4f7)]=PointsMaterial,exports[_0x49cdc8(0x150)]=PolarGridHelper,exports[_0x49cdc8(0x444)]=PolyhedronGeometry,exports['PolyhedronGeometry']=PolyhedronGeometry,exports[_0x49cdc8(0x46b)]=PositionalAudio,exports[_0x49cdc8(0x4bd)]=PrimitiveMaterial,exports[_0x49cdc8(0x5d3)]=Primitives,exports['PropertyBinding']=PropertyBinding,exports['PropertyMixer']=PropertyMixer,exports['QuadraticBezierCurve']=QuadraticBezierCurve,exports['QuadraticBezierCurve3']=QuadraticBezierCurve3,exports[_0x49cdc8(0x28b)]=Quaternion,exports[_0x49cdc8(0x541)]=QuaternionKeyframeTrack,exports['QuaternionLinearInterpolant']=QuaternionLinearInterpolant,exports[_0x49cdc8(0x53b)]=REVISION,exports[_0x49cdc8(0x40c)]=RGBADepthPacking,exports[_0x49cdc8(0x4a0)]=RGBAFormat,exports['RGBAIntegerFormat']=RGBAIntegerFormat,exports[_0x49cdc8(0x1dd)]=RGBA_ASTC_10x10_Format,exports[_0x49cdc8(0x4e6)]=RGBA_ASTC_10x5_Format,exports[_0x49cdc8(0x45e)]=RGBA_ASTC_10x6_Format,exports[_0x49cdc8(0x3a5)]=RGBA_ASTC_10x8_Format,exports['RGBA_ASTC_12x10_Format']=RGBA_ASTC_12x10_Format,exports[_0x49cdc8(0x5bc)]=RGBA_ASTC_12x12_Format,exports[_0x49cdc8(0x43d)]=RGBA_ASTC_4x4_Format,exports[_0x49cdc8(0x598)]=RGBA_ASTC_5x4_Format,exports['RGBA_ASTC_5x5_Format']=RGBA_ASTC_5x5_Format,exports[_0x49cdc8(0x144)]=RGBA_ASTC_6x5_Format,exports[_0x49cdc8(0x4f8)]=RGBA_ASTC_6x6_Format,exports['RGBA_ASTC_8x5_Format']=RGBA_ASTC_8x5_Format,exports['RGBA_ASTC_8x6_Format']=RGBA_ASTC_8x6_Format,exports['RGBA_ASTC_8x8_Format']=RGBA_ASTC_8x8_Format,exports[_0x49cdc8(0x3ee)]=RGBA_BPTC_Format,exports[_0x49cdc8(0x14f)]=RGBA_ETC2_EAC_Format,exports[_0x49cdc8(0x614)]=RGBA_PVRTC_2BPPV1_Format,exports[_0x49cdc8(0x409)]=RGBA_PVRTC_4BPPV1_Format,exports[_0x49cdc8(0x322)]=RGBA_S3TC_DXT1_Format,exports[_0x49cdc8(0x3b9)]=RGBA_S3TC_DXT3_Format,exports[_0x49cdc8(0x3ec)]=RGBA_S3TC_DXT5_Format,exports[_0x49cdc8(0x36a)]=RGBDEncoding,exports['RGBEEncoding']=RGBEEncoding,exports[_0x49cdc8(0x256)]=RGBEFormat,exports[_0x49cdc8(0x3df)]=RGBFormat,exports[_0x49cdc8(0x217)]=RGBIntegerFormat,exports[_0x49cdc8(0x413)]=RGBM16Encoding,exports['RGBM7Encoding']=RGBM7Encoding,exports[_0x49cdc8(0x1cf)]=RGB_ETC1_Format,exports[_0x49cdc8(0x37d)]=RGB_ETC2_Format,exports['RGB_PVRTC_2BPPV1_Format']=RGB_PVRTC_2BPPV1_Format,exports[_0x49cdc8(0x5ee)]=RGB_PVRTC_4BPPV1_Format,exports[_0x49cdc8(0x553)]=RGB_S3TC_DXT1_Format,exports[_0x49cdc8(0x169)]=RGFormat,exports[_0x49cdc8(0x625)]=RGIntegerFormat,exports[_0x49cdc8(0x198)]=RawShaderMaterial,exports['Ray']=Ray,exports[_0x49cdc8(0x562)]=Raycaster,exports['RectAreaLight']=RectAreaLight,exports[_0x49cdc8(0x1cc)]=RedFormat,exports[_0x49cdc8(0x420)]=RedIntegerFormat,exports[_0x49cdc8(0x376)]=Reflector,exports[_0x49cdc8(0x158)]=ReflectorNode,exports[_0x49cdc8(0x27f)]=ReflectorRTT,exports[_0x49cdc8(0x286)]=ReinhardToneMapping,exports[_0x49cdc8(0x46c)]=RepeatWrapping,exports[_0x49cdc8(0x561)]=ReplaceStencilOp,exports['ReverseSubtractEquation']=ReverseSubtractEquation,exports[_0x49cdc8(0x29d)]=RingGeometry,exports[_0x49cdc8(0x51b)]=RingGeometry,exports[_0x49cdc8(0x3fc)]=SRGB8_ALPHA8_ASTC_10x10_Format,exports[_0x49cdc8(0x498)]=SRGB8_ALPHA8_ASTC_10x5_Format,exports[_0x49cdc8(0x5d9)]=SRGB8_ALPHA8_ASTC_10x6_Format,exports[_0x49cdc8(0x499)]=SRGB8_ALPHA8_ASTC_10x8_Format,exports[_0x49cdc8(0x10c)]=SRGB8_ALPHA8_ASTC_12x10_Format,exports[_0x49cdc8(0x343)]=SRGB8_ALPHA8_ASTC_12x12_Format,exports[_0x49cdc8(0x4ee)]=SRGB8_ALPHA8_ASTC_4x4_Format,exports[_0x49cdc8(0x489)]=SRGB8_ALPHA8_ASTC_5x4_Format,exports[_0x49cdc8(0x110)]=SRGB8_ALPHA8_ASTC_5x5_Format,exports[_0x49cdc8(0x375)]=SRGB8_ALPHA8_ASTC_6x5_Format,exports['SRGB8_ALPHA8_ASTC_6x6_Format']=SRGB8_ALPHA8_ASTC_6x6_Format,exports[_0x49cdc8(0x341)]=SRGB8_ALPHA8_ASTC_8x5_Format,exports[_0x49cdc8(0x5ad)]=SRGB8_ALPHA8_ASTC_8x6_Format,exports[_0x49cdc8(0x50f)]=SRGB8_ALPHA8_ASTC_8x8_Format,exports['Scene']=Scene,exports['SceneUtils']=SceneUtils,exports[_0x49cdc8(0x4ea)]=ShaderChunk$1,exports['ShaderLib']=ShaderLib$1,exports[_0x49cdc8(0x388)]=ShaderMaterial,exports[_0x49cdc8(0x203)]=ShadowMaterial,exports['Shape']=Shape,exports['ShapeBufferGeometry']=ShapeGeometry,exports[_0x49cdc8(0x136)]=ShapeGeometry,exports[_0x49cdc8(0x55f)]=ShapePath,exports[_0x49cdc8(0x565)]=ShapeUtils,exports[_0x49cdc8(0x17b)]=ShortType,exports[_0x49cdc8(0x5f9)]=Skeleton,exports[_0x49cdc8(0x200)]=SkeletonHelper,exports[_0x49cdc8(0x374)]=SkeletonUtils,exports[_0x49cdc8(0x476)]=SkinnedMesh,exports[_0x49cdc8(0x549)]=SmoothShading,exports['Sphere']=Sphere,exports['SphereBufferGeometry']=SphereGeometry,exports['SphereGeometry']=SphereGeometry,exports[_0x49cdc8(0x624)]=Spherical,exports[_0x49cdc8(0x326)]=SphericalHarmonics3,exports[_0x49cdc8(0xfe)]=SplineCurve,exports[_0x49cdc8(0x566)]=SpotLight,exports['SpotLightHelper']=SpotLightHelper,exports[_0x49cdc8(0x4f2)]=Sprite,exports[_0x49cdc8(0x3d0)]=SpriteMaterial,exports[_0x49cdc8(0x5f3)]=SrcAlphaFactor,exports['SrcAlphaSaturateFactor']=SrcAlphaSaturateFactor,exports['SrcColorFactor']=SrcColorFactor,exports[_0x49cdc8(0x58a)]=StaticCopyUsage,exports['StaticDrawUsage']=StaticDrawUsage,exports['StaticReadUsage']=StaticReadUsage,exports[_0x49cdc8(0x145)]=StereoCamera,exports[_0x49cdc8(0x1fd)]=StreamCopyUsage,exports[_0x49cdc8(0x41b)]=StreamDrawUsage,exports[_0x49cdc8(0x3ad)]=StreamReadUsage,exports[_0x49cdc8(0x1de)]=StringKeyframeTrack,exports[_0x49cdc8(0x543)]=SubtractEquation,exports[_0x49cdc8(0x29b)]=SubtractiveBlending,exports[_0x49cdc8(0x1a5)]=SwitchNode,exports['TOUCH']=TOUCH,exports[_0x49cdc8(0x1ff)]=tween_esm,exports['TangentSpaceNormalMap']=TangentSpaceNormalMap,exports[_0x49cdc8(0x5c3)]=TemplateParser,exports[_0x49cdc8(0x11e)]=TetrahedronGeometry,exports['TetrahedronGeometry']=TetrahedronGeometry,exports[_0x49cdc8(0x3ce)]=TextGeometry,exports[_0x49cdc8(0x315)]=TextGeometry,exports[_0x49cdc8(0x4ed)]=Texture,exports[_0x49cdc8(0x534)]=TextureLoader,exports['TextureNode']=TextureNode,exports[_0x49cdc8(0x4e3)]=TorusGeometry,exports[_0x49cdc8(0x17c)]=TorusGeometry,exports[_0x49cdc8(0x4df)]=TorusKnotGeometry,exports[_0x49cdc8(0x52f)]=TorusKnotGeometry,exports[_0x49cdc8(0x191)]=Triangle,exports[_0x49cdc8(0x294)]=TriangleFanDrawMode,exports[_0x49cdc8(0x5e1)]=TriangleStripDrawMode,exports['TrianglesDrawMode']=TrianglesDrawMode,exports[_0x49cdc8(0x522)]=TubeGeometry,exports['TubeGeometry']=TubeGeometry,exports['UVMapping']=UVMapping,exports['Uint16Attribute']=Uint16Attribute,exports[_0x49cdc8(0x304)]=Uint16BufferAttribute,exports[_0x49cdc8(0x2a4)]=Uint32Attribute,exports['Uint32BufferAttribute']=Uint32BufferAttribute,exports[_0x49cdc8(0x3fb)]=Uint8Attribute,exports[_0x49cdc8(0x600)]=Uint8BufferAttribute,exports['Uint8ClampedAttribute']=Uint8ClampedAttribute,exports[_0x49cdc8(0x511)]=Uint8ClampedBufferAttribute,exports[_0x49cdc8(0x49f)]=Uniform,exports[_0x49cdc8(0x3bc)]=UniformsLib,exports[_0x49cdc8(0x22a)]=UniformsUtils,exports[_0x49cdc8(0x4b6)]=UnsignedByteType,exports['UnsignedInt248Type']=UnsignedInt248Type,exports[_0x49cdc8(0x248)]=UnsignedIntType,exports[_0x49cdc8(0x4c0)]=UnsignedShort4444Type,exports[_0x49cdc8(0x462)]=UnsignedShort5551Type,exports[_0x49cdc8(0x2a2)]=UnsignedShort565Type,exports[_0x49cdc8(0x2b1)]=UnsignedShortType,exports[_0x49cdc8(0x12b)]=VSMShadowMap,exports[_0x49cdc8(0x539)]=Vector2,exports[_0x49cdc8(0x1ac)]=Vector3,exports[_0x49cdc8(0x282)]=Vector4,exports[_0x49cdc8(0x318)]=VectorKeyframeTrack,exports['Vertex']=Vertex,exports['VertexColors']=VertexColors,exports[_0x49cdc8(0x19a)]=VideoTexture,exports['Water']=Water,exports[_0x49cdc8(0x30e)]=WebGL1Renderer,exports[_0x49cdc8(0x521)]=WebGLCubeRenderTarget,exports[_0x49cdc8(0x228)]=WebGLMultipleRenderTargets,exports[_0x49cdc8(0x597)]=WebGLMultisampleRenderTarget,exports['WebGLRenderTarget']=WebGLRenderTarget,exports['WebGLRenderTargetCube']=WebGLRenderTargetCube,exports[_0x49cdc8(0x35e)]=WebGLRenderer$1,exports[_0x49cdc8(0x4b2)]=WebGLUtils$1,exports['WireframeGeometry']=WireframeGeometry,exports[_0x49cdc8(0x55e)]=WireframeHelper,exports['WrapAroundEnding']=WrapAroundEnding,exports[_0x49cdc8(0x1a8)]=XHRLoader,exports[_0x49cdc8(0x618)]=ZeroCurvatureEnding,exports[_0x49cdc8(0x4e0)]=ZeroFactor,exports['ZeroSlopeEnding']=ZeroSlopeEnding,exports[_0x49cdc8(0x118)]=ZeroStencilOp,exports[_0x49cdc8(0x211)]=lnglat2mercator,exports['mercator2lnglat']=mercator2lnglat,exports['sRGBEncoding']=sRGBEncoding;
+	class Container {
+	    renderer;
+	    css2dRenderer;
+	    css3dRenderer;
+	    msaaTarget;
+	    supersampling;
+	    sceneComposer;
+	    bloomComposer;
+	    scene;
+	    orbitCamera;
+	    orbitControls;
+	    firstPersonControls;
+	    firstPersonCamera;
+	    transformControl;
+	    hemiLight;
+	    directionLights;
+	    spotLights;
+	    pointLights;
+	    rectAreaLights;
+	    ambientLight;
+	    clickObjects;
+	    cubeTexLoader;
+	    texLoader;
+	    gifLoader;
+	    _viewState;
+	    children;
+	    renderPass;
+	    bokehPass;
+	    bloomPass;
+	    finalbloomPass;
+	    ssaaPass;
+	    gammaPass;
+	    ddpPass;
+	    ssrSkyBox;
+	    ssrtPass;
+	    envMap;
+	    hdrUrls;
+	    sceneModels;
+	    loadedFileResults;
+	    sky;
+	    skyRadius;
+	    stats;
+	    ssrPass;
+	    outlinePass;
+	    outlineObjects;
+	    mixerActions;
+	    mixers;
+	    sceneAnimations;
+	    bounds;
+	    fog;
+	    publicPath;
+	    loadingBar;
+	    gifTextures;
+	    containerWidth;
+	    containerHeight;
+	    gltfLoader;
+	    objLoader;
+	    mtlLoader;
+	    fbxLoader;
+	    dracoLoader;
+	    hdrLoader;
+	    pmremGenerator;
+	    attrs;
+	    bgColor;
+	    bgType;
+	    layers;
+	    frame;
+	    nodepass;
+	    constructor(attrs) {
+	        this.clickObjects = []; // 点击事件对象
+	        this.children = [];
+	        this.sceneModels = [];
+	        this.loadedFileResults = [];
+	        this.outlineObjects = [];
+	        this.mixers = [];
+	        this.mixerActions = [];
+	        this.sceneAnimations = {};
+	        this.gifTextures = [];
+	        this.hdrUrls = [];
+	        this.publicPath = attrs && attrs.publicPath !== undefined ? attrs.publicPath : '/demos';
+	        this.containerWidth = window.innerWidth;
+	        this.containerHeight = window.innerHeight;
+	        this.fbxLoader = new FBXLoader();
+	        this.gltfLoader = new GLTFLoader();
+	        this.dracoLoader = new DRACOLoader();
+	        this.objLoader = new OBJLoader();
+	        this.mtlLoader = new MTLLoader();
+	        this.dracoLoader.setDecoderPath(this.publicPath + '/js/gltfDraco/');
+	        this.dracoLoader.preload();
+	        this.gltfLoader.setDRACOLoader(this.dracoLoader);
+	        this.attrs = attrs;
+	        this.initialize(attrs);
+	        this.layers = {};
+	        this.frame = new NodeFrame(1);
+	    }
+	    get viewState() {
+	        return this._viewState;
+	    }
+	    set viewState(state) {
+	        this._viewState = state;
+	        this.orbitControls.enabled = false;
+	        this.firstPersonControls.enabled = false;
+	        if (this._viewState == 'orbit') {
+	            this.renderPass.camera = this.orbitCamera;
+	            this.bokehPass.camera = this.orbitCamera;
+	            this.outlinePass.renderCamera = this.orbitCamera;
+	            this.ssaaPass.camera = this.orbitCamera;
+	            this.orbitControls.enabled = true;
+	        }
+	        else if (this._viewState == 'firstPerson') {
+	            this.renderPass.camera = this.firstPersonCamera;
+	            this.bokehPass.camera = this.firstPersonCamera;
+	            this.outlinePass.renderCamera = this.firstPersonCamera;
+	            this.ssaaPass.camera = this.firstPersonCamera;
+	            this.firstPersonControls.enabled = true;
+	        }
+	    }
+	    initialize(attrs) {
+	        const self = this;
+	        // view state
+	        this._viewState = attrs && attrs.viewState != undefined ? attrs.viewState : 'orbit';
+	        // init loaders
+	        this.cubeTexLoader = new CubeTextureLoader();
+	        this.texLoader = new TextureLoader();
+	        this.gifLoader = new GifLoader();
+	        // init render
+	        this.initRender(attrs);
+	        // init scene
+	        this.initScene(attrs);
+	        // init cameras
+	        this.initCameras(attrs);
+	        // init controls
+	        this.initControls(attrs);
+	        // init lights
+	        this.initLights(attrs);
+	        // init models
+	        const hdrUrls = attrs && attrs.hdrUrls != undefined ? attrs.hdrUrls : [];
+	        if (hdrUrls.length != 0) {
+	            // 有HDR
+	            this.initHDR(attrs, () => {
+	                this.initModels(attrs);
+	            });
+	        }
+	        else {
+	            // 无HDR
+	            this.initModels(attrs);
+	        }
+	        // init passes
+	        this.initPasses(attrs);
+	        // water todo
+	        // animation frame
+	        const clock = new Clock();
+	        const bloomLayer = new Layers();
+	        bloomLayer.set(1);
+	        const specialLayer = new Layers();
+	        specialLayer.set(2);
+	        const materials = {};
+	        const darkMaterial = new MeshBasicMaterial({ transparent: false, opacity: 1, fog: false, color: new Color(0, 0, 0) });
+	        const darkLamberMaterial = new MeshLambertMaterial({ transparent: false, opacity: 1, fog: false, color: new Color(0, 0, 0) });
+	        const darkSpriteMateral = new SpriteMaterial({ color: new Color(0, 0, 0), transparent: false, opacity: 1, fog: false });
+	        const darkStandardMaterial = new MeshStandardMaterial({
+	            transparent: false,
+	            color: new Color(0, 0, 0),
+	            fog: false,
+	            opacity: 0
+	        });
+	        const darkShaderMaterial = new ShaderMaterial({
+	            lights: false,
+	            transparent: true,
+	            fog: false,
+	            vertexShader: `
+        #include <logdepthbuf_pars_vertex>
+        #include <common>
+        void main(){
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            #include <logdepthbuf_vertex>
+        }
+      `,
+	            fragmentShader: `
+        #include <logdepthbuf_pars_fragment>
+        #include <common>
+        
+        void main(){
+          gl_FragColor = vec4(vec3(0.) , 1.0);
+          
+          #include <logdepthbuf_fragment>
+          #include <tonemapping_fragment>
+        }
+      `,
+	            uniforms: {
+	                diffuse: { value: new Color(0, 0, 0) },
+	                gradient: { value: new Color(0, 0, 0) },
+	                color: { value: new Color(0, 0, 0) },
+	                emissive: { value: new Color(0, 0, 0) },
+	                opacity: { value: 0 },
+	                map: { value: null },
+	                useMap: { value: false }
+	            }
+	        });
+	        const darkLineMaterial = new LineBasicMaterial({
+	            color: '#000000'
+	        });
+	        attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        const animation = () => {
+	            this.stats.begin();
+	            // self.renderer.setScissorTest(true)
+	            if (self.viewState == 'orbit') {
+	                self.orbitControls.update();
+	                if (self.bloomPass.enabled) {
+	                    self.scene.fog = null;
+	                    this.renderer.setClearColor('#000000', 0);
+	                    self.scene.traverse((obj) => {
+	                        if (bloomLayer.test(obj.layers) === false) {
+	                            // 做特殊处理， 此阶段换黑色材质渲染， 不然深度会有问题，无法正确展示和bloom物体的遮挡关系
+	                            if (!materials[obj.uuid])
+	                                materials[obj.uuid] = obj.material;
+	                            if (Array.isArray(obj.material)) {
+	                                // eg. sky cube: MeshBasicMaterial[]
+	                                obj.material = [darkMaterial, darkMaterial, darkMaterial, darkMaterial, darkMaterial, darkMaterial];
+	                            }
+	                            else if (obj.material instanceof MeshBasicMaterial) {
+	                                obj.material = darkMaterial;
+	                            }
+	                            else if (obj.material instanceof MeshLambertMaterial) {
+	                                obj.material = darkLamberMaterial;
+	                            }
+	                            else if (obj.material instanceof SpriteMaterial) {
+	                                obj.material = darkSpriteMateral;
+	                            }
+	                            else if (obj.material instanceof MeshStandardMaterial) {
+	                                obj.material = darkStandardMaterial;
+	                            }
+	                            else if (obj.material instanceof LineBasicMaterial) {
+	                                obj.material = darkLineMaterial;
+	                            }
+	                            else if (obj.material instanceof ShaderMaterial) {
+	                                const shaderMatClone = darkShaderMaterial.clone();
+	                                // shaderMatClone.vertexShader = obj.material.vertexShader
+	                                // shaderMatClone.fragmentShader = obj.material.fragmentShader
+	                                obj.material = shaderMatClone;
+	                                if (obj.isWater || obj.isReflector) {
+	                                    obj.visible = false;
+	                                }
+	                            }
+	                        }
+	                    });
+	                    self.bloomComposer.render();
+	                    self.scene.traverse((obj) => {
+	                        if (materials[obj.uuid]) {
+	                            if (obj.isWater || obj.isReflector)
+	                                obj.visible = true;
+	                            obj.material = materials[obj.uuid];
+	                            delete materials[obj.uuid];
+	                        }
+	                    });
+	                    self.scene.fog = self.fog;
+	                    this.renderer.setClearColor(this.bgColor, 1);
+	                }
+	                self.outlinePass.selectedObjects = self.outlineObjects;
+	                self.sceneComposer.render();
+	                const delta = clock.getDelta();
+	                self.frame.update(delta).updateNode(self.nodepass.material);
+	                self.mixers.forEach((mixer) => {
+	                    mixer.update(delta);
+	                });
+	                // self.renderer.render(self.scene, self.orbitCamera)
+	                self.css2dRenderer.render(self.scene, self.orbitCamera);
+	                self.css3dRenderer.render(self.scene, self.orbitCamera);
+	            }
+	            else if (self.viewState == 'firstPerson') {
+	                self.outlinePass.selectedObjects = self.outlineObjects;
+	                self.firstPersonControls.update(clock.getDelta());
+	                self.sceneComposer.render();
+	                const delta = clock.getDelta();
+	                self.mixers.forEach((mixer) => {
+	                    mixer.update(delta);
+	                });
+	                // self.renderer.render(self.scene, self.firstPersonCamera)
+	                // css2d renderer
+	                self.css2dRenderer.render(self.scene, self.firstPersonCamera);
+	                self.css3dRenderer.render(self.scene, self.firstPersonCamera);
+	            }
+	            // gif draw
+	            if (self.gifTextures.length > 0) {
+	                self.gifTextures.forEach((gTex) => {
+	                    gTex.draw();
+	                });
+	            }
+	            update();
+	            // self.renderer.setScissorTest(false)
+	            this.stats.end();
+	        };
+	        // play
+	        this.renderer.setAnimationLoop(animation);
+	        // window resize
+	        const onWindowResize = () => {
+	            if (attrs && attrs.container != undefined && attrs.container.parentElement) {
+	                this.containerWidth = Math.round(attrs.container.parentElement.clientWidth);
+	                this.containerHeight = Math.round(attrs.container.parentElement.clientHeight);
+	            }
+	            else {
+	                this.containerWidth = Math.round(window.innerWidth);
+	                this.containerHeight = Math.round(window.innerHeight);
+	            }
+	            const w = this.supersampling ? this.containerWidth * 2 : this.containerWidth;
+	            const h = this.supersampling ? this.containerHeight * 2 : this.containerHeight;
+	            this.msaaTarget.setSize(w, h);
+	            this.renderer.setPixelRatio(window.devicePixelRatio);
+	            this.renderer.setSize(this.containerWidth, this.containerHeight);
+	            this.css2dRenderer.setSize(this.containerWidth, this.containerHeight);
+	            let tl = attrs && attrs.container && attrs.container.getBoundingClientRect();
+	            this.css2dRenderer.domElement.style.top = tl.top + 'px';
+	            this.css2dRenderer.domElement.style.left = tl.left + 'px';
+	            this.css3dRenderer.setSize(this.containerWidth, this.containerHeight);
+	            this.css3dRenderer.domElement.style.top = tl.top + 'px';
+	            this.css3dRenderer.domElement.style.left = tl.left + 'px';
+	            this.sceneComposer.setSize(w, h);
+	            this.bloomComposer.setSize(w, h);
+	            this.bloomPass.setSize(w, h);
+	            this.finalbloomPass.setSize(w, h);
+	            this.ssrPass.setSize(w, h);
+	            if (this.loadingBar) {
+	                this.loadingBar.style.width = this.containerWidth + 'px';
+	                this.loadingBar.style.height = this.containerHeight + 'px';
+	            }
+	            if (this.viewState == 'orbit') {
+	                this.orbitCamera.aspect = this.containerWidth / this.containerHeight;
+	                this.orbitCamera.updateProjectionMatrix();
+	            }
+	            else if (this.viewState == 'firstPerson') {
+	                this.firstPersonCamera.aspect = this.containerWidth / this.containerHeight;
+	                this.firstPersonCamera.updateProjectionMatrix();
+	            }
+	        };
+	        window.addEventListener('resize', onWindowResize, false);
+	    }
+	    initRender(attrs) {
+	        const enableShadow = attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        const sortObjects = attrs && attrs.sortObjects != undefined ? attrs.sortObjects : true;
+	        const logarithmicDepthBuffer = attrs && attrs.renderer !== undefined && attrs.renderer.logarithmicDepthBuffer !== undefined ? attrs.renderer.logarithmicDepthBuffer : true;
+	        const precision = attrs && attrs.renderer !== undefined && attrs.renderer.precision !== undefined ? attrs.renderer.precision : 'highp';
+	        const antialias = attrs && attrs.renderer !== undefined && attrs.renderer.antialias !== undefined ? attrs.renderer.antialias : true;
+	        const alpha = attrs && attrs.renderer !== undefined && attrs.renderer.alpha !== undefined ? attrs.renderer.alpha : false;
+	        // 3d renderer
+	        if (attrs && attrs.container != undefined) {
+	            this.renderer = new WebGLRenderer({ antialias, canvas: attrs.container, precision, logarithmicDepthBuffer, alpha });
+	            this.containerWidth = attrs.containerWidth !== undefined ? attrs.containerWidth : attrs.container.clientWidth;
+	            this.containerHeight = attrs.containerHeight !== undefined ? attrs.containerHeight : attrs.container.clientHeight;
+	        }
+	        else {
+	            this.renderer = new WebGLRenderer({ antialias, precision, logarithmicDepthBuffer, alpha });
+	            document.body.appendChild(this.renderer.domElement);
+	        }
+	        this.bgColor = '#000000';
+	        if (attrs && attrs.background && attrs.background.type === 'color') {
+	            this.bgColor = '#' + new Color(attrs.background.value).getHexString();
+	            this.bgType = 'color';
+	        }
+	        this.renderer.setClearColor(this.bgColor, alpha ? 0 : 1);
+	        this.renderer.autoClear = false;
+	        this.renderer.sortObjects = sortObjects;
+	        this.renderer.outputEncoding = sRGBEncoding;
+	        this.renderer.setPixelRatio(window.devicePixelRatio);
+	        this.renderer.setSize(this.containerWidth, this.containerHeight);
+	        this.renderer.shadowMap.enabled = enableShadow;
+	        //BasicShadowMap
+	        this.renderer.shadowMap.type = PCFSoftShadowMap;
+	        const toneMappingExposure = attrs && attrs.toneMapping != undefined && attrs.toneMapping.toneMappingExposure != undefined ? attrs.toneMapping.toneMappingExposure : 1;
+	        const toneMappingType = attrs && attrs.toneMapping != undefined && attrs.toneMapping.toneMappingType != undefined ? attrs.toneMapping.toneMappingType : 'LinearToneMapping';
+	        if (toneMappingType == 'NoToneMapping') {
+	            this.renderer.toneMapping = NoToneMapping;
+	        }
+	        else if (toneMappingType == 'LinearToneMapping') {
+	            this.renderer.toneMapping = LinearToneMapping;
+	        }
+	        else if (toneMappingType == 'ReinhardToneMapping') {
+	            this.renderer.toneMapping = ReinhardToneMapping;
+	        }
+	        else if (toneMappingType == 'CineonToneMapping') {
+	            this.renderer.toneMapping = CineonToneMapping;
+	        }
+	        else if (toneMappingType == 'ACESFilmicToneMapping') {
+	            this.renderer.toneMapping = ACESFilmicToneMapping;
+	        }
+	        else {
+	            this.renderer.toneMapping = LinearToneMapping;
+	        }
+	        this.renderer.toneMappingExposure = toneMappingExposure; // 曝光系数
+	        if (attrs == undefined || attrs.container == undefined)
+	            this.renderer.domElement.style.position = 'relative';
+	        if (window.getComputedStyle(this.renderer.domElement).zIndex == 'auto')
+	            this.renderer.domElement.style.zIndex = '1';
+	        document.body.style.margin = '0';
+	        // css2d renderer
+	        let tl = this.renderer.domElement.getBoundingClientRect();
+	        this.css2dRenderer = new CSS2DRenderer();
+	        this.css2dRenderer.setSize(this.containerWidth, this.containerHeight);
+	        this.css2dRenderer.domElement.style.position = 'relative';
+	        this.css2dRenderer.domElement.style.top = tl.top + 'px';
+	        this.css2dRenderer.domElement.style.left = tl.left + 'px';
+	        if (attrs && attrs.container != undefined) {
+	            attrs.container.parentElement?.appendChild(this.css2dRenderer.domElement);
+	        }
+	        else {
+	            document.body.appendChild(this.css2dRenderer.domElement);
+	        }
+	        // css3d renderer
+	        this.css3dRenderer = new CSS3DRenderer();
+	        this.css3dRenderer.setSize(this.containerWidth, this.containerHeight);
+	        this.css3dRenderer.domElement.style.position = 'relative';
+	        this.css3dRenderer.domElement.style.pointerEvents = 'none';
+	        this.css3dRenderer.domElement.style.top = tl.top + 'px';
+	        this.css3dRenderer.domElement.style.left = tl.left + 'px';
+	        this.css3dRenderer.domElement.style.zIndex = '100';
+	        if (attrs && attrs.container != undefined) {
+	            attrs.container.parentElement?.appendChild(this.css3dRenderer.domElement);
+	        }
+	        else {
+	            document.body.appendChild(this.css3dRenderer.domElement);
+	        }
+	        // stats
+	        this.stats = new Stats();
+	        if (attrs && attrs.stats) {
+	            if (attrs.container != undefined) {
+	                attrs.container.parentElement?.appendChild(this.stats.container);
+	            }
+	            else {
+	                document.body.appendChild(this.stats.container);
+	            }
+	        }
+	        // loading bar
+	        if (attrs && attrs.loadingBar && attrs.loadingBar.show) {
+	            const type = attrs && attrs.loadingBar.type ? attrs.loadingBar.type : '10';
+	            this.loadingBar = loadingAnimation({ type });
+	        }
+	        // hdr loader
+	        this.hdrLoader = new RGBELoader();
+	        this.pmremGenerator = new PMREMGenerator(this.renderer);
+	    }
+	    initScene(attrs) {
+	        this.scene = new Scene();
+	        const SKY_RADIUS = 50000;
+	        this.skyRadius = SKY_RADIUS;
+	        // background texture
+	        if (attrs && attrs.background && attrs.background.type === 'texture') {
+	            this.texLoader.load(this.publicPath + attrs.background.value, (texture) => {
+	                this.bgType = 'texture';
+	                this.scene.background = texture;
+	                if (attrs.background?.options) {
+	                    for (const i in attrs.background.options) {
+	                        const opt = attrs.background.options[i];
+	                        this.scene.background[i] = opt;
+	                    }
+	                }
+	            });
+	        }
+	        // background panorama
+	        if (attrs && attrs.background && attrs.background.type === 'panorama') {
+	            this.bgType = 'panorama';
+	            const scale = attrs && attrs.background && attrs.background.options && attrs.background.options.scale ? attrs.background.options.scale : 1;
+	            const rotation = attrs && attrs.background && attrs.background.options && attrs.background.options.rotation ? attrs.background.options.rotation : [0, 0, 0];
+	            const fog = attrs && attrs.background && attrs.background.options && attrs.background.options.fog ? attrs.background.options.fog : false;
+	            if (attrs.background.value instanceof Array && attrs.background.value.length == 6) {
+	                const arr = [];
+	                const materials = [];
+	                attrs.background.value.forEach((u) => {
+	                    arr.push(loadTex(this.texLoader, this.publicPath + u));
+	                });
+	                Promise.all(arr).then((list) => {
+	                    list.forEach((l) => {
+	                        const mat = new MeshBasicMaterial({
+	                            map: l,
+	                            side: BackSide,
+	                            transparent: true,
+	                            opacity: 1.0,
+	                            fog
+	                        });
+	                        materials.push(mat);
+	                    });
+	                    const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, materials);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                    this.sky.userData.value = attrs.background?.value;
+	                });
+	            }
+	            else if (attrs.background.value instanceof Array && attrs.background.value.length == 1) {
+	                this.texLoader.load(this.publicPath + attrs.background.value[0], (texture) => {
+	                    const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                    const mat = new MeshBasicMaterial({
+	                        map: texture,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, mat);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                    this.sky.userData.value = attrs.background?.value;
+	                });
+	            }
+	        }
+	        // fog
+	        if (attrs && attrs.fog != undefined) {
+	            const fogColor = attrs.fog.color != undefined ? attrs.fog.color : 0xffffff;
+	            const fogIntensity = attrs.fog.intensity != undefined ? attrs.fog.intensity : 0.001;
+	            this.fog = new FogExp2(fogColor, fogIntensity);
+	            this.scene.fog = this.fog;
+	        }
+	        // camera controls bounds
+	        let bounds = {
+	            radius: 1000000,
+	            center: [0, 0, 0]
+	        };
+	        if (attrs && attrs.bounds) {
+	            bounds = Object.assign(bounds, attrs.bounds);
+	        }
+	        this.bounds = {
+	            radius: bounds.radius,
+	            center: new Vector3(bounds.center[0], bounds.center[1], bounds.center[2])
+	        };
+	    }
+	    // init cameras
+	    initCameras(attrs) {
+	        let orbit = {
+	            near: 0.01,
+	            far: 100000,
+	            fov: 70,
+	            position: [0, 0, 1]
+	        };
+	        if (attrs && attrs.cameras && attrs.cameras.orbitCamera) {
+	            orbit = Object.assign(orbit, attrs.cameras.orbitCamera);
+	        }
+	        this.orbitCamera = new PerspectiveCamera(orbit.fov, this.containerWidth / this.containerHeight, orbit.near, orbit.far);
+	        this.orbitCamera.position.set(orbit.position[0], orbit.position[1], orbit.position[2]);
+	        let firstPerson = {
+	            near: 0.01,
+	            far: 100000,
+	            fov: 70,
+	            position: [0, 0, 1]
+	        };
+	        if (attrs && attrs.cameras && attrs.cameras.firstPersonCamera) {
+	            firstPerson = Object.assign(firstPerson, attrs.cameras.firstPersonCamera);
+	        }
+	        this.firstPersonCamera = new PerspectiveCamera(firstPerson.fov, this.containerWidth / this.containerHeight, firstPerson.near, firstPerson.far);
+	        this.firstPersonCamera.position.set(firstPerson.position[0], firstPerson.position[1], firstPerson.position[2]);
+	    }
+	    // init controls
+	    initControls(attrs) {
+	        // orbit controls
+	        let orbit = {
+	            maxPolarAngle: Math.PI * 0.5,
+	            minDistance: 0,
+	            maxDistance: 100000,
+	            target: [0, 0, 0],
+	            autoRotate: false,
+	            autoRotateSpeed: 1,
+	            minPolarAngle: 0,
+	            enableDamping: true,
+	            dampingFactor: 0.05,
+	            enabled: true
+	        };
+	        if (attrs && attrs.controls && attrs.controls.orbitControls) {
+	            orbit = Object.assign(orbit, attrs.controls.orbitControls);
+	        }
+	        this.orbitControls = new OrbitControls(this.orbitCamera, this.renderer.domElement, this);
+	        this.orbitControls.minPolarAngle = orbit.minPolarAngle;
+	        this.orbitControls.maxPolarAngle = orbit.maxPolarAngle;
+	        this.orbitControls.minDistance = orbit.minDistance;
+	        this.orbitControls.maxDistance = orbit.maxDistance;
+	        this.orbitControls.target.set(orbit.target[0], orbit.target[1], orbit.target[2]);
+	        this.orbitControls.autoRotate = orbit.autoRotate;
+	        this.orbitControls.autoRotateSpeed = orbit.autoRotateSpeed;
+	        this.orbitControls.enableDamping = orbit.enableDamping;
+	        this.orbitControls.dampingFactor = orbit.dampingFactor;
+	        this.orbitControls.enabled = this.viewState === 'orbit';
+	        this.orbitControls.enabled = orbit.enabled;
+	        // first person controls
+	        let firstPerson = {
+	            movementSpeed: 20,
+	            lon: Math.PI,
+	            lat: 0,
+	            lookSpeed: 10
+	        };
+	        if (attrs && attrs.controls && attrs.controls.firstPersonControls) {
+	            firstPerson = Object.assign(firstPerson, attrs.controls.firstPersonControls);
+	        }
+	        this.firstPersonControls = new FirstPersonControls(this.firstPersonCamera, this.renderer.domElement);
+	        this.firstPersonControls.lookSpeed = 10; //鼠标移动查看的速度
+	        this.firstPersonControls.movementSpeed = firstPerson.movementSpeed; //相机移动速度
+	        this.firstPersonControls.lon = firstPerson.lon;
+	        this.firstPersonControls.lat = firstPerson.lat;
+	        this.firstPersonControls.enabled = this.viewState === 'firstPerson';
+	        // transform controls
+	        const self = this;
+	        this.transformControl = new TransformControls(this.orbitCamera, this.renderer.domElement);
+	        this.scene.add(this.transformControl); //控件对象添加到场景对象
+	        this.transformControl.traverse((c) => {
+	            c.userData.root = 'TransformControls';
+	        });
+	        this.transformControl.addEventListener('dragging-changed', (event) => {
+	            self.orbitControls.enabled = !event.value;
+	        });
+	    }
+	    initLights(attrs) {
+	        const enableShadow = attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        if (attrs && attrs.lights && attrs.lights.hemisphereLight) {
+	            let hemiLight = {
+	                skyColor: 0xffffff,
+	                groundColor: 0xaaaaaa,
+	                intensity: 0.1,
+	                position: [0, 500, 0]
+	            };
+	            hemiLight = Object.assign(hemiLight, attrs.lights.hemisphereLight);
+	            this.hemiLight = new HemisphereLight(hemiLight.skyColor, hemiLight.groundColor, hemiLight.intensity);
+	            this.hemiLight.position.set(hemiLight.position[0], hemiLight.position[1], hemiLight.position[2]);
+	            this.scene.add(this.hemiLight);
+	        }
+	        // rect area lights
+	        RectAreaLightUniformsLib.init();
+	        this.rectAreaLights = [];
+	        if (attrs && attrs.lights && attrs.lights.rectAreaLights) {
+	            attrs.lights.rectAreaLights.forEach((raLightOpts) => {
+	                let rectAreaLightOpts = {
+	                    color: 0xffffff,
+	                    intensity: 0,
+	                    width: 10,
+	                    height: 10,
+	                    position: [0, 0, 0],
+	                    target: [0, 0, 0]
+	                };
+	                rectAreaLightOpts = Object.assign(rectAreaLightOpts, raLightOpts);
+	                const rectAreaLight = new RectAreaLight(rectAreaLightOpts.color, rectAreaLightOpts.intensity, rectAreaLightOpts.width, rectAreaLightOpts.height);
+	                rectAreaLight.position.set(rectAreaLightOpts.position[0], rectAreaLightOpts.position[1], rectAreaLightOpts.position[2]);
+	                rectAreaLight.lookAt(0, 0, 0);
+	                rectAreaLight.userData.target = rectAreaLightOpts.target;
+	                this.scene.add(rectAreaLight);
+	                this.rectAreaLights.push(rectAreaLight);
+	            });
+	        }
+	        // point lights
+	        this.pointLights = [];
+	        if (attrs && attrs.lights && attrs.lights.pointLights) {
+	            attrs.lights.pointLights.forEach((ptOpts) => {
+	                let pointLightOpts = {
+	                    color: 0xffffff,
+	                    intensity: 0,
+	                    distance: 0,
+	                    decay: 1,
+	                    position: [0, 0, 0],
+	                    near: 1,
+	                    far: 10000,
+	                    bias: 0,
+	                    size: 2048
+	                };
+	                pointLightOpts = Object.assign(pointLightOpts, ptOpts);
+	                const pointLight = new PointLight(pointLightOpts.color, pointLightOpts.intensity, pointLightOpts.distance, pointLightOpts.decay);
+	                pointLight.position.set(pointLightOpts.position[0], pointLightOpts.position[1], pointLightOpts.position[2]);
+	                // shadow
+	                pointLight.castShadow = enableShadow;
+	                pointLight.shadow.bias = pointLightOpts.bias;
+	                pointLight.shadow.camera.near = pointLightOpts.near;
+	                pointLight.shadow.camera.far = pointLightOpts.far;
+	                pointLight.shadow.mapSize.width = pointLightOpts.size;
+	                pointLight.shadow.mapSize.height = pointLightOpts.size;
+	                pointLight.shadow.camera.updateProjectionMatrix();
+	                pointLight.shadow.needsUpdate = true;
+	                this.scene.add(pointLight);
+	                this.pointLights.push(pointLight);
+	            });
+	        }
+	        // directionLights
+	        this.directionLights = [];
+	        if (attrs && attrs.lights && attrs.lights.directionLights) {
+	            attrs.lights.directionLights.forEach((dirLightOpts) => {
+	                let directionLightOpts = {
+	                    color: 0xffdcb2,
+	                    intensity: 2,
+	                    position: [1, 0, 0],
+	                    mapSize: [2048, 2048],
+	                    near: 0.01,
+	                    far: 10000,
+	                    bias: -0.0004,
+	                    distance: 900,
+	                    target: [0, 0, 0]
+	                };
+	                directionLightOpts = Object.assign(directionLightOpts, dirLightOpts);
+	                let dirLight;
+	                if (this.viewState == 'orbit') {
+	                    dirLight = new DirectionalLight(directionLightOpts.color, directionLightOpts.intensity);
+	                    dirLight.position.set(directionLightOpts.position[0], directionLightOpts.position[1], directionLightOpts.position[2]);
+	                    dirLight.target.position.set(directionLightOpts.target[0], directionLightOpts.target[1], directionLightOpts.target[2]);
+	                    dirLight.castShadow = enableShadow;
+	                    dirLight.shadow.mapSize.width = directionLightOpts.mapSize[0];
+	                    dirLight.shadow.mapSize.height = directionLightOpts.mapSize[1];
+	                    dirLight.shadow.bias = directionLightOpts.bias;
+	                    dirLight.shadow.camera.near = directionLightOpts.near;
+	                    dirLight.shadow.camera.far = directionLightOpts.far;
+	                    dirLight.shadow.camera.left = -directionLightOpts.distance;
+	                    dirLight.shadow.camera.right = directionLightOpts.distance;
+	                    dirLight.shadow.camera.top = directionLightOpts.distance;
+	                    dirLight.shadow.camera.bottom = -directionLightOpts.distance;
+	                    dirLight.shadow.camera.updateProjectionMatrix();
+	                    dirLight.shadow.needsUpdate = true;
+	                }
+	                this.scene.add(dirLight.target);
+	                this.scene.add(dirLight);
+	                this.directionLights.push(dirLight);
+	            });
+	        }
+	        // spot lights
+	        this.spotLights = [];
+	        if (attrs && attrs.lights && attrs.lights.spotLights) {
+	            attrs.lights.spotLights.forEach((spotLightOpts) => {
+	                let sptLightOpts = {
+	                    color: 0xffdcb2,
+	                    intensity: 2,
+	                    position: [-1000, 1000, -1000],
+	                    mapSize: [2048, 2048],
+	                    decay: 2,
+	                    near: 1,
+	                    far: 10000,
+	                    angle: (45 * Math.PI) / 180,
+	                    distance: 0,
+	                    penumbra: 0.398,
+	                    bias: -0.0004,
+	                    focus: 1
+	                };
+	                sptLightOpts = Object.assign(sptLightOpts, spotLightOpts);
+	                const spotLight = new SpotLight(sptLightOpts.color, sptLightOpts.intensity);
+	                spotLight.position.set(sptLightOpts.position[0], sptLightOpts.position[1], sptLightOpts.position[2]);
+	                spotLight.decay = sptLightOpts.decay;
+	                spotLight.distance = sptLightOpts.distance;
+	                spotLight.penumbra = sptLightOpts.penumbra;
+	                // shadow
+	                spotLight.castShadow = enableShadow;
+	                spotLight.shadow.mapSize.width = sptLightOpts.mapSize[0];
+	                spotLight.shadow.mapSize.height = sptLightOpts.mapSize[1];
+	                spotLight.shadow.camera.near = sptLightOpts.near;
+	                spotLight.shadow.camera.far = sptLightOpts.far;
+	                spotLight.angle = sptLightOpts.angle;
+	                spotLight.shadow.focus = sptLightOpts.focus;
+	                spotLight.shadow.bias = sptLightOpts.bias;
+	                spotLight.shadow.camera.updateProjectionMatrix();
+	                spotLight.shadow.needsUpdate = true;
+	                this.scene.add(spotLight.target);
+	                this.scene.add(spotLight);
+	                this.spotLights.push(spotLight);
+	            });
+	        }
+	        if (attrs && attrs.lights && attrs.lights.ambientLight) {
+	            let ambientLight = {
+	                intensity: 1.0,
+	                color: 0xffffff
+	            };
+	            ambientLight = Object.assign(ambientLight, attrs.lights.ambientLight);
+	            this.ambientLight = new AmbientLight(ambientLight.color, ambientLight.intensity);
+	            this.scene.add(this.ambientLight);
+	        }
+	    }
+	    initHDR(attrs, callback) {
+	        const hdrUrls = attrs && attrs.hdrUrls != undefined ? attrs.hdrUrls : [];
+	        this.hdrUrls = hdrUrls;
+	        if (hdrUrls.length == 1) {
+	            this.pmremGenerator.compileEquirectangularShader();
+	            this.hdrLoader.setDataType(UnsignedByteType).load(this.publicPath + hdrUrls[0], (texture) => {
+	                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                callback && callback(attrs);
+	            });
+	        }
+	        else if (hdrUrls.length == 6) {
+	            this.pmremGenerator.compileCubemapShader();
+	            const urls = [];
+	            hdrUrls.forEach((hUrl) => {
+	                urls.push(this.publicPath + hUrl);
+	            });
+	            this.cubeTexLoader.load(urls, (texture) => {
+	                const envMap = this.pmremGenerator.fromCubemap(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                callback && callback(attrs);
+	            });
+	        }
+	    }
+	    initModels(attrs) {
+	        if (!attrs || !attrs.modelUrls || !(attrs.modelUrls instanceof Array) || attrs.modelUrls.length == 0) {
+	            attrs && attrs.onLoad && attrs.onLoad(this);
+	            return;
+	        }
+	        const enableShadow = attrs && attrs.enableShadow != undefined ? attrs.enableShadow : false;
+	        const urls = [];
+	        attrs.modelUrls.forEach((u) => {
+	            urls.push(this.publicPath + u);
+	        });
+	        const len = urls.length;
+	        let count = 0;
+	        urls.forEach((url, index) => {
+	            const urlArr = url.split('/');
+	            const urlStr = urlArr[urlArr.length - 1];
+	            const start = urlStr.lastIndexOf('/');
+	            const end = urlStr.indexOf('.');
+	            const name = urlStr.substring(start + 1, end);
+	            const type = urlStr.substring(end + 1, urlStr.length);
+	            if (['glb', 'gltf'].includes(type.toLowerCase())) {
+	                this.gltfLoader.load(url, (gltf) => {
+	                    const scenes = gltf.scene;
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    if (gltf.animations.length != 0) {
+	                        for (var i = 0; i < gltf.animations.length; i++) {
+	                            const mixer = new AnimationMixer(scenes);
+	                            mixer.name = gltf.animations[i].name;
+	                            this.mixers.push(mixer);
+	                            const m = mixer.clipAction(gltf.animations[i]).play();
+	                            m.paused = true;
+	                            mixer.actions = m;
+	                            this.mixerActions.push(m);
+	                        }
+	                    }
+	                    scenes.name = name;
+	                    scenes.userData.url = url;
+	                    scenes.traverse((child) => {
+	                        if (child.isMesh) {
+	                            child.castShadow = enableShadow;
+	                            child.receiveShadow = enableShadow;
+	                            child.material.envMap = this.envMap;
+	                            child.material = child.material.clone();
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    this.sceneAnimations[name] = gltf.animations;
+	                    count++;
+	                    attrs && attrs.onProgress && attrs.onProgress(scenes);
+	                    if (count == len) {
+	                        // if (this.loadingBar) this.loadingBar.style.visibility = 'hidden'
+	                        attrs && attrs.onLoad && attrs.onLoad(this);
+	                    }
+	                }, (event) => {
+	                    // console.log('event', event)
+	                }, (error) => {
+	                    console.error(error);
+	                });
+	            }
+	            else if (['fbx'].includes(type.toLowerCase())) {
+	                this.fbxLoader.load(url, (group) => {
+	                    // console.log('group', group)
+	                    const scenes = group;
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    scenes.name = name;
+	                    scenes.traverse((child) => {
+	                        if (child.isMesh) {
+	                            child.castShadow = enableShadow;
+	                            child.receiveShadow = enableShadow;
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    count++;
+	                    attrs && attrs.onProgress && attrs.onProgress(scenes);
+	                    if (count == len) {
+	                        attrs && attrs.onLoad && attrs.onLoad(this);
+	                    }
+	                });
+	            }
+	            else {
+	                throw new Error(type + ' is not supported.');
+	            }
+	        });
+	    }
+	    initPasses(attrs) {
+	        const parameters = {
+	            format: RGBEFormat,
+	            magFilter: LinearFilter,
+	            minFilter: LinearFilter
+	        };
+	        let currentCamera = this.orbitCamera;
+	        if (this.viewState == 'firstPerson') {
+	            currentCamera = this.firstPersonCamera;
+	        }
+	        // const outputPass = new ShaderPass(CopyShader)
+	        this.renderPass = new RenderPass(this.scene, currentCamera);
+	        const size = this.renderer.getDrawingBufferSize(new Vector2());
+	        let msaa = {
+	            supersampling: false
+	        };
+	        Object.assign(msaa, attrs && attrs.msaa);
+	        // const renderTarget = new WebGLMultisampleRenderTarget(size.width * 2, size.height * 2, parameters)  // 超采样 todo
+	        const w = msaa.supersampling ? size.width * 2 : size.width;
+	        const h = msaa.supersampling ? size.height * 2 : size.height;
+	        this.supersampling = msaa.supersampling;
+	        this.msaaTarget = new WebGLMultisampleRenderTarget(w, h, parameters);
+	        this.sceneComposer = new EffectComposer(this.renderer, this.msaaTarget);
+	        this.sceneComposer.addPass(this.renderPass);
+	        this.bloomComposer = new EffectComposer(this.renderer, this.msaaTarget);
+	        this.bloomComposer.renderToScreen = false;
+	        this.bloomComposer.addPass(this.renderPass);
+	        // nodePass
+	        const nodePassAtts = {
+	            hue: 0,
+	            sataturation: 1,
+	            vibrance: 0,
+	            brightness: 0,
+	            contrast: 1
+	        };
+	        Object.assign(nodePassAtts, attrs?.nodePass);
+	        this.nodepass = new NodePass();
+	        const screen = new ScreenNode();
+	        const hue = new FloatNode(nodePassAtts.hue);
+	        const sataturation = new FloatNode(nodePassAtts.sataturation);
+	        const vibrance = new FloatNode(nodePassAtts.vibrance);
+	        const brightness = new FloatNode(nodePassAtts.brightness);
+	        const contrast = new FloatNode(nodePassAtts.contrast);
+	        const hueNode = new ColorAdjustmentNode(screen, hue, ColorAdjustmentNode.HUE);
+	        const satNode = new ColorAdjustmentNode(hueNode, sataturation, ColorAdjustmentNode.SATURATION);
+	        const vibranceNode = new ColorAdjustmentNode(satNode, vibrance, ColorAdjustmentNode.VIBRANCE);
+	        const brightnessNode = new ColorAdjustmentNode(vibranceNode, brightness, ColorAdjustmentNode.BRIGHTNESS);
+	        const contrastNode = new ColorAdjustmentNode(brightnessNode, contrast, ColorAdjustmentNode.CONTRAST);
+	        this.nodepass.input = contrastNode;
+	        this.nodepass.enabled = attrs?.nodePassEnabled;
+	        this.sceneComposer.addPass(this.nodepass);
+	        const bgColor = attrs && attrs.background != undefined && attrs.background.type === 'color' ? new Color(attrs.background.value) : new Color();
+	        // *** TAA PASS start ***
+	        // const taaRenderPass = new TAARenderPass(this.scene, currentCamera, bgColor, 1)
+	        // taaRenderPass.unbiased = false
+	        // taaRenderPass.sampleLevel = 3
+	        // this.sceneComposer.addPass(taaRenderPass)
+	        // *** TAA PASS end ***
+	        // *** SSAA PASS start ***
+	        let ssaa = {
+	            level: 1,
+	            unbiased: true
+	        };
+	        Object.assign(ssaa, attrs && attrs.ssaa);
+	        this.ssaaPass = new SSAARenderPass(this.scene, currentCamera, bgColor, 0);
+	        this.ssaaPass.sampleLevel = ssaa.level;
+	        this.ssaaPass.unbiased = ssaa.unbiased;
+	        this.sceneComposer.addPass(this.ssaaPass);
+	        const ssaaEnabled = attrs && attrs.ssaaEnabled != undefined ? attrs.ssaaEnabled : false;
+	        this.ssaaPass.enabled = ssaaEnabled;
+	        // *** SSAA PASS end ***
+	        // *** SSR PASS start ***
+	        // const geometry = new PlaneGeometry(1, 1)
+	        // const groundReflector = new ReflectorForSSRPass(geometry, {
+	        //   clipBias: 0.0003,
+	        //   textureWidth: this.containerWidth,
+	        //   textureHeight: this.containerHeight,
+	        //   color: 0x888888,
+	        //   useDepthTexture: true
+	        // })
+	        // groundReflector.material.depthWrite = false
+	        // groundReflector.rotation.x = -Math.PI / 2
+	        // groundReflector.visible = false
+	        // this.scene.add(groundReflector)
+	        let ssr = {
+	            renderer: this.renderer,
+	            scene: this.scene,
+	            camera: currentCamera,
+	            width: this.containerWidth,
+	            height: this.containerHeight,
+	            selects: [],
+	            groundReflector: null,
+	            encoding: LinearEncoding,
+	            maxDistance: 200
+	        };
+	        ssr = Object.assign(ssr, attrs && attrs.ssr);
+	        this.ssrPass = new SSRPass(ssr);
+	        this.ssrPass.maxDistance = 200;
+	        const ssrEnabled = attrs && attrs.ssrEnabled != undefined ? attrs.ssrEnabled : false;
+	        this.ssrPass.enabled = ssrEnabled;
+	        this.sceneComposer.addPass(this.ssrPass);
+	        // *** SSR PASS end ***
+	        // *** GAMMA PASS start ***
+	        let gamma = {
+	            factor: 2.2
+	        };
+	        gamma = Object.assign(gamma, attrs && attrs.gamma);
+	        this.gammaPass = new ShaderPass(new ShaderMaterial({
+	            uniforms: {
+	                tDiffuse: { value: null },
+	                factor: { value: gamma.factor }
+	            },
+	            vertexShader: gammaVertexShader,
+	            fragmentShader: gammaFragmentShader
+	        }));
+	        const gammaEnabled = attrs && attrs.gammaEnabled != undefined ? attrs.gammaEnabled : true;
+	        this.sceneComposer.addPass(this.gammaPass);
+	        this.gammaPass.enabled = gammaEnabled;
+	        // *** GAMMA PASS end ***
+	        // *** BLOOM PASS start ***
+	        let bloom = {
+	            bloomStrength: 1.5,
+	            bloomRadius: 0,
+	            threshold: 0.85
+	        };
+	        bloom = Object.assign(bloom, attrs && attrs.bloom);
+	        this.bloomPass = new UnrealBloomPass(new Vector2(this.containerWidth, this.containerHeight), bloom.bloomStrength, bloom.bloomRadius, bloom.threshold);
+	        const bloomEnabled = attrs && attrs.bloomEnabled != undefined ? attrs.bloomEnabled : false;
+	        this.bloomPass.enabled = bloomEnabled;
+	        // this.bloomPass.nMips = 0
+	        this.bloomComposer.addPass(this.bloomPass);
+	        // *** BLOOM PASS end ***
+	        // *** BLOOM FINAL PASS start ***
+	        this.finalbloomPass = new ShaderPass(new ShaderMaterial({
+	            uniforms: {
+	                baseTexture: { value: null },
+	                bloomTexture: { value: this.bloomComposer.renderTarget2.texture }
+	            },
+	            vertexShader: bloomVertexShader,
+	            fragmentShader: bloomFragShader
+	        }), 'baseTexture');
+	        this.finalbloomPass.needsSwap = true;
+	        this.sceneComposer.addPass(this.finalbloomPass);
+	        // *** BLOOM FINAL PASS end ***
+	        // *** DOF PASS start***
+	        let dof = {
+	            focus: 100.0,
+	            aperture: 0.00001,
+	            maxblur: 0.01,
+	            width: this.containerWidth,
+	            height: this.containerHeight
+	        };
+	        dof = Object.assign(dof, attrs && attrs.dof);
+	        this.bokehPass = new BokehPass(this.scene, currentCamera, dof);
+	        this.sceneComposer.addPass(this.bokehPass);
+	        const dofEnabled = attrs && attrs.dofEnabled != undefined ? attrs.dofEnabled : false;
+	        this.bokehPass.enabled = dofEnabled;
+	        // *** DOF PASS end***
+	        // *** OUTLINE PASS start ***
+	        let outlineParams = {
+	            edgeStrength: 3,
+	            edgeGlow: 0,
+	            edgeThickness: 1,
+	            pulsePeriod: 0,
+	            visibleEdgeColor: '#98e10f',
+	            hiddenEdgeColor: '#190a05'
+	        };
+	        outlineParams = Object.assign(outlineParams, attrs && attrs.outline);
+	        this.outlinePass = new OutlinePass(new Vector2(this.containerWidth, this.containerHeight), this.scene, currentCamera, this.outlineObjects);
+	        this.outlinePass.edgeStrength = outlineParams.edgeStrength;
+	        this.outlinePass.edgeGlow = outlineParams.edgeGlow;
+	        this.outlinePass.edgeThickness = outlineParams.edgeThickness;
+	        this.outlinePass.pulsePeriod = outlineParams.pulsePeriod;
+	        this.outlinePass.visibleEdgeColor.set(outlineParams.visibleEdgeColor);
+	        this.outlinePass.hiddenEdgeColor.set(outlineParams.hiddenEdgeColor);
+	        this.sceneComposer.addPass(this.outlinePass);
+	        const outlineEnabled = attrs && attrs.outlineEnabled != undefined ? attrs.outlineEnabled : false;
+	        this.outlinePass.enabled = outlineEnabled;
+	        // *** OUTLINE PASS end ***
+	        // this.sceneComposer.addPass(outputPass)
+	        // *** test depth peeling start ***
+	        const ssrtEnabled = attrs && attrs.ssrtEnabled != undefined ? attrs.ssrtEnabled : false;
+	        if (ssrtEnabled) {
+	            this.ssrSkyBox = new SSRSkyBox(null, currentCamera, this.renderer);
+	            this.sceneComposer.addPass(this.ssrSkyBox);
+	            this.ddpPass = new DoubleDepthBufferPass(this.scene.clone(true), currentCamera, this.renderer);
+	            this.sceneComposer.addPass(this.ddpPass);
+	            this.ssrtPass = new SSRTPass(this.scene.clone(true), this.ddpPass, currentCamera, this.renderer);
+	            this.sceneComposer.addPass(this.ssrtPass);
+	        }
+	        // *** test depth peeling end ***
+	        // **** TEST PASS start ******
+	        // const testPass = new ShaderPass(
+	        //   new ShaderMaterial({
+	        //     uniforms: {
+	        //       tDiffuse: { value: null }
+	        //     },
+	        //     vertexShader: testVertexShader,
+	        //     fragmentShader: testFragmentShader
+	        //   })
+	        // )
+	        // this.sceneComposer.addPass(testPass)
+	        // **** TEST PASS end ******
+	    }
+	    // 切换天空盒
+	    setSkyBox(urls, callback) {
+	        if (!(urls instanceof Array))
+	            return;
+	        const attrs = this.attrs;
+	        const scale = attrs && attrs.background && attrs.background.options && attrs.background.options.scale ? attrs.background.options.scale : 1;
+	        const rotation = attrs && attrs.background && attrs.background.options && attrs.background.options.rotation ? attrs.background.options.rotation : [0, 0, 0];
+	        const fog = attrs && attrs.background && attrs.background.options && attrs.background.options.fog ? attrs.background.options.fog : false;
+	        const SKY_RADIUS = 50000;
+	        this.skyRadius = SKY_RADIUS;
+	        if (urls.length == 6) {
+	            const arr = [];
+	            const materials = [];
+	            urls.forEach((u) => {
+	                arr.push(loadTex(this.texLoader, this.publicPath + u));
+	            });
+	            Promise.all(arr).then((list) => {
+	                list.forEach((l) => {
+	                    const mat = new MeshBasicMaterial({
+	                        map: l,
+	                        side: 2,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    materials.push(mat);
+	                });
+	                const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                // texture.encoding = sRGBEncoding
+	                const sky = new Mesh(geo, materials);
+	                sky.scale.set(scale, scale, scale);
+	                sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                sky.renderOrder = SKY_RENDER_ORDER;
+	                sky.type = 'SkyBox';
+	                if (this.sky) {
+	                    this.sky.geometry = geo;
+	                    this.sky.material = materials;
+	                }
+	                else {
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	                this.sky.userData.value = urls;
+	                callback && callback(this.sky);
+	            });
+	        }
+	        else if (urls.length == 1) {
+	            this.texLoader.load(this.publicPath + urls[0], (texture) => {
+	                const mat = new MeshBasicMaterial({
+	                    map: texture,
+	                    side: BackSide,
+	                    transparent: true,
+	                    opacity: 1.0,
+	                    fog
+	                });
+	                const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                // texture.encoding = sRGBEncoding
+	                const sky = new Mesh(geo, mat);
+	                sky.scale.set(scale, scale, scale);
+	                sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                sky.renderOrder = SKY_RENDER_ORDER;
+	                sky.type = 'SkyBox';
+	                if (this.sky) {
+	                    this.sky.geometry = geo;
+	                    this.sky.material = mat;
+	                }
+	                else {
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	                this.sky.userData.value = urls;
+	                callback && callback(this.sky);
+	            });
+	        }
+	    }
+	    // 切换HDR
+	    setHDR(urls, callback) {
+	        if (!(urls instanceof Array))
+	            return;
+	        if (urls.length == 1) {
+	            this.pmremGenerator.compileEquirectangularShader();
+	            this.hdrLoader.setDataType(UnsignedByteType).load(this.publicPath + urls[0], (texture) => {
+	                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.scene.traverse((c) => {
+	                    if (c.isMesh) {
+	                        c.material.envMap = envMap;
+	                    }
+	                });
+	                callback && callback(this.envMap);
+	            });
+	        }
+	        else if (urls.length == 6) {
+	            this.pmremGenerator.compileCubemapShader();
+	            const urls = [];
+	            urls.forEach((hUrl) => {
+	                urls.push(this.publicPath + hUrl);
+	            });
+	            this.cubeTexLoader.load(urls, (texture) => {
+	                const envMap = this.pmremGenerator.fromCubemap(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.scene.traverse((c) => {
+	                    if (c.isMesh) {
+	                        c.material.envMap = envMap;
+	                    }
+	                });
+	                callback && callback(this.envMap);
+	            });
+	        }
+	    }
+	    // add object
+	    attach(obj) {
+	        this.scene.add(obj);
+	    }
+	    // remove object
+	    remove(obj) {
+	        this.scene.remove(obj);
+	        const i = this.children.indexOf(obj);
+	        this.children.splice(i, 1);
+	    }
+	    // find object by name
+	    findObjectByName(name) {
+	        for (const i in this.children) {
+	            if (this.children[i].name == name) {
+	                return this.children[i];
+	            }
+	        }
+	    }
+	    // find objects by name
+	    findObjectsByName(name) {
+	        const objects = [];
+	        for (const i in this.children) {
+	            if (this.children[i].name == name) {
+	                objects.push(this.children[i]);
+	            }
+	        }
+	        return objects;
+	    }
+	    // find object by uuid
+	    findObjectById(uuid) {
+	        for (const i in this.children) {
+	            if (this.children[i].uuid == uuid) {
+	                return this.children[i];
+	            }
+	        }
+	    }
+	    // find objects by type
+	    findObjectsByType(type) {
+	        const objects = [];
+	        for (const i in this.children) {
+	            if (this.children[i].type == type) {
+	                objects.push(this.children[i]);
+	            }
+	        }
+	        return objects;
+	    }
+	    // camera focus target
+	    cameraFocus(opts) {
+	        if (this.viewState != 'orbit')
+	            return;
+	        const { target, callback, polarAngle, azimuthalAngle, distance } = opts;
+	        const p = new Vector3();
+	        if (target instanceof Vector3) {
+	            p.copy(target);
+	        }
+	        else if (target instanceof Array) {
+	            p.set(target[0], target[1], target[2]);
+	        }
+	        const offset = new Vector3().subVectors(this.orbitCamera.position, this.orbitControls.target);
+	        const spherical = new Spherical().setFromVector3(offset);
+	        if (polarAngle !== undefined)
+	            spherical.phi = polarAngle;
+	        if (azimuthalAngle !== undefined)
+	            spherical.theta = azimuthalAngle;
+	        if (distance !== undefined)
+	            spherical.radius = distance;
+	        offset.setFromSpherical(spherical);
+	        const newPOS = new Vector3();
+	        newPOS.copy(p).add(offset);
+	        if (newPOS.distanceTo(this.orbitCamera.position) < 0.0001) {
+	            this.orbitCamera.position.copy(newPOS);
+	            this.orbitControls.target.copy(p);
+	            callback && callback();
+	        }
+	        else {
+	            new Tween(this.orbitControls.target).to(p, 800).start();
+	            new Tween(this.orbitCamera.position)
+	                .to(newPOS, 800)
+	                .start()
+	                .onComplete(() => {
+	                callback && callback();
+	            });
+	        }
+	    }
+	    // make obj bloom special
+	    addBloomSpecial(obj) {
+	        obj.layers.enable(2);
+	    }
+	    // remove bloom obj special
+	    removeBloomSpecial(obj) {
+	        obj.layers.disable(2);
+	    }
+	    // make obj bloom
+	    addBloom(obj) {
+	        obj.layers.enable(1);
+	    }
+	    // remove bloom obj
+	    removeBloom(obj) {
+	        obj.layers.disable(1);
+	    }
+	    loadHDR({ fileList, onLoad }) {
+	        const len = fileList.length;
+	        if (len == 0)
+	            return;
+	        if (len == 1) {
+	            this.pmremGenerator.compileEquirectangularShader();
+	            const freader = new FileReader();
+	            freader.readAsArrayBuffer(fileList[0]);
+	            freader.onload = (e) => {
+	                const result = e.target?.result;
+	                const texture = new DataTexture(null, 1, 1, undefined, undefined, undefined, undefined, undefined, NearestFilter, NearestFilter, undefined, undefined);
+	                const texData = this.hdrLoader.setDataType(UnsignedByteType).parse(result);
+	                if (!texData)
+	                    return;
+	                if (texData.image !== undefined) {
+	                    texture.image = texData.image;
+	                }
+	                else if (texData.data !== undefined) {
+	                    texture.image.width = texData.width;
+	                    texture.image.height = texData.height;
+	                    texture.image.data = texData.data;
+	                }
+	                texture.wrapS = texData.wrapS !== undefined ? texData.wrapS : ClampToEdgeWrapping;
+	                texture.wrapT = texData.wrapT !== undefined ? texData.wrapT : ClampToEdgeWrapping;
+	                texture.magFilter = texData.magFilter !== undefined ? texData.magFilter : LinearFilter;
+	                texture.minFilter = texData.minFilter !== undefined ? texData.minFilter : LinearFilter;
+	                texture.anisotropy = texData.anisotropy !== undefined ? texData.anisotropy : 1;
+	                if (texData.encoding !== undefined) {
+	                    texture.encoding = texData.encoding;
+	                }
+	                if (texData.flipY !== undefined) {
+	                    texture.flipY = texData.flipY;
+	                }
+	                if (texData.format !== undefined) {
+	                    texture.format = texData.format;
+	                }
+	                if (texData.type !== undefined) {
+	                    texture.type = texData.type;
+	                }
+	                if (texData.mipmaps !== undefined) {
+	                    texture.mipmaps = texData.mipmaps;
+	                    texture.minFilter = LinearMipmapLinearFilter; // presumably...
+	                }
+	                if (texData.mipmapCount === 1) {
+	                    texture.minFilter = LinearFilter;
+	                }
+	                if (texData.generateMipmaps !== undefined) {
+	                    texture.generateMipmaps = texData.generateMipmaps;
+	                }
+	                texture.needsUpdate = true;
+	                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.children.forEach((c) => {
+	                    c.material.envMap = envMap;
+	                });
+	                onLoad && onLoad(envMap);
+	            };
+	        }
+	        else if (len == 6) {
+	            this.pmremGenerator.compileCubemapShader();
+	            const cubeTexture = new CubeTexture();
+	            const arr = [];
+	            for (const key in fileList) {
+	                const f = fileList[key];
+	                if (f instanceof File) {
+	                    const freader = new FileReader();
+	                    arr.push(parseImageFile(freader, f));
+	                }
+	            }
+	            Promise.all(arr).then((list) => {
+	                cubeTexture.needsUpdate = true;
+	                cubeTexture.images = list;
+	                const envMap = this.pmremGenerator.fromCubemap(cubeTexture).texture;
+	                this.pmremGenerator.dispose();
+	                this.envMap = envMap;
+	                this.children.forEach((c) => {
+	                    c.material.envMap = envMap;
+	                });
+	                onLoad && onLoad(envMap);
+	            });
+	        }
+	    }
+	    loadSkyBox({ fileList, onLoad }) {
+	        const len = fileList.length;
+	        if (len == 0)
+	            return;
+	        const attrs = this.attrs;
+	        const scale = attrs && attrs.background && attrs.background.options && attrs.background.options.scale ? attrs.background.options.scale : 1;
+	        const rotation = attrs && attrs.background && attrs.background.options && attrs.background.options.rotation ? attrs.background.options.rotation : [0, 0, 0];
+	        const fog = attrs && attrs.background && attrs.background.options && attrs.background.options.fog ? attrs.background.options.fog : false;
+	        const SKY_RADIUS = this.skyRadius;
+	        if (len == 6) {
+	            const arr = [];
+	            const materials = [];
+	            for (const key in fileList) {
+	                const f = fileList[key];
+	                if (f instanceof File) {
+	                    const freader = new FileReader();
+	                    arr.push(parseImageFile(freader, f));
+	                }
+	            }
+	            Promise.all(arr).then((list) => {
+	                list.forEach((l) => {
+	                    const t = new Texture();
+	                    t.needsUpdate = true;
+	                    t.image = l;
+	                    const mat = new MeshBasicMaterial({
+	                        map: t,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    materials.push(mat);
+	                });
+	                if (this.sky) {
+	                    this.sky.material.needsUpdate = true;
+	                    this.sky.material = materials;
+	                }
+	                else {
+	                    const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, materials);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	            });
+	        }
+	        else if (len == 1) {
+	            const freader = new FileReader();
+	            parseImageFile(freader, fileList[0]).then((list) => {
+	                const image = list;
+	                const texture = new Texture();
+	                texture.image = image;
+	                texture.needsUpdate = true;
+	                if (this.sky) {
+	                    this.sky.material.needsUpdate = true;
+	                    this.sky.material.map = texture;
+	                }
+	                else {
+	                    const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                    const mat = new MeshBasicMaterial({
+	                        map: texture,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, mat);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(rotation[0], rotation[1], rotation[2]);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    this.scene.add(sky);
+	                    this.sky = sky;
+	                }
+	            });
+	        }
+	    }
+	    // load models by fileList
+	    loadModels({ fileList, onProgress, onLoad }) {
+	        const len = fileList.length;
+	        if (len == 0)
+	            return;
+	        let count = 0;
+	        let max = new Vector3();
+	        let min = new Vector3();
+	        const enableShadow = this.attrs && this.attrs.enableShadow != undefined ? this.attrs.enableShadow : false;
+	        for (const key in fileList) {
+	            const f = fileList[key];
+	            if (f instanceof File) {
+	                const freader = new FileReader();
+	                freader.readAsArrayBuffer(f);
+	                freader.onload = (e) => {
+	                    const result = e.target?.result;
+	                    if (result) {
+	                        this.gltfLoader.parse(result, '', (gltf) => {
+	                            // todo loadedFileResults  animations
+	                            this.loadedFileResults.push(gltf);
+	                            const nameStr = f.name.split('.');
+	                            const name = nameStr[0];
+	                            const scenes = gltf.scene;
+	                            const pId = `root_${name}_${key}`;
+	                            traverseGenerateUUID(scenes, pId);
+	                            // const skeleton = new SkeletonHelper(scenes)
+	                            // skeleton.visible = false
+	                            // this.scene.add(skeleton)
+	                            // if (gltf.animations.length != 0) {
+	                            //   for (var i = 0; i < gltf.animations.length; i++) {
+	                            //     const mixer = new AnimationMixer(scenes)
+	                            //     ;(mixer as any).name = gltf.animations[i].name
+	                            //     this.mixers.push(mixer)
+	                            //     const m = mixer.clipAction(gltf.animations[i]).play()
+	                            //     m.paused = true
+	                            //     ;(mixer as any).actions = m
+	                            //     this.mixerActions.push(m)
+	                            //   }
+	                            // }
+	                            scenes.name = name;
+	                            // file name cache
+	                            scenes.userData.fileName = f.name;
+	                            scenes.traverse((child) => {
+	                                if (child.isMesh) {
+	                                    child.castShadow = enableShadow;
+	                                    child.receiveShadow = enableShadow;
+	                                    child.material.envMap = this.envMap;
+	                                    child.material = child.material.clone();
+	                                    child.renderOrder = MODEL_RENDER_ORDER;
+	                                    child.material.envMap = this.envMap;
+	                                    // this.clickObjects.push(child) // to do raycast
+	                                    // this.children.push(child) // children management
+	                                    // find max bounding box point
+	                                    const v = new Vector3();
+	                                    child.geometry.boundingBox.getCenter(v);
+	                                    const _v = v.clone();
+	                                    recursiveCalParentsMat(child, _v, new Matrix4());
+	                                    const _max = child.geometry.boundingBox.max.clone();
+	                                    recursiveCalParentsMat(child, _max, new Matrix4());
+	                                    const _min = child.geometry.boundingBox.min.clone();
+	                                    recursiveCalParentsMat(child, _min, new Matrix4());
+	                                    const __max = new Vector3().subVectors(_v, _max);
+	                                    const __min = new Vector3().subVectors(_v, _min);
+	                                    if (__max.lengthSq() > max.lengthSq())
+	                                        max.copy(__max);
+	                                    if (__min.lengthSq() > min.lengthSq())
+	                                        min.copy(__min);
+	                                }
+	                            });
+	                            this.scene.add(scenes);
+	                            this.sceneModels.push(scenes);
+	                            // this.sceneAnimations[name] = gltf.animations
+	                            count++;
+	                            onProgress && onProgress(scenes);
+	                            if (count == len) {
+	                                // 计算最佳视角
+	                                let mdlen = max.x - min.x; // 模型长度
+	                                let mdwid = max.z - min.z; // 模型宽度
+	                                let mdhei = max.y - min.y; // 模型高度
+	                                let x1 = min.x + mdlen / 2; // 模型中心点坐标X
+	                                let y1 = min.y + mdhei / 2; // 模型中心点坐标Y
+	                                let z1 = min.z + mdwid / 2; // 模型中心点坐标Z
+	                                let diagonal = Math.sqrt(Math.pow(Math.sqrt(Math.pow(mdlen, 2) + Math.pow(mdwid, 2)), 2) + Math.pow(mdhei, 2)); // 获取模型整体对角线长度,这里获取模型模型对角线的目的是为了保证模型可以完全的展示在视线范围内
+	                                // 假设我们需要的进入视角为45度
+	                                this.orbitControls.object.position.set(max.x + diagonal / 2, (diagonal * 2) / Math.tan((Math.PI / 180) * 45) + Math.abs(max.y), max.z + diagonal / 2); // 设置相机位置，向上偏移，确定可以包裹整个模型
+	                                this.orbitControls.target.set(x1, y1, z1); // 设置相机的视角方向，看向模型的中心点
+	                                this.orbitControls.update(); // 更新相机
+	                                onLoad && onLoad();
+	                            }
+	                        });
+	                    }
+	                };
+	            }
+	        }
+	    }
+	    // export scene
+	    exportScenes(filename) {
+	        const attrs = this.attrs;
+	        // export datas
+	        let data = Object.assign({}, attrs);
+	        // cameras
+	        data.cameras.orbitCamera = Object.assign(data.cameras.orbitCamera, {
+	            position: [this.orbitCamera.position.x, this.orbitCamera.position.y, this.orbitCamera.position.z]
+	        });
+	        // controls
+	        data.controls.orbitControls = Object.assign(data.controls.orbitControls, {
+	            target: [this.orbitControls.target.x, this.orbitControls.target.y, this.orbitControls.target.z]
+	        });
+	        // model urls
+	        const modelUrls = [];
+	        this.sceneModels.forEach((scenes) => {
+	            modelUrls.push('/' + scenes.userData.fileName);
+	        });
+	        data = Object.assign(data, { modelUrls });
+	        if (!filename)
+	            filename = 'settings.json';
+	        if (typeof data === 'object') {
+	            data = JSON.stringify(data, undefined, 4);
+	        }
+	        const blob = new Blob([data], { type: 'text/json' }), e = document.createEvent('MouseEvents'), a = document.createElement('a');
+	        a.download = filename;
+	        a.href = window.URL.createObjectURL(blob);
+	        a.dataset.downloadurl = ['text/json', a.download, a.href].join(':');
+	        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	        a.dispatchEvent(e);
+	    }
+	    // 根据json文件加载场景
+	    loadSceneByJSON({ data, onProgress, onLoad }) {
+	        // console.log(data)
+	        this.updateScenes(data);
+	        this.updateLights(data.lights);
+	        this.updateCameras(data.cameras);
+	        this.updatePasses(data);
+	        this.loadModelByUrls({
+	            modelUrls: data.modelUrls ? data.modelUrls : [],
+	            onProgress,
+	            onLoad,
+	            nodes: data.template
+	        });
+	    }
+	    // *** loadSceneByJSON functions start ***
+	    loadModelByUrls({ nodes, modelUrls, onProgress, onLoad }) {
+	        if (!modelUrls || !(modelUrls instanceof Array) || modelUrls.length == 0) {
+	            onLoad && onLoad(this);
+	            return;
+	        }
+	        const enableShadow = this.attrs?.enableShadow;
+	        const urls = [];
+	        modelUrls.forEach((u) => {
+	            urls.push(this.publicPath + u);
+	        });
+	        const len = urls.length;
+	        let count = 0;
+	        urls.forEach((url, index) => {
+	            const urlArr = url.split('/');
+	            const urlStr = urlArr[urlArr.length - 1];
+	            const start = urlStr.lastIndexOf('/');
+	            const end = urlStr.indexOf('.');
+	            const name = urlStr.substring(start + 1, end);
+	            const type = urlStr.substring(end + 1, urlStr.length);
+	            if (['glb', 'gltf'].includes(type.toLowerCase())) {
+	                this.gltfLoader.load(url, (gltf) => {
+	                    const jsonNodes = gltf.parser.json.nodes;
+	                    const duplicateNames = {};
+	                    for (let i = 0; i < jsonNodes.length; i++) {
+	                        if (!jsonNodes[i].name)
+	                            throw new Error('model name should be defined.');
+	                        if (!duplicateNames[jsonNodes[i].name]) {
+	                            duplicateNames[jsonNodes[i].name] = 1;
+	                        }
+	                        else {
+	                            duplicateNames[jsonNodes[i].name]++;
+	                        }
+	                        if (duplicateNames[jsonNodes[i].name] > 1) {
+	                            throw new Error('model name should be uniqued.');
+	                        }
+	                    }
+	                    const scenes = gltf.scene;
+	                    if (gltf.animations.length != 0) {
+	                        for (var i = 0; i < gltf.animations.length; i++) {
+	                            const mixer = new AnimationMixer(scenes);
+	                            mixer.name = gltf.animations[i].name;
+	                            this.mixers.push(mixer);
+	                            const m = mixer.clipAction(gltf.animations[i]).play();
+	                            m.paused = true;
+	                            mixer.actions = m;
+	                            this.mixerActions.push(m);
+	                        }
+	                    }
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    scenes.name = name;
+	                    scenes.userData.url = url;
+	                    scenes.traverse((child) => {
+	                        const obj3dArr = [];
+	                        traverseSelectNodeByUUID(nodes[pId], child.uuid, obj3dArr);
+	                        if (obj3dArr.length > 0) {
+	                            const obj3d = obj3dArr[0];
+	                            if (obj3d.type == 'Group' || obj3d.type == 'Object3D') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                            }
+	                            else if (obj3d.type == 'Mesh') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation, castShadow, receiveShadow } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                                child.castShadow = enableShadow ? enableShadow : castShadow;
+	                                child.receiveShadow = enableShadow ? enableShadow : receiveShadow;
+	                                // mat
+	                                if (obj3d.matOptions) {
+	                                    const { color, depthTest, depthWrite, opacity, transparent, wireframe, type } = obj3d.matOptions;
+	                                    child.material.color.set(color);
+	                                    child.material.depthTest = depthTest;
+	                                    child.material.depthWrite = depthWrite;
+	                                    child.material.opacity = opacity;
+	                                    child.material.transparent = transparent;
+	                                    child.material.wireframe = wireframe;
+	                                    if (type == 'MeshStandardMaterial' && obj3d.matOptions.extends) {
+	                                        const { roughness, metalness, envMapIntensity, lightMapIntensity, emissive, emissiveIntensity } = obj3d.matOptions.extends;
+	                                        child.material.roughness = roughness;
+	                                        child.material.metalness = metalness;
+	                                        child.material.envMapIntensity = envMapIntensity;
+	                                        child.material.lightMapIntensity = lightMapIntensity;
+	                                        child.material.emissiveIntensity = emissiveIntensity;
+	                                        child.material.emissive.set(emissive);
+	                                    }
+	                                }
+	                            }
+	                        }
+	                        if (child.isMesh) {
+	                            child.material.envMap = this.envMap;
+	                            child.material = child.material.clone();
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    this.sceneAnimations[name] = gltf.animations;
+	                    count++;
+	                    onProgress && onProgress(scenes);
+	                    if (count == len)
+	                        onLoad && onLoad(this);
+	                }, (event) => {
+	                    // console.log('event', event)
+	                }, (error) => {
+	                    console.error(error);
+	                });
+	            }
+	            else if (['fbx'].includes(type.toLowerCase())) {
+	                this.fbxLoader.load(url, (group) => {
+	                    const scenes = group;
+	                    const pId = `root_${name}_${index}`;
+	                    traverseGenerateUUID(scenes, pId);
+	                    scenes.name = name;
+	                    scenes.traverse((child) => {
+	                        const obj3dArr = [];
+	                        traverseSelectNodeByUUID(nodes[pId], child.uuid, obj3dArr);
+	                        if (obj3dArr.length > 0) {
+	                            const obj3d = obj3dArr[0];
+	                            if (obj3d.type == 'Group' || obj3d.type == 'Object3D') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                            }
+	                            else if (obj3d.type == 'Mesh') {
+	                                // visibility
+	                                child.visible = obj3d.visible;
+	                                // object
+	                                const { position, scale, rotation, castShadow, receiveShadow } = obj3d.options;
+	                                child.position.set(position[0], position[1], position[2]);
+	                                child.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                                child.scale.set(scale[0], scale[1], scale[2]);
+	                                child.castShadow = enableShadow ? enableShadow : castShadow;
+	                                child.receiveShadow = enableShadow ? enableShadow : receiveShadow;
+	                                // mat
+	                                if (obj3d.matOptions) {
+	                                    const { color, depthTest, depthWrite, opacity, transparent, wireframe, type } = obj3d.matOptions;
+	                                    child.material.color.set(color);
+	                                    child.material.depthTest = depthTest;
+	                                    child.material.depthWrite = depthWrite;
+	                                    child.material.opacity = opacity;
+	                                    child.material.transparent = transparent;
+	                                    child.material.wireframe = wireframe;
+	                                    if (obj3d.matOptions.extends) {
+	                                        const { roughness, metalness, envMapIntensity, lightMapIntensity, emissive, emissiveIntensity } = obj3d.matOptions.extends;
+	                                        child.material.roughness = roughness;
+	                                        child.material.metalness = metalness;
+	                                        child.material.envMapIntensity = envMapIntensity;
+	                                        child.material.lightMapIntensity = lightMapIntensity;
+	                                        child.material.emissiveIntensity = emissiveIntensity;
+	                                        child.material.emissive.set(emissive);
+	                                    }
+	                                }
+	                            }
+	                        }
+	                        if (child.isMesh) {
+	                            child.renderOrder = MODEL_RENDER_ORDER;
+	                            this.clickObjects.push(child); // to do raycast
+	                            this.children.push(child); // children management
+	                        }
+	                    });
+	                    this.scene.add(scenes);
+	                    this.sceneModels.push(scenes);
+	                    count++;
+	                    onProgress && onProgress(scenes);
+	                    if (count == len)
+	                        onLoad && onLoad(this);
+	                });
+	            }
+	            else {
+	                throw new Error(type + ' is not supported.');
+	            }
+	        });
+	    }
+	    updateCameras(opts) {
+	        if (!opts)
+	            return;
+	        // orbit camera
+	        if (opts.orbitCamera) {
+	            if (opts.orbitCamera.near !== undefined)
+	                this.orbitCamera.near = 0.1;
+	            if (opts.orbitCamera.far !== undefined)
+	                this.orbitCamera.far = opts.orbitCamera.far;
+	            if (opts.orbitCamera.fov !== undefined)
+	                this.orbitCamera.fov = opts.orbitCamera.fov;
+	            if (opts.orbitCamera.aspect !== undefined)
+	                this.orbitCamera.aspect = opts.orbitCamera.aspect;
+	            if (opts.orbitCamera.maxDistance !== undefined)
+	                this.orbitControls.maxDistance = opts.orbitCamera.maxDistance;
+	            if (opts.orbitCamera.minDistance !== undefined)
+	                this.orbitControls.minDistance = opts.orbitCamera.minDistance;
+	            if (opts.orbitCamera.maxPolarAngle !== undefined)
+	                this.orbitControls.maxPolarAngle = opts.orbitCamera.maxPolarAngle;
+	            if (opts.orbitCamera.minPolarAngle !== undefined)
+	                this.orbitControls.minPolarAngle = opts.orbitCamera.minPolarAngle;
+	            if (opts.orbitCamera.position !== undefined)
+	                this.orbitCamera.position.set(opts.orbitCamera.position[0], opts.orbitCamera.position[1], opts.orbitCamera.position[2]);
+	        }
+	        // first camera --- todo
+	        if (!opts.firstPersonCamera)
+	            return;
+	    }
+	    updateLights(opts) {
+	        if (!opts)
+	            return;
+	        // const enableShadow = this.attrs && this.attrs.enableShadow != undefined ? this.attrs.enableShadow : false
+	        if (opts.hemisphereLight) {
+	            let hemiLight = {
+	                skyColor: 0xffffff,
+	                groundColor: 0xaaaaaa,
+	                intensity: 0.1,
+	                position: [0, 500, 0]
+	            };
+	            hemiLight = Object.assign(hemiLight, opts.hemisphereLight);
+	            if (!this.hemiLight) {
+	                this.hemiLight = new HemisphereLight(hemiLight.skyColor, hemiLight.groundColor, hemiLight.intensity);
+	                this.hemiLight.position.set(hemiLight.position[0], hemiLight.position[1], hemiLight.position[2]);
+	                this.scene.add(this.hemiLight);
+	            }
+	            else {
+	                this.hemiLight.color.set(hemiLight.skyColor);
+	                this.hemiLight.groundColor.set(hemiLight.groundColor);
+	                this.hemiLight.intensity = hemiLight.intensity;
+	                this.hemiLight.position.set(hemiLight.position[0], hemiLight.position[1], hemiLight.position[2]);
+	            }
+	        }
+	        // rect area lights
+	        // if (opts.rectAreaLights) {
+	        //   opts.rectAreaLights.forEach((raLightOpts: RectAreaLightOpts) => {
+	        //     let rectAreaLightOpts = {
+	        //       color: 0xffffff,
+	        //       intensity: 0,
+	        //       width: 10,
+	        //       height: 10,
+	        //       position: [0, 0, 0],
+	        //       target: [0, 0, 0]
+	        //     }
+	        //     rectAreaLightOpts = Object.assign(rectAreaLightOpts, raLightOpts)
+	        //     const rectAreaLight = new RectAreaLight(rectAreaLightOpts.color, rectAreaLightOpts.intensity, rectAreaLightOpts.width, rectAreaLightOpts.height)
+	        //     rectAreaLight.position.set(rectAreaLightOpts.position[0], rectAreaLightOpts.position[1], rectAreaLightOpts.position[2])
+	        //     rectAreaLight.lookAt(0, 0, 0)
+	        //     rectAreaLight.userData.target = rectAreaLightOpts.target
+	        //     this.scene.add(rectAreaLight)
+	        //     this.rectAreaLights.push(rectAreaLight)
+	        //   })
+	        // }
+	        // point lights
+	        // if (opts.pointLights) {
+	        //   opts.pointLights.forEach((ptOpts: PointLightOpts) => {
+	        //     let pointLightOpts = {
+	        //       color: 0xffffff,
+	        //       intensity: 0,
+	        //       distance: 0,
+	        //       decay: 1,
+	        //       position: [0, 0, 0],
+	        //       near: 1,
+	        //       far: 10000,
+	        //       bias: 0,
+	        //       size: 2048
+	        //     }
+	        //     pointLightOpts = Object.assign(pointLightOpts, ptOpts)
+	        //     const pointLight = new PointLight(pointLightOpts.color, pointLightOpts.intensity, pointLightOpts.distance, pointLightOpts.decay)
+	        //     pointLight.position.set(pointLightOpts.position[0], pointLightOpts.position[1], pointLightOpts.position[2])
+	        //     // shadow
+	        //     pointLight.castShadow = enableShadow
+	        //     pointLight.shadow.bias = pointLightOpts.bias
+	        //     pointLight.shadow.camera.near = pointLightOpts.near
+	        //     pointLight.shadow.camera.far = pointLightOpts.far
+	        //     pointLight.shadow.mapSize.width = pointLightOpts.size
+	        //     pointLight.shadow.mapSize.height = pointLightOpts.size
+	        //     pointLight.shadow.camera.updateProjectionMatrix()
+	        //     pointLight.shadow.needsUpdate = true
+	        //     this.scene.add(pointLight)
+	        //     this.pointLights.push(pointLight)
+	        //   })
+	        // }
+	        // directionLights
+	        // if (opts.directionLights) {
+	        //   opts.directionLights.forEach((dirLightOpts: DirectionLightOpts) => {
+	        //     let directionLightOpts = {
+	        //       color: 0xffdcb2,
+	        //       intensity: 2,
+	        //       position: [1, 0, 0],
+	        //       mapSize: [2048, 2048],
+	        //       near: 0.01,
+	        //       far: 10000,
+	        //       bias: -0.0004,
+	        //       distance: 900,
+	        //       target: [0, 0, 0]
+	        //     }
+	        //     directionLightOpts = Object.assign(directionLightOpts, dirLightOpts)
+	        //     const dirLight = new DirectionalLight(directionLightOpts.color, directionLightOpts.intensity)
+	        //     dirLight.position.set(directionLightOpts.position[0], directionLightOpts.position[1], directionLightOpts.position[2])
+	        //     dirLight.target.position.set(directionLightOpts.target[0], directionLightOpts.target[1], directionLightOpts.target[2])
+	        //     dirLight.castShadow = enableShadow
+	        //     dirLight.shadow.mapSize.width = directionLightOpts.mapSize[0]
+	        //     dirLight.shadow.mapSize.height = directionLightOpts.mapSize[1]
+	        //     dirLight.shadow.bias = directionLightOpts.bias
+	        //     dirLight.shadow.camera.near = directionLightOpts.near
+	        //     dirLight.shadow.camera.far = directionLightOpts.far
+	        //     dirLight.shadow.camera.left = -directionLightOpts.distance
+	        //     dirLight.shadow.camera.right = directionLightOpts.distance
+	        //     dirLight.shadow.camera.top = directionLightOpts.distance
+	        //     dirLight.shadow.camera.bottom = -directionLightOpts.distance
+	        //     dirLight.shadow.camera.updateProjectionMatrix()
+	        //     dirLight.shadow.needsUpdate = true
+	        //     this.scene.add(dirLight.target)
+	        //     this.scene.add(dirLight)
+	        //     this.directionLights.push(dirLight)
+	        //   })
+	        // }
+	        // spot lights
+	        // if (opts.spotLights) {
+	        //   opts.spotLights.forEach((spotLightOpts: SpotLightOpts) => {
+	        //     let sptLightOpts = {
+	        //       color: 0xffdcb2,
+	        //       intensity: 2,
+	        //       position: [-1000, 1000, -1000],
+	        //       mapSize: [2048, 2048],
+	        //       decay: 2,
+	        //       near: 1,
+	        //       far: 10000,
+	        //       angle: (45 * Math.PI) / 180,
+	        //       distance: 0,
+	        //       penumbra: 0.398,
+	        //       bias: -0.0004,
+	        //       focus: 1
+	        //     }
+	        //     sptLightOpts = Object.assign(sptLightOpts, spotLightOpts)
+	        //     const spotLight = new SpotLight(sptLightOpts.color, sptLightOpts.intensity)
+	        //     spotLight.position.set(sptLightOpts.position[0], sptLightOpts.position[1], sptLightOpts.position[2])
+	        //     spotLight.decay = sptLightOpts.decay
+	        //     spotLight.distance = sptLightOpts.distance
+	        //     spotLight.penumbra = sptLightOpts.penumbra
+	        //     // shadow
+	        //     spotLight.castShadow = enableShadow
+	        //     spotLight.shadow.mapSize.width = sptLightOpts.mapSize[0]
+	        //     spotLight.shadow.mapSize.height = sptLightOpts.mapSize[1]
+	        //     spotLight.shadow.camera.near = sptLightOpts.near
+	        //     spotLight.shadow.camera.far = sptLightOpts.far
+	        //     spotLight.angle = sptLightOpts.angle
+	        //     spotLight.shadow.focus = sptLightOpts.focus
+	        //     spotLight.shadow.bias = sptLightOpts.bias
+	        //     spotLight.shadow.camera.updateProjectionMatrix()
+	        //     spotLight.shadow.needsUpdate = true
+	        //     this.scene.add(spotLight.target)
+	        //     this.scene.add(spotLight)
+	        //     this.spotLights.push(spotLight)
+	        //   })
+	        // }
+	        if (opts.ambientLight) {
+	            let ambientLight = {
+	                intensity: 1.0,
+	                color: 0xffffff
+	            };
+	            ambientLight = Object.assign(ambientLight, opts.ambientLight);
+	            if (!this.ambientLight) {
+	                this.ambientLight = new AmbientLight(ambientLight.color, ambientLight.intensity);
+	                this.scene.add(this.ambientLight);
+	            }
+	            else {
+	                this.ambientLight.color.set(ambientLight.color);
+	                this.ambientLight.intensity = ambientLight.intensity;
+	            }
+	        }
+	    }
+	    updatePasses(opts) {
+	        if (!opts)
+	            return;
+	        if (opts.bloom)
+	            this.updateBloomPass(opts.bloom);
+	        if (opts.outline)
+	            this.updateOutlinePass(opts.outline);
+	        if (opts.msaa)
+	            this.updateMSAAPass(opts.msaa);
+	        if (opts.gamma)
+	            this.updateGammaPass(opts.gamma);
+	        if (opts.dof)
+	            this.updateDOFPass(opts.dof);
+	    }
+	    updateBloomPass(opts) {
+	        if (!opts)
+	            return;
+	        this.bloomPass.enabled = opts.enabled;
+	        this.finalbloomPass.material.uniforms.bloomTexture.value = opts.enabled ? this.bloomComposer.renderTarget2.texture : null;
+	        if (opts.bloomStrength !== undefined)
+	            this.bloomPass.strength = opts.bloomStrength;
+	        if (opts.bloomRadius !== undefined)
+	            this.bloomPass.radius = opts.bloomRadius;
+	        if (opts.threshold !== undefined)
+	            this.bloomPass.threshold = opts.threshold;
+	    }
+	    updateOutlinePass(opts) {
+	        if (!opts)
+	            return;
+	        this.outlinePass.enabled = opts.enabled;
+	        if (opts.edgeStrength !== undefined)
+	            this.outlinePass.edgeStrength = opts.edgeStrength;
+	        if (opts.edgeGlow !== undefined)
+	            this.outlinePass.edgeGlow = opts.edgeGlow;
+	        if (opts.edgeThickness !== undefined)
+	            this.outlinePass.edgeThickness = opts.edgeThickness;
+	        if (opts.pulsePeriod !== undefined)
+	            this.outlinePass.pulsePeriod = opts.pulsePeriod;
+	        if (opts.visibleEdgeColor !== undefined)
+	            this.outlinePass.visibleEdgeColor.set(opts.visibleEdgeColor);
+	        if (opts.hiddenEdgeColor !== undefined)
+	            this.outlinePass.hiddenEdgeColor.set(opts.hiddenEdgeColor);
+	    }
+	    updateMSAAPass(opts) {
+	        if (!opts)
+	            return;
+	        if (opts.supersampling !== undefined) {
+	            const w = this.containerWidth * 2;
+	            const h = this.containerHeight * 2;
+	            this.msaaTarget.setSize(w, h);
+	            this.sceneComposer.setSize(w, h);
+	            this.bloomComposer.setSize(w, h);
+	            this.bloomPass.setSize(w, h);
+	            this.finalbloomPass.setSize(w, h);
+	            this.ssrPass.setSize(w, h);
+	        }
+	    }
+	    updateGammaPass(opts) {
+	        if (!opts)
+	            return;
+	        this.gammaPass.enabled = opts.enabled;
+	        if (opts.factor !== undefined) {
+	            this.gammaPass.material.uniforms.factor.value = opts.factor;
+	            this.gammaPass.material.needsUpdate = true;
+	        }
+	    }
+	    updateDOFPass(opts) {
+	        if (!opts)
+	            return;
+	        this.bokehPass.enabled = opts.enabled;
+	        if (opts.aperture !== undefined)
+	            this.bokehPass.uniforms.aperture.value = opts.aperture;
+	        if (opts.maxblur !== undefined)
+	            this.bokehPass.uniforms.maxblur.value = opts.maxblur;
+	        if (opts.focus !== undefined)
+	            this.bokehPass.uniforms.focus.value = opts.focus;
+	    }
+	    updateScenes(opts) {
+	        if (!opts)
+	            return;
+	        if (opts.background)
+	            this.updateBackground(opts.background);
+	        if (opts.hdrUrls)
+	            this.updateHDR(opts.hdrUrls);
+	    }
+	    updateBackground(opts) {
+	        if (!opts)
+	            return;
+	        this.bgType = opts.type;
+	        if (opts.type == 'color') {
+	            if (this.sky)
+	                this.sky.visible = false;
+	            if (this.scene.background)
+	                this.scene.background = null;
+	            this.bgColor = opts.value;
+	            this.renderer.setClearColor(opts.value);
+	            this.ssaaPass.clearColor = opts.value;
+	        }
+	        else if (opts.type == 'texture') {
+	            if (this.sky)
+	                this.sky.visible = false;
+	            this.texLoader.load(this.publicPath + opts.value, (texture) => {
+	                this.scene.background = texture;
+	                if (opts.options) {
+	                    for (const i in opts.options) {
+	                        const opt = opts.options[i];
+	                        this.scene.background[i] = opt;
+	                    }
+	                }
+	            });
+	        }
+	        else if (opts.type == 'panorama') {
+	            if (this.scene.background)
+	                this.scene.background = null;
+	            if (!(opts.value instanceof Array))
+	                return;
+	            const urls = opts.value;
+	            const scale = opts.options.scale ? opts.options.scale : 1;
+	            const rotation = opts.options.rotation ? opts.options.rotation : [0, 0, 0];
+	            const fog = opts.fog !== undefined ? opts.fog : false;
+	            const SKY_RADIUS = 50000;
+	            this.skyRadius = SKY_RADIUS;
+	            if (urls.length == 6) {
+	                const arr = [];
+	                const materials = [];
+	                urls.forEach((u) => {
+	                    arr.push(loadTex(this.texLoader, this.publicPath + u));
+	                });
+	                Promise.all(arr).then((list) => {
+	                    list.forEach((l) => {
+	                        const mat = new MeshBasicMaterial({
+	                            map: l,
+	                            side: 2,
+	                            transparent: true,
+	                            opacity: 1.0,
+	                            fog
+	                        });
+	                        materials.push(mat);
+	                    });
+	                    const geo = new BoxGeometry(SKY_RADIUS, SKY_RADIUS, SKY_RADIUS);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, materials);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set(degToRad(rotation[0]), degToRad(rotation[1]), degToRad(rotation[2]));
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    if (this.sky) {
+	                        this.sky.geometry = geo;
+	                        this.sky.material = materials;
+	                    }
+	                    else {
+	                        this.scene.add(sky);
+	                        this.sky = sky;
+	                    }
+	                    this.sky.userData.value = urls;
+	                    this.sky.visible = true;
+	                });
+	            }
+	            else if (urls.length == 1) {
+	                this.texLoader.load(this.publicPath + urls[0], (texture) => {
+	                    const mat = new MeshBasicMaterial({
+	                        map: texture,
+	                        side: BackSide,
+	                        transparent: true,
+	                        opacity: 1.0,
+	                        fog
+	                    });
+	                    const geo = new SphereGeometry(SKY_RADIUS, 60, 60);
+	                    // texture.encoding = sRGBEncoding
+	                    const sky = new Mesh(geo, mat);
+	                    sky.scale.set(scale, scale, scale);
+	                    sky.rotation.set((rotation[0] * Math.PI) / 180, (rotation[1] * Math.PI) / 180, (rotation[2] * Math.PI) / 180);
+	                    sky.renderOrder = SKY_RENDER_ORDER;
+	                    sky.type = 'SkyBox';
+	                    if (this.sky) {
+	                        this.sky.geometry = geo;
+	                        this.sky.material = mat;
+	                    }
+	                    else {
+	                        this.scene.add(sky);
+	                        this.sky = sky;
+	                    }
+	                    this.sky.userData.value = urls;
+	                    this.sky.visible = true;
+	                });
+	            }
+	        }
+	    }
+	    updateHDR(urls) {
+	        if (!urls)
+	            return;
+	        this.setHDR(urls);
+	    }
+	}
+
+	class EventsController {
+	    handlers;
+	    constructor() {
+	        this.handlers = {};
+	    }
+	    on(type, handler) {
+	        //判断事件处理数组是否有该类型事件
+	        if (typeof this.handlers[type] == 'undefined') {
+	            this.handlers[type] = [];
+	        }
+	        //将处理事件push到事件处理数组里面
+	        this.handlers[type].push(handler);
+	    }
+	    emit(event) {
+	        //模拟真实事件的event
+	        if (!event.target) {
+	            event.target = this;
+	        }
+	        //判断是否存在该事件类型
+	        if (this.handlers[event.type] instanceof Array) {
+	            const handlers = this.handlers[event.type];
+	            //在同一个事件类型下的可能存在多种处理事件，找出本次需要处理的事件
+	            for (let i = 0; i < handlers.length; i++) {
+	                if (handlers[i] != undefined) {
+	                    //执行触发
+	                    handlers[i](event);
+	                }
+	            }
+	        }
+	    }
+	    off(type, handler) {
+	        if (this.handlers === undefined)
+	            return;
+	        const handlers = this.handlers;
+	        const listenerArray = handlers[type];
+	        if (listenerArray !== undefined) {
+	            const index = listenerArray.indexOf(handler);
+	            if (index !== -1) {
+	                listenerArray.splice(index, 1);
+	            }
+	        }
+	    }
+	}
+	var EventsBus = new EventsController();
+
+	class Events {
+	    container;
+	    events;
+	    click;
+	    dbclick;
+	    hover;
+	    dragenter;
+	    dragend;
+	    clickTimer;
+	    isDrag;
+	    dragTimer;
+	    hoverTimer;
+	    enabled;
+	    realCt;
+	    constructor(ct, realCt) {
+	        this.container = ct;
+	        this.events = EventsBus;
+	        this.enabled = {
+	            dbclick: true,
+	            click: true,
+	            hover: true
+	        };
+	        this.realCt = realCt ? realCt : this.container.renderer.domElement;
+	        this.initEvents();
+	    }
+	    set onclick(func) {
+	        if (func != undefined) {
+	            this.click = func;
+	            this.events.on('bolClick', this.click);
+	        }
+	        else {
+	            this.events.off('bolClick', this.click);
+	            this.click = null;
+	        }
+	    }
+	    get onclick() {
+	        return this.click;
+	    }
+	    set ondbclick(func) {
+	        if (func != undefined) {
+	            this.dbclick = func;
+	            this.events.on('bolDbClick', this.dbclick);
+	        }
+	        else {
+	            this.events.off('bolDbClick', this.dbclick);
+	            this.dbclick = null;
+	        }
+	    }
+	    get ondbclick() {
+	        return this.dbclick;
+	    }
+	    set onhover(func) {
+	        if (func != undefined) {
+	            this.hover = func;
+	            this.events.on('bolHover', this.hover);
+	        }
+	        else {
+	            this.events.off('bolHover', this.hover);
+	            this.hover = null;
+	        }
+	    }
+	    get onhover() {
+	        return this.hover;
+	    }
+	    set ondragenter(func) {
+	        if (func != undefined) {
+	            this.dragenter = func;
+	            this.events.on('bolDragEnter', this.dragenter);
+	        }
+	        else {
+	            this.events.off('bolDragEnter', this.dragenter);
+	            this.dragenter = null;
+	        }
+	    }
+	    get ondragenter() {
+	        return this.dragenter;
+	    }
+	    set ondragend(func) {
+	        if (func != undefined) {
+	            this.dragend = func;
+	            this.events.on('bolDragEnd', this.dragend);
+	        }
+	        else {
+	            this.events.off('bolDragEnd', this.dragend);
+	            this.dragend = null;
+	        }
+	    }
+	    get ondragend() {
+	        return this.dragend;
+	    }
+	    initEvents() {
+	        const domElement = this.container.renderer.domElement;
+	        const raycaster = new Raycaster();
+	        const mouse = new Vector2();
+	        const self = this;
+	        domElement.onmousedown = (event) => {
+	            if (event.button != 0)
+	                return;
+	            self.dragTimer = setTimeout(() => {
+	                self.isDrag = true;
+	            }, 200);
+	        };
+	        domElement.onmouseup = (event) => {
+	            if (event.button != 0)
+	                return;
+	            const offsetX = this.realCt.offsetLeft;
+	            const offsetY = this.realCt.offsetTop;
+	            const { width, height, top, left } = this.realCt.getBoundingClientRect();
+	            if (!self.isDrag) {
+	                clearTimeout(self.clickTimer);
+	                self.clickTimer = setTimeout(() => {
+	                    if (self.container.viewState == 'orbit') {
+	                        mouse.x = ((event.clientX - left + offsetX) / width) * 2 - 1;
+	                        mouse.y = -((event.clientY - top + offsetY) / height) * 2 + 1;
+	                        const camera = self.container.orbitCamera;
+	                        const clickObjects = self.container.clickObjects;
+	                        raycaster.setFromCamera(mouse, camera);
+	                        // 需要被监听的对象要存储在clickObjects中。
+	                        const intersects = raycaster.intersectObjects(clickObjects);
+	                        self.events.emit({
+	                            type: 'bolClick',
+	                            objects: intersects,
+	                            event
+	                        });
+	                    }
+	                    else {
+	                        mouse.x = ((event.clientX - left + offsetX) / width) * 2 - 1;
+	                        mouse.y = -((event.clientY - top + offsetY) / height) * 2 + 1;
+	                        const camera = self.container.firstPersonCamera;
+	                        const clickObjects = self.container.clickObjects;
+	                        raycaster.setFromCamera(mouse, camera);
+	                        // 需要被监听的对象要存储在clickObjects中。
+	                        const intersects = raycaster.intersectObjects(clickObjects);
+	                        self.events.emit({
+	                            type: 'bolClick',
+	                            objects: intersects,
+	                            event
+	                        });
+	                    }
+	                }, 200);
+	            }
+	            clearTimeout(self.dragTimer);
+	            self.isDrag = false;
+	        };
+	        domElement.ondblclick = (event) => {
+	            clearTimeout(self.clickTimer);
+	            const offsetX = this.realCt.offsetLeft;
+	            const offsetY = this.realCt.offsetTop;
+	            const { width, height, top, left } = this.realCt.getBoundingClientRect();
+	            mouse.x = ((event.clientX - left + offsetX) / width) * 2 - 1;
+	            mouse.y = -((event.clientY - top + offsetY) / height) * 2 + 1;
+	            if (self.container.viewState == 'orbit') {
+	                const camera = self.container.orbitCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                self.events.emit({
+	                    type: 'bolDbClick',
+	                    objects: intersects,
+	                    event
+	                });
+	            }
+	            else {
+	                const camera = self.container.firstPersonCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                self.events.emit({
+	                    type: 'bolDbClick',
+	                    objects: intersects,
+	                    event
+	                });
+	            }
+	        };
+	        domElement.onmousemove = (event) => {
+	            if (this.hoverTimer || !this.enabled.hover)
+	                return;
+	            this.hoverTimer = setTimeout(() => {
+	                this.hoverTimer = null;
+	            }, 30);
+	            if (document.body)
+	                document.body.style.cursor = 'auto';
+	            const offsetX = this.realCt.offsetLeft;
+	            const offsetY = this.realCt.offsetTop;
+	            const { width, height, top, left } = this.realCt.getBoundingClientRect();
+	            mouse.x = ((event.clientX - left + offsetX) / width) * 2 - 1;
+	            mouse.y = -((event.clientY - top + offsetY) / height) * 2 + 1;
+	            let camera;
+	            if (self.container.viewState == 'orbit') {
+	                camera = self.container.orbitCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                if (self.isDrag) {
+	                    // drag
+	                    self.events.emit({
+	                        type: 'bolDrag',
+	                        event
+	                    });
+	                }
+	                else {
+	                    self.events.emit({
+	                        type: 'bolHover',
+	                        objects: intersects,
+	                        event
+	                    });
+	                }
+	            }
+	            else {
+	                camera = self.container.firstPersonCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                if (self.isDrag) {
+	                    // drag
+	                    self.events.emit({
+	                        type: 'bolDrag',
+	                        event
+	                    });
+	                }
+	                else {
+	                    self.events.emit({
+	                        type: 'bolHover',
+	                        objects: intersects,
+	                        event
+	                    });
+	                }
+	            }
+	        };
+	        domElement.ondragenter = (event) => {
+	            const offsetX = this.realCt.offsetLeft;
+	            const offsetY = this.realCt.offsetTop;
+	            const { width, height, top, left } = this.realCt.getBoundingClientRect();
+	            mouse.x = ((event.clientX - left + offsetX) / width) * 2 - 1;
+	            mouse.y = -((event.clientY - top + offsetY) / height) * 2 + 1;
+	            let camera;
+	            if (self.container.viewState == 'orbit') {
+	                camera = self.container.orbitCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                self.events.emit({
+	                    type: 'bolDragEnter',
+	                    objects: intersects,
+	                    event
+	                });
+	            }
+	            else {
+	                camera = self.container.firstPersonCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                self.events.emit({
+	                    type: 'bolDragEnter',
+	                    objects: intersects,
+	                    event
+	                });
+	            }
+	        };
+	        domElement.ondragend = (event) => {
+	            const offsetX = this.realCt.offsetLeft;
+	            const offsetY = this.realCt.offsetTop;
+	            const { width, height, top, left } = this.realCt.getBoundingClientRect();
+	            mouse.x = ((event.clientX - left + offsetX) / width) * 2 - 1;
+	            mouse.y = -((event.clientY - top + offsetY) / height) * 2 + 1;
+	            let camera;
+	            if (self.container.viewState == 'orbit') {
+	                camera = self.container.orbitCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                self.events.emit({
+	                    type: 'bolDragEnd',
+	                    objects: intersects,
+	                    event
+	                });
+	            }
+	            else {
+	                camera = self.container.firstPersonCamera;
+	                const clickObjects = self.container.clickObjects;
+	                raycaster.setFromCamera(mouse, camera);
+	                // 需要被监听的对象要存储在clickObjects中。
+	                const intersects = raycaster.intersectObjects(clickObjects);
+	                self.events.emit({
+	                    type: 'bolDragEnd',
+	                    objects: intersects,
+	                    event
+	                });
+	            }
+	        };
+	    }
+	}
+
+	class Text extends Sprite {
+	    bg;
+	    constructor(attrs) {
+	        super();
+	        let textAttrs = {
+	            position: [0, 0, 0],
+	            value: '',
+	            scale: 20,
+	            color: '#ffffff',
+	            width: 300,
+	            lineHeight: 20,
+	            lineSpacing: 0,
+	            topSpacing: 0,
+	            background: '',
+	            textAlign: 'left',
+	            backgroundColor: '#00ff00',
+	            sizeAttenuation: true,
+	            publicPath: '',
+	            bgScale: [1, 1],
+	            bgOffset: [0, 0]
+	        };
+	        textAttrs = Object.assign(textAttrs, attrs);
+	        let draw = typeof textAttrs.value == 'string' ? fillText : fillText2;
+	        const { textCanvas, xScale, yScale } = draw({
+	            text: textAttrs.value,
+	            fgColor: textAttrs.color,
+	            width: textAttrs.width,
+	            lineHeight: textAttrs.lineHeight,
+	            lineSpacing: textAttrs.lineSpacing,
+	            topSpacing: textAttrs.topSpacing,
+	            textAlign: textAttrs.textAlign
+	        });
+	        const texture = new CanvasTexture(textCanvas);
+	        const spriteMat = new SpriteMaterial({
+	            map: texture,
+	            transparent: true,
+	            sizeAttenuation: textAttrs.sizeAttenuation,
+	            fog: false
+	        });
+	        this.material = spriteMat;
+	        this.position.set(textAttrs.position[0], textAttrs.position[1], textAttrs.position[2]);
+	        this.scale.set(textAttrs.scale * xScale, textAttrs.scale * yScale, 1);
+	        this.renderOrder = TEXT_RENDER_ORDER + 1;
+	        // background img
+	        if (textAttrs.background != '') {
+	            new TextureLoader().load(textAttrs.publicPath + textAttrs.background, (tex) => {
+	                tex.offset = new Vector2(textAttrs.bgOffset[0], textAttrs.bgOffset[1]);
+	                const imgMat = new SpriteMaterial({
+	                    map: tex,
+	                    transparent: true,
+	                    color: textAttrs.backgroundColor,
+	                    sizeAttenuation: textAttrs.sizeAttenuation,
+	                    fog: false
+	                });
+	                const sprite = new Sprite(imgMat);
+	                sprite.renderOrder = TEXT_RENDER_ORDER;
+	                sprite.scale.set(textAttrs.bgScale[0], textAttrs.bgScale[1], 1);
+	                this.add(sprite);
+	            });
+	        }
+	        this.type = 'Text';
+	    }
+	}
+	function fillText(attrs) {
+	    let text = attrs && attrs.text !== undefined ? attrs.text : '';
+	    let hWorldText = attrs && attrs.hWorldText !== undefined ? attrs.hWorldText : 15;
+	    let hPxText = attrs && attrs.hPxText !== undefined ? attrs.hPxText : 50;
+	    let hWorldAll = attrs && attrs.hWorldAll !== undefined ? attrs.hWorldAll : 20;
+	    let fgColor = attrs && attrs.fgColor !== undefined ? attrs.fgColor : '#000000';
+	    let fontFamily = attrs && attrs.fontFamily !== undefined ? attrs.fontFamily : 'sans-serif';
+	    attrs && attrs.letterSpacing !== undefined ? attrs.letterSpacing : 0;
+	    let bold = attrs && attrs.bold !== undefined ? attrs.bold : false;
+	    let italic = attrs && attrs.italic !== undefined ? attrs.italic : false;
+	    let textAlign = attrs && attrs.textAlign !== undefined ? attrs.textAlign : 'left';
+	    let lineHeight = attrs && attrs.lineHeight !== undefined ? attrs.lineHeight : 20;
+	    let lineSpacing = attrs && attrs.lineSpacing !== undefined ? attrs.lineSpacing : 0;
+	    let topSpacing = attrs && attrs.topSpacing !== undefined ? attrs.topSpacing : 5;
+	    // 文本框宽度
+	    let width = attrs && attrs.width !== undefined ? attrs.width : 200;
+	    bold = bold ? 'bold ' : '';
+	    italic = italic ? 'italic ' : '';
+	    let textCanvas = document.createElement('canvas');
+	    let ctx = textCanvas.getContext('2d');
+	    ctx.font = italic + bold + hPxText + 'px ' + fontFamily;
+	    const textLen = ctx.measureText(text).width;
+	    const rows = Math.ceil(textLen / width);
+	    let kPxToWorld = hWorldText / hPxText;
+	    let hPxAll = Math.ceil(hWorldAll / kPxToWorld);
+	    let wPxText = width;
+	    let wWorldText = wPxText * kPxToWorld;
+	    let wWorldAll = wWorldText + (hWorldAll - hWorldText);
+	    textCanvas.width = width;
+	    textCanvas.height = hPxAll * rows;
+	    textCanvas.style.width = width + 'px';
+	    textCanvas.style.height = hPxAll * rows + 'px';
+	    hWorldAll *= rows;
+	    ctx.textAlign = 'left';
+	    ctx.textBaseline = 'top';
+	    ctx.fillStyle = fgColor;
+	    ctx.font = italic + bold + lineHeight + 'px ' + fontFamily;
+	    let x = 0;
+	    let y = topSpacing; // 文字开始的坐标
+	    for (let i = 0; i < text.length; i++) {
+	        const str = text.slice(i, i + 1).toString();
+	        ctx.save();
+	        ctx.translate(x, y);
+	        ctx.fillText(str, 0, 0);
+	        ctx.restore();
+	        x += ctx.measureText(str).width; // 计算文字宽度
+	        if (x + ctx.measureText(str).width > width) {
+	            if (textAlign == 'left') {
+	                x = 0;
+	            }
+	            else if (textAlign == 'center') {
+	                const remainStr = text.slice(i + 1, text.length).toString();
+	                const remainWidth = ctx.measureText(remainStr).width;
+	                if (remainWidth < width) {
+	                    x = (width - remainWidth) / 2;
+	                }
+	                else {
+	                    x = 0;
+	                }
+	            }
+	            else if (textAlign == 'right') {
+	                const remainStr = text.slice(i + 1, text.length).toString();
+	                const remainWidth = ctx.measureText(remainStr).width;
+	                if (remainWidth < width) {
+	                    x = width - remainWidth;
+	                }
+	                else {
+	                    x = 0;
+	                }
+	            }
+	            y += lineHeight + lineSpacing;
+	        }
+	    }
+	    return {
+	        text,
+	        hWorldText,
+	        hPxText,
+	        hWorldAll,
+	        wWorldAll,
+	        fgColor,
+	        fontFamily,
+	        textCanvas,
+	        xScale: width,
+	        yScale: hPxAll * rows
+	    };
+	}
+	function fillText2(attrs) {
+	    let text = attrs && attrs.text !== undefined ? attrs.text : [];
+	    let hWorldText = attrs && attrs.hWorldText !== undefined ? attrs.hWorldText : 15;
+	    let hPxText = attrs && attrs.hPxText !== undefined ? attrs.hPxText : 50;
+	    let hWorldAll = attrs && attrs.hWorldAll !== undefined ? attrs.hWorldAll : 20;
+	    let fgColor = attrs && attrs.fgColor !== undefined ? attrs.fgColor : '#000000';
+	    let fontFamily = attrs && attrs.fontFamily !== undefined ? attrs.fontFamily : 'sans-serif';
+	    attrs && attrs.letterSpacing !== undefined ? attrs.letterSpacing : 0;
+	    let bold = attrs && attrs.bold !== undefined ? attrs.bold : false;
+	    let italic = attrs && attrs.italic !== undefined ? attrs.italic : false;
+	    let textAlign = attrs && attrs.textAlign !== undefined ? attrs.textAlign : 'left';
+	    let lineHeight = attrs && attrs.lineHeight !== undefined ? attrs.lineHeight : 20;
+	    let lineSpacing = attrs && attrs.lineSpacing !== undefined ? attrs.lineSpacing : 0;
+	    let topSpacing = attrs && attrs.topSpacing !== undefined ? attrs.topSpacing : 5;
+	    // 文本框宽度
+	    let width = attrs && attrs.width !== undefined ? attrs.width : 200;
+	    bold = bold ? 'bold ' : '';
+	    italic = italic ? 'italic ' : '';
+	    let textCanvas = document.createElement('canvas');
+	    let ctx = textCanvas.getContext('2d');
+	    ctx.font = italic + bold + hPxText + 'px ' + fontFamily;
+	    const rows = text.length;
+	    let kPxToWorld = hWorldText / hPxText;
+	    let hPxAll = Math.ceil(hWorldAll / kPxToWorld);
+	    let wPxText = width;
+	    let wWorldText = wPxText * kPxToWorld;
+	    let wWorldAll = wWorldText + (hWorldAll - hWorldText);
+	    textCanvas.width = width;
+	    textCanvas.height = hPxAll * rows;
+	    textCanvas.style.width = width + 'px';
+	    textCanvas.style.height = hPxAll * rows + 'px';
+	    hWorldAll *= rows;
+	    ctx.textBaseline = 'top';
+	    ctx.fillStyle = fgColor;
+	    ctx.font = italic + bold + lineHeight + 'px ' + fontFamily;
+	    let x = 0;
+	    let y = topSpacing; // 文字开始的坐标
+	    for (let i = 0; i < text.length; i++) {
+	        const t = text[i];
+	        const w = ctx.measureText(t).width; // 计算文字宽度
+	        if (textAlign == 'left') {
+	            x = 0;
+	        }
+	        else if (textAlign == 'center') {
+	            x = (width - w) / 2;
+	        }
+	        else if (textAlign == 'right') {
+	            x = width - w;
+	        }
+	        for (let j = 0; j < t.length; j++) {
+	            const str = t.slice(j, j + 1).toString();
+	            ctx.save();
+	            ctx.translate(x, y);
+	            ctx.fillText(str, 0, 0);
+	            ctx.restore();
+	            x += ctx.measureText(str).width; // 计算文字宽度
+	        }
+	        y += lineHeight + lineSpacing;
+	    }
+	    return {
+	        text,
+	        hWorldText,
+	        hPxText,
+	        hWorldAll,
+	        wWorldAll,
+	        fgColor,
+	        fontFamily,
+	        textCanvas,
+	        xScale: width,
+	        yScale: hPxAll * rows
+	    };
+	}
+
+	const texLoader = new TextureLoader();
+	class Icon extends Sprite {
+	    constructor(attrs) {
+	        super();
+	        const url = attrs.url;
+	        let iconAttrs = {
+	            position: [0, 0, 0],
+	            scale: [1, 1],
+	            sizeAttenuation: true,
+	            publicPath: '',
+	            cb: (tex) => { }
+	        };
+	        iconAttrs = Object.assign(iconAttrs, attrs);
+	        texLoader.load(iconAttrs.publicPath + url, (tex) => {
+	            tex.encoding = sRGBEncoding;
+	            const spriteMaterial = new SpriteMaterial({
+	                map: tex,
+	                transparent: true,
+	                sizeAttenuation: iconAttrs.sizeAttenuation,
+	                fog: false
+	            });
+	            if (attrs.color != undefined)
+	                spriteMaterial.color = new Color(attrs.color);
+	            this.material = spriteMaterial;
+	            this.scale.set(iconAttrs.scale[0] * (tex.image.width / tex.image.height), iconAttrs.scale[1], 1);
+	            this.position.set(iconAttrs.position[0], iconAttrs.position[1], iconAttrs.position[2]);
+	            iconAttrs.cb && iconAttrs.cb(tex);
+	        });
+	        this.type = 'Icon';
+	        this.renderOrder = ICON_RENDER_ORDER;
+	    }
+	}
+
+	class CSS2DObject extends Object3D {
+
+	 	constructor( element ) {
+
+			super();
+
+			this.element = element || document.createElement( 'div' );
+
+			this.element.style.position = 'absolute';
+			this.element.style.userSelect = 'none';
+
+			this.element.setAttribute( 'draggable', false );
+
+			this.addEventListener( 'removed', function () {
+
+				this.traverse( function ( object ) {
+
+					if ( object.element instanceof Element && object.element.parentNode !== null ) {
+
+						object.element.parentNode.removeChild( object.element );
+
+					}
+
+				} );
+
+			} );
+
+		}
+
+		copy( source, recursive ) {
+
+			super.copy( source, recursive );
+
+			this.element = source.element.cloneNode( true );
+
+			return this;
+
+		}
+
+	}
+
+	CSS2DObject.prototype.isCSS2DObject = true;
+
+	//
+
+	new Vector3();
+	new Matrix4();
+	new Matrix4();
+	new Vector3();
+	new Vector3();
+
+	class Popup extends CSS2DObject {
+	    center;
+	    constructor(attrs) {
+	        let popup = {
+	            value: '',
+	            position: [0, 0, 0],
+	            className: '',
+	            style: '',
+	            closeVisible: 'visible',
+	            closeSize: 1,
+	            center: [-0.5, -0.5]
+	        };
+	        popup = Object.assign(popup, attrs);
+	        const element = document.createElement('div');
+	        element.oncontextmenu = () => {
+	            return false;
+	        };
+	        element.innerHTML = popup.value;
+	        element.className = popup.className;
+	        element.setAttribute('style', popup.style);
+	        const closeBtn = document.createElement('div');
+	        closeBtn.className = 'popup-close';
+	        document.styleSheets[0].insertRule('.popup-close::before {content: "\\2716";}', 0);
+	        closeBtn.setAttribute('style', `color:white;height: 20px; width: 20px; position: absolute; right: 0; top: 0;display:flex;align-items:center;justify-content:center;cursor: pointer;transform:scale(${popup.closeSize})`);
+	        closeBtn.style.visibility = popup.closeVisible;
+	        element.appendChild(closeBtn);
+	        super(element);
+	        this.position.set(popup.position[0], popup.position[1], popup.position[2]);
+	        this.center = new Vector2(popup.center[0], popup.center[1]);
+	        const self = this;
+	        closeBtn.onclick = () => {
+	            self.visible = false;
+	        };
+	    }
+	}
+
+	class Gif extends Sprite {
+	    constructor(attrs) {
+	        super();
+	        let gifAttrs = {
+	            container: null,
+	            publicPath: '',
+	            url: '',
+	            scale: 1,
+	            position: [0, 0, 0]
+	        };
+	        gifAttrs = Object.assign(gifAttrs, attrs);
+	        if (gifAttrs.container) {
+	            gifAttrs.container.gifLoader.load(gifAttrs.publicPath + gifAttrs.url, (gTex) => {
+	                this.material = new SpriteMaterial({
+	                    map: gTex,
+	                    transparent: true,
+	                    sizeAttenuation: false,
+	                    fog: false
+	                });
+	                this.scale.set((gifAttrs.scale * gTex.image.width) / gTex.image.height, gifAttrs.scale, 1);
+	                this.position.set(gifAttrs.position[0], gifAttrs.position[1], gifAttrs.position[2]);
+	                this.renderOrder = ICON_RENDER_ORDER;
+	                gifAttrs.container?.gifTextures.push(gTex);
+	            });
+	        }
+	    }
+	}
+
+	/**
+	 * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
+	 */
+
+	class CSS3DObject extends Object3D {
+
+		constructor( element ) {
+
+			super();
+
+			this.element = element || document.createElement( 'div' );
+			this.element.style.position = 'absolute';
+			this.element.style.pointerEvents = 'auto';
+			this.element.style.userSelect = 'none';
+
+			this.element.setAttribute( 'draggable', false );
+
+			this.addEventListener( 'removed', function () {
+
+				this.traverse( function ( object ) {
+
+					if ( object.element instanceof Element && object.element.parentNode !== null ) {
+
+						object.element.parentNode.removeChild( object.element );
+
+					}
+
+				} );
+
+			} );
+
+		}
+
+		copy( source, recursive ) {
+
+			super.copy( source, recursive );
+
+			this.element = source.element.cloneNode( true );
+
+			return this;
+
+		}
+
+	}
+
+	CSS3DObject.prototype.isCSS3DObject = true;
+
+	class CSS3DSprite extends CSS3DObject {
+
+		constructor( element ) {
+
+			super( element );
+
+			this.rotation2D = 0;
+
+		}
+
+		copy( source, recursive ) {
+
+			super.copy( source, recursive );
+
+			this.rotation2D = source.rotation2D;
+
+			return this;
+
+		}
+
+	}
+
+	CSS3DSprite.prototype.isCSS3DSprite = true;
+
+	//
+
+	new Matrix4();
+	new Matrix4();
+
+	class Popup3D extends CSS3DSprite {
+	    constructor(attrs) {
+	        let popup = {
+	            value: '',
+	            position: [0, 0, 0],
+	            className: '',
+	            closeVisible: 'visible',
+	            scale: [1, 1, 1]
+	        };
+	        popup = Object.assign(popup, attrs);
+	        const element = document.createElement('div');
+	        element.innerHTML = popup.value;
+	        element.className = popup.className;
+	        const closeBtn = document.createElement('div');
+	        closeBtn.className = 'popup-close';
+	        closeBtn.innerHTML = '&#10006';
+	        closeBtn.setAttribute('style', 'color:white;height: 20px; width: 20px; position: absolute; right: 0; top: 0;display:flex;align-items:center;justify-content:center;cursor: pointer;pointer-events: visible;');
+	        closeBtn.style.visibility = popup.closeVisible;
+	        element.appendChild(closeBtn);
+	        element.addEventListener('contextmenu', (event) => {
+	            event.preventDefault();
+	        });
+	        super(element);
+	        this.position.set(popup.position[0], popup.position[1], popup.position[2]);
+	        this.scale.set(popup.scale[0], popup.scale[1], popup.scale[2]);
+	        const self = this;
+	        closeBtn.onclick = () => {
+	            self.visible = false;
+	        };
+	    }
+	}
+
+	const POI = {
+	    Text,
+	    Icon,
+	    Popup,
+	    Gif,
+	    Popup3D
+	};
+
+	const _box$1 = new Box3();
+	const _vector = new Vector3();
+
+	class LineSegmentsGeometry extends InstancedBufferGeometry {
+
+		constructor() {
+
+			super();
+
+			this.type = 'LineSegmentsGeometry';
+
+			const positions = [ - 1, 2, 0, 1, 2, 0, - 1, 1, 0, 1, 1, 0, - 1, 0, 0, 1, 0, 0, - 1, - 1, 0, 1, - 1, 0 ];
+			const uvs = [ - 1, 2, 1, 2, - 1, 1, 1, 1, - 1, - 1, 1, - 1, - 1, - 2, 1, - 2 ];
+			const index = [ 0, 2, 1, 2, 3, 1, 2, 4, 3, 4, 5, 3, 4, 6, 5, 6, 7, 5 ];
+
+			this.setIndex( index );
+			this.setAttribute( 'position', new Float32BufferAttribute( positions, 3 ) );
+			this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+
+		}
+
+		applyMatrix4( matrix ) {
+
+			const start = this.attributes.instanceStart;
+			const end = this.attributes.instanceEnd;
+
+			if ( start !== undefined ) {
+
+				start.applyMatrix4( matrix );
+
+				end.applyMatrix4( matrix );
+
+				start.needsUpdate = true;
+
+			}
+
+			if ( this.boundingBox !== null ) {
+
+				this.computeBoundingBox();
+
+			}
+
+			if ( this.boundingSphere !== null ) {
+
+				this.computeBoundingSphere();
+
+			}
+
+			return this;
+
+		}
+
+		setPositions( array ) {
+
+			let lineSegments;
+
+			if ( array instanceof Float32Array ) {
+
+				lineSegments = array;
+
+			} else if ( Array.isArray( array ) ) {
+
+				lineSegments = new Float32Array( array );
+
+			}
+
+			const instanceBuffer = new InstancedInterleavedBuffer( lineSegments, 6, 1 ); // xyz, xyz
+
+			this.setAttribute( 'instanceStart', new InterleavedBufferAttribute( instanceBuffer, 3, 0 ) ); // xyz
+			this.setAttribute( 'instanceEnd', new InterleavedBufferAttribute( instanceBuffer, 3, 3 ) ); // xyz
+
+			//
+
+			this.computeBoundingBox();
+			this.computeBoundingSphere();
+
+			return this;
+
+		}
+
+		setColors( array ) {
+
+			let colors;
+
+			if ( array instanceof Float32Array ) {
+
+				colors = array;
+
+			} else if ( Array.isArray( array ) ) {
+
+				colors = new Float32Array( array );
+
+			}
+
+			const instanceColorBuffer = new InstancedInterleavedBuffer( colors, 6, 1 ); // rgb, rgb
+
+			this.setAttribute( 'instanceColorStart', new InterleavedBufferAttribute( instanceColorBuffer, 3, 0 ) ); // rgb
+			this.setAttribute( 'instanceColorEnd', new InterleavedBufferAttribute( instanceColorBuffer, 3, 3 ) ); // rgb
+
+			return this;
+
+		}
+
+		fromWireframeGeometry( geometry ) {
+
+			this.setPositions( geometry.attributes.position.array );
+
+			return this;
+
+		}
+
+		fromEdgesGeometry( geometry ) {
+
+			this.setPositions( geometry.attributes.position.array );
+
+			return this;
+
+		}
+
+		fromMesh( mesh ) {
+
+			this.fromWireframeGeometry( new WireframeGeometry( mesh.geometry ) );
+
+			// set colors, maybe
+
+			return this;
+
+		}
+
+		fromLineSegments( lineSegments ) {
+
+			const geometry = lineSegments.geometry;
+
+			if ( geometry.isGeometry ) {
+
+				console.error( 'THREE.LineSegmentsGeometry no longer supports Geometry. Use THREE.BufferGeometry instead.' );
+				return;
+
+			} else if ( geometry.isBufferGeometry ) {
+
+				this.setPositions( geometry.attributes.position.array ); // assumes non-indexed
+
+			}
+
+			// set colors, maybe
+
+			return this;
+
+		}
+
+		computeBoundingBox() {
+
+			if ( this.boundingBox === null ) {
+
+				this.boundingBox = new Box3();
+
+			}
+
+			const start = this.attributes.instanceStart;
+			const end = this.attributes.instanceEnd;
+
+			if ( start !== undefined && end !== undefined ) {
+
+				this.boundingBox.setFromBufferAttribute( start );
+
+				_box$1.setFromBufferAttribute( end );
+
+				this.boundingBox.union( _box$1 );
+
+			}
+
+		}
+
+		computeBoundingSphere() {
+
+			if ( this.boundingSphere === null ) {
+
+				this.boundingSphere = new Sphere();
+
+			}
+
+			if ( this.boundingBox === null ) {
+
+				this.computeBoundingBox();
+
+			}
+
+			const start = this.attributes.instanceStart;
+			const end = this.attributes.instanceEnd;
+
+			if ( start !== undefined && end !== undefined ) {
+
+				const center = this.boundingSphere.center;
+
+				this.boundingBox.getCenter( center );
+
+				let maxRadiusSq = 0;
+
+				for ( let i = 0, il = start.count; i < il; i ++ ) {
+
+					_vector.fromBufferAttribute( start, i );
+					maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( _vector ) );
+
+					_vector.fromBufferAttribute( end, i );
+					maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( _vector ) );
+
+				}
+
+				this.boundingSphere.radius = Math.sqrt( maxRadiusSq );
+
+				if ( isNaN( this.boundingSphere.radius ) ) {
+
+					console.error( 'THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values.', this );
+
+				}
+
+			}
+
+		}
+
+		toJSON() {
+
+			// todo
+
+		}
+
+		applyMatrix( matrix ) {
+
+			console.warn( 'THREE.LineSegmentsGeometry: applyMatrix() has been renamed to applyMatrix4().' );
+
+			return this.applyMatrix4( matrix );
+
+		}
+
+	}
+
+	LineSegmentsGeometry.prototype.isLineSegmentsGeometry = true;
+
+	/**
+	 * parameters = {
+	 *  color: <hex>,
+	 *  linewidth: <float>,
+	 *  dashed: <boolean>,
+	 *  dashScale: <float>,
+	 *  dashSize: <float>,
+	 *  dashOffset: <float>,
+	 *  gapSize: <float>,
+	 *  resolution: <Vector2>, // to be set by renderer
+	 * }
+	 */
+
+	UniformsLib$1.line = {
+
+		linewidth: { value: 1 },
+		resolution: { value: new Vector2( 1, 1 ) },
+		dashScale: { value: 1 },
+		dashSize: { value: 1 },
+		dashOffset: { value: 0 },
+		gapSize: { value: 1 }, // todo FIX - maybe change to totalSize
+		opacity: { value: 1 }
+
+	};
+
+	ShaderLib$1[ 'line' ] = {
+
+		uniforms: UniformsUtils$1.merge( [
+			UniformsLib$1.common,
+			UniformsLib$1.fog,
+			UniformsLib$1.line
+		] ),
+
+		vertexShader: /* glsl */`
+		#include <common>
+		#include <color_pars_vertex>
+		#include <fog_pars_vertex>
+		#include <logdepthbuf_pars_vertex>
+		#include <clipping_planes_pars_vertex>
+
+		uniform float linewidth;
+		uniform vec2 resolution;
+
+		attribute vec3 instanceStart;
+		attribute vec3 instanceEnd;
+
+		attribute vec3 instanceColorStart;
+		attribute vec3 instanceColorEnd;
+
+		varying vec2 vUv;
+
+		#ifdef USE_DASH
+
+			uniform float dashScale;
+			attribute float instanceDistanceStart;
+			attribute float instanceDistanceEnd;
+			varying float vLineDistance;
+
+		#endif
+
+		void trimSegment( const in vec4 start, inout vec4 end ) {
+
+			// trim end segment so it terminates between the camera plane and the near plane
+
+			// conservative estimate of the near plane
+			float a = projectionMatrix[ 2 ][ 2 ]; // 3nd entry in 3th column
+			float b = projectionMatrix[ 3 ][ 2 ]; // 3nd entry in 4th column
+			float nearEstimate = - 0.5 * b / a;
+
+			float alpha = ( nearEstimate - start.z ) / ( end.z - start.z );
+
+			end.xyz = mix( start.xyz, end.xyz, alpha );
+
+		}
+
+		void main() {
+
+			#ifdef USE_COLOR
+
+				vColor.xyz = ( position.y < 0.5 ) ? instanceColorStart : instanceColorEnd;
+
+			#endif
+
+			#ifdef USE_DASH
+
+				vLineDistance = ( position.y < 0.5 ) ? dashScale * instanceDistanceStart : dashScale * instanceDistanceEnd;
+
+			#endif
+
+			float aspect = resolution.x / resolution.y;
+
+			vUv = uv;
+
+			// camera space
+			vec4 start = modelViewMatrix * vec4( instanceStart, 1.0 );
+			vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );
+
+			// special case for perspective projection, and segments that terminate either in, or behind, the camera plane
+			// clearly the gpu firmware has a way of addressing this issue when projecting into ndc space
+			// but we need to perform ndc-space calculations in the shader, so we must address this issue directly
+			// perhaps there is a more elegant solution -- WestLangley
+
+			bool perspective = ( projectionMatrix[ 2 ][ 3 ] == - 1.0 ); // 4th entry in the 3rd column
+
+			if ( perspective ) {
+
+				if ( start.z < 0.0 && end.z >= 0.0 ) {
+
+					trimSegment( start, end );
+
+				} else if ( end.z < 0.0 && start.z >= 0.0 ) {
+
+					trimSegment( end, start );
+
+				}
+
+			}
+
+			// clip space
+			vec4 clipStart = projectionMatrix * start;
+			vec4 clipEnd = projectionMatrix * end;
+
+			// ndc space
+			vec2 ndcStart = clipStart.xy / clipStart.w;
+			vec2 ndcEnd = clipEnd.xy / clipEnd.w;
+
+			// direction
+			vec2 dir = ndcEnd - ndcStart;
+
+			// account for clip-space aspect ratio
+			dir.x *= aspect;
+			dir = normalize( dir );
+
+			// perpendicular to dir
+			vec2 offset = vec2( dir.y, - dir.x );
+
+			// undo aspect ratio adjustment
+			dir.x /= aspect;
+			offset.x /= aspect;
+
+			// sign flip
+			if ( position.x < 0.0 ) offset *= - 1.0;
+
+			// endcaps
+			if ( position.y < 0.0 ) {
+
+				offset += - dir;
+
+			} else if ( position.y > 1.0 ) {
+
+				offset += dir;
+
+			}
+
+			// adjust for linewidth
+			offset *= linewidth;
+
+			// adjust for clip-space to screen-space conversion // maybe resolution should be based on viewport ...
+			offset /= resolution.y;
+
+			// select end
+			vec4 clip = ( position.y < 0.5 ) ? clipStart : clipEnd;
+
+			// back to clip space
+			offset *= clip.w;
+
+			clip.xy += offset;
+
+			gl_Position = clip;
+
+			vec4 mvPosition = ( position.y < 0.5 ) ? start : end; // this is an approximation
+
+			#include <logdepthbuf_vertex>
+			#include <clipping_planes_vertex>
+			#include <fog_vertex>
+
+		}`,
+
+		fragmentShader: /* glsl */`
+		uniform vec3 diffuse;
+		uniform float opacity;
+
+		#ifdef USE_DASH
+
+			uniform float dashSize;
+			uniform float dashOffset;
+			uniform float gapSize;
+
+		#endif
+
+		varying float vLineDistance;
+
+		#include <common>
+		#include <color_pars_fragment>
+		#include <fog_pars_fragment>
+		#include <logdepthbuf_pars_fragment>
+		#include <clipping_planes_pars_fragment>
+
+		varying vec2 vUv;
+
+		void main() {
+
+			#include <clipping_planes_fragment>
+
+			#ifdef USE_DASH
+
+				if ( vUv.y < - 1.0 || vUv.y > 1.0 ) discard; // discard endcaps
+
+				if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard; // todo - FIX
+
+			#endif
+
+			float alpha = 1.0;
+
+			#ifdef ALPHA_TO_COVERAGE
+
+			// artifacts appear on some hardware if a derivative is taken within a conditional
+			float a = vUv.x;
+			float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
+			float len2 = a * a + b * b;
+			float dlen = fwidth( len2 );
+
+			if ( abs( vUv.y ) > 1.0 ) {
+
+				alpha = 1.0 - smoothstep( 1.0 - dlen, 1.0 + dlen, len2 );
+
+			}
+
+			#else
+
+			if ( abs( vUv.y ) > 1.0 ) {
+
+				float a = vUv.x;
+				float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
+				float len2 = a * a + b * b;
+
+				if ( len2 > 1.0 ) discard;
+
+			}
+
+			#endif
+
+			vec4 diffuseColor = vec4( diffuse, opacity * alpha );
+
+			#include <logdepthbuf_fragment>
+			#include <color_fragment>
+
+			gl_FragColor = diffuseColor;
+
+			#include <tonemapping_fragment>
+			#include <encodings_fragment>
+			#include <fog_fragment>
+			#include <premultiplied_alpha_fragment>
+
+		}`
+
+	};
+
+	class LineMaterial extends ShaderMaterial {
+
+		constructor( parameters ) {
+
+			super( {
+
+				type: 'LineMaterial',
+
+				uniforms: UniformsUtils$1.clone( ShaderLib$1[ 'line' ].uniforms ),
+
+				vertexShader: ShaderLib$1[ 'line' ].vertexShader,
+				fragmentShader: ShaderLib$1[ 'line' ].fragmentShader,
+
+				clipping: true // required for clipping support
+
+			} );
+
+			Object.defineProperties( this, {
+
+				color: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.diffuse.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.diffuse.value = value;
+
+					}
+
+				},
+
+				linewidth: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.linewidth.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.linewidth.value = value;
+
+					}
+
+				},
+
+				dashed: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return Boolean( 'USE_DASH' in this.defines );
+
+					},
+
+					set( value ) {
+
+						if ( Boolean( value ) !== Boolean( 'USE_DASH' in this.defines ) ) {
+
+							this.needsUpdate = true;
+
+						}
+
+						if ( value === true ) {
+
+							this.defines.USE_DASH = '';
+
+						} else {
+
+							delete this.defines.USE_DASH;
+
+						}
+
+					}
+
+				},
+
+				dashScale: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.dashScale.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.dashScale.value = value;
+
+					}
+
+				},
+
+				dashSize: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.dashSize.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.dashSize.value = value;
+
+					}
+
+				},
+
+				dashOffset: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.dashOffset.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.dashOffset.value = value;
+
+					}
+
+				},
+
+				gapSize: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.gapSize.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.gapSize.value = value;
+
+					}
+
+				},
+
+				opacity: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.opacity.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.opacity.value = value;
+
+					}
+
+				},
+
+				resolution: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return this.uniforms.resolution.value;
+
+					},
+
+					set: function ( value ) {
+
+						this.uniforms.resolution.value.copy( value );
+
+					}
+
+				},
+
+				alphaToCoverage: {
+
+					enumerable: true,
+
+					get: function () {
+
+						return Boolean( 'ALPHA_TO_COVERAGE' in this.defines );
+
+					},
+
+					set: function ( value ) {
+
+						if ( Boolean( value ) !== Boolean( 'ALPHA_TO_COVERAGE' in this.defines ) ) {
+
+							this.needsUpdate = true;
+
+						}
+
+						if ( value === true ) {
+
+							this.defines.ALPHA_TO_COVERAGE = '';
+							this.extensions.derivatives = true;
+
+						} else {
+
+							delete this.defines.ALPHA_TO_COVERAGE;
+							this.extensions.derivatives = false;
+
+						}
+
+					}
+
+				}
+
+			} );
+
+			this.setValues( parameters );
+
+		}
+
+	}
+
+	LineMaterial.prototype.isLineMaterial = true;
+
+	const _start = new Vector3();
+	const _end = new Vector3();
+
+	const _start4 = new Vector4();
+	const _end4 = new Vector4();
+
+	const _ssOrigin = new Vector4();
+	const _ssOrigin3 = new Vector3();
+	const _mvMatrix = new Matrix4();
+	const _line = new Line3();
+	const _closestPoint = new Vector3();
+
+	const _box = new Box3();
+	const _sphere = new Sphere();
+	const _clipToWorldVector = new Vector4();
+
+	class LineSegments2 extends Mesh {
+
+		constructor( geometry = new LineSegmentsGeometry(), material = new LineMaterial( { color: Math.random() * 0xffffff } ) ) {
+
+			super( geometry, material );
+
+			this.type = 'LineSegments2';
+
+		}
+
+		// for backwards-compatability, but could be a method of LineSegmentsGeometry...
+
+		computeLineDistances() {
+
+			const geometry = this.geometry;
+
+			const instanceStart = geometry.attributes.instanceStart;
+			const instanceEnd = geometry.attributes.instanceEnd;
+			const lineDistances = new Float32Array( 2 * instanceStart.count );
+
+			for ( let i = 0, j = 0, l = instanceStart.count; i < l; i ++, j += 2 ) {
+
+				_start.fromBufferAttribute( instanceStart, i );
+				_end.fromBufferAttribute( instanceEnd, i );
+
+				lineDistances[ j ] = ( j === 0 ) ? 0 : lineDistances[ j - 1 ];
+				lineDistances[ j + 1 ] = lineDistances[ j ] + _start.distanceTo( _end );
+
+			}
+
+			const instanceDistanceBuffer = new InstancedInterleavedBuffer( lineDistances, 2, 1 ); // d0, d1
+
+			geometry.setAttribute( 'instanceDistanceStart', new InterleavedBufferAttribute( instanceDistanceBuffer, 1, 0 ) ); // d0
+			geometry.setAttribute( 'instanceDistanceEnd', new InterleavedBufferAttribute( instanceDistanceBuffer, 1, 1 ) ); // d1
+
+			return this;
+
+		}
+
+		raycast( raycaster, intersects ) {
+
+			if ( raycaster.camera === null ) {
+
+				console.error( 'LineSegments2: "Raycaster.camera" needs to be set in order to raycast against LineSegments2.' );
+
+			}
+
+			const threshold = ( raycaster.params.Line2 !== undefined ) ? raycaster.params.Line2.threshold || 0 : 0;
+
+			const ray = raycaster.ray;
+			const camera = raycaster.camera;
+			const projectionMatrix = camera.projectionMatrix;
+
+			const matrixWorld = this.matrixWorld;
+			const geometry = this.geometry;
+			const material = this.material;
+			const resolution = material.resolution;
+			const lineWidth = material.linewidth + threshold;
+
+			const instanceStart = geometry.attributes.instanceStart;
+			const instanceEnd = geometry.attributes.instanceEnd;
+
+			// camera forward is negative
+			const near = - camera.near;
+
+			// clip space is [ - 1, 1 ] so multiply by two to get the full
+			// width in clip space
+			const ssMaxWidth = 2.0 * Math.max( lineWidth / resolution.width, lineWidth / resolution.height );
+
+			//
+
+			// check if we intersect the sphere bounds
+			if ( geometry.boundingSphere === null ) {
+
+				geometry.computeBoundingSphere();
+
+			}
+
+			_sphere.copy( geometry.boundingSphere ).applyMatrix4( matrixWorld );
+			const distanceToSphere = Math.max( camera.near, _sphere.distanceToPoint( ray.origin ) );
+
+			// get the w component to scale the world space line width
+			_clipToWorldVector.set( 0, 0, - distanceToSphere, 1.0 ).applyMatrix4( camera.projectionMatrix );
+			_clipToWorldVector.multiplyScalar( 1.0 / _clipToWorldVector.w );
+			_clipToWorldVector.applyMatrix4( camera.projectionMatrixInverse );
+
+			// increase the sphere bounds by the worst case line screen space width
+			const sphereMargin = Math.abs( ssMaxWidth / _clipToWorldVector.w ) * 0.5;
+			_sphere.radius += sphereMargin;
+
+			if ( raycaster.ray.intersectsSphere( _sphere ) === false ) {
+
+				return;
+
+			}
+
+			//
+
+			// check if we intersect the box bounds
+			if ( geometry.boundingBox === null ) {
+
+				geometry.computeBoundingBox();
+
+			}
+
+			_box.copy( geometry.boundingBox ).applyMatrix4( matrixWorld );
+			const distanceToBox = Math.max( camera.near, _box.distanceToPoint( ray.origin ) );
+
+			// get the w component to scale the world space line width
+			_clipToWorldVector.set( 0, 0, - distanceToBox, 1.0 ).applyMatrix4( camera.projectionMatrix );
+			_clipToWorldVector.multiplyScalar( 1.0 / _clipToWorldVector.w );
+			_clipToWorldVector.applyMatrix4( camera.projectionMatrixInverse );
+
+			// increase the sphere bounds by the worst case line screen space width
+			const boxMargin = Math.abs( ssMaxWidth / _clipToWorldVector.w ) * 0.5;
+			_box.max.x += boxMargin;
+			_box.max.y += boxMargin;
+			_box.max.z += boxMargin;
+			_box.min.x -= boxMargin;
+			_box.min.y -= boxMargin;
+			_box.min.z -= boxMargin;
+
+			if ( raycaster.ray.intersectsBox( _box ) === false ) {
+
+				return;
+
+			}
+
+			//
+
+			// pick a point 1 unit out along the ray to avoid the ray origin
+			// sitting at the camera origin which will cause "w" to be 0 when
+			// applying the projection matrix.
+			ray.at( 1, _ssOrigin );
+
+			// ndc space [ - 1.0, 1.0 ]
+			_ssOrigin.w = 1;
+			_ssOrigin.applyMatrix4( camera.matrixWorldInverse );
+			_ssOrigin.applyMatrix4( projectionMatrix );
+			_ssOrigin.multiplyScalar( 1 / _ssOrigin.w );
+
+			// screen space
+			_ssOrigin.x *= resolution.x / 2;
+			_ssOrigin.y *= resolution.y / 2;
+			_ssOrigin.z = 0;
+
+			_ssOrigin3.copy( _ssOrigin );
+
+			_mvMatrix.multiplyMatrices( camera.matrixWorldInverse, matrixWorld );
+
+			for ( let i = 0, l = instanceStart.count; i < l; i ++ ) {
+
+				_start4.fromBufferAttribute( instanceStart, i );
+				_end4.fromBufferAttribute( instanceEnd, i );
+
+				_start4.w = 1;
+				_end4.w = 1;
+
+				// camera space
+				_start4.applyMatrix4( _mvMatrix );
+				_end4.applyMatrix4( _mvMatrix );
+
+				// skip the segment if it's entirely behind the camera
+				var isBehindCameraNear = _start4.z > near && _end4.z > near;
+				if ( isBehindCameraNear ) {
+
+					continue;
+
+				}
+
+				// trim the segment if it extends behind camera near
+				if ( _start4.z > near ) {
+
+					const deltaDist = _start4.z - _end4.z;
+					const t = ( _start4.z - near ) / deltaDist;
+					_start4.lerp( _end4, t );
+
+				} else if ( _end4.z > near ) {
+
+					const deltaDist = _end4.z - _start4.z;
+					const t = ( _end4.z - near ) / deltaDist;
+					_end4.lerp( _start4, t );
+
+				}
+
+				// clip space
+				_start4.applyMatrix4( projectionMatrix );
+				_end4.applyMatrix4( projectionMatrix );
+
+				// ndc space [ - 1.0, 1.0 ]
+				_start4.multiplyScalar( 1 / _start4.w );
+				_end4.multiplyScalar( 1 / _end4.w );
+
+				// screen space
+				_start4.x *= resolution.x / 2;
+				_start4.y *= resolution.y / 2;
+
+				_end4.x *= resolution.x / 2;
+				_end4.y *= resolution.y / 2;
+
+				// create 2d segment
+				_line.start.copy( _start4 );
+				_line.start.z = 0;
+
+				_line.end.copy( _end4 );
+				_line.end.z = 0;
+
+				// get closest point on ray to segment
+				const param = _line.closestPointToPointParameter( _ssOrigin3, true );
+				_line.at( param, _closestPoint );
+
+				// check if the intersection point is within clip space
+				const zPos = MathUtils.lerp( _start4.z, _end4.z, param );
+				const isInClipSpace = zPos >= - 1 && zPos <= 1;
+
+				const isInside = _ssOrigin3.distanceTo( _closestPoint ) < lineWidth * 0.5;
+
+				if ( isInClipSpace && isInside ) {
+
+					_line.start.fromBufferAttribute( instanceStart, i );
+					_line.end.fromBufferAttribute( instanceEnd, i );
+
+					_line.start.applyMatrix4( matrixWorld );
+					_line.end.applyMatrix4( matrixWorld );
+
+					const pointOnLine = new Vector3();
+					const point = new Vector3();
+
+					ray.distanceSqToSegment( _line.start, _line.end, point, pointOnLine );
+
+					intersects.push( {
+
+						point: point,
+						pointOnLine: pointOnLine,
+						distance: ray.origin.distanceTo( point ),
+
+						object: this,
+						face: null,
+						faceIndex: i,
+						uv: null,
+						uv2: null,
+
+					} );
+
+				}
+
+			}
+
+		}
+
+	}
+
+	LineSegments2.prototype.LineSegments2 = true;
+
+	class LineGeometry extends LineSegmentsGeometry {
+
+		constructor() {
+
+			super();
+			this.type = 'LineGeometry';
+
+		}
+
+		setPositions( array ) {
+
+			// converts [ x1, y1, z1,  x2, y2, z2, ... ] to pairs format
+
+			var length = array.length - 3;
+			var points = new Float32Array( 2 * length );
+
+			for ( var i = 0; i < length; i += 3 ) {
+
+				points[ 2 * i ] = array[ i ];
+				points[ 2 * i + 1 ] = array[ i + 1 ];
+				points[ 2 * i + 2 ] = array[ i + 2 ];
+
+				points[ 2 * i + 3 ] = array[ i + 3 ];
+				points[ 2 * i + 4 ] = array[ i + 4 ];
+				points[ 2 * i + 5 ] = array[ i + 5 ];
+
+			}
+
+			super.setPositions( points );
+
+			return this;
+
+		}
+
+		setColors( array ) {
+
+			// converts [ r1, g1, b1,  r2, g2, b2, ... ] to pairs format
+
+			var length = array.length - 3;
+			var colors = new Float32Array( 2 * length );
+
+			for ( var i = 0; i < length; i += 3 ) {
+
+				colors[ 2 * i ] = array[ i ];
+				colors[ 2 * i + 1 ] = array[ i + 1 ];
+				colors[ 2 * i + 2 ] = array[ i + 2 ];
+
+				colors[ 2 * i + 3 ] = array[ i + 3 ];
+				colors[ 2 * i + 4 ] = array[ i + 4 ];
+				colors[ 2 * i + 5 ] = array[ i + 5 ];
+
+			}
+
+			super.setColors( colors );
+
+			return this;
+
+		}
+
+		fromLine( line ) {
+
+			var geometry = line.geometry;
+
+			if ( geometry.isGeometry ) {
+
+				console.error( 'THREE.LineGeometry no longer supports Geometry. Use THREE.BufferGeometry instead.' );
+				return;
+
+			} else if ( geometry.isBufferGeometry ) {
+
+				this.setPositions( geometry.attributes.position.array ); // assumes non-indexed
+
+			}
+
+			// set colors, maybe
+
+			return this;
+
+		}
+
+	}
+
+	LineGeometry.prototype.isLineGeometry = true;
+
+	class Line2 extends LineSegments2 {
+
+		constructor( geometry = new LineGeometry(), material = new LineMaterial( { color: Math.random() * 0xffffff } ) ) {
+
+			super( geometry, material );
+
+			this.type = 'Line2';
+
+		}
+
+	}
+
+	Line2.prototype.isLine2 = true;
+
+	const vertexShader = /* glsl */ `
+#include <common>
+#include <color_pars_vertex>
+#include <fog_pars_vertex>
+#include <logdepthbuf_pars_vertex>
+#include <clipping_planes_pars_vertex>
+
+uniform float lineWidth;
+uniform vec2 resolution;
+
+attribute vec3 instanceStart;
+attribute vec3 instanceEnd;
+
+attribute vec3 instanceColorStart;
+attribute vec3 instanceColorEnd;
+
+varying vec2 vUv;
+
+
+    uniform float dashScale;
+    attribute float instanceDistanceStart;
+    attribute float instanceDistanceEnd;
+    varying float vLineDistance;
+
+
+void trimSegment( const in vec4 start, inout vec4 end ) {
+
+    // trim end segment so it terminates between the camera plane and the near plane
+
+    // conservative estimate of the near plane
+    float a = projectionMatrix[ 2 ][ 2 ]; // 3nd entry in 3th column
+    float b = projectionMatrix[ 3 ][ 2 ]; // 3nd entry in 4th column
+    float nearEstimate = - 0.5 * b / a;
+
+    float alpha = ( nearEstimate - start.z ) / ( end.z - start.z );
+
+    end.xyz = mix( start.xyz, end.xyz, alpha );
+
+}
+
+void main() {
+
+    #ifdef USE_COLOR
+
+        vColor.xyz = ( position.y < 0.5 ) ? instanceColorStart : instanceColorEnd;
+
+    #endif
+
+        vLineDistance = ( position.y < 0.5 ) ? dashScale * instanceDistanceStart : dashScale * instanceDistanceEnd;
+
+    float aspect = resolution.x / resolution.y;
+
+    vUv = uv;
+
+    // camera space
+    vec4 start = modelViewMatrix * vec4( instanceStart, 1.0 );
+    vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );
+
+    // special case for perspective projection, and segments that terminate either in, or behind, the camera plane
+    // clearly the gpu firmware has a way of addressing this issue when projecting into ndc space
+    // but we need to perform ndc-space calculations in the shader, so we must address this issue directly
+    // perhaps there is a more elegant solution -- WestLangley
+
+    bool perspective = ( projectionMatrix[ 2 ][ 3 ] == - 1.0 ); // 4th entry in the 3rd column
+
+    if ( perspective ) {
+
+        if ( start.z < 0.0 && end.z >= 0.0 ) {
+
+            trimSegment( start, end );
+
+        } else if ( end.z < 0.0 && start.z >= 0.0 ) {
+
+            trimSegment( end, start );
+
+        }
+
+    }
+
+    // clip space
+    vec4 clipStart = projectionMatrix * start;
+    vec4 clipEnd = projectionMatrix * end;
+
+    // ndc space
+    vec2 ndcStart = clipStart.xy / clipStart.w;
+    vec2 ndcEnd = clipEnd.xy / clipEnd.w;
+
+    // direction
+    vec2 dir = ndcEnd - ndcStart;
+
+    // account for clip-space aspect ratio
+    dir.x *= aspect;
+    dir = normalize( dir );
+
+    // perpendicular to dir
+    vec2 offset = vec2( dir.y, - dir.x );
+
+    // undo aspect ratio adjustment
+    dir.x /= aspect;
+    offset.x /= aspect;
+
+    // sign flip
+    if ( position.x < 0.0 ) offset *= - 1.0;
+
+    // endcaps
+    if ( position.y < 0.0 ) {
+
+        offset += - dir;
+
+    } else if ( position.y > 1.0 ) {
+
+        offset += dir;
+
+    }
+
+    // adjust for lineWidth
+    offset *= lineWidth;
+
+    // adjust for clip-space to screen-space conversion // maybe resolution should be based on viewport ...
+    offset /= resolution.y;
+
+    // select end
+    vec4 clip = ( position.y < 0.5 ) ? clipStart : clipEnd;
+
+    // back to clip space
+    offset *= clip.w;
+
+    clip.xy += offset;
+
+    gl_Position = clip;
+
+    vec4 mvPosition = ( position.y < 0.5 ) ? start : end; // this is an approximation
+
+    #include <logdepthbuf_vertex>
+    #include <clipping_planes_vertex>
+    #include <fog_vertex>
+
+}`;
+	const fragmentShader = /* glsl */ `
+uniform vec3 diffuse;
+uniform float opacity;
+
+uniform float dashSize;
+uniform float dashOffset;
+uniform float gapSize;
+
+uniform float attenuation;
+
+varying float vLineDistance;
+
+#include <common>
+#include <color_pars_fragment>
+#include <fog_pars_fragment>
+#include <logdepthbuf_pars_fragment>
+#include <clipping_planes_pars_fragment>
+
+varying vec2 vUv;
+
+void main() {
+
+    #include <clipping_planes_fragment>
+
+
+        if ( vUv.y < - 1.0 || vUv.y > 1.0 ) discard; // discard endcaps
+
+
+
+    float alpha = 1.0;
+
+    #ifdef ALPHA_TO_COVERAGE
+
+    // artifacts appear on some hardware if a derivative is taken within a conditional
+    float a = vUv.x;
+    float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
+    float len2 = a * a + b * b;
+    float dlen = fwidth( len2 );
+
+    if ( abs( vUv.y ) > 1.0 ) {
+
+        alpha = 1.0 - smoothstep( 1.0 - dlen, 1.0 + dlen, len2 );
+
+    }
+
+    #else
+
+    if ( abs( vUv.y ) > 1.0 ) {
+
+        float a = vUv.x;
+        float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
+        float len2 = a * a + b * b;
+
+        if ( len2 > 1.0 ) discard;
+
+    }
+
+    #endif
+
+    // vec4 diffuseColor = vec4( diffuse, opacity * alpha );
+
+    #include <logdepthbuf_fragment>
+    #include <color_fragment>
+    
+    if(attenuation == 0.0){
+      if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard; // todo - FIX
+      vec4 diffuseColor = vec4( diffuse,  opacity * mod( vLineDistance + dashOffset, dashSize + gapSize ) / dashSize );
+      gl_FragColor = diffuseColor;	
+    }else{
+      gl_FragColor = vec4( diffuse, opacity * alpha );
+    }
+
+    #include <tonemapping_fragment>
+    #include <encodings_fragment>
+    #include <fog_fragment>
+    #include <premultiplied_alpha_fragment>
+
+}`;
+	class BaseLineMaterial extends ShaderMaterial {
+	    isLineMaterial = true;
+	    constructor(opts) {
+	        super();
+	        this.uniforms = mergeUniforms([
+	            UniformsLib.common,
+	            UniformsLib.fog,
+	            cloneUniforms({
+	                lineWidth: { value: opts?.lineWidth },
+	                resolution: { value: new Vector2(window.innerWidth, window.innerHeight) },
+	                dashScale: { value: 1 },
+	                dashSize: { value: opts?.dashSize },
+	                dashOffset: { value: opts?.dashOffset },
+	                gapSize: { value: opts?.gapSize },
+	                opacity: { value: 1 },
+	                attenuation: { value: opts?.attenuation }
+	            })
+	        ]);
+	        this.transparent = true;
+	        this.color = new Color(opts?.color);
+	        this.vertexShader = vertexShader;
+	        this.fragmentShader = fragmentShader;
+	    }
+	    get color() {
+	        return this.uniforms.diffuse.value;
+	    }
+	    set color(val) {
+	        this.uniforms.diffuse.value = val;
+	    }
+	    get lineWidth() {
+	        return this.uniforms.lineWidth.value;
+	    }
+	    set lineWidth(val) {
+	        this.uniforms.lineWidth.value = val;
+	    }
+	    get dashed() {
+	        return Boolean('USE_DASH' in this.defines);
+	    }
+	    set dashed(val) {
+	        if (Boolean(val) !== Boolean('USE_DASH' in this.defines)) {
+	            this.needsUpdate = true;
+	        }
+	        if (val === true) {
+	            this.defines.USE_DASH = '';
+	        }
+	        else {
+	            delete this.defines.USE_DASH;
+	        }
+	    }
+	    get dashScale() {
+	        return this.uniforms.dashScale.value;
+	    }
+	    set dashScale(val) {
+	        this.uniforms.dashScale.value = val;
+	    }
+	    get dashSize() {
+	        return this.uniforms.dashSize.value;
+	    }
+	    set dashSize(val) {
+	        this.uniforms.dashSize.value = val;
+	    }
+	    get dashOffset() {
+	        return this.uniforms.dashOffset.value;
+	    }
+	    set dashOffset(val) {
+	        this.uniforms.dashOffset.value = val;
+	    }
+	    get gapSize() {
+	        return this.uniforms.gapSize.value;
+	    }
+	    set gapSize(val) {
+	        this.uniforms.gapSize.value = val;
+	    }
+	    get resolution() {
+	        return this.uniforms.resolution.value;
+	    }
+	    set resolution(val) {
+	        this.uniforms.resolution.value.copy(val);
+	    }
+	}
+
+	class BaseLine extends Line2 {
+	    material;
+	    totalDistance;
+	    constructor(opts) {
+	        super();
+	        this.material = new BaseLineMaterial(opts);
+	        this.geometry = new LineGeometry();
+	        this.totalDistance = 0;
+	    }
+	    setPositions(array) {
+	        this.geometry.setPositions(array);
+	        this.computeLineDistances();
+	        // update totalDistance
+	        this.totalDistance = 0;
+	        for (let i = 0; i < array.length - 3; i += 3) {
+	            const v1 = new Vector3(array[i], array[i + 1], array[i + 2]);
+	            const v2 = new Vector3(array[i + 3], array[i + 1 + 3], array[i + 2 + 3]);
+	            const l = v1.distanceTo(v2);
+	            this.totalDistance += l;
+	        }
+	        this.material.dashSize = this.totalDistance / 2;
+	        this.material.gapSize = this.totalDistance / 2;
+	    }
+	    setColors(points) {
+	        this.geometry.setFromPoints(points);
+	    }
+	}
+
+	var earcut_1 = earcut;
+	var default_1 = earcut;
+
+	function earcut(data, holeIndices, dim) {
+
+	    dim = dim || 2;
+
+	    var hasHoles = holeIndices && holeIndices.length,
+	        outerLen = hasHoles ? holeIndices[0] * dim : data.length,
+	        outerNode = linkedList(data, 0, outerLen, dim, true),
+	        triangles = [];
+
+	    if (!outerNode || outerNode.next === outerNode.prev) return triangles;
+
+	    var minX, minY, maxX, maxY, x, y, invSize;
+
+	    if (hasHoles) outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
+
+	    // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
+	    if (data.length > 80 * dim) {
+	        minX = maxX = data[0];
+	        minY = maxY = data[1];
+
+	        for (var i = dim; i < outerLen; i += dim) {
+	            x = data[i];
+	            y = data[i + 1];
+	            if (x < minX) minX = x;
+	            if (y < minY) minY = y;
+	            if (x > maxX) maxX = x;
+	            if (y > maxY) maxY = y;
+	        }
+
+	        // minX, minY and invSize are later used to transform coords into integers for z-order calculation
+	        invSize = Math.max(maxX - minX, maxY - minY);
+	        invSize = invSize !== 0 ? 32767 / invSize : 0;
+	    }
+
+	    earcutLinked(outerNode, triangles, dim, minX, minY, invSize, 0);
+
+	    return triangles;
+	}
+
+	// create a circular doubly linked list from polygon points in the specified winding order
+	function linkedList(data, start, end, dim, clockwise) {
+	    var i, last;
+
+	    if (clockwise === (signedArea(data, start, end, dim) > 0)) {
+	        for (i = start; i < end; i += dim) last = insertNode(i, data[i], data[i + 1], last);
+	    } else {
+	        for (i = end - dim; i >= start; i -= dim) last = insertNode(i, data[i], data[i + 1], last);
+	    }
+
+	    if (last && equals(last, last.next)) {
+	        removeNode(last);
+	        last = last.next;
+	    }
+
+	    return last;
+	}
+
+	// eliminate colinear or duplicate points
+	function filterPoints(start, end) {
+	    if (!start) return start;
+	    if (!end) end = start;
+
+	    var p = start,
+	        again;
+	    do {
+	        again = false;
+
+	        if (!p.steiner && (equals(p, p.next) || area(p.prev, p, p.next) === 0)) {
+	            removeNode(p);
+	            p = end = p.prev;
+	            if (p === p.next) break;
+	            again = true;
+
+	        } else {
+	            p = p.next;
+	        }
+	    } while (again || p !== end);
+
+	    return end;
+	}
+
+	// main ear slicing loop which triangulates a polygon (given as a linked list)
+	function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
+	    if (!ear) return;
+
+	    // interlink polygon nodes in z-order
+	    if (!pass && invSize) indexCurve(ear, minX, minY, invSize);
+
+	    var stop = ear,
+	        prev, next;
+
+	    // iterate through ears, slicing them one by one
+	    while (ear.prev !== ear.next) {
+	        prev = ear.prev;
+	        next = ear.next;
+
+	        if (invSize ? isEarHashed(ear, minX, minY, invSize) : isEar(ear)) {
+	            // cut off the triangle
+	            triangles.push(prev.i / dim | 0);
+	            triangles.push(ear.i / dim | 0);
+	            triangles.push(next.i / dim | 0);
+
+	            removeNode(ear);
+
+	            // skipping the next vertex leads to less sliver triangles
+	            ear = next.next;
+	            stop = next.next;
+
+	            continue;
+	        }
+
+	        ear = next;
+
+	        // if we looped through the whole remaining polygon and can't find any more ears
+	        if (ear === stop) {
+	            // try filtering points and slicing again
+	            if (!pass) {
+	                earcutLinked(filterPoints(ear), triangles, dim, minX, minY, invSize, 1);
+
+	            // if this didn't work, try curing all small self-intersections locally
+	            } else if (pass === 1) {
+	                ear = cureLocalIntersections(filterPoints(ear), triangles, dim);
+	                earcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
+
+	            // as a last resort, try splitting the remaining polygon into two
+	            } else if (pass === 2) {
+	                splitEarcut(ear, triangles, dim, minX, minY, invSize);
+	            }
+
+	            break;
+	        }
+	    }
+	}
+
+	// check whether a polygon node forms a valid ear with adjacent nodes
+	function isEar(ear) {
+	    var a = ear.prev,
+	        b = ear,
+	        c = ear.next;
+
+	    if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
+
+	    // now make sure we don't have other points inside the potential ear
+	    var ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
+
+	    // triangle bbox; min & max are calculated like this for speed
+	    var x0 = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
+	        y0 = ay < by ? (ay < cy ? ay : cy) : (by < cy ? by : cy),
+	        x1 = ax > bx ? (ax > cx ? ax : cx) : (bx > cx ? bx : cx),
+	        y1 = ay > by ? (ay > cy ? ay : cy) : (by > cy ? by : cy);
+
+	    var p = c.next;
+	    while (p !== a) {
+	        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 &&
+	            pointInTriangle(ax, ay, bx, by, cx, cy, p.x, p.y) &&
+	            area(p.prev, p, p.next) >= 0) return false;
+	        p = p.next;
+	    }
+
+	    return true;
+	}
+
+	function isEarHashed(ear, minX, minY, invSize) {
+	    var a = ear.prev,
+	        b = ear,
+	        c = ear.next;
+
+	    if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
+
+	    var ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
+
+	    // triangle bbox; min & max are calculated like this for speed
+	    var x0 = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
+	        y0 = ay < by ? (ay < cy ? ay : cy) : (by < cy ? by : cy),
+	        x1 = ax > bx ? (ax > cx ? ax : cx) : (bx > cx ? bx : cx),
+	        y1 = ay > by ? (ay > cy ? ay : cy) : (by > cy ? by : cy);
+
+	    // z-order range for the current triangle bbox;
+	    var minZ = zOrder(x0, y0, minX, minY, invSize),
+	        maxZ = zOrder(x1, y1, minX, minY, invSize);
+
+	    var p = ear.prevZ,
+	        n = ear.nextZ;
+
+	    // look for points inside the triangle in both directions
+	    while (p && p.z >= minZ && n && n.z <= maxZ) {
+	        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && p !== a && p !== c &&
+	            pointInTriangle(ax, ay, bx, by, cx, cy, p.x, p.y) && area(p.prev, p, p.next) >= 0) return false;
+	        p = p.prevZ;
+
+	        if (n.x >= x0 && n.x <= x1 && n.y >= y0 && n.y <= y1 && n !== a && n !== c &&
+	            pointInTriangle(ax, ay, bx, by, cx, cy, n.x, n.y) && area(n.prev, n, n.next) >= 0) return false;
+	        n = n.nextZ;
+	    }
+
+	    // look for remaining points in decreasing z-order
+	    while (p && p.z >= minZ) {
+	        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && p !== a && p !== c &&
+	            pointInTriangle(ax, ay, bx, by, cx, cy, p.x, p.y) && area(p.prev, p, p.next) >= 0) return false;
+	        p = p.prevZ;
+	    }
+
+	    // look for remaining points in increasing z-order
+	    while (n && n.z <= maxZ) {
+	        if (n.x >= x0 && n.x <= x1 && n.y >= y0 && n.y <= y1 && n !== a && n !== c &&
+	            pointInTriangle(ax, ay, bx, by, cx, cy, n.x, n.y) && area(n.prev, n, n.next) >= 0) return false;
+	        n = n.nextZ;
+	    }
+
+	    return true;
+	}
+
+	// go through all polygon nodes and cure small local self-intersections
+	function cureLocalIntersections(start, triangles, dim) {
+	    var p = start;
+	    do {
+	        var a = p.prev,
+	            b = p.next.next;
+
+	        if (!equals(a, b) && intersects(a, p, p.next, b) && locallyInside(a, b) && locallyInside(b, a)) {
+
+	            triangles.push(a.i / dim | 0);
+	            triangles.push(p.i / dim | 0);
+	            triangles.push(b.i / dim | 0);
+
+	            // remove two nodes involved
+	            removeNode(p);
+	            removeNode(p.next);
+
+	            p = start = b;
+	        }
+	        p = p.next;
+	    } while (p !== start);
+
+	    return filterPoints(p);
+	}
+
+	// try splitting polygon into two and triangulate them independently
+	function splitEarcut(start, triangles, dim, minX, minY, invSize) {
+	    // look for a valid diagonal that divides the polygon into two
+	    var a = start;
+	    do {
+	        var b = a.next.next;
+	        while (b !== a.prev) {
+	            if (a.i !== b.i && isValidDiagonal(a, b)) {
+	                // split the polygon in two by the diagonal
+	                var c = splitPolygon(a, b);
+
+	                // filter colinear points around the cuts
+	                a = filterPoints(a, a.next);
+	                c = filterPoints(c, c.next);
+
+	                // run earcut on each half
+	                earcutLinked(a, triangles, dim, minX, minY, invSize, 0);
+	                earcutLinked(c, triangles, dim, minX, minY, invSize, 0);
+	                return;
+	            }
+	            b = b.next;
+	        }
+	        a = a.next;
+	    } while (a !== start);
+	}
+
+	// link every hole into the outer loop, producing a single-ring polygon without holes
+	function eliminateHoles(data, holeIndices, outerNode, dim) {
+	    var queue = [],
+	        i, len, start, end, list;
+
+	    for (i = 0, len = holeIndices.length; i < len; i++) {
+	        start = holeIndices[i] * dim;
+	        end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+	        list = linkedList(data, start, end, dim, false);
+	        if (list === list.next) list.steiner = true;
+	        queue.push(getLeftmost(list));
+	    }
+
+	    queue.sort(compareX);
+
+	    // process holes from left to right
+	    for (i = 0; i < queue.length; i++) {
+	        outerNode = eliminateHole(queue[i], outerNode);
+	    }
+
+	    return outerNode;
+	}
+
+	function compareX(a, b) {
+	    return a.x - b.x;
+	}
+
+	// find a bridge between vertices that connects hole with an outer ring and and link it
+	function eliminateHole(hole, outerNode) {
+	    var bridge = findHoleBridge(hole, outerNode);
+	    if (!bridge) {
+	        return outerNode;
+	    }
+
+	    var bridgeReverse = splitPolygon(bridge, hole);
+
+	    // filter collinear points around the cuts
+	    filterPoints(bridgeReverse, bridgeReverse.next);
+	    return filterPoints(bridge, bridge.next);
+	}
+
+	// David Eberly's algorithm for finding a bridge between hole and outer polygon
+	function findHoleBridge(hole, outerNode) {
+	    var p = outerNode,
+	        hx = hole.x,
+	        hy = hole.y,
+	        qx = -Infinity,
+	        m;
+
+	    // find a segment intersected by a ray from the hole's leftmost point to the left;
+	    // segment's endpoint with lesser x will be potential connection point
+	    do {
+	        if (hy <= p.y && hy >= p.next.y && p.next.y !== p.y) {
+	            var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
+	            if (x <= hx && x > qx) {
+	                qx = x;
+	                m = p.x < p.next.x ? p : p.next;
+	                if (x === hx) return m; // hole touches outer segment; pick leftmost endpoint
+	            }
+	        }
+	        p = p.next;
+	    } while (p !== outerNode);
+
+	    if (!m) return null;
+
+	    // look for points inside the triangle of hole point, segment intersection and endpoint;
+	    // if there are no points found, we have a valid connection;
+	    // otherwise choose the point of the minimum angle with the ray as connection point
+
+	    var stop = m,
+	        mx = m.x,
+	        my = m.y,
+	        tanMin = Infinity,
+	        tan;
+
+	    p = m;
+
+	    do {
+	        if (hx >= p.x && p.x >= mx && hx !== p.x &&
+	                pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
+
+	            tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
+
+	            if (locallyInside(p, hole) &&
+	                (tan < tanMin || (tan === tanMin && (p.x > m.x || (p.x === m.x && sectorContainsSector(m, p)))))) {
+	                m = p;
+	                tanMin = tan;
+	            }
+	        }
+
+	        p = p.next;
+	    } while (p !== stop);
+
+	    return m;
+	}
+
+	// whether sector in vertex m contains sector in vertex p in the same coordinates
+	function sectorContainsSector(m, p) {
+	    return area(m.prev, m, p.prev) < 0 && area(p.next, m, m.next) < 0;
+	}
+
+	// interlink polygon nodes in z-order
+	function indexCurve(start, minX, minY, invSize) {
+	    var p = start;
+	    do {
+	        if (p.z === 0) p.z = zOrder(p.x, p.y, minX, minY, invSize);
+	        p.prevZ = p.prev;
+	        p.nextZ = p.next;
+	        p = p.next;
+	    } while (p !== start);
+
+	    p.prevZ.nextZ = null;
+	    p.prevZ = null;
+
+	    sortLinked(p);
+	}
+
+	// Simon Tatham's linked list merge sort algorithm
+	// http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+	function sortLinked(list) {
+	    var i, p, q, e, tail, numMerges, pSize, qSize,
+	        inSize = 1;
+
+	    do {
+	        p = list;
+	        list = null;
+	        tail = null;
+	        numMerges = 0;
+
+	        while (p) {
+	            numMerges++;
+	            q = p;
+	            pSize = 0;
+	            for (i = 0; i < inSize; i++) {
+	                pSize++;
+	                q = q.nextZ;
+	                if (!q) break;
+	            }
+	            qSize = inSize;
+
+	            while (pSize > 0 || (qSize > 0 && q)) {
+
+	                if (pSize !== 0 && (qSize === 0 || !q || p.z <= q.z)) {
+	                    e = p;
+	                    p = p.nextZ;
+	                    pSize--;
+	                } else {
+	                    e = q;
+	                    q = q.nextZ;
+	                    qSize--;
+	                }
+
+	                if (tail) tail.nextZ = e;
+	                else list = e;
+
+	                e.prevZ = tail;
+	                tail = e;
+	            }
+
+	            p = q;
+	        }
+
+	        tail.nextZ = null;
+	        inSize *= 2;
+
+	    } while (numMerges > 1);
+
+	    return list;
+	}
+
+	// z-order of a point given coords and inverse of the longer side of data bbox
+	function zOrder(x, y, minX, minY, invSize) {
+	    // coords are transformed into non-negative 15-bit integer range
+	    x = (x - minX) * invSize | 0;
+	    y = (y - minY) * invSize | 0;
+
+	    x = (x | (x << 8)) & 0x00FF00FF;
+	    x = (x | (x << 4)) & 0x0F0F0F0F;
+	    x = (x | (x << 2)) & 0x33333333;
+	    x = (x | (x << 1)) & 0x55555555;
+
+	    y = (y | (y << 8)) & 0x00FF00FF;
+	    y = (y | (y << 4)) & 0x0F0F0F0F;
+	    y = (y | (y << 2)) & 0x33333333;
+	    y = (y | (y << 1)) & 0x55555555;
+
+	    return x | (y << 1);
+	}
+
+	// find the leftmost node of a polygon ring
+	function getLeftmost(start) {
+	    var p = start,
+	        leftmost = start;
+	    do {
+	        if (p.x < leftmost.x || (p.x === leftmost.x && p.y < leftmost.y)) leftmost = p;
+	        p = p.next;
+	    } while (p !== start);
+
+	    return leftmost;
+	}
+
+	// check if a point lies within a convex triangle
+	function pointInTriangle(ax, ay, bx, by, cx, cy, px, py) {
+	    return (cx - px) * (ay - py) >= (ax - px) * (cy - py) &&
+	           (ax - px) * (by - py) >= (bx - px) * (ay - py) &&
+	           (bx - px) * (cy - py) >= (cx - px) * (by - py);
+	}
+
+	// check if a diagonal between two polygon nodes is valid (lies in polygon interior)
+	function isValidDiagonal(a, b) {
+	    return a.next.i !== b.i && a.prev.i !== b.i && !intersectsPolygon(a, b) && // dones't intersect other edges
+	           (locallyInside(a, b) && locallyInside(b, a) && middleInside(a, b) && // locally visible
+	            (area(a.prev, a, b.prev) || area(a, b.prev, b)) || // does not create opposite-facing sectors
+	            equals(a, b) && area(a.prev, a, a.next) > 0 && area(b.prev, b, b.next) > 0); // special zero-length case
+	}
+
+	// signed area of a triangle
+	function area(p, q, r) {
+	    return (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+	}
+
+	// check if two points are equal
+	function equals(p1, p2) {
+	    return p1.x === p2.x && p1.y === p2.y;
+	}
+
+	// check if two segments intersect
+	function intersects(p1, q1, p2, q2) {
+	    var o1 = sign(area(p1, q1, p2));
+	    var o2 = sign(area(p1, q1, q2));
+	    var o3 = sign(area(p2, q2, p1));
+	    var o4 = sign(area(p2, q2, q1));
+
+	    if (o1 !== o2 && o3 !== o4) return true; // general case
+
+	    if (o1 === 0 && onSegment(p1, p2, q1)) return true; // p1, q1 and p2 are collinear and p2 lies on p1q1
+	    if (o2 === 0 && onSegment(p1, q2, q1)) return true; // p1, q1 and q2 are collinear and q2 lies on p1q1
+	    if (o3 === 0 && onSegment(p2, p1, q2)) return true; // p2, q2 and p1 are collinear and p1 lies on p2q2
+	    if (o4 === 0 && onSegment(p2, q1, q2)) return true; // p2, q2 and q1 are collinear and q1 lies on p2q2
+
+	    return false;
+	}
+
+	// for collinear points p, q, r, check if point q lies on segment pr
+	function onSegment(p, q, r) {
+	    return q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) && q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y);
+	}
+
+	function sign(num) {
+	    return num > 0 ? 1 : num < 0 ? -1 : 0;
+	}
+
+	// check if a polygon diagonal intersects any polygon segments
+	function intersectsPolygon(a, b) {
+	    var p = a;
+	    do {
+	        if (p.i !== a.i && p.next.i !== a.i && p.i !== b.i && p.next.i !== b.i &&
+	                intersects(p, p.next, a, b)) return true;
+	        p = p.next;
+	    } while (p !== a);
+
+	    return false;
+	}
+
+	// check if a polygon diagonal is locally inside the polygon
+	function locallyInside(a, b) {
+	    return area(a.prev, a, a.next) < 0 ?
+	        area(a, b, a.next) >= 0 && area(a, a.prev, b) >= 0 :
+	        area(a, b, a.prev) < 0 || area(a, a.next, b) < 0;
+	}
+
+	// check if the middle point of a polygon diagonal is inside the polygon
+	function middleInside(a, b) {
+	    var p = a,
+	        inside = false,
+	        px = (a.x + b.x) / 2,
+	        py = (a.y + b.y) / 2;
+	    do {
+	        if (((p.y > py) !== (p.next.y > py)) && p.next.y !== p.y &&
+	                (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
+	            inside = !inside;
+	        p = p.next;
+	    } while (p !== a);
+
+	    return inside;
+	}
+
+	// link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
+	// if one belongs to the outer ring and another to a hole, it merges it into a single ring
+	function splitPolygon(a, b) {
+	    var a2 = new Node(a.i, a.x, a.y),
+	        b2 = new Node(b.i, b.x, b.y),
+	        an = a.next,
+	        bp = b.prev;
+
+	    a.next = b;
+	    b.prev = a;
+
+	    a2.next = an;
+	    an.prev = a2;
+
+	    b2.next = a2;
+	    a2.prev = b2;
+
+	    bp.next = b2;
+	    b2.prev = bp;
+
+	    return b2;
+	}
+
+	// create a node and optionally link it with previous one (in a circular doubly linked list)
+	function insertNode(i, x, y, last) {
+	    var p = new Node(i, x, y);
+
+	    if (!last) {
+	        p.prev = p;
+	        p.next = p;
+
+	    } else {
+	        p.next = last.next;
+	        p.prev = last;
+	        last.next.prev = p;
+	        last.next = p;
+	    }
+	    return p;
+	}
+
+	function removeNode(p) {
+	    p.next.prev = p.prev;
+	    p.prev.next = p.next;
+
+	    if (p.prevZ) p.prevZ.nextZ = p.nextZ;
+	    if (p.nextZ) p.nextZ.prevZ = p.prevZ;
+	}
+
+	function Node(i, x, y) {
+	    // vertex index in coordinates array
+	    this.i = i;
+
+	    // vertex coordinates
+	    this.x = x;
+	    this.y = y;
+
+	    // previous and next vertex nodes in a polygon ring
+	    this.prev = null;
+	    this.next = null;
+
+	    // z-order curve value
+	    this.z = 0;
+
+	    // previous and next nodes in z-order
+	    this.prevZ = null;
+	    this.nextZ = null;
+
+	    // indicates whether this is a steiner point
+	    this.steiner = false;
+	}
+
+	// return a percentage difference between the polygon area and its triangulation area;
+	// used to verify correctness of triangulation
+	earcut.deviation = function (data, holeIndices, dim, triangles) {
+	    var hasHoles = holeIndices && holeIndices.length;
+	    var outerLen = hasHoles ? holeIndices[0] * dim : data.length;
+
+	    var polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
+	    if (hasHoles) {
+	        for (var i = 0, len = holeIndices.length; i < len; i++) {
+	            var start = holeIndices[i] * dim;
+	            var end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+	            polygonArea -= Math.abs(signedArea(data, start, end, dim));
+	        }
+	    }
+
+	    var trianglesArea = 0;
+	    for (i = 0; i < triangles.length; i += 3) {
+	        var a = triangles[i] * dim;
+	        var b = triangles[i + 1] * dim;
+	        var c = triangles[i + 2] * dim;
+	        trianglesArea += Math.abs(
+	            (data[a] - data[c]) * (data[b + 1] - data[a + 1]) -
+	            (data[a] - data[b]) * (data[c + 1] - data[a + 1]));
+	    }
+
+	    return polygonArea === 0 && trianglesArea === 0 ? 0 :
+	        Math.abs((trianglesArea - polygonArea) / polygonArea);
+	};
+
+	function signedArea(data, start, end, dim) {
+	    var sum = 0;
+	    for (var i = start, j = end - dim; i < end; i += dim) {
+	        sum += (data[j] - data[i]) * (data[i + 1] + data[j + 1]);
+	        j = i;
+	    }
+	    return sum;
+	}
+
+	// turn a polygon in a multi-dimensional array form (e.g. as in GeoJSON) into a form Earcut accepts
+	earcut.flatten = function (data) {
+	    var dim = data[0][0].length,
+	        result = {vertices: [], holes: [], dimensions: dim},
+	        holeIndex = 0;
+
+	    for (var i = 0; i < data.length; i++) {
+	        for (var j = 0; j < data[i].length; j++) {
+	            for (var d = 0; d < dim; d++) result.vertices.push(data[i][j][d]);
+	        }
+	        if (i > 0) {
+	            holeIndex += data[i - 1].length;
+	            result.holes.push(holeIndex);
+	        }
+	    }
+	    return result;
+	};
+	earcut_1.default = default_1;
+
+	class BaseExtrudeShape extends Mesh {
+	    opts;
+	    height;
+	    center;
+	    extrude;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            height: 10,
+	            color: '#ff0000',
+	            center: [0, 0],
+	            extrude: false,
+	            gradient: '#00ffff',
+	            vertical: 24000
+	        }, opts);
+	        this.height = this.opts.height !== undefined ? this.opts.height : 10;
+	        this.center = this.opts.center !== undefined ? this.opts.center : [0, 0];
+	        this.extrude = this.opts.extrude !== undefined ? this.opts.extrude : false;
+	        if (this.extrude) {
+	            this.loadExtrudeGeometry(this.opts.points);
+	            this.loadExtrudeMaterial(opts);
+	        }
+	        else {
+	            this.loadGeometry(this.opts.points);
+	            this.loadMaterial(opts);
+	        }
+	    }
+	    loadMaterial(opts) {
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            side: 2,
+	            uniforms: {
+	                color: {
+	                    value: new Color(opts.color)
+	                },
+	                opacity: {
+	                    value: 1
+	                },
+	                height: {
+	                    value: this.height
+	                },
+	                gradient: {
+	                    value: new Color(opts.gradient)
+	                },
+	                uCenter: {
+	                    value: new Vector2(this.geometry.boundingSphere?.center.x, this.geometry.boundingSphere?.center.z)
+	                }
+	            },
+	            vertexShader: `
+            #include <logdepthbuf_pars_vertex>
+            #include <common>
+            varying vec2 vp;
+            void main(){
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vp = vec2(position.x, position.z);
+                #include <logdepthbuf_vertex>
+            }
+        `,
+	            fragmentShader: `
+            uniform vec3 color;
+            uniform vec3 gradient;
+            uniform float opacity;
+            varying vec2 vp;
+            uniform vec2 uCenter;
+            
+            #define EPSILON 1e-4
+            #define NUM 1200
+            #define WIDTH 200
+            
+            #include <logdepthbuf_pars_fragment>
+            #include <clipping_planes_pars_fragment>
+
+            void main(){
+                #include <clipping_planes_fragment>
+                    // gl_FragColor = vec4( mix(color,  vec3(0.) , vec3( (height - vy) / height) )  , opacity);
+                    // gl_FragColor = vec4( mix( mix(color,  vec3(0.) , vec3( (height - vy) / height) ), color , vec3( (height - vy) / height) )  , opacity);
+
+                    vec2 p = vp;
+
+                    gl_FragColor = vec4(color, opacity);
+
+                    #pragma unroll_loop_start
+                    for ( int i = 0; i < NUM; i+=20 ) {
+
+                      if(i == 0){
+                        if(int(abs(uCenter.x - p.x)) >= WIDTH / 2 * i && int(abs(uCenter.x - p.x)) <= WIDTH / 2 * (i + 1)){
+                          gl_FragColor = vec4(vec3(1.), 1.);
+                        }else if(int(abs(uCenter.y - p.y)) >= WIDTH / 2 * i && int(abs(uCenter.y - p.y)) <= WIDTH / 2 * (i + 1)){
+                          gl_FragColor = vec4(vec3(1.), 1.);
+                        }
+                      }else{
+                        if(int(abs(uCenter.x - p.x)) >= WIDTH * i && int(abs(uCenter.x - p.x)) <= WIDTH * (i + 1)){
+                          gl_FragColor = vec4(vec3(1.), 1.);
+                        }else if(int(abs(uCenter.y - p.y)) >= WIDTH * i && int(abs(uCenter.y - p.y)) <= WIDTH * (i + 1)){
+                          gl_FragColor = vec4(vec3(1.), 1.);
+                        }
+                      }
+
+
+                    }
+                    #pragma unroll_loop_end
+
+                #include <logdepthbuf_fragment>
+
+                #include <tonemapping_fragment>
+            }
+        `
+	        });
+	    }
+	    loadExtrudeMaterial(opts) {
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            side: 2,
+	            uniforms: {
+	                color: {
+	                    value: new Color(opts.color)
+	                },
+	                opacity: {
+	                    value: 1
+	                },
+	                height: {
+	                    value: this.height
+	                },
+	                gradient: {
+	                    value: new Color(opts.gradient)
+	                },
+	                vertical: {
+	                    value: this.opts.vertical
+	                }
+	            },
+	            vertexShader: `
+            #include <logdepthbuf_pars_vertex>
+            #include <common>
+            varying vec3 pos;
+
+            void main(){
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                pos = position;
+                #include <logdepthbuf_vertex>
+            }
+        `,
+	            fragmentShader: `
+            uniform vec3 color;
+            uniform vec3 gradient;
+            uniform float opacity;
+            uniform float height;
+            uniform float vertical;
+
+            varying vec3 pos;
+
+            #include <logdepthbuf_pars_fragment>
+            
+            void main(){
+                #include <logdepthbuf_fragment>
+                    // gl_FragColor = vec4( mix(color,  vec3(0.) , vec3( (height - vy) / height) )  , opacity);
+                    // gl_FragColor = vec4( mix( mix(color,  vec3(0.) , vec3( (height - vy) / height) ), color , vec3( (height - vy) / height) )  , opacity);
+                    gl_FragColor = vec4( mix(color,  gradient , vec3( (height - pos.y) / height) )  , opacity);
+                    gl_FragColor.rgb += vec3( mix(color,  gradient , vec3( abs(vertical + pos.x) / vertical) ) );
+                #include <tonemapping_fragment>
+            }
+        `
+	        });
+	    }
+	    loadExtrudeGeometry(points) {
+	        let coords = [];
+	        let bottomVertices = [];
+	        let bottomIndices = [];
+	        const center = lnglat2mercator(this.center);
+	        for (let i = 0; i < points.length; i++) {
+	            const point = lnglat2mercator(points[i]);
+	            coords = coords.concat(point);
+	            bottomVertices = bottomVertices.concat(point[0] - center[0], 0, point[1] - center[1]);
+	        }
+	        bottomIndices = earcut_1(coords);
+	        const topVertices = [];
+	        let vertices = [];
+	        for (let i = 0; i < bottomVertices.length; i += 3) {
+	            topVertices.push(bottomVertices[i], bottomVertices[i + 1] + this.height, bottomVertices[i + 2]);
+	        }
+	        vertices = bottomVertices.slice().concat(topVertices);
+	        const topIndices = [];
+	        let indices = [];
+	        for (let i = 0; i < bottomIndices.length; i += 3) {
+	            topIndices.push(bottomIndices[i] + topVertices.length / 3, bottomIndices[i + 1] + topVertices.length / 3, bottomIndices[i + 2] + topVertices.length / 3);
+	        }
+	        indices = bottomIndices.concat(topIndices);
+	        let normals = [];
+	        const sideIndices = [];
+	        const sideVertices = bottomVertices.slice().concat(topVertices);
+	        const offset = vertices.length / 3;
+	        for (let i = 0; i < bottomVertices.length / 3; i++) {
+	            if (i == bottomVertices.length / 3 - 1) {
+	                sideIndices.push(i + offset, 0 + offset, i + bottomVertices.length / 3 + offset);
+	                sideIndices.push(i + bottomVertices.length / 3 + offset, 0 + offset, 0 + bottomVertices.length / 3 + offset);
+	            }
+	            else {
+	                sideIndices.push(i + offset, i + 1 + offset, i + bottomVertices.length / 3 + offset);
+	                sideIndices.push(i + bottomVertices.length / 3 + offset, i + 1 + offset, i + 1 + bottomVertices.length / 3 + offset);
+	            }
+	        }
+	        vertices = vertices.slice().concat(sideVertices);
+	        indices = indices.slice().concat(sideIndices);
+	        for (let i = 0; i < indices.length; i += 3) {
+	            const index1 = indices[i];
+	            const index2 = indices[i + 1];
+	            const index3 = indices[i + 2];
+	            const p1p2 = new Vector3(vertices[index2 * 3] - vertices[index1 * 3], vertices[index2 * 3 + 1] - vertices[index1 * 3 + 1], vertices[index2 * 3 + 2] - vertices[index1 * 3 + 2]).normalize();
+	            const p1p3 = new Vector3(vertices[index3 * 3] - vertices[index1 * 3], vertices[index3 * 3 + 1] - vertices[index1 * 3 + 1], vertices[index3 * 3 + 2] - vertices[index1 * 3 + 2]).normalize();
+	            const normal = p1p2.clone().cross(p1p3).normalize();
+	            normals.push(normal.x, normal.y, normal.z, normal.x, normal.y, normal.z, normal.x, normal.y, normal.z);
+	        }
+	        this.geometry.setIndex(indices);
+	        this.geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+	        this.geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
+	        if (this.extrude) {
+	            const line = new BaseLine({
+	                lineWidth: 1,
+	                color: '#ffffff'
+	            });
+	            line.setPositions(topVertices);
+	            this.add(line);
+	        }
+	    }
+	    loadGeometry(points) {
+	        let coords = [];
+	        let vertices = [];
+	        let normals = [];
+	        let indices = [];
+	        const center = lnglat2mercator(this.center);
+	        for (let i = 0; i < points.length; i++) {
+	            const point = lnglat2mercator(points[i]);
+	            coords = coords.concat(point);
+	            vertices = vertices.concat(point[0] - center[0], 0, point[1] - center[1]);
+	            normals = normals.concat(0, 1, 0);
+	        }
+	        indices = earcut_1(coords);
+	        this.geometry.setIndex(indices);
+	        this.geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+	        this.geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
+	        const line = new BaseLine({
+	            lineWidth: 6,
+	            color: '#ffffff'
+	        });
+	        line.setPositions(vertices);
+	        this.add(line);
+	    }
+	}
+
+	class BaseCube extends Mesh {
+	    opts;
+	    width;
+	    height;
+	    depth;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            width: 0.015,
+	            height: 0.5,
+	            depth: 0.015,
+	            color: '#ff0000',
+	            mixColor: '#0000ff',
+	            mixColor2: '#000000',
+	            type: 0,
+	            threshold: 1500,
+	            lights: true
+	        }, opts);
+	        // this.geometry = new BoxBufferGeometry(this.opts.width, this.opts.height, this.opts.depth)
+	        this.width = this.opts.width !== undefined ? this.opts.width : 0.015;
+	        this.height = this.opts.height !== undefined ? this.opts.height : 0.5;
+	        this.depth = this.opts.depth !== undefined ? this.opts.depth : 0.015;
+	        const bottomVertices = [-this.width / 2, 0, this.depth / 2, this.width / 2, 0, this.depth / 2, this.width / 2, 0, -this.depth / 2, -this.width / 2, 0, -this.depth / 2];
+	        const topVertices = [
+	            -this.width / 2,
+	            this.height,
+	            this.depth / 2,
+	            this.width / 2,
+	            this.height,
+	            this.depth / 2,
+	            this.width / 2,
+	            this.height,
+	            -this.depth / 2,
+	            -this.width / 2,
+	            this.height,
+	            -this.depth / 2
+	        ];
+	        const positions = bottomVertices.concat(topVertices);
+	        const bottomIndices = [0, 1, 3, 3, 1, 2];
+	        const topIndices = [4, 5, 7, 7, 5, 6];
+	        const sideIndices = [0, 1, 4, 4, 1, 5, 1, 2, 5, 5, 2, 6, 2, 3, 6, 6, 3, 7, 3, 0, 7, 7, 0, 4];
+	        const indices = bottomIndices.concat(topIndices).concat(sideIndices);
+	        const bottomNormals = [0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0];
+	        const topNormals = [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0];
+	        const sideNormals = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0];
+	        const normals = bottomNormals.concat(topNormals).concat(sideNormals);
+	        this.geometry.setIndex(indices);
+	        this.geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+	        this.geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            uniforms: {
+	                color: { value: new Color(this.opts.color) },
+	                height: { value: this.opts.height },
+	                threshold: { value: this.opts.threshold },
+	                type: { value: this.opts.type },
+	                opacity: { value: 1 },
+	                mixColor: { value: new Color(this.opts.mixColor) },
+	                mixColor2: { value: new Color(this.opts.mixColor2) }
+	            },
+	            vertexShader: `
+          #ifdef LIGHTS
+            varying vec3 vLightFront;
+            varying vec3 vIndirectFront;
+
+            #ifdef DOUBLE_SIDED
+              varying vec3 vLightBack;
+              varying vec3 vIndirectBack;
+            #endif
+
+            #include <common>
+            #include <uv_pars_vertex>
+            #include <uv2_pars_vertex>
+            #include <bsdfs>
+            #include <lights_pars_begin>
+            #include <color_pars_vertex>
+            #include <fog_pars_vertex>
+            #include <logdepthbuf_pars_vertex>
+            #include <clipping_planes_pars_vertex>
+          #endif
+
+          #ifndef LIGHTS
+            #include <common>
+            #include <logdepthbuf_pars_vertex>
+          #endif
+  
+          varying float vh;
+  
+          void main(){
+
+            #ifdef LIGHTS
+              #include <uv_vertex>
+              #include <uv2_vertex>
+              #include <color_vertex>
+
+              #include <beginnormal_vertex>
+              #include <defaultnormal_vertex>
+
+              #include <begin_vertex>
+              #include <project_vertex>
+              #include <logdepthbuf_vertex>
+              #include <clipping_planes_vertex>
+
+              #include <worldpos_vertex>
+              #include <lights_lambert_vertex>
+              #include <fog_vertex>
+            #endif
+
+            #ifndef LIGHTS
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              #include <logdepthbuf_vertex>
+            #endif
+
+            vh = position.y;
+          }
+          `,
+	            fragmentShader: `
+          uniform vec3 color;
+          uniform vec3 mixColor;
+          uniform vec3 mixColor2;
+          uniform float threshold;
+          
+          uniform float height;
+          uniform float type;
+          uniform float opacity;
+  
+          varying float vh;
+
+          #ifdef LIGHTS
+            varying vec3 vLightFront;
+            varying vec3 vIndirectFront;
+
+            #ifdef DOUBLE_SIDED
+              varying vec3 vLightBack;
+              varying vec3 vIndirectBack;
+            #endif
+
+            #include <common>
+            #include <packing>
+            #include <color_pars_fragment>
+            #include <uv_pars_fragment>
+            #include <uv2_pars_fragment>
+            #include <map_pars_fragment>
+            #include <bsdfs>
+            #include <lights_pars_begin>
+            #include <fog_pars_fragment>
+            #include <logdepthbuf_pars_fragment>
+            #include <clipping_planes_pars_fragment>
+
+          #endif
+
+          #ifndef LIGHTS
+            #include <common>
+            #include <logdepthbuf_pars_fragment>
+          #endif
+  
+          void main(){
+            
+            #ifdef LIGHTS
+              vec4 diffuseColor = vec4( color, opacity );
+              #include <clipping_planes_fragment>
+              ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+    
+              #include <logdepthbuf_fragment>
+              #include <map_fragment>
+              #include <color_fragment>
+              #include <alphatest_fragment>
+    
+              #ifdef DOUBLE_SIDED
+    
+                reflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;
+    
+              #else
+    
+                reflectedLight.indirectDiffuse += vIndirectFront;
+    
+              #endif
+    
+              reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+    
+              #ifdef DOUBLE_SIDED
+    
+                reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
+    
+              #else
+    
+                reflectedLight.directDiffuse = vLightFront;
+    
+              #endif
+    
+              reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+    
+              // modulation
+    
+              vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
+              gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+    
+              if(type == 0.){
+                gl_FragColor.rgb += vec3(mix( vec3(0.), mixColor, vec3((2. * (vh+ threshold) / height + 1.) / 4.)));  // 0 ~ 0.5
+                gl_FragColor.rgb += vec3(mix( vec3(0.), mixColor2, vec3(( (vh + threshold) / height + .5) / 2. + .5))); // 0.5 ~ 1
+              }else if(type == 1.){
+                gl_FragColor = vec4(gl_FragColor.rgb, opacity);
+              }
+
+              #include <tonemapping_fragment>
+              #include <encodings_fragment>
+              #include <fog_fragment>
+              #include <premultiplied_alpha_fragment>
+            #endif
+
+            #ifndef LIGHTS
+              if(type == 0.){
+                gl_FragColor = vec4(color, opacity);
+                gl_FragColor.rgb += vec3(mix( color, mixColor, vec3((2. * vh / height + 1.) / 2.)));
+                gl_FragColor.rgb += vec3(mix( color, mixColor2, vec3((vh / height + .5) / 2. + .5)));
+              }else if(type == 1.){
+                gl_FragColor = vec4(color, opacity);
+              }
+              #include <logdepthbuf_fragment>
+              #include <tonemapping_fragment>
+            #endif
+          }
+          `
+	        });
+	        this.material.uniforms = UniformsUtils.merge([this.material.uniforms, UniformsLib.lights]);
+	        if (this.opts.lights)
+	            this.material.defines = { LIGHTS: '' };
+	        this.material.lights = this.opts.lights;
+	    }
+	}
+
+	const fragmentShaders = [
+	    // type 0 （内环大圆，外环渐变圆环附带边缘线）
+	    ` 
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float uClockwise;
+
+#define PI 3.141592654
+#define EPSILON 1e-6
+
+float atan2(in float y,in float x){
+  float ax = abs(x);
+  float ay = abs(y);
+  float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+  float s = a*a;
+  float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+  if(ay > ax) r = PI / 2. - r;
+  if(x < 0. ) r = PI - r;
+  if(y < 0. ) r = 2. * PI - r;
+  return r;
+}
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct < .25){
+        gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), 1.);
+    }else if(pct > .25 && pct < .38){
+        discard;
+    }else if(pct > .38 && pct < .4){
+        gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), 1.);
+    }else if(pct < .5){
+        vec2 dir = vUv - vec2(.5);
+        dir = vec2(dir.x * cos(uTime) - dir.y * sin(uTime), dir.x * sin(uTime) + dir.y * cos(uTime));
+        float theta = atan2(dir.y ,dir.x);
+
+        if(uClockwise == 1.){
+          gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), (2. * PI - theta) / (2. * PI));
+        }else if(uClockwise == -1.){
+          gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), theta / (2. * PI));
+        }
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+    
+}
+`,
+	    // type 1 （渐变圆环）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float uClockwise;
+uniform float ringWidth;
+
+#define PI 3.141592654
+#define EPSILON 1e-6
+
+float atan2(in float y,in float x){
+  float ax = abs(x);
+  float ay = abs(y);
+  float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+  float s = a*a;
+  float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+  if(ay > ax) r = PI / 2. - r;
+  if(x < 0. ) r = PI - r;
+  if(y < 0. ) r = 2. * PI - r;
+  return r;
+}
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct > (.5 - ringWidth) && pct < .5){
+        vec2 dir = vUv - vec2(.5);
+        dir = vec2(dir.x * cos(uTime) - dir.y * sin(uTime), dir.x * sin(uTime) + dir.y * cos(uTime));
+        float theta = atan2(dir.y ,dir.x);
+        if(uClockwise == 1.){
+          gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), (2. * PI - theta) / (2. * PI));
+        }else if(uClockwise == -1.){
+          gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), theta / (2. * PI));
+        }
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 2 （ 内环小圆， 外环渐变圆环）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float uClockwise;
+
+#define PI 3.141592654
+#define EPSILON 1e-6
+
+float atan2(in float y,in float x){
+  float ax = abs(x);
+  float ay = abs(y);
+  float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+  float s = a*a;
+  float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+  if(ay > ax) r = PI / 2. - r;
+  if(x < 0. ) r = PI - r;
+  if(y < 0. ) r = 2. * PI - r;
+  return r;
+}
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct < .15){
+      gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), 1.);
+    }else if(pct> .4 && pct < .5){
+        vec2 dir = vUv - vec2(.5);
+        dir = vec2(dir.x * cos(uTime) - dir.y * sin(uTime), dir.x * sin(uTime) + dir.y * cos(uTime));
+        float theta = atan2(dir.y ,dir.x);
+        if(uClockwise == 1.){
+          gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), (2. * PI - theta) / (2. * PI));
+        }else if(uClockwise == -1.){
+          gl_FragColor = vec4(color * (2.4 + sin(2.2 * uTime)), theta / (2. * PI));
+        }
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 3 （小圆带边缘线）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct < .15){
+      gl_FragColor = vec4(color, .5);
+    }else if(pct> .15 && pct < .1525){
+        gl_FragColor = vec4(color, 1.);
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 4 （渐变圆环带边缘线 外环内边缘）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct > .35 && pct < .355){
+      gl_FragColor = vec4(color, 1.);
+    }else if(pct > .355 && pct < .5){
+      gl_FragColor = vec4(color, 1. - pct / .5);
+    } else{
+      discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 5 （渐变圆环带边缘线 内环外边缘）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct > .35 && pct < .495){
+      gl_FragColor = vec4(color, pct / .35 - 1.);
+    }else if(pct > .495 && pct < .5){
+      gl_FragColor = vec4(color, 1.);
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 6 （扩散渐变圆环）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float ringWidth;
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+  float pct = distance(vUv, vec2(.5));
+
+  if(pct > uTime && pct < (uTime + ringWidth)){
+    gl_FragColor = vec4(color, pct / (uTime + ringWidth) - (uTime / (uTime + ringWidth)));
+  } else{
+      discard;
+  }
+
+  #include <tonemapping_fragment>
+}
+`,
+	    // type 7 （内渐变圆环）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+  float pct = distance(vUv, vec2(.5));
+
+  if(pct > .4 && pct < .5){
+    gl_FragColor = vec4(color, pct / .5 - .8);
+  } else{
+      discard;
+  }
+
+  #include <tonemapping_fragment>
+}
+`,
+	    // type 8 （渐变线圆）
+	    ` 
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float uClockwise;
+
+#define PI 3.141592654
+#define EPSILON 1e-6
+
+float atan2(in float y,in float x){
+  float ax = abs(x);
+  float ay = abs(y);
+  float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+  float s = a*a;
+  float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+  if(ay > ax) r = PI / 2. - r;
+  if(x < 0. ) r = PI - r;
+  if(y < 0. ) r = 2. * PI - r;
+  return r;
+}
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct > .495 && pct < .5){
+        vec2 dir = vUv - vec2(.5);
+        dir = vec2(dir.x * cos(uTime) - dir.y * sin(uTime), dir.x * sin(uTime) + dir.y * cos(uTime));
+        float theta = atan2(dir.y ,dir.x);
+
+        if(theta > 0. && theta < (PI / 2.) ){
+          discard;
+        } else if(theta > PI && theta < (3. * PI / 2.)){
+          discard;
+        } else{
+
+          if(uClockwise == 1.){
+            gl_FragColor = vec4(color , mod(theta, PI / 2.) / ( PI / 2.));
+          }else{
+            gl_FragColor = vec4(color , abs(mod(PI / 2. - theta, PI / 2.)) / ( PI / 2.));
+          }
+        }
+
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 9 （扩散渐变圆：线）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float opacity;
+uniform float ringWidth;
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+
+float pct = distance(vUv, vec2(.5));
+
+if(pct > uTime && pct < (uTime + ringWidth)){
+  gl_FragColor = vec4(color, opacity);
+} else{
+  discard;
+}
+
+#include <tonemapping_fragment>
+}
+`,
+	    // type 10 （圆：线）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float opacity;
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+
+float pct = distance(vUv, vec2(.5));
+
+if(pct > .48 && pct < .5){
+  gl_FragColor = vec4(color, opacity);
+} else{
+  discard;
+}
+
+#include <tonemapping_fragment>
+}
+`,
+	    // type 11 （渐变线圆2）
+	    ` 
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float ringWidth;
+
+#define PI 3.141592654
+#define EPSILON 1e-6
+
+float atan2(in float y,in float x){
+  float ax = abs(x);
+  float ay = abs(y);
+  float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+  float s = a*a;
+  float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+  if(ay > ax) r = PI / 2. - r;
+  if(x < 0. ) r = PI - r;
+  if(y < 0. ) r = 2. * PI - r;
+  return r;
+}
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct > uTime && pct < (uTime + ringWidth)){
+        vec2 dir = vUv - vec2(.5);
+        float theta = atan2(dir.y ,dir.x);
+
+        if(theta > 0. && theta < (PI / 2.) ){
+          discard;
+        } else if(theta > PI && theta < (3. * PI / 2.)){
+          discard;
+        } else{
+
+        gl_FragColor = vec4(color , mod(theta, PI / 2.) / ( PI / 2.));
+      }
+
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 12 （渐变上升圆环）
+	    `
+varying vec2 vUv;
+uniform vec3 color;
+uniform float uTime;
+uniform float uClockwise;
+uniform float ringWidth;
+uniform float rotateSpeed;
+
+#define PI 3.141592654
+#define EPSILON 1e-6
+
+float atan2(in float y,in float x){
+  float ax = abs(x);
+  float ay = abs(y);
+  float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+  float s = a*a;
+  float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+  if(ay > ax) r = PI / 2. - r;
+  if(x < 0. ) r = PI - r;
+  if(y < 0. ) r = 2. * PI - r;
+  return r;
+}
+
+#include <logdepthbuf_pars_fragment>
+
+void main(){
+#include <logdepthbuf_fragment>
+    float pct = distance(vUv, vec2(.5));
+
+    if(pct > uTime && pct < uTime + ringWidth){
+        vec2 dir = vUv - vec2(.5);
+        dir = vec2(dir.x * cos(uTime * rotateSpeed) - dir.y * sin(uTime * rotateSpeed), dir.x * sin(uTime * rotateSpeed) + dir.y * cos(uTime * rotateSpeed));
+        float theta = atan2(dir.y ,dir.x);
+        if(uClockwise == 1.){
+          gl_FragColor = vec4(color , (2. * PI - theta) / (2. * PI));
+        }else if(uClockwise == -1.){
+          gl_FragColor = vec4(color , theta / (2. * PI));
+        }
+    } else{
+        discard;
+    }
+
+    #include <tonemapping_fragment>
+}
+`,
+	    // type 13 （间隔圆环）
+	    `
+ varying vec2 vUv;
+ uniform vec3 color;
+ uniform float uTime;
+ uniform float ringWidth;
+ uniform float rotateSpeed;
+ uniform float opacity;
+ 
+ #define PI 3.141592654
+ #define EPSILON 1e-6
+ 
+ float atan2(in float y,in float x){
+   float ax = abs(x);
+   float ay = abs(y);
+   float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+   float s = a*a;
+   float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+   if(ay > ax) r = PI / 2. - r;
+   if(x < 0. ) r = PI - r;
+   if(y < 0. ) r = 2. * PI - r;
+   return r;
+ }
+ 
+ #include <logdepthbuf_pars_fragment>
+ 
+ void main(){
+ #include <logdepthbuf_fragment>
+     float pct = distance(vUv, vec2(.5));
+ 
+     if(pct > .5 - ringWidth && pct < .5){
+         vec2 dir = vUv - vec2(.5);
+         dir = vec2(dir.x * cos(uTime * rotateSpeed) - dir.y * sin(uTime * rotateSpeed), dir.x * sin(uTime * rotateSpeed) + dir.y * cos(uTime * rotateSpeed));
+         float theta = atan2(dir.y ,dir.x);
+         if(theta > 0. && theta < PI / 3.){
+           gl_FragColor = vec4(color , opacity);
+         }else if(theta > 2. * PI / 3. && theta < PI){
+           gl_FragColor = vec4(color , opacity);
+         }else if(theta > 4. * PI / 3. && theta < 5. * PI / 3.){
+           gl_FragColor = vec4(color , opacity);
+         }else{
+           discard;
+         }
+     } else{
+         discard;
+     }
+ 
+     #include <tonemapping_fragment>
+ }
+ `
+	];
+	class BaseCircle extends Mesh {
+	    opts;
+	    animationIndex;
+	    spreadReset; // type = 6 | 12时 使用
+	    spreadStartRadius; // type = 6 | 9 | 11 | 12时使用
+	    spreadEndRadius; // type = 6 | 9 | 11 | 12时使用
+	    spreadSpeed; // type = 6 | 9 | 11 | 12时使用
+	    spreadEndHeight; // type = 9 | 12时使用
+	    spreadStartHeight; // type = 9 | 12时使用
+	    ringWidth; // type = 1 | 6 | 9 | 11 | 12时使用
+	    clockwise; // type = 0 | 1 | 2 | 8 | 12时使用 （1：顺， -1：逆时针旋转）
+	    rotateSpeed; // type = 12 | 13时使用
+	    bounceTag; // type = 9 时使用
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            radius: 1,
+	            color: '#ffffff',
+	            type: 0,
+	            spreadReset: true,
+	            spreadStartRadius: 0.02,
+	            spreadEndRadius: 0.4,
+	            spreadSpeed: 1,
+	            clockwise: -1,
+	            spreadEndHeight: 0,
+	            spreadStartHeight: 0.5,
+	            ringWidth: 0.1,
+	            rotateSpeed: 10
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.bounceTag = 1;
+	        this.spreadReset = this.opts.spreadReset !== undefined ? this.opts.spreadReset : true;
+	        this.ringWidth = this.opts.ringWidth !== undefined ? this.opts.ringWidth : 0.1;
+	        this.spreadStartRadius = this.opts.spreadStartRadius !== undefined ? this.opts.spreadStartRadius : 0.02;
+	        this.spreadEndRadius = this.opts.spreadEndRadius !== undefined ? this.opts.spreadEndRadius : 0.4;
+	        this.spreadSpeed = this.opts.spreadSpeed !== undefined ? this.opts.spreadSpeed : 1;
+	        this.clockwise = this.opts.clockwise !== undefined ? this.opts.clockwise : -1;
+	        this.spreadEndHeight = this.opts.spreadEndHeight !== undefined ? this.opts.spreadEndHeight : 0;
+	        this.spreadStartHeight = this.opts.spreadStartHeight !== undefined ? this.opts.spreadStartHeight : 0.5;
+	        this.rotateSpeed = this.opts.rotateSpeed !== undefined ? this.opts.rotateSpeed : 10;
+	        this.geometry = new PlaneGeometry(this.opts.radius, this.opts.radius, 1, 1);
+	        this.geometry.rotateX(Math.PI / 2);
+	        this.material = new ShaderMaterial({
+	            side: 2,
+	            transparent: true,
+	            uniforms: {
+	                color: { value: new Color(this.opts.color) },
+	                uTime: { value: 0 },
+	                uClockwise: { value: this.clockwise },
+	                opacity: { value: 1 },
+	                ringWidth: { value: this.ringWidth },
+	                rotateSpeed: { value: this.rotateSpeed }
+	            },
+	            vertexShader: `
+            varying vec2 vUv;
+            #include <logdepthbuf_pars_vertex>
+            #include <common>
+            void main(){
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vUv = uv;
+                #include <logdepthbuf_vertex>
+            }
+        `,
+	            fragmentShader: fragmentShaders[this.opts.type]
+	        });
+	    }
+	    rotateAnimation8() {
+	        this.animationIndex = requestAnimationFrame(this.rotateAnimation8.bind(this));
+	        this.material.uniforms.uTime.value -= 0.01 * this.clockwise;
+	        this.material.uniforms.uTime.value %= Math.PI * 2;
+	    }
+	    // 旋转动画（适用于type = 8）
+	    startRotateAnimation8() {
+	        if (this.opts.type == 8)
+	            this.rotateAnimation8();
+	    }
+	    rotateAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.rotateAnimation.bind(this));
+	        this.material.uniforms.uTime.value -= 0.01 * this.clockwise;
+	    }
+	    // 旋转动画（适用于type = 0 | 1 | 2 ）
+	    startRotateAnimation() {
+	        if (this.opts.type == 0 || this.opts.type == 1 || this.opts.type == 2)
+	            this.rotateAnimation();
+	    }
+	    spreadAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.spreadAnimation.bind(this));
+	        this.material.uniforms.uTime.value += 0.001 * this.spreadSpeed;
+	        if (this.material.uniforms.uTime.value >= this.spreadEndRadius) {
+	            this.material.uniforms.uTime.value = this.spreadReset ? 0 : this.spreadStartRadius;
+	        }
+	    }
+	    // 扩散动画（适用于type = 6 | 11）
+	    startSpreadAnimation() {
+	        if (this.opts.type == 6 || this.opts.type == 11) {
+	            this.material.uniforms.uTime.value = this.spreadStartRadius;
+	            this.spreadAnimation();
+	        }
+	    }
+	    risingAnimationBounce() {
+	        this.animationIndex = requestAnimationFrame(this.risingAnimationBounce.bind(this));
+	        this.material.uniforms.uTime.value += 0.001 * this.bounceTag * this.spreadSpeed;
+	        this.position.y += this.bounceTag * this.spreadSpeed * 0.001;
+	        if (this.position.y >= this.spreadEndHeight || this.position.y <= this.spreadStartHeight) {
+	            this.bounceTag *= -1;
+	        }
+	    }
+	    // 扩散动画（适用于type = 9）
+	    startRisingAnimationBounce() {
+	        if (this.opts.type == 9) {
+	            this.material.uniforms.uTime.value = this.spreadStartRadius;
+	            this.position.y = this.spreadStartHeight;
+	            this.risingAnimationBounce();
+	        }
+	    }
+	    spreadAnimation2() {
+	        this.animationIndex = requestAnimationFrame(this.spreadAnimation2.bind(this));
+	        this.material.uniforms.uTime.value += 0.001 * this.spreadSpeed;
+	        this.material.uniforms.opacity.value -= 1 / ((this.spreadEndRadius - this.spreadStartRadius) / (0.001 * this.spreadSpeed));
+	        this.position.y -= (this.spreadStartHeight - this.spreadEndHeight) / ((this.spreadEndRadius - this.spreadStartRadius) / (0.001 * this.spreadSpeed));
+	        if (this.material.uniforms.uTime.value >= this.spreadEndRadius) {
+	            this.material.uniforms.uTime.value = 0;
+	            this.material.uniforms.opacity.value = 1;
+	            this.position.y = this.spreadStartHeight;
+	        }
+	    }
+	    // 扩散动画（适用于type = 9）
+	    startSpreadAnimation2() {
+	        if (this.opts.type == 9) {
+	            this.material.uniforms.uTime.value = this.spreadStartRadius;
+	            this.position.y = this.spreadStartHeight;
+	            this.spreadAnimation2();
+	        }
+	    }
+	    spreadAnimation3() {
+	        this.animationIndex = requestAnimationFrame(this.spreadAnimation3.bind(this));
+	        this.material.uniforms.uTime.value += 0.001 * this.spreadSpeed;
+	        this.material.uniforms.opacity.value -= 1 / ((this.spreadEndRadius - this.spreadStartRadius) / (0.001 * this.spreadSpeed));
+	        this.position.y += 0.001 * this.spreadSpeed;
+	        if (this.material.uniforms.uTime.value >= this.spreadEndRadius) {
+	            this.material.uniforms.uTime.value = this.spreadReset ? 0 : this.spreadStartRadius;
+	            this.material.uniforms.opacity.value = 1;
+	            this.position.y = this.spreadReset ? 0 : this.spreadStartHeight;
+	        }
+	    }
+	    // 扩散动画（适用于type = 12）
+	    startSpreadAnimation3() {
+	        if (this.opts.type == 12) {
+	            this.material.uniforms.uTime.value = this.spreadStartRadius;
+	            this.position.y = this.spreadStartHeight;
+	            this.spreadAnimation3();
+	        }
+	    }
+	    rotateAnimation13() {
+	        this.animationIndex = requestAnimationFrame(this.rotateAnimation13.bind(this));
+	        this.material.uniforms.uTime.value += 0.001;
+	    }
+	    // 旋转动画（type = 13)
+	    startRotateAnimation13() {
+	        if (this.opts.type == 13) {
+	            this.rotateAnimation13();
+	        }
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	}
+
+	const drawText$1 = [drawTextCanvas, drawTextCanvas2, drawTextCanvas3, drawTextCanvas4, drawTextCanvas5, drawTextCanvas6];
+	const updateText = [updateTextCanvas];
+	class BaseTitle extends Sprite {
+	    text;
+	    opts;
+	    _bgColor;
+	    opacity;
+	    fontColor;
+	    strokeColor;
+	    fontSize;
+	    height;
+	    textType;
+	    // canvasWidth: number
+	    // canvasHeight: number
+	    // canvasSize!: number
+	    _size;
+	    _width;
+	    _height;
+	    canvasElement;
+	    constructor(opts) {
+	        super();
+	        this._bgColor = new Color(opts?.bgColor !== undefined ? opts?.bgColor : '#ff0000');
+	        this.opacity = opts?.opacity !== undefined ? opts.opacity : 1;
+	        this.fontColor = opts?.fontColor !== undefined ? opts?.fontColor : '#ffffff';
+	        this.strokeColor = opts?.strokeColor !== undefined ? opts?.strokeColor : '#ff0000';
+	        this.text = opts?.text !== undefined ? opts?.text : '标题';
+	        this.fontSize = opts?.fontSize !== undefined ? opts?.fontSize : 64;
+	        this.height = opts?.height !== undefined ? opts?.height : 0;
+	        this.textType = opts?.type !== undefined ? opts?.type : 0;
+	        this._size = opts?.size !== undefined ? opts?.size : 1;
+	        this.opts = Object.assign({
+	            text: this.text,
+	            fontColor: this.fontColor,
+	            bgColor: this.bgColor,
+	            strokeColor: this.strokeColor,
+	            fontSize: this.fontSize,
+	            height: this.height,
+	            size: this.canvasSize,
+	            type: this.textType
+	        }, opts);
+	        const { canvas: canvasEle, width, height } = drawText$1[this.opts.type]({
+	            text: this.opts.text,
+	            fontColor: this.opts.fontColor,
+	            bgColor: this.opts.bgColor,
+	            strokeColor: this.opts.strokeColor,
+	            fontSize: this.opts.fontSize
+	        });
+	        this.canvasElement = canvasEle;
+	        const canvasTex = new CanvasTexture(canvasEle);
+	        canvasTex.encoding = sRGBEncoding;
+	        this.material = new SpriteMaterial({
+	            map: canvasTex,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.canvasWidth = width;
+	        this.canvasHeight = height;
+	        this.center.set(0.5, 0);
+	        this.position.set(0, this.height, 0);
+	        this.scale.set((this.canvasSize * this.canvasWidth) / this.canvasHeight, this.canvasSize, 1);
+	        // this.scale.set((this.canvasSize * (1 * this.canvasWidth)) / 512, this.canvasSize * (this.canvasHeight / this.canvasWidth), 1)
+	    }
+	    get bgColor() {
+	        return `rgba(${this._bgColor.r * 255},${this._bgColor.g * 255},${this._bgColor.b * 255},${this.opacity})`;
+	    }
+	    set bgColor(val) {
+	        this._bgColor.set(val);
+	    }
+	    get canvasSize() {
+	        return this._size;
+	    }
+	    set canvasSize(val) {
+	        this._size = val;
+	    }
+	    get canvasWidth() {
+	        return this._width;
+	    }
+	    set canvasWidth(val) {
+	        this._width = val;
+	    }
+	    get canvasHeight() {
+	        return this._height;
+	    }
+	    set canvasHeight(val) {
+	        this._height = val;
+	    }
+	    // canvas: HTMLCanvasElement
+	    // fontColor: string
+	    // bgColor: string
+	    // strokeColor: string
+	    // fontSize: number
+	    // size: number
+	    update({ type, text, fontColor, bgColor, strokeColor, fontSize, size }) {
+	        if (!this.canvasElement)
+	            throw new Error('title-update needs canvasElement');
+	        if (bgColor !== undefined)
+	            this.bgColor = bgColor;
+	        this.fontColor = fontColor !== undefined ? fontColor : this.fontColor;
+	        this.strokeColor = strokeColor !== undefined ? strokeColor : this.strokeColor;
+	        this.text = text !== undefined ? text : this.text;
+	        this.fontSize = fontSize !== undefined ? fontSize : this.fontSize;
+	        this.textType = type !== undefined ? type : this.textType;
+	        this.canvasSize = size !== undefined ? size : this.canvasSize;
+	        const updateOpts = Object.assign({
+	            text: this.text,
+	            fontColor: this.fontColor,
+	            bgColor: this.bgColor,
+	            strokeColor: this.strokeColor,
+	            fontSize: this.fontSize,
+	            canvas: this.canvasElement
+	        });
+	        const { width, height } = updateText[this.textType](updateOpts);
+	        this.canvasWidth = width;
+	        this.canvasHeight = height;
+	        this.scale.set((this.canvasSize * this.canvasWidth) / this.canvasHeight, this.canvasSize, 1);
+	        if (this.material.map)
+	            this.material.map.needsUpdate = true;
+	        this.material.needsUpdate = true;
+	    }
+	}
+
+	class BaseShapeVicGeometry extends BufferGeometry {
+	    constructor() {
+	        super();
+	        // positions
+	        // ** 侧面
+	        // 0,0,0, .25,.5,0 , 0,.3,.1
+	        // 0,0,0, 0,.3,.1, -.25,.5,0
+	        // 0,0,0, 0,.3,-.1, .25,.5,0,
+	        // 0,0,0, -.25,.5,0, 0,.3,-.1,
+	        // ** 顶面
+	        // .25,.5,0, 0,.3,-.1, 0,.3,.1,
+	        // 0,.3,.1, 0,.3,-.1, -.25,.5,0,
+	        const positions = [
+	            0, 0, 0, 0.25, 0.5, 0, 0, 0.3, 0.1, 0, 0, 0, 0, 0.3, 0.1, -0.25, 0.5, 0, 0, 0, 0, 0, 0.3, -0.1, 0.25, 0.5, 0, 0, 0, 0, -0.25, 0.5, 0, 0, 0.3, -0.1, 0.25, 0.5, 0, 0, 0.3, -0.1, 0, 0.3, 0.1, 0,
+	            0.3, 0.1, 0, 0.3, -0.1, -0.25, 0.5, 0
+	        ];
+	        const d1 = new Vector3();
+	        const d2 = new Vector3();
+	        const normals = [];
+	        for (let i = 0; i < positions.length; i += 9) {
+	            d1.set(positions[i + 3] - positions[i], positions[i + 4] - positions[i + 1], positions[i + 5] - positions[i + 2]);
+	            d2.set(positions[i + 6] - positions[i], positions[i + 7] - positions[i + 1], positions[i + 8] - positions[i + 2]);
+	            const n = d1.clone().cross(d2).normalize();
+	            normals.push(n.x, n.y, n.z, n.x, n.y, n.z, n.x, n.y, n.z);
+	        }
+	        this.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
+	        this.setAttribute('normal', new BufferAttribute(new Float32Array(normals), 3));
+	    }
+	}
+
+	class BaseShapeVic extends Mesh {
+	    opts;
+	    animationIndex;
+	    speed;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000'
+	        }, opts);
+	        this.geometry = new BaseShapeVicGeometry();
+	        this.material = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true,
+	            side: 2
+	        });
+	        this.animationIndex = -1;
+	        this.speed = this.opts.speed !== undefined ? this.opts.speed : 1;
+	    }
+	    animate() {
+	        this.animationIndex = requestAnimationFrame(this.animate.bind(this));
+	        this.rotation.z += (this.speed * 0.1) / Math.PI;
+	    }
+	    start() {
+	        this.animate();
+	    }
+	    stop() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	}
+
+	class BaseSpreadCircle extends Mesh {
+	    animationIndex;
+	    speed;
+	    time;
+	    opts;
+	    constructor(opts) {
+	        super();
+	        let options = {
+	            radius: 1,
+	            color: '#ffffff',
+	            speed: 1,
+	            time: 0
+	        };
+	        options = Object.assign(options, opts);
+	        this.opts = opts;
+	        this.speed = options.speed;
+	        this.time = options.time;
+	        // 创建box
+	        const geometry = new PlaneGeometry(options.radius, options.radius, 1, 1);
+	        const vertexShader = `
+        #include <common>
+        #include <logdepthbuf_pars_vertex>
+        varying vec2 vUv;
+        void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vUv = uv;
+            #include <logdepthbuf_vertex>
+        }`;
+	        const fragmentShader = `
+        varying vec2 vUv;
+        uniform vec3 color;
+        uniform float opacity;
+        uniform float uSpeed;
+        uniform float uSge;
+        uniform float time;
+
+        #include <logdepthbuf_pars_fragment>
+
+        float PI = 3.14159265;
+        float drawCircle(float index, float range) {
+            float opaa = 1.0;
+            if (index >= 1.0 - range) {
+              opaa = 1.0 - (index - (1.0 - range)) / range;
+            } else if(index <= range) {
+              opaa = index / range;
+            }
+            return opaa;
+        }
+        float distanceTo(vec2 src, vec2 dst) {
+            float dx = src.x - dst.x;
+            float dy = src.y - dst.y;
+            float dv = dx * dx + dy * dy;
+            return sqrt(dv);
+        }
+        void main() {
+            #include <logdepthbuf_fragment>
+            float iTime = -time * uSpeed;
+            float opa = 0.0;
+            float len = distanceTo(vec2(0.5, 0.5), vec2(vUv.x, vUv.y));
+
+            float size = 1.0 / uSge;
+            vec2 range = vec2(0.65, 0.85);
+            float index = mod(iTime + len, size);
+
+            if (index < size && len <= 0.5) {
+                float i = sin(index / size * PI);
+
+                // 处理边缘锯齿
+                if (i >= range.x && i <= range.y){
+                    // 归一
+                    float t = (i - range.x) / (range.y - range.x);
+                    // 边缘锯齿范围
+                    float r = 0.3;
+                    opa = drawCircle(t, r);
+
+                }
+                // 渐变
+                opa *=  1.0 - len / 0.5;
+            };
+
+            if( opacity * opa <= 0.0){
+              discard;
+            }else{
+              gl_FragColor = vec4(color, opacity * opa);
+            }
+        }`;
+	        this.material = new ShaderMaterial({
+	            side: 2,
+	            transparent: true,
+	            uniforms: {
+	                color: { value: new Color(options.color) },
+	                opacity: { value: 1 },
+	                uSpeed: { value: 0.25 },
+	                uSge: { value: 3 },
+	                uRadius: { value: options.radius / 2 },
+	                time: { value: options.time }
+	            },
+	            vertexShader: vertexShader,
+	            fragmentShader: fragmentShader
+	        });
+	        this.geometry = geometry;
+	        this.geometry.rotateX(Math.PI / 2);
+	    }
+	    animate() {
+	        this.animationIndex = requestAnimationFrame(this.animate.bind(this));
+	        this.material.uniforms.time.value += this.speed * 0.01;
+	        // if ((this.material as any).uniforms.time.value > 60) (this.material as any).uniforms.time.value = 0
+	    }
+	    start() {
+	        this.animate();
+	    }
+	    stop() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = null;
+	    }
+	}
+
+	const Primitives = {
+	    BaseLine,
+	    BaseExtrudeShape,
+	    BaseCube,
+	    BaseCircle,
+	    BaseTitle,
+	    BaseShapeVic,
+	    BaseSpreadCircle
+	};
+
+	class BaseBuildingStripeMaterial extends ShaderMaterial {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#0000ff',
+	            emissive: '#ffffff',
+	            minHeight: -155,
+	            maxHeight: -36
+	        }, opts);
+	        this.lights = true;
+	        this.transparent = true;
+	        this.depthWrite = true;
+	        this.depthTest = true;
+	        this.uniforms = {
+	            color: {
+	                value: new Color(this.opts.color)
+	            },
+	            opacity: {
+	                value: 1
+	            },
+	            emissive: {
+	                value: new Color(this.opts.emissive)
+	            },
+	            minHeight: {
+	                value: this.opts.minHeight
+	            },
+	            maxHeight: {
+	                value: this.opts.maxHeight
+	            }
+	        };
+	        this.vertexShader = `
+          #include <common>
+
+          precision highp float;
+
+          varying vec3 v_position;
+          varying vec3 v_normal;
+
+          varying vec3 vLightFront;
+          varying vec3 vIndirectFront;
+
+
+          #ifdef DOUBLE_SIDED
+            varying vec3 vLightBack;
+            varying vec3 vIndirectBack;
+          #endif
+
+          #include <uv_pars_vertex>
+          #include <uv2_pars_vertex>
+          #include <bsdfs>
+          #include <lights_pars_begin>
+          #include <color_pars_vertex>
+          #include <fog_pars_vertex>
+          #include <logdepthbuf_pars_vertex>
+          #include <clipping_planes_pars_vertex>
+
+          void main(){
+            #include <uv_vertex>
+            #include <uv2_vertex>
+            #include <color_vertex>
+
+            #include <beginnormal_vertex>
+            #include <defaultnormal_vertex>
+
+            #include <begin_vertex>
+            #include <project_vertex>
+            #include <logdepthbuf_vertex>
+            #include <clipping_planes_vertex>
+
+            #include <worldpos_vertex>
+            #include <lights_lambert_vertex>
+            #include <fog_vertex>
+
+            v_position = position;
+            v_normal = normal;
+          }
+        `;
+	        this.fragmentShader = `
+        precision highp float;
+
+        varying vec3 v_position;
+        varying vec3 v_normal;
+
+        uniform vec3 color;
+        uniform vec3 emissive;
+        uniform float opacity;
+
+        varying vec3 vLightFront;
+        varying vec3 vIndirectFront;
+
+        uniform float minHeight;
+        uniform float maxHeight;
+
+        #ifdef DOUBLE_SIDED
+          varying vec3 vLightBack;
+          varying vec3 vIndirectBack;
+        #endif
+
+        #include <common>
+        #include <packing>
+        #include <color_pars_fragment>
+        #include <uv_pars_fragment>
+        #include <uv2_pars_fragment>
+        #include <map_pars_fragment>
+        #include <bsdfs>
+        #include <lights_pars_begin>
+        #include <fog_pars_fragment>
+        #include <logdepthbuf_pars_fragment>
+        #include <clipping_planes_pars_fragment>
+        void main(){
+          float baseHeight = v_position.y;
+
+          // if(baseHeight < minHeight){
+          //   gl_FragColor = vec4(vec3(color / 2.), opacity);
+          //   return;
+          // }else if(baseHeight < -80.){
+          //   gl_FragColor = vec4(vec3(0.,0.,1.), opacity);
+          //   return;
+          // }else if(baseHeight < maxHeight){
+          //   gl_FragColor = vec4(vec3(0.,1.,1.), opacity);
+          //   return;
+          // }
+
+          vec4 diffuseColor = vec4( color, opacity );
+          // gl_FragColor = diffuseColor; // 基础色
+          #include <clipping_planes_fragment>
+          ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+          vec3 totalEmissiveRadiance = emissive;
+
+          #include <logdepthbuf_fragment>
+          #include <map_fragment>
+          #include <color_fragment>
+          #include <alphatest_fragment>
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;
+
+          #else
+
+            reflectedLight.indirectDiffuse += vIndirectFront;
+
+          #endif
+
+          reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
+
+          #else
+
+            reflectedLight.directDiffuse = vLightFront;
+
+          #endif
+
+          reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          // modulation
+
+          vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
+          gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+
+
+          float centerY = (maxHeight - minHeight) / 2.;
+          float ds = dot(v_normal, vec3(0., 1. ,0.));
+          if(baseHeight >= minHeight && baseHeight <= maxHeight && ds < 0.0001 && ds > -0.0001){
+            float rs = mod(abs(abs(centerY) - abs(baseHeight)), 10.);
+            if(rs <= 2. && rs >= .2){
+              gl_FragColor.rgb += totalEmissiveRadiance;
+            }
+          }
+
+          #include <tonemapping_fragment>
+          #include <encodings_fragment>
+          #include <fog_fragment>
+          #include <premultiplied_alpha_fragment>
+
+        }
+      `;
+	        this.uniforms = UniformsUtils.merge([this.uniforms, UniformsLib.lights]);
+	    }
+	}
+
+	class BaseBuildingGradientMaterial extends ShaderMaterial {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#0000ff',
+	            emissive: '#ffffff',
+	            minHeight: -155,
+	            maxHeight: -36,
+	            mixColor: '#ff0000',
+	            threshold: 0
+	        }, opts);
+	        this.lights = true;
+	        this.transparent = true;
+	        // this.depthWrite = true
+	        // this.depthTest = true
+	        this.uniforms = {
+	            color: {
+	                value: new Color(this.opts.color)
+	            },
+	            opacity: {
+	                value: 1
+	            },
+	            emissive: {
+	                value: new Color(this.opts.emissive)
+	            },
+	            minHeight: {
+	                value: this.opts.minHeight
+	            },
+	            maxHeight: {
+	                value: this.opts.maxHeight
+	            },
+	            mixColor: {
+	                value: new Color(this.opts.mixColor)
+	            },
+	            threshold: {
+	                value: this.opts.threshold
+	            }
+	        };
+	        this.vertexShader = `
+          #include <common>
+
+          precision highp float;
+
+          varying vec3 v_position;
+          varying vec3 v_normal;
+
+          varying vec3 vLightFront;
+          varying vec3 vIndirectFront;
+
+
+          #ifdef DOUBLE_SIDED
+            varying vec3 vLightBack;
+            varying vec3 vIndirectBack;
+          #endif
+
+          #include <uv_pars_vertex>
+          #include <uv2_pars_vertex>
+          #include <bsdfs>
+          #include <lights_pars_begin>
+          #include <color_pars_vertex>
+          #include <fog_pars_vertex>
+          #include <logdepthbuf_pars_vertex>
+          #include <clipping_planes_pars_vertex>
+
+          void main(){
+            #include <uv_vertex>
+            #include <uv2_vertex>
+            #include <color_vertex>
+
+            #include <beginnormal_vertex>
+            #include <defaultnormal_vertex>
+
+            #include <begin_vertex>
+            #include <project_vertex>
+            #include <logdepthbuf_vertex>
+            #include <clipping_planes_vertex>
+
+            #include <worldpos_vertex>
+            #include <lights_lambert_vertex>
+            #include <fog_vertex>
+
+            v_position = position;
+            v_normal = normal;
+          }
+        `;
+	        this.fragmentShader = `
+        precision highp float;
+
+        varying vec3 v_position;
+        varying vec3 v_normal;
+
+        uniform vec3 color;
+        uniform vec3 emissive;
+        uniform float opacity;
+        uniform float threshold;
+
+        varying vec3 vLightFront;
+        varying vec3 vIndirectFront;
+
+        uniform vec3 mixColor;
+
+        uniform float minHeight;
+        uniform float maxHeight;
+
+        #ifdef DOUBLE_SIDED
+          varying vec3 vLightBack;
+          varying vec3 vIndirectBack;
+        #endif
+
+        #include <common>
+        #include <packing>
+        #include <color_pars_fragment>
+        #include <uv_pars_fragment>
+        #include <uv2_pars_fragment>
+        #include <map_pars_fragment>
+        #include <bsdfs>
+        #include <lights_pars_begin>
+        #include <fog_pars_fragment>
+        #include <logdepthbuf_pars_fragment>
+        #include <clipping_planes_pars_fragment>
+
+
+        void main(){
+
+          float baseHeight = v_position.y;
+
+          // if(baseHeight < minHeight){
+          //   gl_FragColor = vec4(vec3(color / 2.), opacity);
+          //   return;
+          // }else if(baseHeight < -80.){
+          //   gl_FragColor = vec4(vec3(0.,0.,1.), opacity);
+          //   return;
+          // }else if(baseHeight < maxHeight){
+          //   gl_FragColor = vec4(vec3(0.,1.,1.), opacity);
+          //   return;
+          // }
+
+          vec4 diffuseColor = vec4( color, opacity );
+          // gl_FragColor = diffuseColor; // 基础色
+          #include <clipping_planes_fragment>
+          ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+          vec3 totalEmissiveRadiance = emissive;
+
+          
+          #include <map_fragment>
+          #include <color_fragment>
+          #include <alphatest_fragment>
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;
+
+          #else
+
+            reflectedLight.indirectDiffuse += vIndirectFront;
+
+          #endif
+
+          reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          #ifdef DOUBLE_SIDED
+
+            reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
+
+          #else
+
+            reflectedLight.directDiffuse = vLightFront;
+
+          #endif
+
+          reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+
+          // modulation
+
+          vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
+          gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+
+          float interval = maxHeight - minHeight;
+          float offsetHeight = baseHeight - minHeight;
+
+          float dc = (offsetHeight + threshold) / interval;
+
+           gl_FragColor.rgb += emissive * dc / 2.;
+           gl_FragColor.rgb += mixColor * (dc / 2. + .5);
+
+        //   gl_FragColor.rgb = mix(mixColor * dc, emissive * dc, gl_FragColor.rgb);
+          
+          #include <logdepthbuf_fragment>
+          #include <tonemapping_fragment>
+          #include <encodings_fragment>
+          #include <fog_fragment>
+          #include <premultiplied_alpha_fragment>
+
+        }
+      `;
+	        this.uniforms = UniformsUtils.merge([this.uniforms, UniformsLib.lights]);
+	    }
+	}
+
+	const PrimitiveMaterial = {
+	    BaseLineMaterial,
+	    BaseBuildingStripeMaterial,
+	    BaseBuildingGradientMaterial
+	};
+
+	// 根据节点名称获取opts的key
+	function getNodeKeyByName(name) {
+	    let key = '';
+	    switch (name) {
+	        case 'Camera':
+	            key = 'cameras';
+	            break;
+	        case 'AmbientLight':
+	            key = 'ambientLight';
+	            break;
+	        case 'HemisphereLight':
+	            key = 'hemisphereLight';
+	            break;
+	        case 'DirectionLights':
+	            key = 'directionLights';
+	            break;
+	        case 'SpotLights':
+	            key = 'spotLights';
+	            break;
+	        case 'PointLights':
+	            key = 'pointLights';
+	            break;
+	        case 'RectAreaLights':
+	            key = 'rectAreaLights';
+	            break;
+	        case 'Shadow':
+	            key = 'shadow';
+	            break;
+	        case 'Background':
+	            key = 'background';
+	            break;
+	        case 'HDR':
+	            key = 'hdr';
+	            break;
+	        case 'Fog':
+	            key = 'fog';
+	            break;
+	        case 'MSAAPass':
+	            key = 'msaa';
+	            break;
+	        case 'BloomPass':
+	            key = 'bloom';
+	            break;
+	        case 'OutlinePass':
+	            key = 'outline';
+	            break;
+	        case 'DOFPass':
+	            key = 'dof';
+	            break;
+	        case 'GammaPass':
+	            key = 'gamma';
+	            break;
+	    }
+	    if (key == '')
+	        throw new Error(`function getNodeKeyByName()'s key '${name}' is not valid.`);
+	    return key;
+	}
+
+	/**
+	 * editor parser
+	 */
+	const lightsType = ['ambientLight', 'hemisphereLight', 'spotLights', 'pointLights', 'directionLights', 'rectAreaLights'];
+	const passesType = ['bloom', 'dof', 'outline', 'gamma', 'msaa'];
+	class JSONParser {
+	    type;
+	    json;
+	    constructor() {
+	        this.type = 'JSONParser';
+	        this.json = {
+	            template: {},
+	            cameras: {
+	                orbitCamera: {}
+	            },
+	            lights: {}
+	        };
+	    }
+	    parse(nodes) {
+	        for (const i in nodes) {
+	            const node = nodes[i];
+	            // scene setting nodes
+	            if (node.uuid === -1) {
+	                const key = getNodeKeyByName(node.name);
+	                if (key == 'cameras') {
+	                    this.json[key]['orbitCamera'] = Object.assign({}, node.options);
+	                }
+	                else if (lightsType.includes(key)) {
+	                    if (key == 'ambientLight' || key == 'hemisphereLight') {
+	                        this.json['lights'][key] = Object.assign({}, node.options);
+	                    }
+	                    else {
+	                        if (!this.json['lights'][key])
+	                            this.json['lights'][key] = [];
+	                        if (Object.keys(node.options).length > 0)
+	                            this.json['lights'][key].push(Object.assign({}, node.options));
+	                    }
+	                }
+	                else if (key == 'shadow') {
+	                    this.json['enableShadow'] = node.options.enabled;
+	                }
+	                else if (key == 'hdr') {
+	                    this.json['hdrUrls'] = node.options.value.slice();
+	                }
+	                else if (passesType.includes(key)) {
+	                    this.json[key] = Object.assign({}, node.options);
+	                    if (key == 'bloom') {
+	                        this.json['bloomEnabled'] = node.options.enabled;
+	                    }
+	                    else if (key == 'outline') {
+	                        this.json['outlineEnabled'] = node.options.enabled;
+	                    }
+	                    else if (key == 'dof') {
+	                        this.json['dofEnabled'] = node.options.enabled;
+	                    }
+	                    else if (key == 'gamma') {
+	                        this.json['gammaEnabled'] = node.options.enabled;
+	                    }
+	                }
+	                else {
+	                    this.json[key] = Object.assign({}, node.options);
+	                }
+	            }
+	            else if (node.uuid == -2) ;
+	            else {
+	                // modelurls加载的场景模型（模板）
+	                this.json['template'][node.uuid] = Object.assign({}, node);
+	            }
+	        }
+	        return this.json;
+	    }
+	}
+
+	/**
+	 * editor parser
+	 */
+	class TemplateParser {
+	    type;
+	    templateModels;
+	    templatePublic;
+	    constructor() {
+	        this.type = 'TemplateParser';
+	        this.templateModels = [];
+	        this.templatePublic = '';
+	    }
+	    parse(container) {
+	        const templatePublic = container.attrs && container.attrs.publicPath !== undefined ? `${container.attrs.publicPath}/edit` : `/edit`;
+	        this.templatePublic = templatePublic;
+	        const modelUrls = container.attrs && container.attrs.modelUrls !== undefined ? container.attrs.modelUrls : [];
+	        modelUrls.forEach((url) => {
+	            this.templateModels.push(url);
+	        });
+	        return { templateModels: this.templateModels, templatePublic: this.templatePublic };
+	    }
+	}
+
+	class BaseParticles extends Points {
+	    opts;
+	    positions;
+	    scales;
+	    opacities;
+	    animationTag;
+	    animationIndex;
+	    numbers;
+	    size;
+	    width;
+	    height;
+	    depth;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            size: 0.1,
+	            width: 0.1,
+	            height: 0.5,
+	            depth: 0.1,
+	            numbers: 20
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.numbers = this.opts.numbers !== undefined ? this.opts.numbers : 20;
+	        this.size = this.opts.size !== undefined ? this.opts.size : 0.1;
+	        this.width = this.opts.width !== undefined ? this.opts.width : 0.1;
+	        this.height = this.opts.height !== undefined ? this.opts.height : 0.5;
+	        this.depth = this.opts.depth !== undefined ? this.opts.depth : 0.1;
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            vertexShader: `
+          uniform float size;
+          attribute float scale;
+          attribute float opacity;
+          varying float vOpacity;
+
+          #include <logdepthbuf_pars_vertex>
+          #include <common>
+          void main(){
+              vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+              gl_PointSize = scale * size * ( 300.0 / -mvPosition.z );
+              gl_Position = projectionMatrix * mvPosition;
+              vOpacity = opacity;
+              #include <logdepthbuf_vertex>
+          }
+      `,
+	            fragmentShader: `
+          uniform vec3 color;
+          varying float vOpacity;
+          #include <common>
+          #include <logdepthbuf_pars_fragment>
+          void main(){
+              #include <logdepthbuf_fragment>
+
+              float d = distance(gl_PointCoord, vec2(.5));
+              if(d < .5){
+                  gl_FragColor = vec4( color, vOpacity );
+              }else {
+                  discard;
+              }
+
+              #include <tonemapping_fragment>
+          }
+      `,
+	            uniforms: {
+	                size: { value: this.opts.size },
+	                color: { value: new Color(this.opts.color) }
+	            }
+	        });
+	        this.positions = [];
+	        this.scales = [];
+	        this.opacities = [];
+	        this.animationTag = [];
+	        for (let i = 0; i < this.numbers; i++) {
+	            this.positions.push((Math.random() * 2 - 1) * this.width);
+	            this.positions.push(Math.random() * this.height);
+	            this.positions.push((Math.random() * 2 - 1) * this.depth);
+	            this.scales.push(Math.random() * 0.2 + 0.2);
+	            this.opacities.push(Math.random() + 0.5);
+	            this.animationTag.push(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
+	        }
+	        this.geometry.setAttribute('position', new Float32BufferAttribute(this.positions, 3));
+	        this.geometry.setAttribute('scale', new Float32BufferAttribute(this.scales, 1));
+	        this.geometry.setAttribute('opacity', new Float32BufferAttribute(this.opacities, 1));
+	    }
+	    // 上升动画2（杯形扩散）
+	    risingAnimation2() {
+	        this.animationIndex = requestAnimationFrame(this.risingAnimation2.bind(this));
+	        // positions/opacities
+	        const positions = this.geometry.attributes.position.array;
+	        const opacities = this.geometry.attributes.opacity.array;
+	        // 螺旋轨迹
+	        for (let i = 0; i < this.animationTag.length; i += 3) {
+	            const dir = i % 2 == 0 ? 1 : -1;
+	            positions[i] += 0.001 * this.animationTag[i] * dir;
+	            positions[i + 1] += 0.0025 * this.animationTag[i + 1];
+	            if (Math.abs(positions[i + 1]) > this.height) {
+	                positions[i] = this.positions[i];
+	                positions[i + 1] = 0;
+	                positions[i + 2] = this.positions[i + 2];
+	            }
+	            positions[i + 2] += 0.001 * this.animationTag[i + 2] * dir;
+	            opacities[i / 3] = (this.height - positions[i + 1]) / this.height;
+	        }
+	        this.geometry.attributes.position.needsUpdate = true;
+	        this.geometry.attributes.opacity.needsUpdate = true;
+	    }
+	    startRisingAnimation2() {
+	        this.risingAnimation2();
+	    }
+	    // 上升动画（螺旋上升）
+	    risingAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.risingAnimation.bind(this));
+	        // positions/opacities
+	        const positions = this.geometry.attributes.position.array;
+	        const opacities = this.geometry.attributes.opacity.array;
+	        // 螺旋轨迹
+	        for (let i = 0; i < this.animationTag.length; i += 3) {
+	            positions[i] += 0.001 * this.animationTag[i];
+	            if (Math.abs(positions[i]) > this.width)
+	                this.animationTag[i] *= -1;
+	            positions[i + 1] += 0.0025 * this.animationTag[i + 1];
+	            if (Math.abs(positions[i + 1]) > this.height)
+	                positions[i + 1] = 0;
+	            positions[i + 2] += 0.001 * this.animationTag[i + 2];
+	            if (Math.abs(positions[i + 2]) > this.depth)
+	                this.animationTag[i + 2] *= -1;
+	            opacities[i / 3] = (this.height - positions[i + 1]) / this.height;
+	        }
+	        this.geometry.attributes.position.needsUpdate = true;
+	        this.geometry.attributes.opacity.needsUpdate = true;
+	    }
+	    startRisingAnimation() {
+	        this.risingAnimation();
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	}
+
+	class CompositeIcon extends Group$1 {
+	    isCompositeIcon;
+	    constructor() {
+	        super();
+	        this.isCompositeIcon = true;
+	    }
+	}
+
+	class CompositeIconTitle extends CompositeIcon {
+	    opts;
+	    baseTitle;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            opacity: 1,
+	            titleHeight: 0,
+	            titleSize: 1,
+	            title: '标题',
+	            type: 0,
+	            fontColor: '#ffffff',
+	            bgColor: '#ff0000',
+	            strokeColor: '#ffffff'
+	        }, opts);
+	        // type 0 | 1 | 2 | 3
+	        if (this.opts.type == 3) {
+	            // spread circle
+	            const baseSpreadCircle = new BaseSpreadCircle({
+	                color: this.opts.color
+	            });
+	            this.add(baseSpreadCircle);
+	            baseSpreadCircle.start();
+	            // shape vic
+	            const baseShapeVic = new BaseShapeVic({
+	                color: this.opts.color
+	            });
+	            this.add(baseShapeVic);
+	            const animate = () => {
+	                baseShapeVic.rotation.y += 0.1 / Math.PI;
+	                requestAnimationFrame(animate);
+	            };
+	            animate();
+	            // title
+	            this.baseTitle = new BaseTitle({
+	                text: this.opts.title,
+	                bgColor: this.opts.color,
+	                strokeColor: this.opts.color,
+	                opacity: this.opts.opacity,
+	                height: this.opts.titleHeight,
+	                size: this.opts.titleSize,
+	                type: this.opts.type
+	            });
+	            this.add(this.baseTitle);
+	        }
+	        else if (this.opts.type == 0 || this.opts.type == 1 || this.opts.type == 2) {
+	            const baseCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: this.opts.type
+	            });
+	            this.add(baseCircle);
+	            baseCircle.startRotateAnimation();
+	            this.baseTitle = new BaseTitle({
+	                text: this.opts.title,
+	                bgColor: this.opts.bgColor,
+	                strokeColor: this.opts.strokeColor,
+	                fontColor: this.opts.fontColor,
+	                opacity: this.opts.opacity,
+	                height: this.opts.titleHeight,
+	                size: this.opts.titleSize,
+	                type: this.opts.type
+	            });
+	            this.add(this.baseTitle);
+	        }
+	    }
+	    setTitle(text) {
+	        this.baseTitle.update({
+	            text: text
+	        });
+	    }
+	    setSize(size) {
+	        this.baseTitle.update({
+	            size: size
+	        });
+	    }
+	}
+
+	class BaseTag extends Sprite {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            text: '标题',
+	            fontColor: '#ffffff',
+	            fontSize: 64,
+	            height: 0,
+	            size: 1
+	        }, opts);
+	        const { canvas: canvasEle, width, height } = drawTagCanvas({
+	            text: this.opts.text,
+	            fontColor: this.opts.fontColor,
+	            fontSize: this.opts.fontSize
+	        });
+	        const canvasTex = new CanvasTexture(canvasEle);
+	        this.material = new SpriteMaterial({
+	            map: canvasTex,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.center.set(0.5, 0);
+	        this.position.set(0, this.opts.height, 0);
+	        this.scale.set((this.opts.size * (1 * width)) / 512, this.opts.size * 0.25, 1);
+	    }
+	}
+
+	class BaseSquares extends Group$1 {
+	    squares;
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000'
+	        }, opts);
+	        this.squares = [];
+	        const squareMat = new MeshBasicMaterial({
+	            color: this.opts.color,
+	            transparent: true,
+	            side: 2
+	        });
+	        for (let i = 0; i < 10; i++) {
+	            const size = Math.random() * 0.04 + 0.02;
+	            const squareGeo = new PlaneGeometry(size, size, 1, 1);
+	            const square = new Mesh(squareGeo, squareMat.clone());
+	            square.position.set(Math.random() * 0.7 - 0.35, Math.random() * 0.5 - 0.5, Math.random() * 0.7 - 0.35);
+	            this.add(square);
+	            this.squares.push(square);
+	        }
+	        const animate = () => {
+	            requestAnimationFrame(animate);
+	            this.squares.forEach((sq) => {
+	                if (sq.position.y > 0) {
+	                    sq.scale.set(1, 1, 1);
+	                    sq.visible = true;
+	                    sq.material.opacity = 1;
+	                }
+	                sq.position.y += 0.005;
+	                if (sq.position.y > 0.35 && sq.position.y < 0.5) {
+	                    sq.material.opacity = (0.5 - sq.position.y) / 0.5;
+	                    sq.scale.x = (sq.position.y + 0.15) / (0.35 + 0.15);
+	                    sq.scale.y = (sq.position.y + 0.15) / (0.35 + 0.15);
+	                }
+	                else if (sq.position.y > 0.5) {
+	                    sq.position.y = -0.2;
+	                    sq.visible = false;
+	                }
+	            });
+	        };
+	        animate();
+	    }
+	}
+
+	class BaseDiamondGeometry extends BufferGeometry {
+	    constructor() {
+	        super();
+	        // positions
+	        // ** 底部四个侧面
+	        // 0,0,0, -.5,1,.5, .5,1,.5
+	        // 0,0,0, .5,1,.5, .5,1,-.5
+	        // 0,0,0, .5,1,-.5, -.5,1,-.5
+	        // 0,0,0, -.5,1,-.5, -.5,1,.5
+	        // ** 顶部四个侧面
+	        // -.5,1,.5, .5,1,.5, -.3,1.2,.3
+	        // -.3,1.2,.3, .5,1,.5, .3,1.2,.3
+	        // .5,1,.5, .5,1,-.5, .3,1.2,.3
+	        // .3,1.2,.3, .5,1,-.5, .3,1.2,-.3
+	        // .5,1,-.5, -.5,1,-.5, .3,1.2,-.3
+	        // .3,1.2,-.3, -.5,1,-.5, -.3,1.2,-.3
+	        // -.5,1,-.5, -.5,1,.5, -.3,1.2,-.3
+	        // -.3,1.2,-.3, -.5,1,.5, -.3,1.2,.3
+	        // ** 顶面
+	        // -.3,1.2,.3, .3,1.2,.3, -.3,1.2,-.3
+	        // -.3,1.2,-.3, .3,1.2,.3, .3,1.2,-.3
+	        const positions = [
+	            0, 0, 0, -0.5, 1, 0.5, 0.5, 1, 0.5, 0, 0, 0, 0.5, 1, 0.5, 0.5, 1, -0.5, 0, 0, 0, 0.5, 1, -0.5, -0.5, 1, -0.5, 0, 0, 0, -0.5, 1, -0.5, -0.5, 1, 0.5, -0.5, 1, 0.5, 0.5, 1, 0.5, -0.3, 1.2, 0.3,
+	            -0.3, 1.2, 0.3, 0.5, 1, 0.5, 0.3, 1.2, 0.3, 0.5, 1, 0.5, 0.5, 1, -0.5, 0.3, 1.2, 0.3, 0.3, 1.2, 0.3, 0.5, 1, -0.5, 0.3, 1.2, -0.3, 0.5, 1, -0.5, -0.5, 1, -0.5, 0.3, 1.2, -0.3, 0.3, 1.2, -0.3,
+	            -0.5, 1, -0.5, -0.3, 1.2, -0.3, -0.5, 1, -0.5, -0.5, 1, 0.5, -0.3, 1.2, -0.3, -0.3, 1.2, -0.3, -0.5, 1, 0.5, -0.3, 1.2, 0.3, -0.3, 1.2, 0.3, 0.3, 1.2, 0.3, -0.3, 1.2, -0.3, -0.3, 1.2, -0.3, 0.3,
+	            1.2, 0.3, 0.3, 1.2, -0.3
+	        ];
+	        const d1 = new Vector3();
+	        const d2 = new Vector3();
+	        const normals = [];
+	        for (let i = 0; i < positions.length; i += 9) {
+	            d1.set(positions[i + 3] - positions[i], positions[i + 4] - positions[i + 1], positions[i + 5] - positions[i + 2]);
+	            d2.set(positions[i + 6] - positions[i], positions[i + 7] - positions[i + 1], positions[i + 8] - positions[i + 2]);
+	            const n = d1.clone().cross(d2).normalize();
+	            normals.push(n.x, n.y, n.z, n.x, n.y, n.z, n.x, n.y, n.z);
+	        }
+	        this.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
+	        this.setAttribute('normal', new BufferAttribute(new Float32Array(normals), 3));
+	    }
+	}
+
+	class BaseDiamond extends Mesh {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            opacity: 1
+	        }, opts);
+	        this.geometry = new BaseDiamondGeometry();
+	        this.material = new MeshStandardMaterial({
+	            color: '#ff0000',
+	            side: 2,
+	            transparent: this.opts.opacity != 1,
+	            opacity: this.opts.opacity
+	        });
+	    }
+	}
+
+	class BaseStaff extends Group$1 {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            opacity: 1
+	        }, opts);
+	        // head
+	        const staffHeadGeo = new SphereGeometry(0.05, 32, 16);
+	        const staffHeadMat = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true,
+	            roughness: 0,
+	            opacity: this.opts.opacity
+	        });
+	        const staffHead = new Mesh(staffHeadGeo, staffHeadMat);
+	        staffHead.position.set(0, 0.2, 0);
+	        this.add(staffHead);
+	        // body
+	        const staffBodyGeo = new SphereGeometry(0.1, 32, 16, Math.PI * 2, Math.PI * 2, Math.PI / 2, Math.PI / 2);
+	        const staffBodyMat = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true,
+	            side: 2,
+	            roughness: 0,
+	            opacity: this.opts.opacity
+	        });
+	        const staffBody = new Mesh(staffBodyGeo, staffBodyMat);
+	        staffBody.rotateX(Math.PI);
+	        staffBody.position.set(0, 0.035, 0);
+	        this.add(staffBody);
+	    }
+	}
+
+	class BaseCircularArraySquares extends Group$1 {
+	    opts;
+	    squares;
+	    animationIndex;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            circleRadius: 0.5,
+	            squareRadius: 0.05,
+	            numbers: 20,
+	            rotateSpeed: 1,
+	            horseRaceAnimationSpeed: 1,
+	            color: '#ff0000'
+	        }, opts);
+	        this.squares = [];
+	        for (let i = 0; i < this.opts.numbers; i++) {
+	            const squareGeo = new PlaneGeometry(this.opts.squareRadius, this.opts.squareRadius, 1, 1);
+	            const squareMat = new MeshBasicMaterial({
+	                color: this.opts.color,
+	                transparent: true,
+	                side: 2
+	            });
+	            const square = new Mesh(squareGeo, squareMat);
+	            const x = Math.cos((i * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            const y = Math.sin((i * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            square.position.set(x, 0, y);
+	            square.rotateX(Math.PI / 2);
+	            square.rotateZ((i * 2 * Math.PI) / this.opts.numbers);
+	            square.userData.animationLoc = i;
+	            this.squares.push(square);
+	            this.add(square);
+	        }
+	    }
+	    // 旋转动画1 （ 仅旋转）
+	    rotatingAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.rotatingAnimation.bind(this));
+	        for (let i = 0; i < this.opts.numbers; i++) {
+	            const sq = this.squares[i];
+	            let ci = sq.userData.animationLoc;
+	            ci += 0.025 * (this.opts.rotateSpeed ? this.opts.rotateSpeed : 1);
+	            const nx = Math.cos((ci * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            const ny = Math.sin((ci * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            sq.rotation.z = (ci * 2 * Math.PI) / this.opts.numbers;
+	            sq.userData.animationLoc = ci;
+	            sq.position.set(nx, 0, ny);
+	        }
+	    }
+	    startRotatingAnimation() {
+	        this.rotatingAnimation();
+	    }
+	    // 旋转动画2 （带透明度变换）
+	    rotatingAnimation2() {
+	        this.animationIndex = requestAnimationFrame(this.rotatingAnimation2.bind(this));
+	        for (let i = 0; i < this.opts.numbers; i++) {
+	            const sq = this.squares[i];
+	            let ci = sq.userData.animationLoc;
+	            ci += 0.025 * (this.opts.rotateSpeed ? this.opts.rotateSpeed : 1);
+	            const nx = Math.cos((ci * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            const ny = Math.sin((ci * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            sq.rotation.z = (ci * 2 * Math.PI) / this.opts.numbers;
+	            sq.userData.animationLoc = ci;
+	            sq.position.set(nx, 0, ny);
+	            sq.material.opacity = Math.abs(Math.sin(this.squares[0].userData.animationLoc));
+	            // ;(sq as any).material.opacity = Math.abs(Math.sin(ci))
+	        }
+	    }
+	    startRotatingAnimation2() {
+	        this.rotatingAnimation2();
+	    }
+	    // 跑马灯动画
+	    horseRaceLampAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.horseRaceLampAnimation.bind(this));
+	        for (let i = 0; i < this.opts.numbers; i++) {
+	            const sq = this.squares[i];
+	            let ci = sq.userData.animationLoc;
+	            ci += 0.25 * (this.opts.horseRaceAnimationSpeed ? this.opts.horseRaceAnimationSpeed : 1);
+	            ci %= this.opts.numbers;
+	            sq.userData.animationLoc = ci;
+	            sq.material.opacity = ci / this.opts.numbers;
+	        }
+	    }
+	    startHorseRaceLampAnimation() {
+	        this.horseRaceLampAnimation();
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	}
+
+	class BaseTriangleGeometry extends BufferGeometry {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            size: 1,
+	            type: 0
+	        }, opts);
+	        // 1.732 : Math.sqrt(3)
+	        let positions = [];
+	        if (this.opts.type == 0) {
+	            positions = [0, 0, 0, (this.opts.size * 1.732) / 2, 0, this.opts.size * 0.5, (this.opts.size * 1.732) / 2, 0, this.opts.size * -0.5];
+	        }
+	        else if (this.opts.type == 1) {
+	            positions = [this.opts.size * -0.5, 0, this.opts.size / (2 * 1.732), this.opts.size * 0.5, 0, this.opts.size / (2 * 1.732), 0, 0, -this.opts.size / 1.732];
+	        }
+	        const normals = [0, 1, 0, 0, 1, 0, 0, 1, 0];
+	        this.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
+	        this.setAttribute('normal', new BufferAttribute(new Float32Array(normals), 3));
+	    }
+	}
+
+	class BaseTriangle extends Mesh {
+	    opts;
+	    size;
+	    triangleType;
+	    rotateSpeed;
+	    animationIndex;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            size: 1,
+	            type: 0,
+	            rotateSpeed: 1
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.size = this.opts.size !== undefined ? this.opts.size : 1;
+	        this.triangleType = this.opts.type !== undefined ? this.opts.type : 0;
+	        this.rotateSpeed = this.opts.rotateSpeed !== undefined ? this.opts.rotateSpeed : 1;
+	        this.geometry = new BaseTriangleGeometry({
+	            size: this.size,
+	            type: this.triangleType
+	        });
+	        this.material = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true
+	        });
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	    startRotateAnimation() {
+	        if (this.opts.type == 1)
+	            this.rotateAnimation();
+	    }
+	    // 旋转动画 type == 1（绕自身旋转）
+	    rotateAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.rotateAnimation.bind(this));
+	        this.rotation.y += 0.01 * this.rotateSpeed;
+	    }
+	}
+
+	class BaseCircularArrayArrows extends Group$1 {
+	    opts;
+	    animationIndex;
+	    triangles;
+	    directionTag;
+	    tagNumber;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            circleRadius: 0.5,
+	            triangleSize: 0.15,
+	            numbers: 4,
+	            color: '#ff0000',
+	            speed: 1,
+	            indicateRadius: 1.5
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.triangles = [];
+	        this.directionTag = true;
+	        this.tagNumber = 1;
+	        for (let i = 0; i < this.opts.numbers; i++) {
+	            const triangle = new BaseTriangle({
+	                color: this.opts.color
+	            });
+	            triangle.scale.set(this.opts.triangleSize, this.opts.triangleSize, this.opts.triangleSize);
+	            const x = Math.cos((i * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            const y = Math.sin((i * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius;
+	            triangle.position.set(x, 0, y);
+	            triangle.rotateY(-(i * 2 * Math.PI) / this.opts.numbers);
+	            this.add(triangle);
+	            this.triangles.push(triangle);
+	        }
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	    // 指示动画
+	    indicateAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.indicateAnimation.bind(this));
+	        for (let i = 0; i < this.opts.numbers; i++) {
+	            const triangle = this.triangles[i];
+	            if (this.directionTag) {
+	                this.tagNumber += Math.cos(this.tagNumber) * 0.005 * this.opts.speed;
+	            }
+	            else {
+	                this.tagNumber -= Math.cos(this.tagNumber) * 0.005 * this.opts.speed;
+	            }
+	            const x = Math.cos((i * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius * this.tagNumber;
+	            const y = Math.sin((i * 2 * Math.PI) / this.opts.numbers) * this.opts.circleRadius * this.tagNumber;
+	            if (this.tagNumber >= this.opts.indicateRadius) {
+	                this.directionTag = false;
+	            }
+	            else if (this.tagNumber <= 1) {
+	                this.directionTag = true;
+	            }
+	            triangle.position.set(x, 0, y);
+	        }
+	    }
+	    startIndicateAnimation() {
+	        this.indicateAnimation();
+	    }
+	}
+
+	class BaseCubes extends Group$1 {
+	    opts;
+	    numbers;
+	    positionRange;
+	    sizeRange;
+	    hasWireframe;
+	    animationIndex;
+	    cubes;
+	    risingSpeed;
+	    risingMaxHeight;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            positionRange: [1, 1, 1],
+	            sizeRange: [1, 1, 1],
+	            color: '#ff0000',
+	            numbers: 12,
+	            opacity: 1,
+	            risingSpeed: 1,
+	            risingMaxHeight: 1
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.numbers = this.opts.numbers !== undefined ? this.opts.numbers : 12;
+	        this.positionRange = this.opts.positionRange !== undefined ? this.opts.positionRange : [1, 1, 1];
+	        this.sizeRange = this.opts.sizeRange !== undefined ? this.opts.sizeRange : [1, 1, 1];
+	        this.hasWireframe = this.opts.hasWireframe !== undefined ? this.opts.hasWireframe : true;
+	        this.risingSpeed = this.opts.risingSpeed !== undefined ? this.opts.risingSpeed : 1;
+	        this.risingMaxHeight = this.opts.risingMaxHeight !== undefined ? this.opts.risingMaxHeight : 1;
+	        this.cubes = [];
+	        for (let i = 0; i < this.numbers; i++) {
+	            const w = Math.random() * this.sizeRange[0] + this.sizeRange[0];
+	            const h = Math.random() * this.sizeRange[1] + this.sizeRange[1];
+	            const d = Math.random() * this.sizeRange[2] + this.sizeRange[2];
+	            const cubeGeo = new BoxGeometry(w, h, d);
+	            const cubeMat = new MeshStandardMaterial({
+	                color: this.opts.color,
+	                transparent: true,
+	                opacity: this.opts.opacity
+	            });
+	            const cube = new Mesh(cubeGeo, cubeMat);
+	            cube.position.set(Math.random() * 2 * this.positionRange[0] - this.positionRange[0], Math.random() * this.positionRange[1] + h / 2, Math.random() * 2 * this.positionRange[2] - this.positionRange[2]);
+	            this.add(cube);
+	            cube.userData.risingSpeed = (Math.random() + 0.5) * this.risingSpeed;
+	            this.cubes.push(cube);
+	            if (this.hasWireframe) {
+	                const edgeGeo = new EdgesGeometry(cubeGeo);
+	                const lineMat = new LineBasicMaterial({
+	                    color: '#ffffff',
+	                    transparent: true
+	                });
+	                const line = new LineSegments(edgeGeo, lineMat);
+	                cube.add(line);
+	            }
+	        }
+	    }
+	    // 上升动画
+	    risingAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.risingAnimation.bind(this));
+	        for (let i = 0; i < this.cubes.length; i++) {
+	            this.cubes[i].position.y += 0.0025 * this.cubes[i].userData.risingSpeed;
+	            this.cubes[i].material.opacity = (this.risingMaxHeight - this.cubes[i].position.y) / this.risingMaxHeight;
+	            this.cubes[i].rotation.x -= 0.005 * this.cubes[i].userData.risingSpeed;
+	            this.cubes[i].rotation.y -= 0.005 * this.cubes[i].userData.risingSpeed;
+	            if (this.cubes[i].position.y > this.risingMaxHeight) {
+	                this.cubes[i].position.y = 0;
+	                this.cubes[i].rotation.x = 0;
+	                this.cubes[i].rotation.y = 0;
+	                this.cubes[i].material.opacity = 1;
+	            }
+	        }
+	    }
+	    startRisingAnimation() {
+	        this.risingAnimation();
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	}
+
+	class BaseOctahedron extends Mesh {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            radius: 0.1
+	        }, opts);
+	        this.geometry = new OctahedronGeometry(this.opts.radius);
+	        this.material = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true
+	        });
+	        const edgeGeo = new EdgesGeometry(this.geometry);
+	        const lineMat = new LineBasicMaterial({
+	            color: '#ffffff',
+	            transparent: true
+	        });
+	        const line = new LineSegments(edgeGeo, lineMat);
+	        this.add(line);
+	    }
+	}
+
+	// 三棱锥
+	class BaseTriangularPyramid extends Mesh {
+	    opts;
+	    animationIndex;
+	    rotateSpeed;
+	    hasWireframe;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            width: 1,
+	            height: 1,
+	            rotateSpeed: 1,
+	            hasWireframe: true
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.rotateSpeed = this.opts.rotateSpeed !== undefined ? this.opts.rotateSpeed : 1;
+	        this.hasWireframe = this.opts.hasWireframe !== undefined ? this.opts.hasWireframe : true;
+	        this.geometry = new ConeGeometry(this.opts.width, this.opts.height, 3);
+	        this.geometry.rotateX(Math.PI);
+	        this.material = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true
+	        });
+	        if (this.hasWireframe) {
+	            const edgeGeo = new WireframeGeometry(this.geometry);
+	            const edgeMat = new MeshBasicMaterial({
+	                color: '#ffffff',
+	                transparent: true,
+	                wireframe: true
+	            });
+	            const edge = new Mesh(edgeGeo, edgeMat);
+	            this.add(edge);
+	        }
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	    startRotateAnimation() {
+	        this.rotateAnimation();
+	    }
+	    rotateAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.rotateAnimation.bind(this));
+	        this.rotation.y += 0.01 * this.rotateSpeed;
+	    }
+	}
+
+	// 四棱锥
+	class BaseRectangularPyramid extends Mesh {
+	    opts;
+	    animationIndex;
+	    rotateSpeed;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            width: 1,
+	            height: 1,
+	            rotateSpeed: 1
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.rotateSpeed = this.opts.rotateSpeed !== undefined ? this.opts.rotateSpeed : 1;
+	        this.geometry = new ConeGeometry(this.opts.width, this.opts.height, 4);
+	        this.geometry.rotateX(Math.PI);
+	        this.material = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true
+	        });
+	        const edgeGeo = new WireframeGeometry(this.geometry);
+	        const edgeMat = new MeshBasicMaterial({
+	            color: '#ffffff',
+	            transparent: true,
+	            wireframe: true
+	        });
+	        const edge = new Mesh(edgeGeo, edgeMat);
+	        this.add(edge);
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	    startRotateAnimation() {
+	        this.rotateAnimation();
+	    }
+	    rotateAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.rotateAnimation.bind(this));
+	        this.rotation.y += 0.01 * this.rotateSpeed;
+	    }
+	}
+
+	class BaseTriangleWall extends Mesh {
+	    opts;
+	    size;
+	    color;
+	    height;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            size: 0.25,
+	            height: 0.5
+	        }, opts);
+	        this.size = this.opts.size !== undefined ? this.opts.size : 1;
+	        this.color = this.opts.color !== undefined ? this.opts.color : '#ff0000';
+	        this.height = this.opts.height !== undefined ? this.opts.height : 1;
+	        const bottoms = [this.size * -0.5, 0, this.size / (2 * 1.732), this.size * 0.5, 0, this.size / (2 * 1.732), 0, 0, -this.size / 1.732];
+	        const sides = [];
+	        for (let i = 0; i < bottoms.length / 3; i++) {
+	            if (i == bottoms.length / 3 - 1) {
+	                sides.push(bottoms[i * 3], bottoms[i * 3 + 1], bottoms[i * 3 + 2], bottoms[0], bottoms[1], bottoms[2], bottoms[i * 3], bottoms[i * 3 + 1] + this.height, bottoms[i * 3 + 2]);
+	                sides.push(bottoms[i * 3], bottoms[i * 3 + 1] + this.height, bottoms[i * 3 + 2], bottoms[0], bottoms[1], bottoms[2], bottoms[0], bottoms[1] + this.height, bottoms[2]);
+	            }
+	            else {
+	                sides.push(bottoms[i * 3], bottoms[i * 3 + 1], bottoms[i * 3 + 2], bottoms[i * 3 + 3], bottoms[i * 3 + 4], bottoms[i * 3 + 5], bottoms[i * 3], bottoms[i * 3 + 1] + this.height, bottoms[i * 3 + 2]);
+	                sides.push(bottoms[i * 3], bottoms[i * 3 + 1] + this.height, bottoms[i * 3 + 2], bottoms[i * 3 + 3], bottoms[i * 3 + 4], bottoms[i * 3 + 5], bottoms[i * 3 + 3], bottoms[i * 3 + 4] + this.height, bottoms[i * 3 + 5]);
+	            }
+	        }
+	        const positions = sides;
+	        this.geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            side: 2,
+	            uniforms: {
+	                color: { value: new Color(this.color) },
+	                height: { value: this.height },
+	                uOpacity: { value: 0.35 }
+	            },
+	            vertexShader: `
+            #include <logdepthbuf_pars_vertex>
+            #include <common>
+
+            varying float vh;
+
+            void main(){
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vh = position.y;
+                #include <logdepthbuf_vertex>
+            }
+        `,
+	            fragmentShader: `
+            #include <logdepthbuf_pars_fragment>
+
+            uniform vec3 color;
+            uniform float height;
+            uniform float uOpacity;
+
+            varying float vh;
+
+            void main(){
+                #include <logdepthbuf_fragment>
+
+                float opc = (height - vh) / height;
+                gl_FragColor = vec4(color, mix(.0, uOpacity, opc));
+
+                #include <tonemapping_fragment>
+            }
+        `
+	        });
+	    }
+	}
+
+	class BaseTriangleWallParticles extends Group$1 {
+	    opts;
+	    pyramidHeight;
+	    animationIndex;
+	    rotateSpeed;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            wallColor: '#ff0000',
+	            wallSize: 0.25,
+	            wallHeight: 0.5,
+	            particlesColor: '#ff0000',
+	            particlesSize: 0.1,
+	            particlesWidth: 0.1,
+	            particlesHeight: 0.5,
+	            particlesDepth: 0.1,
+	            particlesNumbers: 20,
+	            pyramidColor: '#ff0000',
+	            pyramidWidth: 0.1,
+	            pyramidHeight: 0.25,
+	            rotateSpeed: 1
+	        }, opts);
+	        this.pyramidHeight = this.opts.pyramidHeight !== undefined ? this.opts.pyramidHeight : 0.25;
+	        this.animationIndex = -1;
+	        this.rotateSpeed = this.opts.rotateSpeed !== undefined ? this.opts.rotateSpeed : 1;
+	        // triangleWall
+	        const baseTriangleWall = new BaseTriangleWall({
+	            color: this.opts.wallColor,
+	            size: this.opts.wallSize,
+	            height: this.opts.wallHeight
+	        });
+	        baseTriangleWall.position.set(0, this.pyramidHeight, 0);
+	        this.add(baseTriangleWall);
+	        // particles
+	        const baseParticles = new BaseParticles({
+	            color: this.opts.particlesColor,
+	            numbers: this.opts.particlesNumbers,
+	            width: this.opts.particlesWidth,
+	            height: this.opts.particlesHeight,
+	            depth: this.opts.particlesDepth
+	        });
+	        this.add(baseParticles);
+	        baseParticles.position.set(0, this.pyramidHeight, 0);
+	        baseParticles.startRisingAnimation();
+	        // triangle pyramid
+	        const baseTriangularPyramid = new BaseTriangularPyramid({
+	            width: this.opts.pyramidWidth,
+	            height: this.pyramidHeight,
+	            color: this.opts.pyramidColor
+	        });
+	        baseTriangularPyramid.position.set(0, this.pyramidHeight / 2, 0);
+	        this.add(baseTriangularPyramid);
+	    }
+	    stopAnimation() {
+	        cancelAnimationFrame(this.animationIndex);
+	        this.animationIndex = -1;
+	    }
+	    startRotateAnimation() {
+	        this.rotateAnimation();
+	    }
+	    rotateAnimation() {
+	        this.animationIndex = requestAnimationFrame(this.rotateAnimation.bind(this));
+	        this.rotation.y += 0.01 * this.rotateSpeed;
+	    }
+	}
+
+	class BaseBubble extends Mesh {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000'
+	        }, opts);
+	        const float32Array = new Float32Array([-0.5, -0.5, 0, 0, 0, 0.5, -0.5, 0, 1, 0, 0.5, 0.5, 0, 1, 1, -0.5, 0.5, 0, 0, 1]);
+	        const interleavedBuffer = new InterleavedBuffer(float32Array, 5);
+	        this.geometry.setIndex([0, 1, 2, 0, 2, 3]);
+	        this.geometry.setAttribute('position', new InterleavedBufferAttribute(interleavedBuffer, 3, 0, false));
+	        this.geometry.setAttribute('uv', new InterleavedBufferAttribute(interleavedBuffer, 2, 3, false));
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            uniforms: {
+	                color: { value: new Color(this.opts.color) },
+	                emissive: { value: new Color('#ffffff') },
+	                opacity: { value: 1 },
+	                center: { value: new Vector2(0.5, 0.5) },
+	                uTime: { value: 0 }
+	            },
+	            vertexShader: `
+      uniform vec2 center;
+      varying vec2 vUv;
+      
+      #include <common>
+      #include <fog_pars_vertex>
+      #include <logdepthbuf_pars_vertex>
+      #include <clipping_planes_pars_vertex>
+        
+      void main() {
+      
+        vec4 mvPosition = modelViewMatrix * vec4( 0.0, 0.0, 0.0, 1.0 );
+      
+        vec2 scale;
+        scale.x = length( vec3( modelMatrix[ 0 ].x, modelMatrix[ 0 ].y, modelMatrix[ 0 ].z ) );
+        scale.y = length( vec3( modelMatrix[ 1 ].x, modelMatrix[ 1 ].y, modelMatrix[ 1 ].z ) );
+      
+        vec2 alignedPosition = ( position.xy - ( center - vec2( 0.5 ) ) ) * scale;
+      
+        mvPosition.xy += alignedPosition;
+      
+        gl_Position = projectionMatrix * mvPosition;
+        vUv = uv; 
+      
+        #include <logdepthbuf_vertex>
+        #include <clipping_planes_vertex>
+        #include <fog_vertex>
+      
+      }`,
+	            fragmentShader: `
+      uniform vec3 color;
+      uniform vec3 emissive;
+      uniform float opacity;
+      uniform float uTime;
+      varying vec2 vUv;
+
+      #include <common>
+      #include <fog_pars_fragment>
+      #include <logdepthbuf_pars_fragment>
+      #include <clipping_planes_pars_fragment>
+
+      void main() {
+        #include <clipping_planes_fragment>
+        #include <logdepthbuf_fragment>
+
+        float pct = distance(vUv, vec2(.5));
+
+        if(pct < .1){
+          gl_FragColor = vec4(emissive, opacity);
+        } else if(pct > (.15 + uTime) && pct < (.16 + uTime)){
+          gl_FragColor = vec4(emissive, opacity);
+        } else if(pct > .4 && pct < .5){
+          gl_FragColor = vec4(color, mix(.05, opacity, pct / .5 - .8));
+        } else{
+          discard;
+        }
+        
+        #include <tonemapping_fragment>
+        #include <fog_fragment>
+
+      }
+      `
+	        });
+	        let tag = 1;
+	        const animate = () => {
+	            requestAnimationFrame(animate);
+	            if (this.material.uniforms.uTime.value > 0.08) {
+	                tag = -1;
+	            }
+	            else if (this.material.uniforms.uTime.value < 0) {
+	                tag = 1;
+	            }
+	            this.material.uniforms.uTime.value += 0.0025 * tag;
+	        };
+	        animate();
+	    }
+	}
+
+	// 指引线
+	class BaseCubicGuide extends Mesh {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            width: 0.015,
+	            height: 0.5,
+	            depth: 0.015,
+	            color: '#ff0000',
+	            type: 0
+	        }, opts);
+	        this.geometry = new BoxGeometry(this.opts.width, this.opts.height, this.opts.depth);
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            depthWrite: true,
+	            uniforms: {
+	                color: { value: new Color(this.opts.color) },
+	                height: { value: this.opts.height },
+	                type: { value: this.opts.type }
+	            },
+	            vertexShader: `
+        #include <logdepthbuf_pars_vertex>
+        #include <common>
+
+        varying float vh;
+
+        void main(){
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vh = position.y;
+            #include <logdepthbuf_vertex>
+        }
+        `,
+	            fragmentShader: `
+        #include <logdepthbuf_pars_fragment>
+        
+        uniform vec3 color;
+        
+        uniform float height;
+        uniform float type;
+
+        varying float vh;
+
+        void main(){
+            #include <logdepthbuf_fragment>
+
+              if(type == 0.){
+                gl_FragColor = vec4(color, mix(.045, 1., vh / height));
+              }else if(type == 1.){
+                gl_FragColor = vec4(color, mix(.045, 1., (height - vh) / height));
+              }
+            #include <tonemapping_fragment>
+        }
+        `
+	        });
+	    }
+	}
+
+	class BaseCylinder extends Mesh {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            topRadius: 0.5,
+	            bottomRadius: 0.2,
+	            height: 0.5,
+	            openEnded: false,
+	            opacity: 0.75
+	        }, opts);
+	        this.geometry = new CylinderGeometry(this.opts.topRadius, this.opts.bottomRadius, this.opts.height, 32, 16, true);
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            depthTest: false,
+	            side: 2,
+	            uniforms: {
+	                color: { value: new Color(this.opts.color) },
+	                opacity: { value: this.opts.opacity },
+	                height: { value: this.opts.height }
+	            },
+	            vertexShader: `
+        #include <logdepthbuf_pars_vertex>
+        #include <common>
+
+        varying float vh;
+
+        void main(){
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vh = position.y;
+            #include <logdepthbuf_vertex>
+        }
+      `,
+	            fragmentShader: `
+        uniform vec3 color;
+        uniform float opacity;
+        uniform float height;
+
+        varying float vh;
+        
+        #include <logdepthbuf_pars_fragment>
+        
+        void main(){
+        #include <logdepthbuf_fragment>
+        
+          float oa = cos(.57 + vh / height + .5) / 2.;
+
+          // gl_FragColor = vec4(color, mix(.25, opacity, (height - vh) / height));
+          gl_FragColor = vec4(color,  oa );
+        
+        #include <tonemapping_fragment>
+        }
+      `
+	        });
+	    }
+	}
+
+	class BaseCircularCone extends Mesh {
+	    opts;
+	    animationIndex;
+	    rotateSpeed;
+	    hasWireframe;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            width: 1,
+	            height: 1,
+	            rotateSpeed: 1,
+	            hasWireframe: true
+	        }, opts);
+	        this.animationIndex = -1;
+	        this.rotateSpeed = this.opts.rotateSpeed !== undefined ? this.opts.rotateSpeed : 1;
+	        this.hasWireframe = this.opts.hasWireframe !== undefined ? this.opts.hasWireframe : true;
+	        this.geometry = new ConeGeometry(this.opts.width, this.opts.height, 32);
+	        this.geometry.rotateX(Math.PI);
+	        this.material = new MeshStandardMaterial({
+	            color: this.opts.color,
+	            transparent: true
+	        });
+	    }
+	}
+
+	class BaseSphere extends Mesh {
+	    opts;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            radius: 0.05,
+	            opacity: 1
+	        }, opts);
+	        this.geometry = new SphereGeometry(this.opts.radius, 32, 16);
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            uniforms: {
+	                color: { value: new Color(this.opts.color) },
+	                opacity: { value: this.opts.opacity },
+	                radius: { value: this.opts.radius }
+	            },
+	            vertexShader: `
+            #include <logdepthbuf_pars_vertex>
+            #include <common>
+
+            varying float vh;
+
+            void main(){
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vh = position.y;
+                #include <logdepthbuf_vertex>
+            }
+        `,
+	            fragmentShader: `
+            #include <logdepthbuf_pars_fragment>
+
+            uniform vec3 color;
+
+            uniform float radius;
+            uniform float opacity;
+
+            varying float vh;
+
+            void main(){
+                #include <logdepthbuf_fragment>
+                    gl_FragColor = vec4(color, mix(.045, opacity, (vh / radius + 1.) / 2. ));
+                #include <tonemapping_fragment>
+            }
+        `
+	        });
+	    }
+	}
+
+	class BaseThermometer extends Group$1 {
+	    opts;
+	    sphereRadius;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            sphereRadius: 0.05
+	        }, opts);
+	        this.sphereRadius = this.opts.sphereRadius !== undefined ? this.opts.sphereRadius : 0.05;
+	        // cubic guide
+	        const cubicGuide = new BaseCubicGuide({
+	            color: this.opts.color,
+	            type: 1
+	        });
+	        cubicGuide.position.set(0, 0.5 / 2 + 2 * this.sphereRadius - this.sphereRadius / 2, 0);
+	        this.add(cubicGuide);
+	        // base sphere
+	        const baseSphere = new BaseSphere({
+	            radius: this.opts.sphereRadius,
+	            color: this.opts.color
+	        });
+	        baseSphere.position.set(0, this.sphereRadius / 2, 0);
+	        this.add(baseSphere);
+	    }
+	}
+
+	class CompositeIconTag extends CompositeIcon {
+	    opts;
+	    baseTag;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            opacity: 1,
+	            titleHeight: 0,
+	            titleSize: 1,
+	            title: '标记',
+	            type: 0,
+	            fontColor: '#ffffff',
+	            particleNumber: 50,
+	            particleSize: 0.1
+	        }, opts);
+	        // type
+	        if (this.opts.type == 0) {
+	            // type 0
+	            // diamond
+	            const diamond = new BaseDiamond({
+	                color: this.opts.color,
+	                opacity: this.opts.opacity
+	            });
+	            diamond.scale.set(0.15, 0.15, 0.15);
+	            diamond.position.set(0, 0.1, 0);
+	            this.add(diamond);
+	            // spread circle
+	            const spreadCircle = new BaseSpreadCircle({
+	                color: this.opts.color
+	            });
+	            this.add(spreadCircle);
+	            spreadCircle.start();
+	            // squares
+	            const squares = new BaseSquares({
+	                color: this.opts.color
+	            });
+	            this.add(squares);
+	        }
+	        else if (this.opts.type == 1) {
+	            // type 1
+	            // staff
+	            const baseStaff = new BaseStaff({
+	                color: this.opts.color,
+	                opacity: 0.8
+	            });
+	            this.add(baseStaff);
+	            // outter circle squares 1
+	            const baseCircularArraySquares1 = new BaseCircularArraySquares({
+	                circleRadius: 0.5,
+	                squareRadius: 0.05,
+	                numbers: 24,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircularArraySquares1);
+	            baseCircularArraySquares1.startRotatingAnimation();
+	            // inner circle squares 2
+	            const baseCircularArraySquares2 = new BaseCircularArraySquares({
+	                circleRadius: 0.3,
+	                squareRadius: 0.03,
+	                numbers: 18,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircularArraySquares2);
+	            baseCircularArraySquares2.startHorseRaceLampAnimation();
+	            // solid circle
+	            const baseCircle = new BaseCircle({
+	                type: 3,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircle);
+	        }
+	        else if (this.opts.type == 2) {
+	            // type 2
+	            // outter circle
+	            const outterCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 4
+	            });
+	            this.add(outterCircle);
+	            // middle circle squares
+	            const baseCircularArraySquares = new BaseCircularArraySquares({
+	                circleRadius: 0.3,
+	                squareRadius: 0.03,
+	                numbers: 20,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircularArraySquares);
+	            baseCircularArraySquares.startRotatingAnimation();
+	            // inner circle
+	            const innerCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 5,
+	                radius: 0.35
+	            });
+	            this.add(innerCircle);
+	            innerCircle.position.set(0, 0.05, 0);
+	            // inner array arrows
+	            const baseCircularArrayArrows = new BaseCircularArrayArrows({
+	                circleRadius: 0.175,
+	                color: this.opts.color,
+	                numbers: 4,
+	                triangleSize: 0.065,
+	                speed: 1,
+	                indicateRadius: 1.5
+	            });
+	            this.add(baseCircularArrayArrows);
+	            baseCircularArrayArrows.position.set(0, 0.05, 0);
+	            baseCircularArrayArrows.startIndicateAnimation();
+	            // shape V
+	            const baseShapeVic = new BaseShapeVic({
+	                color: this.opts.color
+	            });
+	            baseShapeVic.scale.set(0.5, 0.5, 0.5);
+	            baseShapeVic.position.set(0, 0.1, 0);
+	            this.add(baseShapeVic);
+	        }
+	        else if (this.opts.type == 3) {
+	            // type 3
+	            // inner spread circle1
+	            const baseCircle1 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 6,
+	                radius: 1,
+	                spreadEndRadius: 0.3,
+	                spreadSpeed: 2
+	            });
+	            this.add(baseCircle1);
+	            baseCircle1.startSpreadAnimation();
+	            // inner spread circle2
+	            const baseCircle2 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 6,
+	                radius: 1,
+	                spreadStartRadius: 0.15,
+	                spreadEndRadius: 0.3,
+	                spreadSpeed: 2
+	            });
+	            this.add(baseCircle2);
+	            baseCircle2.startSpreadAnimation();
+	            // outter circle
+	            const outterCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 7,
+	                radius: 1
+	            });
+	            this.add(outterCircle);
+	            // cubes
+	            const baseCubes = new BaseCubes({
+	                color: this.opts.color,
+	                sizeRange: [0.05, 0.02, 0.05],
+	                positionRange: [0.2, 0.2, 0.2],
+	                numbers: 12
+	            });
+	            this.add(baseCubes);
+	            baseCubes.position.set(0, 0.1, 0);
+	        }
+	        else if (this.opts.type == 4) {
+	            // type 4
+	            // inner spread circle
+	            const baseCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 6,
+	                radius: 1,
+	                spreadStartRadius: 0.15,
+	                spreadEndRadius: 0.2,
+	                spreadSpeed: 2
+	            });
+	            this.add(baseCircle);
+	            baseCircle.startSpreadAnimation();
+	            // outter line circle1
+	            const outterCircle1 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 8,
+	                radius: 0.6
+	            });
+	            outterCircle1.startRotateAnimation8();
+	            this.add(outterCircle1);
+	            // outter line circle2
+	            const outterCircle2 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 8,
+	                radius: 1,
+	                clockwise: 1
+	            });
+	            outterCircle2.startRotateAnimation8();
+	            this.add(outterCircle2);
+	            // octahedron
+	            const baseOctahedron = new BaseOctahedron({
+	                color: this.opts.color,
+	                radius: 0.1
+	            });
+	            baseOctahedron.position.set(0, 0.1 + 0.1, 0);
+	            this.add(baseOctahedron);
+	        }
+	        else if (this.opts.type == 5) {
+	            // type 5
+	            // base circle squares
+	            const baseCircularArraySquares = new BaseCircularArraySquares({
+	                circleRadius: 0.5,
+	                squareRadius: 0.05,
+	                numbers: 24,
+	                color: this.opts.color,
+	                rotateSpeed: 2
+	            });
+	            baseCircularArraySquares.startRotatingAnimation2();
+	            this.add(baseCircularArraySquares);
+	            // base cubes
+	            const baseCubes = new BaseCubes({
+	                positionRange: [0.2, 0, 0.2],
+	                sizeRange: [0.025, 0.135, 0.025],
+	                color: this.opts.color,
+	                numbers: 12,
+	                opacity: 0.5
+	            });
+	            this.add(baseCubes);
+	            // inner circle
+	            const baseCircle = new BaseCircle({
+	                color: this.opts.color,
+	                radius: 1,
+	                type: 9,
+	                spreadStartHeight: 0.35,
+	                spreadSpeed: 2,
+	                ringWidth: 0.02
+	            });
+	            baseCircle.startSpreadAnimation2();
+	            this.add(baseCircle);
+	        }
+	        else if (this.opts.type == 6) {
+	            // outter circle squares
+	            const baseCircularArraySquares = new BaseCircularArraySquares({
+	                circleRadius: 0.5,
+	                squareRadius: 0.05,
+	                numbers: 24,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircularArraySquares);
+	            baseCircularArraySquares.startRotatingAnimation();
+	            // middle circle
+	            const baseCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 10,
+	                radius: 0.85
+	            });
+	            this.add(baseCircle);
+	            // inner triangle
+	            const baseTriangle = new BaseTriangle({
+	                color: this.opts.color,
+	                size: 0.1,
+	                type: 1,
+	                rotateSpeed: 2
+	            });
+	            this.add(baseTriangle);
+	            baseTriangle.startRotateAnimation();
+	            // triangular
+	            const baseTriangularPyramid = new BaseTriangularPyramid({
+	                width: 0.1,
+	                height: 0.2,
+	                color: this.opts.color,
+	                rotateSpeed: 2
+	            });
+	            baseTriangularPyramid.position.set(0, 0.2 / 2 + 0.05, 0);
+	            this.add(baseTriangularPyramid);
+	            baseTriangularPyramid.startRotateAnimation();
+	        }
+	        else if (this.opts.type == 7) {
+	            // outter circle
+	            const outterCircle = new BaseCircle({
+	                type: 1,
+	                color: this.opts.color,
+	                clockwise: 1
+	            });
+	            this.add(outterCircle);
+	            outterCircle.startRotateAnimation();
+	            // inner clrcle
+	            const innerCircle = new BaseCircle({
+	                type: 1,
+	                color: this.opts.color,
+	                radius: 0.3
+	            });
+	            this.add(innerCircle);
+	            innerCircle.startRotateAnimation();
+	            // rectangularPyramid
+	            const baseRectangularPyramid = new BaseRectangularPyramid({
+	                width: 0.1,
+	                height: 0.2,
+	                color: this.opts.color,
+	                rotateSpeed: 2
+	            });
+	            baseRectangularPyramid.position.set(0, 0.2 / 2 + 0.05, 0);
+	            this.add(baseRectangularPyramid);
+	            baseRectangularPyramid.startRotateAnimation();
+	        }
+	        else if (this.opts.type == 8) {
+	            // circle squares
+	            const baseCircularArraySquares = new BaseCircularArraySquares({
+	                circleRadius: 0.15,
+	                squareRadius: 0.02,
+	                numbers: 24,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircularArraySquares);
+	            baseCircularArraySquares.startRotatingAnimation();
+	            // triangle wall/particles group
+	            const baseTriangleWallParticles = new BaseTriangleWallParticles({
+	                wallColor: this.opts.color,
+	                wallSize: 0.25,
+	                wallHeight: 0.5,
+	                particlesColor: this.opts.color,
+	                pyramidColor: this.opts.color,
+	                pyramidHeight: 0.2,
+	                pyramidWidth: 0.15,
+	                rotateSpeed: -1.5
+	            });
+	            baseTriangleWallParticles.startRotateAnimation();
+	            this.add(baseTriangleWallParticles);
+	        }
+	        else if (this.opts.type == 9) {
+	            // outter circle
+	            const outterCircle = new BaseCircle({
+	                type: 1,
+	                color: this.opts.color,
+	                ringWidth: 0.025
+	            });
+	            this.add(outterCircle);
+	            outterCircle.startRotateAnimation();
+	            // inner clrcle
+	            const innerCircle = new BaseCircle({
+	                type: 1,
+	                color: this.opts.color,
+	                radius: 0.3,
+	                ringWidth: 0.025
+	            });
+	            this.add(innerCircle);
+	            innerCircle.startRotateAnimation();
+	            // base cubic guide
+	            const baseCubicGuide = new BaseCubicGuide({
+	                color: this.opts.color
+	            });
+	            this.add(baseCubicGuide);
+	            baseCubicGuide.position.set(0, 0.25, 0);
+	            // bubble
+	            const baseBubble = new BaseBubble({
+	                color: this.opts.color
+	            });
+	            this.add(baseBubble);
+	            baseBubble.scale.set(0.15, 0.15, 1);
+	            baseBubble.position.set(0, 0.5 + 0.075, 0.0);
+	        }
+	        else if (this.opts.type == 10) {
+	            // inner circle squares
+	            const baseCircularArraySquares = new BaseCircularArraySquares({
+	                circleRadius: 0.18,
+	                squareRadius: 0.02,
+	                numbers: 16,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircularArraySquares);
+	            baseCircularArraySquares.startHorseRaceLampAnimation();
+	            // outter spread circle
+	            const baseCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 6,
+	                radius: 1,
+	                spreadReset: false,
+	                spreadStartRadius: 0.2,
+	                spreadEndRadius: 0.4,
+	                spreadSpeed: 2
+	            });
+	            this.add(baseCircle);
+	            baseCircle.startSpreadAnimation();
+	            // inner cylinder
+	            const baseCylinder = new BaseCylinder({
+	                height: 0.55,
+	                color: this.opts.color,
+	                topRadius: 0.35,
+	                bottomRadius: 0.2
+	            });
+	            this.add(baseCylinder);
+	            baseCylinder.position.set(0, 0.55 / 2, 0);
+	            // outter cylinder
+	            const baseCylinder2 = new BaseCylinder({
+	                height: 0.35,
+	                color: this.opts.color,
+	                topRadius: 0.5,
+	                bottomRadius: 0.2
+	            });
+	            this.add(baseCylinder2);
+	            baseCylinder2.position.set(0, 0.35 / 2, 0);
+	            // particles
+	            const baseParticles = new BaseParticles({
+	                color: this.opts.color,
+	                numbers: this.opts.particleNumber,
+	                size: this.opts.particleSize
+	            });
+	            this.add(baseParticles);
+	            baseParticles.risingAnimation2();
+	        }
+	        else if (this.opts.type == 11) {
+	            // inner circle
+	            const baseCircle1 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 11,
+	                spreadStartRadius: 0.1,
+	                spreadSpeed: 2,
+	                ringWidth: 0.005
+	            });
+	            this.add(baseCircle1);
+	            baseCircle1.startSpreadAnimation();
+	            // outter circle
+	            const baseCircle2 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 11,
+	                spreadStartRadius: 0.3,
+	                spreadSpeed: 2,
+	                ringWidth: 0.005
+	            });
+	            this.add(baseCircle2);
+	            baseCircle2.startSpreadAnimation();
+	            // rising circles
+	            const risingCircle1 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 12,
+	                spreadStartRadius: 0,
+	                spreadEndRadius: 0.15,
+	                spreadStartHeight: 0,
+	                spreadEndHeight: 0.3,
+	                spreadSpeed: 1,
+	                ringWidth: 0.005
+	            });
+	            this.add(risingCircle1);
+	            risingCircle1.startSpreadAnimation3();
+	            // rising circles 2
+	            const risingCircle2 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 12,
+	                spreadStartRadius: 0.05,
+	                spreadEndRadius: 0.15,
+	                spreadStartHeight: 0.1,
+	                spreadEndHeight: 0.3,
+	                spreadSpeed: 1,
+	                ringWidth: 0.005
+	            });
+	            this.add(risingCircle2);
+	            risingCircle2.startSpreadAnimation3();
+	            // rising circles 3
+	            const risingCircle3 = new BaseCircle({
+	                color: this.opts.color,
+	                type: 12,
+	                spreadStartRadius: 0.1,
+	                spreadEndRadius: 0.15,
+	                spreadStartHeight: 0.2,
+	                spreadEndHeight: 0.3,
+	                spreadSpeed: 1,
+	                ringWidth: 0.005
+	            });
+	            this.add(risingCircle3);
+	            risingCircle3.startSpreadAnimation3();
+	            // triangle pyramid
+	            const baseTriangularPyramid = new BaseTriangularPyramid({
+	                width: 0.12,
+	                height: 0.24,
+	                hasWireframe: false
+	            });
+	            baseTriangularPyramid.material.wireframe = true;
+	            baseTriangularPyramid.material.emissive.set('#ffffff');
+	            baseTriangularPyramid.startRotateAnimation();
+	            baseTriangularPyramid.position.set(0, 0.24 / 2 + 0.15, 0);
+	            this.add(baseTriangularPyramid);
+	            // triangle pyramid
+	            const baseCircularCone = new BaseCircularCone({
+	                color: this.opts.color,
+	                width: 0.05,
+	                height: 0.15
+	            });
+	            baseCircularCone.position.set(0, 0.15 / 2 + 0.15 + (0.24 - 0.15) / 2, 0);
+	            this.add(baseCircularCone);
+	        }
+	        else if (this.opts.type == 12) {
+	            // outter spread circle
+	            const baseCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 6,
+	                radius: 1.5,
+	                spreadReset: false,
+	                spreadStartRadius: 0.15,
+	                spreadEndRadius: 0.4,
+	                spreadSpeed: 2
+	            });
+	            this.add(baseCircle);
+	            baseCircle.startSpreadAnimation();
+	            // inner circle squares
+	            const baseCircularArraySquares = new BaseCircularArraySquares({
+	                circleRadius: 0.18,
+	                squareRadius: 0.02,
+	                numbers: 16,
+	                color: this.opts.color
+	            });
+	            this.add(baseCircularArraySquares);
+	            baseCircularArraySquares.startRotatingAnimation();
+	            // thermometer
+	            const baseThermometer = new BaseThermometer({
+	                color: this.opts.color
+	            });
+	            this.add(baseThermometer);
+	            // base cubes
+	            const baseCubes = new BaseCubes({
+	                color: this.opts.color,
+	                sizeRange: [0.01, 0.01, 0.01],
+	                positionRange: [0.2, 0.2, 0.2],
+	                hasWireframe: false,
+	                risingMaxHeight: 0.5
+	            });
+	            this.add(baseCubes);
+	            baseCubes.startRisingAnimation();
+	        }
+	        else if (this.opts.type == 13) {
+	            // inner circle
+	            const innerCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 6,
+	                radius: 1,
+	                ringWidth: 0.075
+	            });
+	            innerCircle.material.uniforms.uTime.value = 0.28;
+	            this.add(innerCircle);
+	            // outter circle
+	            const outterCircle = new BaseCircle({
+	                color: this.opts.color,
+	                type: 1,
+	                ringWidth: 0.025
+	            });
+	            this.add(outterCircle);
+	            outterCircle.startRotateAnimation();
+	            // inner cylinder
+	            const innerCylinder = new BaseCylinder({
+	                color: this.opts.color,
+	                topRadius: 0.25,
+	                bottomRadius: 0.25,
+	                height: 0.5
+	            });
+	            innerCylinder.position.set(0, 0.5 / 2, 0);
+	            this.add(innerCylinder);
+	            // outter cylinder
+	            const outterCylinder = new BaseCylinder({
+	                color: this.opts.color,
+	                topRadius: 0.4,
+	                bottomRadius: 0.32,
+	                height: 0.3
+	            });
+	            outterCylinder.position.set(0, 0.3 / 2, 0);
+	            this.add(outterCylinder);
+	            // top innerCircle
+	            const topInnerCircle = new BaseCircle({
+	                color: '#ffffff',
+	                type: 9,
+	                spreadStartHeight: 0.4,
+	                spreadEndHeight: 0.5,
+	                spreadStartRadius: 0.075,
+	                ringWidth: 0.01
+	            });
+	            topInnerCircle.startRisingAnimationBounce();
+	            this.add(topInnerCircle);
+	            // top outterCircle1
+	            const topOutterCircle1 = new BaseCircle({
+	                color: '#ffffff',
+	                type: 13,
+	                ringWidth: 0.015
+	            });
+	            topOutterCircle1.position.set(0, 0.5, 0);
+	            this.add(topOutterCircle1);
+	            topOutterCircle1.startRotateAnimation13();
+	        }
+	        // title
+	        this.baseTag = new BaseTag({
+	            text: this.opts.title,
+	            opacity: this.opts.opacity,
+	            height: this.opts.titleHeight,
+	            size: this.opts.titleSize,
+	            fontColor: this.opts.fontColor
+	        });
+	        this.add(this.baseTag);
+	    }
+	    setTitle(text) {
+	        // this.baseTag.update({
+	        //   text: text
+	        // })
+	    }
+	}
+
+	const drawTextWithImg = [drawTextCanvasWithImg];
+	const updateTextWithImg = [updateTextCanvasWithImg];
+	class BaseImageTitle extends Sprite {
+	    title1; // 1级标题
+	    title2; // 2级标题
+	    title3; // 3级标题
+	    opts;
+	    _bgColor;
+	    opacity;
+	    fontColor1;
+	    fontColor2;
+	    fontColor3;
+	    strokeColor;
+	    fontSize1;
+	    fontSize2;
+	    fontSize3;
+	    height;
+	    textType;
+	    img;
+	    // canvasWidth: number
+	    // canvasHeight: number
+	    // canvasSize!: number
+	    _size;
+	    _width;
+	    _height;
+	    anchor;
+	    canvasElement;
+	    constructor(opts) {
+	        super();
+	        this._bgColor = new Color(opts?.bgColor !== undefined ? opts?.bgColor : '#ff0000');
+	        this.opacity = opts?.opacity !== undefined ? opts.opacity : 1;
+	        this.fontColor1 = opts?.fontColor1 !== undefined ? opts?.fontColor1 : '#ffffff';
+	        this.fontColor2 = opts?.fontColor2 !== undefined ? opts?.fontColor2 : '#ffffff';
+	        this.fontColor3 = opts?.fontColor3 !== undefined ? opts?.fontColor3 : '#ffffff';
+	        this.strokeColor = opts?.strokeColor !== undefined ? opts?.strokeColor : '#ff0000';
+	        this.title1 = opts?.title1 !== undefined ? opts?.title1 : '一级标题';
+	        this.title2 = opts?.title2 !== undefined ? opts?.title2 : '二级标题';
+	        this.title3 = opts?.title3 !== undefined ? opts?.title3 : '三级标题';
+	        this.fontSize1 = opts?.fontSize1 !== undefined ? opts?.fontSize1 : 100;
+	        this.fontSize2 = opts?.fontSize2 !== undefined ? opts?.fontSize2 : 80;
+	        this.fontSize3 = opts?.fontSize3 !== undefined ? opts.fontSize3 : 60;
+	        this.height = opts?.height !== undefined ? opts?.height : 0;
+	        this.textType = opts?.type !== undefined ? opts?.type : 0;
+	        this.img = opts?.img !== undefined ? opts.img : null;
+	        this._size = opts?.size !== undefined ? opts?.size : 1;
+	        this.anchor = opts?.anchor !== undefined ? opts.anchor : [0.5, 0];
+	        this.opts = Object.assign({
+	            title1: this.title1,
+	            title2: this.title2,
+	            title3: this.title3,
+	            fontColor1: this.fontColor1,
+	            fontColor2: this.fontColor2,
+	            fontColor3: this.fontColor3,
+	            bgColor: this.bgColor,
+	            strokeColor: this.strokeColor,
+	            fontSize1: this.fontSize1,
+	            fontSize2: this.fontSize2,
+	            fontSize3: this.fontSize3,
+	            height: this.height,
+	            size: this.canvasSize,
+	            type: this.textType,
+	            img: this.img,
+	            center: this.anchor
+	        }, opts);
+	        const { canvas: canvasEle, width, height } = drawTextWithImg[this.opts.type]({
+	            title1: this.title1,
+	            title2: this.title2,
+	            title3: this.title3,
+	            fontColor1: this.fontColor1,
+	            fontColor2: this.fontColor3,
+	            fontColor3: this.fontColor2,
+	            bgColor: this.bgColor,
+	            strokeColor: this.strokeColor,
+	            fontSize1: this.fontSize1,
+	            fontSize2: this.fontSize2,
+	            fontSize3: this.fontSize3,
+	            img: this.img
+	        });
+	        this.canvasElement = canvasEle;
+	        const canvasTex = new CanvasTexture(canvasEle);
+	        // canvasTex.encoding = sRGBEncoding
+	        this.material = new SpriteMaterial({
+	            map: canvasTex,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.canvasWidth = width;
+	        this.canvasHeight = height;
+	        this.center.set(this.anchor[0], this.anchor[1]); // 默认[0.5, .0]
+	        this.position.set(0, this.height, 0);
+	        this.scale.set((this.canvasSize * this.canvasWidth) / this.canvasHeight, this.canvasSize, 1);
+	    }
+	    get bgColor() {
+	        return `rgba(${this._bgColor.r * 255},${this._bgColor.g * 255},${this._bgColor.b * 255},${this.opacity})`;
+	    }
+	    set bgColor(val) {
+	        this._bgColor.set(val);
+	    }
+	    get canvasSize() {
+	        return this._size;
+	    }
+	    set canvasSize(val) {
+	        this._size = val;
+	    }
+	    get canvasWidth() {
+	        return this._width;
+	    }
+	    set canvasWidth(val) {
+	        this._width = val;
+	    }
+	    get canvasHeight() {
+	        return this._height;
+	    }
+	    set canvasHeight(val) {
+	        this._height = val;
+	    }
+	    // canvas: HTMLCanvasElement
+	    // fontColor: string
+	    // bgColor: string
+	    // strokeColor: string
+	    // fontSize: number
+	    // size: number
+	    update({ type, title1, title2, title3, fontColor1, fontColor2, fontColor3, bgColor, strokeColor, fontSize1, fontSize2, fontSize3, size }) {
+	        if (!this.canvasElement)
+	            throw new Error('title-update needs canvasElement');
+	        if (bgColor !== undefined)
+	            this.bgColor = bgColor;
+	        this.fontColor1 = fontColor1 !== undefined ? fontColor1 : this.fontColor1;
+	        this.fontColor2 = fontColor2 !== undefined ? fontColor2 : this.fontColor2;
+	        this.fontColor3 = fontColor3 !== undefined ? fontColor3 : this.fontColor3;
+	        this.strokeColor = strokeColor !== undefined ? strokeColor : this.strokeColor;
+	        this.title1 = title1 !== undefined ? title1 : this.title1;
+	        this.title2 = title2 !== undefined ? title2 : this.title2;
+	        this.title3 = title3 !== undefined ? title3 : this.title3;
+	        this.fontSize1 = fontSize1 !== undefined ? fontSize1 : this.fontSize1;
+	        this.fontSize2 = fontSize2 !== undefined ? fontSize2 : this.fontSize2;
+	        this.fontSize3 = fontSize3 !== undefined ? fontSize3 : this.fontSize3;
+	        this.textType = type !== undefined ? type : this.textType;
+	        this.canvasSize = size !== undefined ? size : this.canvasSize;
+	        const updateOpts = Object.assign({
+	            title1: this.title1,
+	            title2: this.title2,
+	            title3: this.title3,
+	            fontColor1: this.fontColor1,
+	            fontColor2: this.fontColor3,
+	            fontColor3: this.fontColor2,
+	            bgColor: this.bgColor,
+	            strokeColor: this.strokeColor,
+	            fontSize1: this.fontSize1,
+	            fontSize2: this.fontSize2,
+	            fontSize3: this.fontSize3,
+	            img: this.img,
+	            canvas: this.canvasElement
+	        });
+	        const { width, height } = updateTextWithImg[this.textType](updateOpts);
+	        this.canvasWidth = width;
+	        this.canvasHeight = height;
+	        this.scale.set((this.canvasSize * this.canvasWidth) / this.canvasHeight, this.canvasSize, 1);
+	        if (this.material.map)
+	            this.material.map.needsUpdate = true;
+	        this.material.needsUpdate = true;
+	    }
+	}
+
+	class CompositeIconPopup extends CompositeIcon {
+	    opts;
+	    baseImageTitle;
+	    cubicGuide;
+	    t1;
+	    t2;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            guideHeight: 2,
+	            title1: 'icon-sprite-title-1',
+	            title2: 'icon-sprite-title-2',
+	            title3: 'icon-sprite-title-3',
+	            fontSize1: 100,
+	            fontSize2: 80,
+	            fontSize3: 60,
+	            fontColor1: '#ffffff',
+	            fontColor2: '#ffffff',
+	            fontColor3: '#ffffff',
+	            bgColor: '#ff0000',
+	            strokeColor: '#ff0000',
+	            opacity: 1,
+	            titleHeight: 1,
+	            titleSize: 1,
+	            type: 0,
+	            img: null,
+	            titleAnchor: [0.5, 0]
+	        }, opts);
+	        // cubic guide
+	        this.cubicGuide = new BaseCube({
+	            color: this.opts.color,
+	            type: 0,
+	            width: 0.015,
+	            height: this.opts.guideHeight,
+	            depth: 0.015,
+	            mixColor: '#0000ff',
+	            mixColor2: '#000000'
+	        });
+	        this.add(this.cubicGuide);
+	        // inner spread circle1
+	        const baseCircle1 = new BaseCircle({
+	            color: this.opts.color,
+	            type: 6,
+	            radius: 2,
+	            spreadStartRadius: 0.2,
+	            spreadEndRadius: 0.4,
+	            spreadSpeed: 1.2
+	        });
+	        this.add(baseCircle1);
+	        baseCircle1.startSpreadAnimation();
+	        // inner spread circle2
+	        const baseCircle2 = new BaseCircle({
+	            color: this.opts.color,
+	            type: 6,
+	            radius: 2,
+	            spreadStartRadius: 0.1,
+	            spreadEndRadius: 0.4,
+	            spreadSpeed: 1.2
+	        });
+	        this.add(baseCircle2);
+	        baseCircle2.startSpreadAnimation();
+	        // title
+	        this.baseImageTitle = new BaseImageTitle({
+	            title1: this.opts.title1,
+	            title2: this.opts.title2,
+	            title3: this.opts.title3,
+	            fontSize1: this.opts.fontSize1,
+	            fontSize2: this.opts.fontSize2,
+	            fontSize3: this.opts.fontSize3,
+	            fontColor1: this.opts.fontColor1,
+	            fontColor2: this.opts.fontColor2,
+	            fontColor3: this.opts.fontColor3,
+	            img: this.opts.img,
+	            bgColor: this.opts.bgColor,
+	            strokeColor: this.opts.strokeColor,
+	            opacity: this.opts.opacity,
+	            height: this.opts.titleHeight,
+	            size: this.opts.titleSize,
+	            type: this.opts.type,
+	            anchor: this.opts.titleAnchor
+	        });
+	        this.add(this.baseImageTitle);
+	    }
+	    show(cb) {
+	        let count = 0;
+	        this.showPopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.showGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	    }
+	    hide(cb) {
+	        let count = 0;
+	        this.hidePopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.hideGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	    }
+	    showPopup(cb) {
+	        if (this.t1) {
+	            this.t1.stop();
+	        }
+	        this.baseImageTitle.scale.x = 0;
+	        this.baseImageTitle.scale.y = 0;
+	        this.t1 = new Tween(this.baseImageTitle.scale)
+	            .to({ x: (this.baseImageTitle.canvasSize * this.baseImageTitle.canvasWidth) / this.baseImageTitle.canvasHeight, y: this.baseImageTitle.canvasSize }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t1 = null;
+	            cb && cb();
+	        });
+	    }
+	    showGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.cubicGuide.scale.y = 0;
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 1 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    hidePopup(cb) {
+	        if (this.t1) {
+	            this.t1.stop();
+	        }
+	        this.t1 = new Tween(this.baseImageTitle.scale)
+	            .to({ x: 0, y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t1 = null;
+	            cb && cb();
+	        });
+	    }
+	    hideGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    setTitle1(val) {
+	        this.baseImageTitle.update({
+	            title1: val
+	        });
+	    }
+	    setTitle2(val) {
+	        this.baseImageTitle.update({
+	            title2: val
+	        });
+	    }
+	    setTitle3(val) {
+	        this.baseImageTitle.update({
+	            title3: val
+	        });
+	    }
+	}
+
+	class CompositeIconHTML extends CompositeIcon {
+	    opts;
+	    _bgColor;
+	    opacity;
+	    htmlEle;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            color: '#ff0000',
+	            bgColor: '#ff0000',
+	            opacity: 1,
+	            title: 'icon-html',
+	            titleHeight: 1,
+	            titleSize: 14,
+	            titleColor: '#ffffff',
+	            closed: true
+	        }, opts);
+	        this._bgColor = new Color(this.opts.bgColor);
+	        this.opacity = this.opts.opacity;
+	        // outter circle
+	        const outterCircle = new BaseCircle({
+	            color: this.opts.color,
+	            type: 4
+	        });
+	        this.add(outterCircle);
+	        // middle circle squares
+	        const baseCircularArraySquares = new BaseCircularArraySquares({
+	            circleRadius: 0.3,
+	            squareRadius: 0.03,
+	            numbers: 20,
+	            color: this.opts.color
+	        });
+	        this.add(baseCircularArraySquares);
+	        baseCircularArraySquares.startRotatingAnimation();
+	        // inner circle
+	        const innerCircle = new BaseCircle({
+	            color: this.opts.color,
+	            type: 5,
+	            radius: 0.35
+	        });
+	        this.add(innerCircle);
+	        innerCircle.position.set(0, 0.05, 0);
+	        // inner array arrows
+	        const baseCircularArrayArrows = new BaseCircularArrayArrows({
+	            circleRadius: 0.175,
+	            color: this.opts.color,
+	            numbers: 4,
+	            triangleSize: 0.065,
+	            speed: 1,
+	            indicateRadius: 1.5
+	        });
+	        this.add(baseCircularArrayArrows);
+	        baseCircularArrayArrows.position.set(0, 0.05, 0);
+	        baseCircularArrayArrows.startIndicateAnimation();
+	        // shape V
+	        const baseShapeVic = new BaseShapeVic({
+	            color: this.opts.color
+	        });
+	        baseShapeVic.scale.set(0.5, 0.5, 0.5);
+	        baseShapeVic.position.set(0, 0.1, 0);
+	        this.add(baseShapeVic);
+	        // title
+	        this.htmlEle = new Popup({
+	            closeVisible: this.opts.closed ? 'visible' : 'hidden',
+	            value: `<div style='pointer-events:none;background-color:${this.bgColor};min-width:160px;width:auto;height:40px;outline: 1px ridge rgb(255, 255, 255);border-radius: 1px;'>
+                <div style='display:flex;width:100%;;height:100%;text-align:center;color:${this.opts.titleColor};font-size:${this.opts.titleSize}px;font-weight:bold;align-items:center;'>
+                  <p style='width:100%;text-align:center;white-space:nowrap;'>${this.opts.title}</p>
+                </div>
+              </div>`,
+	            center: [-0.5, 0],
+	            position: [0, this.opts.titleHeight, 0],
+	            closeSize: 0.8
+	        });
+	        this.add(this.htmlEle);
+	    }
+	    get bgColor() {
+	        return `rgba(${this._bgColor.r * 255},${this._bgColor.g * 255},${this._bgColor.b * 255},${this.opacity})`;
+	    }
+	    set bgColor(val) {
+	        this._bgColor.set(val);
+	    }
+	    showTitle() {
+	        this.htmlEle.visible = true;
+	    }
+	    hideTitle() {
+	        this.htmlEle.visible = false;
+	    }
+	}
+
+	class CompositeIconSimple extends CompositeIcon {
+	    opts;
+	    cubicGuide;
+	    icon;
+	    t1; // icon move animation
+	    t1Tag; // icon move animation tag
+	    t2; // cubicGuide show/hide animation
+	    t3; // icon show/hide animation
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            guideColor: '#ff0000',
+	            guideHeight: 2,
+	            opacity: 1,
+	            texture: null,
+	            anchor: [0.5, 0.5],
+	            iconSpeed: 1
+	        }, opts);
+	        this.t1Tag = 1;
+	        // cubic guide
+	        this.cubicGuide = new BaseCube({
+	            color: this.opts.guideColor,
+	            type: 0,
+	            width: 0.015,
+	            height: this.opts.guideHeight,
+	            depth: 0.015,
+	            mixColor: '#00ffff',
+	            mixColor2: '#000000'
+	        });
+	        this.add(this.cubicGuide);
+	        // simple icon
+	        this.icon = new Sprite();
+	        this.icon.center.set(this.opts.anchor[0], this.opts.anchor[1]);
+	        this.icon.material = new SpriteMaterial({
+	            map: this.opts.texture,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.icon.position.set(0, this.opts.guideHeight, 0);
+	        this.add(this.icon);
+	    }
+	    iconAnimation() {
+	        this.t1 = requestAnimationFrame(this.iconAnimation.bind(this));
+	        this.icon.position.y += 0.005 * this.opts.iconSpeed * this.t1Tag;
+	        if (this.icon.position.y >= this.opts.guideHeight + 0.25 || this.icon.position.y <= this.opts.guideHeight - 0.25) {
+	            this.t1Tag *= -1;
+	        }
+	    }
+	    startIconAnimation() {
+	        this.iconAnimation();
+	    }
+	    stopIconAnimation() {
+	        cancelAnimationFrame(this.t1);
+	        this.t1 = null;
+	    }
+	    showGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.cubicGuide.scale.y = 0;
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 1 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    hideGuideCube(cb) {
+	        if (this.t2) {
+	            this.t2.stop();
+	        }
+	        this.t2 = new Tween(this.cubicGuide.scale)
+	            .to({ y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t2 = null;
+	            cb && cb();
+	        });
+	    }
+	    showPopup(cb) {
+	        if (this.t3) {
+	            this.t3.stop();
+	        }
+	        this.icon.scale.x = 0;
+	        this.icon.scale.y = 0;
+	        this.t3 = new Tween(this.icon.scale)
+	            .to({ x: 1, y: 1 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t3 = null;
+	            cb && cb();
+	        });
+	    }
+	    hidePopup(cb) {
+	        if (this.t3) {
+	            this.t3.stop();
+	        }
+	        this.t3 = new Tween(this.icon.scale)
+	            .to({ x: 0, y: 0 }, 800)
+	            .start()
+	            .onComplete(() => {
+	            this.t3 = null;
+	            cb && cb();
+	        });
+	    }
+	    show(cb) {
+	        let count = 0;
+	        this.showPopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.showGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	    }
+	    hide(cb) {
+	        let count = 0;
+	        this.hidePopup(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	        this.hideGuideCube(() => {
+	            count++;
+	            if (count == 2)
+	                cb && cb();
+	        });
+	    }
+	}
+
+	class TagBase extends Group$1 {
+	    isTagBase;
+	    constructor() {
+	        super();
+	        this.isTagBase = true;
+	    }
+	}
+
+	class Box extends Mesh {
+	    isBox;
+	    constructor(options) {
+	        super();
+	        let attrs = {
+	            size: [0.5, 10, 0.5],
+	            color: '#0954ed'
+	        };
+	        Object.assign(attrs, options);
+	        this.isBox = true;
+	        this.geometry = new BoxGeometry(...attrs.size);
+	        this.material = new MeshStandardMaterial({
+	            side: 2,
+	            transparent: false,
+	            color: attrs.color
+	        });
+	        this.position.y = attrs.size[1] / 1.5;
+	    }
+	}
+
+	class LightWall extends Mesh {
+	    options;
+	    isWall;
+	    constructor(opt) {
+	        super();
+	        let attrs = {
+	            size: [3, 3, 5],
+	            color: '#0954ed',
+	            opacity: 0.8
+	        };
+	        Object.assign(attrs, opt);
+	        this.options = attrs;
+	        this.isWall = true;
+	        const color = new Color(attrs.color);
+	        Object.defineProperties(this, {
+	            color: {
+	                configurable: true,
+	                enumerable: true,
+	                value: color
+	            }
+	        });
+	        this.geometry = new CylinderGeometry(attrs.size[0], attrs.size[1], attrs.size[2], 64, 64);
+	        this.geometry.computeBoundingBox();
+	        const boundingBox = this.geometry.boundingBox;
+	        const { min, max } = boundingBox;
+	        this.material = new ShaderMaterial({
+	            transparent: true,
+	            side: DoubleSide,
+	            uniforms: {
+	                uopacity: { value: attrs.opacity },
+	                color: { value: color },
+	                height: { value: attrs.size[2] },
+	                uradius: { value: attrs.size[0] },
+	                uMin: { value: min }
+	            },
+	            vertexShader: /*glsl*/ `
+        #include <common>
+        #include <color_pars_vertex>
+        #include <fog_pars_vertex>
+        #include <logdepthbuf_pars_vertex>
+        #include <clipping_planes_pars_vertex>
+        varying float v_opacity;
+        uniform float height;
+        uniform float uradius;
+        uniform vec3 uMin;
+        void main() {
+            vec3 minCenter = vec3(0.,uMin.y,0.);
+            v_opacity = (1. - (position.y + height / 2.0 ) / height);
+            if(position.y < minCenter.y + 0.0001){
+                v_opacity *= length(position - minCenter )/ uradius * 0.1;
+            }
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+            #include <logdepthbuf_vertex>
+            #include <clipping_planes_vertex>
+            #include <fog_vertex>
+        }
+      `,
+	            fragmentShader: /*glsl*/ `
+        #include <logdepthbuf_pars_fragment>
+
+        uniform vec3 color;
+        uniform float uopacity;
+        
+        varying float v_opacity;
+
+        void main() { 
+            gl_FragColor = vec4(color, v_opacity * uopacity);
+            #include <logdepthbuf_fragment>
+        }
+      `
+	        });
+	        this.position.y = attrs.size[2] / 2;
+	        this.renderOrder = 2;
+	    }
+	}
+
+	class CircleLightEfficiency extends Mesh {
+	    opts;
+	    speed;
+	    isCirclEfficiency;
+	    constructor(opts) {
+	        super();
+	        let options = {
+	            radius: 5,
+	            color: '#0954ed',
+	            speed: 0.1,
+	            isCirclSpread: false
+	        };
+	        Object.assign(options, opts);
+	        this.opts = options;
+	        this.speed = options.speed;
+	        this.isCirclEfficiency = true;
+	        let useColor = new Color(options.color);
+	        let scanRange = new Vector2(0.19, 0.24);
+	        Object.defineProperties(this, {
+	            uColor: {
+	                configurable: true,
+	                enumerable: true,
+	                value: useColor
+	            },
+	            scanRange: {
+	                configurable: true,
+	                enumerable: true,
+	                value: scanRange
+	            }
+	        });
+	        this.geometry = new CircleGeometry(options.radius, 128);
+	        this.rotateX(-Math.PI / 2);
+	        this.renderOrder = 2;
+	        this.material = new ShaderMaterial({
+	            side: 2,
+	            transparent: true,
+	            uniforms: {
+	                uColor: { value: useColor },
+	                startColor: { value: new Color('#0954ed') },
+	                uTime: { value: 0 },
+	                startTime: { value: 0 },
+	                vOpacity: { value: 1 },
+	                uSpeed: { value: options.speed },
+	                uSge: { value: 4 },
+	                scanningRange: { value: scanRange },
+	                isCirclSpread: { value: options.isCirclSpread }
+	            },
+	            vertexShader: /*glsl*/ `
+        varying vec2 uvu;
+        void main(){
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
+          uvu = uv;
+        }
+      `,
+	            fragmentShader: /*glsl*/ `
+        #define EPSILON 1e-6
+        varying vec2 uvu;
+        uniform vec3 uColor;
+        uniform vec3 startColor;
+        uniform float startTime;
+        uniform float uTime;
+
+        uniform float vOpacity;
+        uniform float uSpeed;
+        uniform float uSge;
+
+        uniform float isCirclSpread;
+        uniform vec2 scanningRange;
+
+        float noise(in float x){
+          return abs(fract(114514.155677 * sin(x)));
+        }
+        float PI = 3.14159265;
+        float drawCircle(float index, float range) {
+            float opacity = 1.0;
+            if (index >= 1.0 - range) {
+                opacity = 1.0 - (index - (1.0 - range)) / range;
+            } else if(index <= range) {
+                opacity = index / range;
+            }
+            return opacity;
+        }
+        float distanceTo(vec2 src, vec2 dst) {
+            float dx = src.x - dst.x;
+            float dy = src.y - dst.y;
+            float dv = dx * dx + dy * dy;
+            return sqrt(dv);
+        }
+
+        float atan2(in float y,in float x){
+            float ax = abs(x);
+            float ay = abs(y);
+            float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+            float s = a*a;
+            float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+            if(ay > ax) r = PI / 2. - r;
+            if(x < 0. ) r = PI - r;
+            if(y < 0. ) r = 2. * PI - r;
+            return r;
+      }
+        void main(){
+            vec3 difColor =vec3(0.);
+            float uopacity = 1.;
+            float len =  length(uvu - vec2(.5));
+            // 开场 动效start
+            if(startTime < 0.45){
+            if(len > startTime - 0.05 && len < startTime + 0.05){
+                difColor = startColor;
+                uopacity =(1.- smoothstep(startTime - 0.05,startTime + 0.04,len));
+                if(uopacity>0.97)difColor += vec3(1.)*0.1;
+                if(uopacity <0.98)uopacity *=1.- startTime;
+            }else{
+                uopacity = 0.;
+           }
+            //开场 动效end
+          }
+          if(startTime>=0.45){
+            // 柱状式2 效果
+            if(isCirclSpread >0.99){
+              // 中心圆
+              if(uTime <=2.){
+                  float time1 = uTime / 2.;
+                  if(len < 0.15){
+                    difColor = startColor + 0.2*vec3(1.);
+                    uopacity *= time1;
+                  }else if(len >=0.15 && len <0.16){
+                    difColor = uColor + 0.1 * vec3(1.);
+                    uopacity *= time1;
+                  }else{
+                    uopacity = 0.;
+                    difColor =vec3(0.);
+                  }
+                  // 扩散圆
+              }else{
+                if(len < 0.15){
+                    difColor = startColor + 0.2*vec3(1.);
+                    // 扩散圆
+                }else{
+                  float iTime = -uTime * uSpeed;
+                  float opacity = 0.0;
+                  float len = distanceTo(vec2(0.5, 0.5), vec2(uvu.x, uvu.y));
+
+                  float size = 1.0 / uSge;
+                  vec2 range = vec2(0.35, 0.75);
+                  float index = mod(iTime + len, size);
+                  if (index < size && len <= 0.5) {
+                      float i = sin(index / size * PI);
+                      // 处理边缘锯齿
+                      if (i >= range.x && i <= range.y){
+                          // 归一
+                          float t = (i - range.x) / (range.y - range.x);
+                          // 边缘锯齿范围
+                          float r = 0.1;
+                          opacity = drawCircle(t, r);
+                      }
+                      // 渐变
+                      opacity *=  1.0 - len / 0.5;
+                  };
+                  if( vOpacity * opacity <= 0.0){
+                      uopacity = 0.;
+                      difColor = vec3(0.);
+                  }else{
+                      difColor = uColor + 0.1 * vec3(1.);
+                      uopacity = vOpacity * opacity;
+                  }
+                  // 等高线
+                  // float newTime =(.5 - fract(uTime)/2.)/2.+0.15;
+                  // float heightLine = sin (50. * newTime * len);
+                  // float len2 =1.- smoothstep(0.,0.5,heightLine >=0.?heightLine:-heightLine);
+                  // difColor = mix(vec3(0.),color + 0.1*vec3(1.),len2);
+                  // uopacity =len2;
+                  }
+                }
+                // 扫描圆
+              }else{
+                float pct = distance(uvu, vec2(.5));
+                if(pct > scanningRange.x && pct < scanningRange.y){
+                    vec2 dir = uvu - vec2(.5);
+                    dir = vec2(dir.x * cos(uTime) - dir.y * sin(uTime), dir.x * sin(uTime) + dir.y * cos(uTime));
+                    float theta = atan2(dir.y ,dir.x);
+
+                    difColor = uColor * (2.4 + sin(2.2 * uTime));
+                    uopacity = theta / (2. * PI);
+                    
+                } else{
+                    difColor = vec3(0.);
+                    uopacity = 0.;
+                }
+              }
+            }
+          gl_FragColor = vec4(difColor,uopacity);
+          #include <tonemapping_fragment>
+        }
+      `
+	        });
+	        const animate = () => {
+	            this.material.uniforms.uTime.value += this.speed / 5;
+	            const material = this.material;
+	            if (material.uniforms.startTime.value < 0.45)
+	                material.uniforms.startTime.value += 0.01;
+	            requestAnimationFrame(animate);
+	        };
+	        animate();
+	    }
+	}
+
+	const drawText = [drawTextCanvas5, drawTextCanvas6];
+	class BaseTagPopup extends Sprite {
+	    opts;
+	    bgColor;
+	    size;
+	    constructor(opts) {
+	        super();
+	        this.bgColor = new Color(opts?.bgColor ? opts.bgColor : '#ff0000');
+	        this.opts = Object.assign({
+	            text: '标题',
+	            fontColor: '#ffffff',
+	            bgColor: `rgba(${this.bgColor.r * 255},${this.bgColor.g * 255},${this.bgColor.b * 255},${opts?.opacity ? opts.opacity : 1})`,
+	            strokeColor: '#ff0000',
+	            fontSize: 64,
+	            height: 0,
+	            size: 1,
+	            type: 0
+	        }, opts);
+	        const { canvas: canvasEle, width, height } = drawText[this.opts.type]({
+	            text: this.opts.text,
+	            fontColor: this.opts.fontColor,
+	            bgColor: this.opts.bgColor,
+	            strokeColor: this.opts.strokeColor,
+	            fontSize: this.opts.fontSize
+	        });
+	        const canvasTex = new CanvasTexture(canvasEle);
+	        this.material = new SpriteMaterial({
+	            map: canvasTex,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.size = [width, height];
+	        this.center.set(0.5, 0);
+	        this.position.set(0, this.opts.height, 0);
+	        this.scale.set((this.opts.size * (1 * width)) / 512, (this.opts.size * height) / 512, 1);
+	    }
+	}
+
+	class ColumnarTag extends TagBase {
+	    popupBaseHeight; // 弹窗基础高度
+	    popupBaseSize; // 弹窗基础缩放值
+	    popupBaseScale; // 弹窗缩放值
+	    spritPopupAttrs; // 弹窗参数
+	    popupType; // 弹窗类型
+	    constructor(options) {
+	        super();
+	        let attrs = {
+	            cubeOpts: {
+	                size: [0.5, 10, 0.5],
+	                color: '#0954ed'
+	            },
+	            lightWallOpts: {
+	                size: [3, 3, 5],
+	                color: '#0954ed',
+	                opacity: 0.8
+	            },
+	            circleEfficiencyOpts: {
+	                radius: 5,
+	                color: '#0954ed',
+	                speed: 0.1,
+	                isCirclSpread: false
+	            },
+	            popupOpts: {
+	                text: '标题数据展示区',
+	                fontColor: '#ffffff',
+	                bgColor: '#0954ed',
+	                strokeColor: '#0954ed',
+	                fontSize: 80,
+	                height: 0,
+	                size: 5,
+	                type: 0
+	            }
+	        };
+	        Object.assign(attrs, options);
+	        this.spritPopupAttrs = attrs.popupOpts;
+	        this.popupType = this.spritPopupAttrs.type;
+	        const baseBox = new Box(attrs.cubeOpts);
+	        this.add(baseBox);
+	        baseBox.updateMatrixWorld();
+	        baseBox.geometry.computeBoundingBox();
+	        const { min, max } = baseBox.geometry.boundingBox;
+	        max.applyMatrix4(baseBox.matrixWorld);
+	        this.popupBaseHeight = max.y;
+	        const wall = new LightWall(attrs.lightWallOpts);
+	        this.add(wall);
+	        const circleBase = new CircleLightEfficiency(attrs.circleEfficiencyOpts);
+	        this.add(circleBase);
+	        const popup = new BaseTagPopup(attrs.popupOpts);
+	        this.add(popup);
+	        popup.userData.type = 'textPopup';
+	        popup.position.y = this.popupBaseHeight + 1;
+	        this.popupBaseSize = [popup.scale.x, popup.scale.y];
+	        this.popupBaseScale = 1;
+	        this.setCenter(attrs.circleEfficiencyOpts.isCirclSpread);
+	        this.computedScanCircle(attrs.lightWallOpts.size[0], attrs.circleEfficiencyOpts.radius, [0.35, 0.45]);
+	    }
+	    // 计算扫描圆范围
+	    computedScanCircle(wallRadius, circleRadius, range) {
+	        const rate = wallRadius / circleRadius;
+	        this.traverse((item) => {
+	            if (item.isCirclEfficiency) {
+	                item.scanRange.set(rate * range[0], rate * range[1]);
+	            }
+	        });
+	    }
+	    // 切换颜色
+	    changeColor(color) {
+	        this.traverse((item) => {
+	            if (item.isBox) {
+	                item.material.color = new Color(color);
+	            }
+	            else if (item.isCirclEfficiency) {
+	                item.uColor.set(color);
+	            }
+	            else if (item.userData?.type == 'textPopup') {
+	                this.setColorOfPopup(color);
+	            }
+	        });
+	    }
+	    // 切换圆光效
+	    circleSwitch(isCirclSpread, popupType) {
+	        this.traverse((item) => {
+	            if (item.isCirclEfficiency) {
+	                item.material.uniforms.isCirclSpread.value = isCirclSpread;
+	                item.material.uniforms.startTime.value = 0;
+	                item.material.uniforms.uTime.value = 0;
+	            }
+	        });
+	        this.popupType = isCirclSpread ? 1 : 0;
+	        if (popupType)
+	            this.popupType = popupType;
+	        this.setColorOfPopup(this.spritPopupAttrs.bgColor);
+	        this.setTextOfPopup(this.spritPopupAttrs.text);
+	        this.setCenter(isCirclSpread);
+	    }
+	    // Set the popup size
+	    setSize(size) {
+	        const newSize = Math.max(Math.min(size, 100), 0); // The value ranges from 0 to 100
+	        this.popupBaseScale = newSize;
+	        this.traverse((item) => {
+	            if (item.userData?.type == 'textPopup')
+	                item.scale.set(this.popupBaseSize[0] * newSize, this.popupBaseSize[1] * newSize);
+	        });
+	    }
+	    // Set the popup height
+	    setHeight(value) {
+	        const newSize = Math.max(Math.min(value, 100), 0); // The value ranges from 0 to 100
+	        this.traverse((item) => {
+	            if (item.userData?.type == 'textPopup')
+	                item.position.y = this.popupBaseHeight + newSize;
+	        });
+	    }
+	    // Set the popup color
+	    setColorOfPopup(color) {
+	        this.spritPopupAttrs.bgColor = color;
+	        this.spritPopupAttrs.strokeColor = color;
+	        this.spritPopupAttrs.type = this.popupType;
+	        const newPopup = new BaseTagPopup(this.spritPopupAttrs);
+	        const texture = newPopup.material.map.clone();
+	        this.traverse((item) => {
+	            if (item.userData?.type == 'textPopup')
+	                item.material.map = texture;
+	        });
+	    }
+	    // Set the lightWall color
+	    setColorOfWall(color) {
+	        this.traverse((item) => {
+	            if (item.isWall)
+	                item.color.set(color);
+	        });
+	    }
+	    // set the popup center
+	    setCenter(isCirclSpread) {
+	        this.traverse((item) => {
+	            if (item.userData?.type == 'textPopup')
+	                item.center.x = isCirclSpread ? 0 : 0.5;
+	        });
+	    }
+	    // set the popup theme
+	    setTextOfPopup(text) {
+	        const newText = text.trim();
+	        if (newText && newText.length < 1)
+	            return;
+	        this.spritPopupAttrs.text = newText.substring(0, Math.min(18, newText.length)); // The string length must be less than 18 characters
+	        const newPopup = new BaseTagPopup(this.spritPopupAttrs);
+	        const texture = newPopup.material.map.clone();
+	        this.traverse((item) => {
+	            if (item.userData?.type == 'textPopup') {
+	                item.material.map = texture;
+	                this.popupBaseSize = [newPopup.scale.x, newPopup.scale.y];
+	            }
+	        });
+	    }
+	}
+
+	class ScanningCirle extends Mesh {
+	    opts;
+	    speed;
+	    isScanningCirle;
+	    constructor(opts) {
+	        super();
+	        let options = {
+	            radius: 5,
+	            color: '#0954ed',
+	            speed: 0.1
+	        };
+	        Object.assign(options, opts);
+	        this.opts = options;
+	        this.speed = options.speed;
+	        this.isScanningCirle = true;
+	        let useColor = new Color(options.color);
+	        let scanRange = new Vector2(0.19, 0.24);
+	        Object.defineProperties(this, {
+	            uColor: {
+	                configurable: true,
+	                enumerable: true,
+	                value: useColor
+	            },
+	            scanRange: {
+	                configurable: true,
+	                enumerable: true,
+	                value: scanRange
+	            }
+	        });
+	        this.geometry = new CircleGeometry(options.radius, 128);
+	        this.rotateX(-Math.PI / 2);
+	        this.renderOrder = 2;
+	        this.material = new ShaderMaterial({
+	            side: 2,
+	            transparent: true,
+	            uniforms: {
+	                uColor: { value: useColor },
+	                uTime: { value: 0 },
+	                startTime: { value: 0 },
+	                vOpacity: { value: 1 },
+	                uSpeed: { value: options.speed },
+	                scanningRange: { value: scanRange }
+	            },
+	            vertexShader: /*glsl*/ `
+        varying vec2 uvu;
+        void main(){
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
+          uvu = uv;
+        }
+      `,
+	            fragmentShader: /*glsl*/ `
+        #define EPSILON 1e-6
+        #define PI 3.14159265
+        varying vec2 uvu;
+        uniform vec3 uColor;
+        uniform float uTime;
+        uniform float startTime;
+        uniform float vOpacity;
+        uniform vec2 scanningRange;
+        uniform float uSpeed;
+        
+        float atan2(in float y,in float x){
+          float ax = abs(x);
+          float ay = abs(y);
+          float a = min(ax, ay) / (max(ax, ay) + EPSILON);
+          float s = a*a;
+          float r = ((-.0464964749 * s + .15931422) * s - .327622764) * s * a + a;
+          if(ay > ax) r = PI / 2. - r;
+          if(x < 0. ) r = PI - r;
+          if(y < 0. ) r = 2. * PI - r;
+          return r;
+        }
+
+        void main(){
+            vec3 difColor =vec3(0.);
+            float uopacity = 1.;
+            float pct = distance(uvu, vec2(.5));
+            float time1 = cos(uTime);
+            if(startTime < 0.45){
+            if(pct > startTime - 0.05 && pct < startTime + 0.05){
+                difColor = uColor;
+                uopacity =(1.- smoothstep(startTime - 0.05,startTime + 0.04,pct));
+                if(uopacity>0.97)difColor += vec3(1.)*0.1;
+                if(uopacity <0.98)uopacity *=1.- startTime;
+            }else{
+                uopacity = 0.;
+           }
+            //开场 动效end
+          }else{
+
+            if(pct > scanningRange.x && pct < scanningRange.y){
+                vec2 dir = uvu - vec2(.5);
+                dir = vec2(dir.x * cos(uTime) - dir.y * sin(uTime), dir.x * sin(uTime) + dir.y * cos(uTime));
+                float theta = atan2(dir.y ,dir.x);
+                difColor = uColor * (2.4 + sin(2.2 * uTime));
+                uopacity = theta / (2. * PI);
+            } else{
+                difColor = vec3(0.);
+                uopacity = 0.;
+            }
+          if(time1 >0. )uopacity *= time1; // 闪烁
+          }
+
+          gl_FragColor = vec4(difColor,uopacity);
+          #include <tonemapping_fragment>
+        }
+      `
+	        });
+	        const animate = () => {
+	            this.material.uniforms.uTime.value += this.speed / 5;
+	            const material = this.material;
+	            if (material.uniforms.startTime.value < 0.45)
+	                material.uniforms.startTime.value += 0.01;
+	            requestAnimationFrame(animate);
+	        };
+	        animate();
+	    }
+	}
+
+	class RealtimeCavans {
+	    opts;
+	    bgColor;
+	    canvas;
+	    width;
+	    height;
+	    status;
+	    time1;
+	    time2;
+	    canvasContext;
+	    titleWidth;
+	    contextBoxHeight;
+	    clickCallback;
+	    constructor(attrs) {
+	        this.bgColor = new Color(attrs?.bgColor ? attrs.bgColor : '#ff0000');
+	        this.opts = Object.assign({
+	            title: '标题',
+	            text: '请输入内容',
+	            fontColor: '#ffffff',
+	            bgColor: `rgba(${this.bgColor.r * 255},${this.bgColor.g * 255},${this.bgColor.b * 255},${attrs?.opacity ? attrs.opacity : 1})`,
+	            strokeColor: '#ff0000',
+	            fontSize: 64,
+	            speed: 5,
+	            opacity: 1
+	        }, attrs);
+	        let canvas = document.createElement('canvas');
+	        this.width = 1024;
+	        this.height = 512;
+	        this.titleWidth = 0;
+	        this.contextBoxHeight = 0;
+	        canvas.width = this.width;
+	        canvas.height = this.height;
+	        canvas.style.width = this.width / 2 + 'px';
+	        canvas.style.height = this.height / 2 + 'px';
+	        const ctx = canvas.getContext('2d');
+	        this.canvasContext = ctx;
+	        this.canvas = canvas;
+	        this.status = 0; // 0 start ,1 close,2 igonre
+	        this.time1 = 512;
+	        this.time2 = 10;
+	        const animate = () => {
+	            requestAnimationFrame(animate);
+	            if (this.status == 0) {
+	                if (this.time1 < 1025)
+	                    this.drawTitle(this.time1);
+	                this.time1 += this.opts.speed;
+	                if (this.time1 > 1024) {
+	                    this.drawText(this.time2);
+	                    this.time2 += this.opts.speed;
+	                    if (this.time2 > 398) {
+	                        this.status = 2;
+	                        this.time1 = 512;
+	                        this.time2 = 10;
+	                    }
+	                }
+	            }
+	            else if (this.status == 1) {
+	                if (this.time2 < 399 && this.time2 > 9)
+	                    this.drawText(this.time2);
+	                this.time2 -= this.opts.speed;
+	                if (this.time2 < 10) {
+	                    if (this.time1 < 1025)
+	                        this.drawTitle(this.time1);
+	                    this.time1 -= this.opts.speed;
+	                    if (this.time1 < 512) {
+	                        this.status = 2;
+	                        this.time1 = 512;
+	                        this.time2 = 10;
+	                        this.clickCallback && this.clickCallback();
+	                    }
+	                }
+	            }
+	        };
+	        animate();
+	    }
+	    drawTitle(drawWidth) {
+	        if (drawWidth > 1024)
+	            return;
+	        // drawWidth 512 - 1024
+	        this.titleWidth = drawWidth;
+	        this.canvasContext.font = 'Bold ' + this.opts.fontSize + 'px Microsoft YaHei';
+	        const rgbaStroke = ColorRGBA.parse(this.opts.strokeColor);
+	        const backColor = ColorRGBA.parse(this.opts.bgColor);
+	        let w = this.canvasContext.measureText(this.opts.title).width;
+	        w = Math.max(64, Math.min(w, 1024 - 128));
+	        const upLine = this.width / 2;
+	        const lightColor = `rgb(${(rgbaStroke.r + 0.2) * 255},${(rgbaStroke.g + 0.2) * 255},${(rgbaStroke.b + 0.2) * 255})`;
+	        this.canvasContext.clearRect(0, 0, this.width, 128);
+	        // 下方矩形
+	        this.canvasContext.fillStyle = this.opts.bgColor;
+	        this.canvasContext.fillRect(this.width / 2 - drawWidth / 2, 64, drawWidth, 50);
+	        // 阴影三角面1
+	        this.canvasContext.beginPath();
+	        this.canvasContext.fillStyle = `rgb(${(backColor.r - 0.1) * 255},${(backColor.g - 0.1) * 255},${(backColor.b - 0.1) * 255})`;
+	        this.canvasContext.moveTo(upLine - w * 0.6, 0);
+	        this.canvasContext.lineTo(upLine - w * 0.6, 128 / 2);
+	        this.canvasContext.lineTo(upLine - w * 0.6 - 128 / 2, 128 / 2);
+	        this.canvasContext.strokeStyle = lightColor;
+	        this.canvasContext.lineWidth = 1;
+	        this.canvasContext.closePath();
+	        this.canvasContext.fill();
+	        this.canvasContext.stroke();
+	        // 阴影三角面2
+	        this.canvasContext.beginPath();
+	        this.canvasContext.moveTo(upLine + w * 0.6 + 0.1, 0);
+	        this.canvasContext.lineTo(upLine + w * 0.6 + 0.1, 128 / 2);
+	        this.canvasContext.lineTo(upLine + w * 0.6 + 128 / 2 + 0.1, 128 / 2);
+	        this.canvasContext.strokeStyle = lightColor;
+	        this.canvasContext.lineWidth = 1;
+	        this.canvasContext.closePath();
+	        this.canvasContext.fill();
+	        this.canvasContext.stroke();
+	        // 浮动文本框
+	        this.canvasContext.beginPath();
+	        this.canvasContext.fillStyle = `rgb(${(backColor.r + 0.2) * 255},${(backColor.g + 0.2) * 255},${(backColor.b + 0.2) * 255})`;
+	        this.canvasContext.moveTo(upLine - w * 0.6, 0);
+	        this.canvasContext.lineTo(upLine + w * 0.6, 0);
+	        this.canvasContext.lineTo(upLine + w * 0.6, (128 / 3) * 2);
+	        this.canvasContext.arc(upLine + w * 0.6 - 20, (128 / 3) * 2, 20, 0, Math.PI / 2);
+	        this.canvasContext.lineTo(upLine - w * 0.6 + 20, (128 / 3) * 2 + 20);
+	        this.canvasContext.arc(upLine - w * 0.6 + 20, (128 / 3) * 2, 20, Math.PI / 2, Math.PI);
+	        this.canvasContext.lineTo(upLine - w * 0.6, 0);
+	        this.canvasContext.strokeStyle = lightColor;
+	        this.canvasContext.lineWidth = 1;
+	        this.canvasContext.closePath();
+	        this.canvasContext.fill();
+	        this.canvasContext.stroke();
+	        // title
+	        this.canvasContext.font = 'Bold ' + this.opts.fontSize / 2 + 'px Microsoft YaHei';
+	        this.canvasContext.textBaseline = 'top';
+	        this.canvasContext.fillStyle = this.opts.fontColor;
+	        this.canvasContext.fillText(this.opts.title, (this.width - this.canvasContext.measureText(this.opts.title).width) / 2, (1.2 * (128 - this.opts.fontSize)) / 2);
+	    }
+	    drawText(drawHeight) {
+	        // drawHeight 10 - 398
+	        if (drawHeight > 398 || drawHeight < 10)
+	            return;
+	        this.contextBoxHeight = drawHeight;
+	        const backColor = ColorRGBA.parse(this.opts.bgColor);
+	        this.drawTitle(1024);
+	        this.canvasContext.clearRect(0, 64 + 50, this.width, this.height - 64 - 50);
+	        // 文本框背景
+	        this.canvasContext.fillStyle = this.opts.bgColor;
+	        this.canvasContext.fillRect(0, 64 + 50, this.width, drawHeight);
+	        // 绘制内容框
+	        const textBoxColor = `rgb(${backColor.r * 0.1 * 255},${backColor.g * 0.1 * 255},${backColor.b * 0.1 * 255})`;
+	        const actualHeight = drawHeight - 10;
+	        if (actualHeight > 10) {
+	            this.canvasContext.fillStyle = textBoxColor;
+	            this.canvasContext.fillRect(10, 64 + 50, this.width - 20, drawHeight - 10);
+	        }
+	        else {
+	            this.canvasContext.clearRect(0, 64 + 50, this.width, 100);
+	        }
+	        if (actualHeight > this.opts.fontSize / 4) {
+	            // text
+	            this.canvasContext.font = 'Bold ' + this.opts.fontSize / 4 + 'px Microsoft YaHei';
+	            this.canvasContext.textBaseline = 'top';
+	            this.canvasContext.fillStyle = this.opts.fontColor;
+	            this.canvasTextAutoLine(this.opts.text, 10 + 2, 64 + 50 + 2, this.opts.fontSize / 4);
+	        }
+	    }
+	    // canvas 自动换行
+	    canvasTextAutoLine(str, initX, initY, lineHeight) {
+	        let lineWidth = 0;
+	        let canvasWidth = this.width - 25;
+	        let lastSubStrIndex = 0;
+	        for (let i = 0; i < str.length; i++) {
+	            lineWidth += this.canvasContext.measureText(str[i]).width;
+	            if (lineWidth > canvasWidth - initX) {
+	                //减去initX,防止边界出现的问题
+	                this.canvasContext.fillText(str.substring(lastSubStrIndex, i), initX, initY);
+	                initY += lineHeight + 2;
+	                lineWidth = 0;
+	                lastSubStrIndex = i;
+	            }
+	            if (i == str.length - 1) {
+	                this.canvasContext.fillText(str.substring(lastSubStrIndex, i + 1), initX, initY);
+	            }
+	        }
+	    }
+	    canvasAnimation(mode) {
+	        // false start , true close
+	        this.time1 = mode ? 1024 : 512;
+	        this.time2 = mode ? 398 : 10;
+	        this.status = mode ? 1 : 0;
+	    }
+	    // Set the title in canvas
+	    setTitle(title) {
+	        if (title.length < 1)
+	            return;
+	        this.opts.title = title.trim();
+	        this.drawTitle(this.titleWidth);
+	        this.drawText(this.contextBoxHeight);
+	    }
+	    // Set the text in canvas
+	    setText(text) {
+	        if (text.length < 1)
+	            return;
+	        this.opts.text = text.trim();
+	        if ((this.contextBoxHeight = 398))
+	            this.drawText(398);
+	    }
+	    // Set the color in canvas
+	    setColor(color) {
+	        const newColor = new Color(color);
+	        this.opts.bgColor = `rgba(${newColor.r * 255},${newColor.g * 255},${newColor.b * 255},${this.opts.opacity})`;
+	        this.drawTitle(this.titleWidth);
+	        this.drawText(this.contextBoxHeight);
+	    }
+	}
+
+	class InformationPopup extends Sprite {
+	    isInformationPopup;
+	    opts;
+	    bgColor;
+	    size;
+	    canvasObject;
+	    baseSize;
+	    constructor(opts) {
+	        super();
+	        this.bgColor = new Color(opts?.bgColor ? opts.bgColor : '#ff0000');
+	        this.opts = Object.assign({
+	            title: '标题',
+	            text: '请输入内容',
+	            fontColor: '#ffffff',
+	            bgColor: `rgba(${this.bgColor.r * 255},${this.bgColor.g * 255},${this.bgColor.b * 255},${opts?.opacity ? opts.opacity : 1})`,
+	            strokeColor: '#ff0000',
+	            fontSize: 64,
+	            height: 0,
+	            size: 1,
+	            type: 0,
+	            speed: 5
+	        }, opts);
+	        this.isInformationPopup = true;
+	        const cavans = new RealtimeCavans(this.opts);
+	        const canvasTex = new CanvasTexture(cavans.canvas);
+	        this.material = new SpriteMaterial({
+	            map: canvasTex,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.size = [cavans.width, cavans.height];
+	        this.center.set(0.5, 0);
+	        this.position.set(0, this.opts.height, 0);
+	        this.scale.set((this.opts.size * cavans.width) / 512, (this.opts.size * cavans.height) / 512, 1);
+	        this.baseSize = [this.scale.x, this.scale.y];
+	        this.canvasObject = cavans;
+	        const animate = () => {
+	            requestAnimationFrame(animate);
+	            this.material.map = new CanvasTexture(cavans.canvas);
+	        };
+	        animate();
+	    }
+	    popupAnimation(mode) {
+	        this.canvasObject.canvasAnimation(mode);
+	    }
+	    setTitle(title) {
+	        this.canvasObject.setTitle(title);
+	    }
+	    setText(text) {
+	        this.canvasObject.setText(text);
+	    }
+	    setColor(color) {
+	        this.canvasObject.setColor(color);
+	    }
+	    setCallBack(callback) {
+	        this.canvasObject.clickCallback = callback;
+	    }
+	}
+
+	class InformationTag extends TagBase {
+	    isInformationTag;
+	    baseHeightValue;
+	    constructor(attrs) {
+	        super();
+	        this.isInformationTag = true;
+	        let opts = {
+	            lightWallOpts: {
+	                size: [3, 3, 5],
+	                color: '#0954ed',
+	                opacity: 0.8
+	            },
+	            circleOpts: {
+	                radius: 5,
+	                color: '#0954ed',
+	                speed: 0.1
+	            },
+	            popupOpts: {
+	                title: '标题',
+	                text: '请输入内容',
+	                fontColor: '#ffffff',
+	                bgColor: '#0954ed',
+	                strokeColor: '#0954ed',
+	                fontSize: 60,
+	                height: 0,
+	                size: 5,
+	                type: 0,
+	                speed: 20
+	            }
+	        };
+	        Object.assign(opts, attrs);
+	        const wall = new LightWall(opts.lightWallOpts);
+	        this.add(wall);
+	        const circle = new ScanningCirle(opts.circleOpts);
+	        this.add(circle);
+	        const popup = new InformationPopup(opts.popupOpts);
+	        this.add(popup);
+	        popup.position.y = 1;
+	        this.baseHeightValue = 1;
+	    }
+	    //  Popup click Animation // 点击具体区域需要判断uv坐标
+	    clickAnimation(mode) {
+	        this.traverse((item) => {
+	            if (item.isInformationPopup) {
+	                if (!mode) {
+	                    new Tween(item.position)
+	                        .to({ y: this.baseHeightValue })
+	                        .start()
+	                        .onComplete(() => {
+	                        item.popupAnimation(mode);
+	                    });
+	                }
+	                else {
+	                    item.popupAnimation(mode);
+	                    item.setCallBack(() => {
+	                        new Tween(item.position).to({ y: this.baseHeightValue - 2 }).start();
+	                    });
+	                }
+	            }
+	        });
+	    }
+	    // Change the title in popup
+	    changeTitle(title) {
+	        if (title.trim().length > 12)
+	            return;
+	        this.traverse((item) => {
+	            if (item.isInformationPopup)
+	                item.setTitle(title.trim());
+	        });
+	    }
+	    // Change the text in popup
+	    changeText(text) {
+	        this.traverse((item) => {
+	            if (item.isInformationPopup)
+	                item.setText(text);
+	        });
+	    }
+	    // Change the color popup
+	    changeColor(color) {
+	        this.traverse((item) => {
+	            if (item.isInformationPopup)
+	                item.setColor(color);
+	            if (item.isScanningCirle)
+	                item.uColor.set(color);
+	        });
+	    }
+	    // Set the height in popup
+	    setHeight(height) {
+	        const heightValue = Math.max(0, Math.min(height, 100));
+	        this.baseHeightValue = heightValue;
+	        this.traverse((item) => {
+	            if (item.isInformationPopup)
+	                item.position.y = this.baseHeightValue;
+	        });
+	    }
+	    // Set the size in Popup
+	    setSize(size) {
+	        const sizeValue = Math.max(0, Math.min(size, 100));
+	        this.traverse((item) => {
+	            if (item.isInformationPopup)
+	                item.scale.set(item.baseSize[0] * sizeValue, item.baseSize[1] * sizeValue);
+	        });
+	    }
+	    // Set the lightWall color
+	    setColorOfWall(color) {
+	        this.traverse((item) => {
+	            if (item.isWall)
+	                item.color.set(color);
+	        });
+	    }
+	}
+
+	class SpreadRound extends Mesh {
+	    opts;
+	    speed;
+	    isSpreadRound;
+	    constructor(opts) {
+	        super();
+	        let options = {
+	            radius: 5,
+	            color: '#0954ed',
+	            speed: 0.1
+	        };
+	        Object.assign(options, opts);
+	        this.opts = options;
+	        this.speed = options.speed;
+	        this.isSpreadRound = true;
+	        let useColor = new Color(options.color);
+	        let spreadRange = new Vector2(1, 1);
+	        Object.defineProperties(this, {
+	            uColor: {
+	                configurable: true,
+	                enumerable: true,
+	                value: useColor
+	            },
+	            spreadRange: {
+	                configurable: true,
+	                enumerable: true,
+	                value: spreadRange
+	            }
+	        });
+	        this.geometry = new CircleGeometry(options.radius, 128);
+	        this.rotateX(-Math.PI / 2);
+	        this.renderOrder = 2;
+	        this.material = new ShaderMaterial({
+	            side: 2,
+	            transparent: true,
+	            uniforms: {
+	                uColor: { value: useColor },
+	                uTime: { value: 0 },
+	                startTime: { value: 0 },
+	                vOpacity: { value: 1 },
+	                uSpeed: { value: options.speed },
+	                uSge: { value: 4 },
+	                spreadRange: { value: spreadRange }
+	            },
+	            vertexShader: /*glsl*/ `
+        varying vec2 uvu;
+        void main(){
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
+          uvu = uv;
+        }
+      `,
+	            fragmentShader: /*glsl*/ `
+        #define PI 3.14159265
+        varying vec2 uvu;
+        uniform vec3 uColor;
+        uniform float uTime;
+        uniform float startTime;
+        uniform float vOpacity;
+        uniform float uSpeed;
+        uniform float uSge;
+        uniform vec2 spreadRange;
+        float noise(in float x){
+          return abs(fract(114514.155677 * sin(x)));
+        }
+
+       
+        void main(){
+            vec3 difColor =vec3(0.);
+            float uopacity = 0.;
+            float len1 =  length(uvu - vec2(.5)); 
+
+            if(startTime < 0.45){
+            if(len1 > startTime - 0.05 && len1 < startTime + 0.05){
+                difColor = uColor;
+                uopacity =(1.- smoothstep(startTime - 0.05,startTime + 0.04,len1));
+                if(uopacity>0.97)difColor += vec3(1.)*0.1;
+                if(uopacity <0.98)uopacity *=1.- startTime;
+            }else{
+                uopacity = 0.;
+           }
+            //开场 动效end
+          }else{
+            // 扩散
+            if(len1 > 0.01 && spreadRange.x > len1){
+                if(fract(uTime)-0.01 >=spreadRange.x / 3.){
+
+                    float width = 1.-fract(15. * (1.- fract(-uTime + len1)));
+                    float len2 =1.-smoothstep(0.1,.3,width );
+                    difColor += mix(vec3(0.),uColor ,len2);
+                    uopacity =len2;
+                }
+            }
+          }
+
+          gl_FragColor = vec4(difColor,uopacity);
+          #include <tonemapping_fragment>
+        }
+      `
+	        });
+	        const animate = () => {
+	            this.material.uniforms.uTime.value += this.speed / 20;
+	            const material = this.material;
+	            if (material.uniforms.startTime.value < 0.45)
+	                material.uniforms.startTime.value += 0.01;
+	            requestAnimationFrame(animate);
+	        };
+	        animate();
+	    }
+	}
+
+	class PictureDropdownCanvas {
+	    opts;
+	    bgColor;
+	    canvas;
+	    width;
+	    height;
+	    status;
+	    time1;
+	    time2;
+	    canvasContext;
+	    titleHeight;
+	    resourcePicture;
+	    resourcePictureStatus; // 0：加载中 1：加载成功 2：加载失败
+	    defaultPicture;
+	    defaultPictureStatus; // 0：加载中 1：加载成功 2：加载失败
+	    pictureDrawMode; // 图片绘制模式 0：适应，1：填充，2：拉伸
+	    pictureHeight;
+	    constructor(attrs) {
+	        this.bgColor = new Color(attrs?.bgColor ? attrs.bgColor : '#ff0000');
+	        this.opts = Object.assign({
+	            title: '标题',
+	            resourcePath: '',
+	            defaultResource: '',
+	            fontColor: '#ffffff',
+	            bgColor: `rgba(${this.bgColor.r * 255},${this.bgColor.g * 255},${this.bgColor.b * 255},${attrs?.opacity ? attrs.opacity : 1})`,
+	            strokeColor: '#ff0000',
+	            fontSize: 64,
+	            speed: 20,
+	            opacity: 1
+	        }, attrs);
+	        let canvas = document.createElement('canvas');
+	        if (this.opts.resourcePath.trim().length > 0) {
+	            this.resourcePicture = new Image();
+	            this.resourcePicture.src = this.opts.resourcePath;
+	        }
+	        if (this.opts.defaultResource.trim().length > 0) {
+	            this.defaultPicture = new Image();
+	            this.defaultPicture.src = this.opts.defaultResource;
+	        }
+	        this.width = 1024;
+	        this.height = 1024;
+	        this.titleHeight = 0;
+	        canvas.width = this.width;
+	        canvas.height = this.height;
+	        canvas.style.width = this.width / 2 + 'px';
+	        canvas.style.height = this.height / 2 + 'px';
+	        const ctx = canvas.getContext('2d');
+	        this.canvasContext = ctx;
+	        this.canvas = canvas;
+	        this.status = 0; // 0 start ,1 close,2 igonre
+	        this.time1 = 640;
+	        this.time2 = 0;
+	        this.pictureDrawMode = 0;
+	        this.drawLine();
+	        this.pictureHeight = 128;
+	        const animate = () => {
+	            requestAnimationFrame(animate);
+	            if (this.status == 0) {
+	                if (this.time1 >= 0 && this.time1 <= 640)
+	                    this.drawText(this.time1);
+	                this.time1 -= this.opts.speed;
+	                if (this.time1 < 0) {
+	                    this.drawPictureBackground(this.time2);
+	                    this.time2 += this.opts.speed;
+	                    if (this.time2 > 640) {
+	                        this.time1 = 640;
+	                        this.time2 = 0;
+	                        this.status = 2;
+	                    }
+	                }
+	            }
+	            else if (this.status == 1) {
+	                if (this.time2 > 0 && this.time2 < 640)
+	                    this.drawPictureBackground(this.time2);
+	                this.time2 -= this.opts.speed;
+	                if (this.time2 < 0) {
+	                    if (this.time1 >= 0 && this.time1 <= 640)
+	                        this.drawText(this.time1);
+	                    this.time1 += this.opts.speed;
+	                    if (this.time1 > 640) {
+	                        this.time1 = 640;
+	                        this.time2 = 0;
+	                        this.status = 2;
+	                    }
+	                }
+	            }
+	        };
+	        animate();
+	    }
+	    drawText(drawHeight) {
+	        if (drawHeight < 0 || drawHeight > 640)
+	            return;
+	        this.titleHeight = drawHeight;
+	        this.canvasContext.font = 'Bold ' + this.opts.fontSize + 'px Microsoft YaHei';
+	        ColorRGBA.parse(this.opts.strokeColor);
+	        const backColor = ColorRGBA.parse(this.opts.bgColor);
+	        let w = this.canvasContext.measureText(this.opts.title).width;
+	        w = Math.max(64, Math.min(w, 1024 - 128));
+	        this.canvasContext.clearRect(0, 0, this.width, 128 + 640);
+	        // bg
+	        this.canvasContext.fillStyle = this.opts.bgColor;
+	        this.canvasContext.fillRect(this.width / 2 - w * 0.6, drawHeight, w * 1.2, 128);
+	        // line
+	        const lightColor = `rgb(${(backColor.r + 0.1) * 255},${(backColor.g + 0.1) * 255},${(backColor.b + 0.1) * 255})`;
+	        this.canvasContext.fillStyle = lightColor;
+	        this.canvasContext.fillRect(this.width / 2 - w * 0.6, drawHeight + 20, 8, 128 - 40);
+	        // 渐变线
+	        let gradient = this.canvasContext.createLinearGradient(this.width / 2 - w * 0.6, drawHeight, this.width / 2 + w * 0.6, drawHeight);
+	        gradient.addColorStop(0, lightColor);
+	        gradient.addColorStop(1, this.opts.bgColor);
+	        this.canvasContext.fillStyle = gradient;
+	        this.canvasContext.fillRect(this.width / 2 - w * 0.6, drawHeight, w * 1.2, 4);
+	        this.canvasContext.fillRect(this.width / 2 - w * 0.6, drawHeight + 128 - 5, w * 1.2, 4);
+	        for (let i = 0; i < 10; i++) {
+	            this.canvasContext.fillRect(this.width / 2 - w * 0.6 + ((w * 1.2) / 11) * (i + 1), drawHeight, 2, 128);
+	        }
+	        for (let i = 0; i < 3; i++) {
+	            this.canvasContext.fillRect(this.width / 2 - w * 0.6 + (w * 1.2) / 3, drawHeight + (128 / 4) * (i + 1), (w * 1.2) / 3, 2);
+	        }
+	        // text
+	        this.canvasContext.font = 'Bold ' + this.opts.fontSize + 'px Microsoft YaHei';
+	        this.canvasContext.textBaseline = 'top';
+	        this.canvasContext.fillStyle = this.opts.fontColor;
+	        this.canvasContext.fillText(this.opts.title, (this.width - this.canvasContext.measureText(this.opts.title).width) / 2, drawHeight + 64 - this.opts.fontSize / 2);
+	    }
+	    drawPictureBackground(drawHeight) {
+	        if (drawHeight < 0 || drawHeight > 640)
+	            return;
+	        this.canvasContext.clearRect(0, 128, this.width, 640);
+	        // bg
+	        this.canvasContext.fillStyle = `rgba(5,5,5,.5)`;
+	        this.canvasContext.fillRect(0, 128, this.width, drawHeight);
+	        // img
+	        this.drawPicture(drawHeight);
+	    }
+	    drawLine() {
+	        this.canvasContext.clearRect(0, 768, this.width, 1024 - 768);
+	        // 小矩形
+	        this.canvasContext.fillStyle = `rgb(250,250,250)`;
+	        this.canvasContext.fillRect(this.width / 2 - 10, 758, 20, 40);
+	        //
+	        this.canvasContext.fillRect(this.width / 2 - 4, 798, 8, 1024 - 798 - 50);
+	        //
+	        this.canvasContext.strokeStyle = `rgb(250,250,250)`;
+	        this.canvasContext.beginPath();
+	        this.canvasContext.moveTo(this.width / 2 - 20, this.height - 45);
+	        this.canvasContext.lineTo(this.width / 2 + 20, this.height - 5);
+	        this.canvasContext.moveTo(this.width / 2 + 20, this.height - 45);
+	        this.canvasContext.lineTo(this.width / 2 - 20, this.height - 5);
+	        this.canvasContext.lineWidth = 4;
+	        this.canvasContext.stroke();
+	        //
+	        this.canvasContext.fillStyle = `rgb(100,100,100)`;
+	        this.canvasContext.strokeStyle = `rgb(100,100,100)`;
+	        this.canvasContext.beginPath();
+	        this.canvasContext.moveTo(this.width / 2, this.height - 50);
+	        this.canvasContext.lineTo(this.width / 2, this.height - 40);
+	        this.canvasContext.moveTo(this.width / 2 - 1.5, this.height - 10);
+	        this.canvasContext.lineTo(this.width / 2 - 1.5, this.height);
+	        this.canvasContext.moveTo(this.width / 2 - 40, this.height - 23);
+	        this.canvasContext.lineTo(this.width / 2 - 10, this.height - 23);
+	        this.canvasContext.moveTo(this.width / 2 + 40, this.height - 23);
+	        this.canvasContext.lineTo(this.width / 2 + 10, this.height - 23);
+	        this.canvasContext.lineWidth = 3;
+	        this.canvasContext.stroke();
+	    }
+	    drawPicture(height) {
+	        if (height <= 0)
+	            return;
+	        if (this.opts.resourcePath.trim().length < 1 && this.opts.defaultResource.trim().length < 1)
+	            return;
+	        const mode = this.pictureDrawMode;
+	        let picture = this.opts.resourcePath.trim().length > 1 ? this.resourcePicture : this.defaultPicture;
+	        const boxwidth = this.width;
+	        const widthRate = picture.width / boxwidth > 1 ? 1 : picture.width / boxwidth;
+	        const drawWidth = Math.max(10, boxwidth / 2 - (widthRate * boxwidth) / 2);
+	        let startHeight = 138, drawHeight = Math.min(630, height);
+	        this.pictureHeight = drawHeight;
+	        picture.height / drawHeight > 1 ? 1 : picture.height / drawHeight;
+	        if (mode == 0) {
+	            this.canvasContext.drawImage(picture, drawWidth, startHeight, Math.min(this.width - 10, widthRate * boxwidth), drawHeight);
+	        }
+	        else if (mode == 1) {
+	            this.canvasContext.drawImage(picture, picture.width / 4, picture.height / 4, picture.width / 2, picture.height / 2, 10, startHeight, this.width - 20, drawHeight);
+	        }
+	        else if (mode == 2) {
+	            this.canvasContext.drawImage(picture, 10, startHeight, this.width - 20, drawHeight);
+	        }
+	    }
+	    // Change the default image
+	    onloadDeafault(url) {
+	        const path = url.trim();
+	        if (path.length < 1)
+	            return console.warn('Wrong path!');
+	        this.defaultPictureStatus = 0;
+	        this.defaultPicture.src = path;
+	        this.defaultPicture.onload = () => {
+	            this.defaultPictureStatus = 1;
+	            if (this.resourcePicture.src.length < 1) {
+	                if (this.pictureHeight == 630)
+	                    this.drawPictureBackground(640);
+	            }
+	        };
+	        this.defaultPicture.onerror = () => {
+	            this.defaultPictureStatus = 2;
+	        };
+	    }
+	    // Change the resource image
+	    onloadPicture(url) {
+	        const path = url.trim();
+	        if (path.length < 1)
+	            return console.warn('Wrong path!');
+	        this.resourcePictureStatus = 0;
+	        this.resourcePicture.src = path;
+	        this.resourcePicture.onload = () => {
+	            this.resourcePictureStatus = 1;
+	            if (this.pictureHeight == 630)
+	                this.drawPictureBackground(640);
+	        };
+	        this.resourcePicture.onerror = () => {
+	            this.resourcePictureStatus = 2;
+	        };
+	    }
+	    // Switching drawing modes
+	    switchMode(mode) {
+	        if (mode > 2 || mode < 0)
+	            return console.warn('Values in the 2-0 ');
+	        this.pictureDrawMode = mode;
+	        if (this.pictureHeight == 630) {
+	            this.drawPictureBackground(640);
+	        }
+	    }
+	    // Resetting the title
+	    changeTitle(tltle) {
+	        const text = tltle.trim();
+	        if (text.length < 1 || text.length > 18)
+	            return;
+	        this.opts.title = text;
+	        console.log(this.titleHeight);
+	        if (this.titleHeight == 10) {
+	            this.drawText(this.titleHeight);
+	            this.drawPictureBackground(640);
+	        }
+	        if (this.titleHeight == 630)
+	            this.drawText(this.titleHeight);
+	    }
+	    // Resetting the Color
+	    changeColor(color) {
+	        const newColor = new Color(color);
+	        this.opts.bgColor = `rgba(${newColor.r * 255},${newColor.g * 255},${newColor.b * 255},${this.opts.opacity})`;
+	        if (this.titleHeight == 10) {
+	            this.drawText(this.titleHeight);
+	            this.drawPictureBackground(640);
+	        }
+	        if (this.titleHeight == 630)
+	            this.drawText(this.titleHeight);
+	    }
+	    // Canvas animation
+	    canvasAnimation(mode) {
+	        // false start , true close
+	        this.time1 = mode ? 0 : 640;
+	        this.time2 = mode ? 640 : 0;
+	        this.status = mode ? 1 : 0;
+	    }
+	}
+
+	class PicturePopup extends Sprite {
+	    isPicturePopup;
+	    opts;
+	    bgColor;
+	    size;
+	    canvasObject;
+	    baseSize;
+	    constructor(opts) {
+	        super();
+	        this.bgColor = new Color(opts?.bgColor ? opts.bgColor : '#ff0000');
+	        this.opts = Object.assign({
+	            title: '标题',
+	            resourcePath: '',
+	            defaultResource: '',
+	            fontColor: '#ffffff',
+	            bgColor: `rgba(${this.bgColor.r * 255},${this.bgColor.g * 255},${this.bgColor.b * 255},${opts?.opacity ? opts.opacity : 1})`,
+	            strokeColor: '#ff0000',
+	            fontSize: 64,
+	            height: 0,
+	            size: 1,
+	            type: 0,
+	            speed: 5
+	        }, opts);
+	        this.isPicturePopup = true;
+	        const cavans = new PictureDropdownCanvas(this.opts);
+	        const canvasTex = new CanvasTexture(cavans.canvas);
+	        this.material = new SpriteMaterial({
+	            map: canvasTex,
+	            transparent: true,
+	            opacity: 1
+	        });
+	        this.size = [cavans.width, cavans.height];
+	        this.center.set(0.5, 0);
+	        this.position.set(0, this.opts.height, 0);
+	        this.scale.set((this.opts.size * cavans.width) / 512, (this.opts.size * cavans.height) / 512, 1);
+	        this.baseSize = [this.scale.x, this.scale.y];
+	        this.canvasObject = cavans;
+	        const animate = () => {
+	            requestAnimationFrame(animate);
+	            this.material.map = new CanvasTexture(cavans.canvas);
+	        };
+	        animate();
+	    }
+	    // canvas 动画
+	    popupAnimation(mode) {
+	        this.canvasObject.canvasAnimation(mode);
+	    }
+	    // 设置标题
+	    setTitle(title) {
+	        this.canvasObject.changeTitle(title);
+	    }
+	    // 设置颜色
+	    setColor(color) {
+	        this.canvasObject.changeColor(color);
+	    }
+	    // 切换图片绘制模式  The mode value is 0-2
+	    changeMode(mode) {
+	        if (mode < 0 || mode > 2)
+	            return;
+	        this.canvasObject.switchMode(mode);
+	    }
+	    // 更换默认图片
+	    changeDefaultPicture(url) {
+	        this.canvasObject.onloadDeafault(url);
+	    }
+	    // 更换资源图片
+	    changeResourcePicture(url) {
+	        this.canvasObject.onloadPicture(url);
+	    }
+	}
+
+	class PictureDropdownTag extends TagBase {
+	    isPictureDropdownTag;
+	    baseHeightValue;
+	    constructor(attrs) {
+	        super();
+	        let opts = {
+	            lightWallOpts: {
+	                size: [3, 3, 5],
+	                color: '#0954ed',
+	                opacity: 0.8
+	            },
+	            spreadRoundOpts: {
+	                radius: 5,
+	                color: '#0954ed',
+	                speed: 0.1
+	            },
+	            picturePopupOpts: {
+	                title: '标题',
+	                resourcePath: '',
+	                defaultResource: '',
+	                fontColor: '#ffffff',
+	                bgColor: '#0954ed',
+	                strokeColor: '#ff0000',
+	                fontSize: 64,
+	                height: 0,
+	                size: 5,
+	                type: 0,
+	                speed: 30
+	            }
+	        };
+	        this.isPictureDropdownTag = true;
+	        Object.assign(opts, attrs);
+	        const wall = new LightWall(opts.lightWallOpts);
+	        this.add(wall);
+	        const circle = new SpreadRound(opts.spreadRoundOpts);
+	        this.add(circle);
+	        const popup = new PicturePopup(opts.picturePopupOpts);
+	        this.add(popup);
+	        popup.position.y = 4;
+	        this.baseHeightValue = 4;
+	        this.computedSpreadCircle(opts.lightWallOpts.size[0], opts.spreadRoundOpts.radius);
+	    }
+	    // 计算扩散范围
+	    computedSpreadCircle(wallRadius, circleRadius) {
+	        const rate = wallRadius / circleRadius;
+	        this.traverse((item) => {
+	            if (item.isSpreadRound) {
+	                item.spreadRange.set(rate * 0.5, rate * 0.5);
+	            }
+	        });
+	    }
+	    //  Popup click Animation // 点击具体区域需要判断uv坐标
+	    clickAnimation(mode) {
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.popupAnimation(mode);
+	        });
+	    }
+	    // 设置标题
+	    changeTitle(title) {
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.setTitle(title);
+	        });
+	    }
+	    //设置颜色
+	    changeColor(color) {
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.setColor(color);
+	            if (item.isSpreadRound)
+	                item.uColor.set(color);
+	        });
+	    }
+	    // 切换图片绘制模式  The mode value is 0-2
+	    changeMode(mode) {
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.changeMode(mode);
+	        });
+	    }
+	    // 更换默认图片
+	    changeDefaultPicture(url) {
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.changeDefaultPicture(url);
+	        });
+	    }
+	    // 更换资源图片
+	    changeResourcePicture(url) {
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.changeResourcePicture(url);
+	        });
+	    }
+	    // Set the size in Popup
+	    setSize(size) {
+	        const sizeValue = Math.max(0, Math.min(size, 100));
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.scale.set(item.baseSize[0] * sizeValue, item.baseSize[1] * sizeValue);
+	        });
+	    }
+	    // Set the height in popup
+	    setHeight(height) {
+	        const heightValue = Math.max(0, Math.min(height, 100));
+	        this.baseHeightValue = heightValue;
+	        this.traverse((item) => {
+	            if (item.isPicturePopup)
+	                item.position.y = this.baseHeightValue;
+	        });
+	    }
+	}
+
+	/**
+	 * Work based on :
+	 * http://slayvin.net : Flat mirror for three.js
+	 * http://www.adelphi.edu/~stemkoski : An implementation of water shader based on the flat mirror
+	 * http://29a.ch/ && http://29a.ch/slides/2012/webglwater/ : Water shader explanations in WebGL
+	 */
+
+	class Water extends Mesh {
+
+		constructor( geometry, options = {} ) {
+
+			super( geometry );
+
+			const scope = this;
+
+			const textureWidth = options.textureWidth !== undefined ? options.textureWidth : 512;
+			const textureHeight = options.textureHeight !== undefined ? options.textureHeight : 512;
+
+			const clipBias = options.clipBias !== undefined ? options.clipBias : 0.0;
+			const alpha = options.alpha !== undefined ? options.alpha : 1.0;
+			const time = options.time !== undefined ? options.time : 0.0;
+			const normalSampler = options.waterNormals !== undefined ? options.waterNormals : null;
+			const sunDirection = options.sunDirection !== undefined ? options.sunDirection : new Vector3( 0.70707, 0.70707, 0.0 );
+			const sunColor = new Color( options.sunColor !== undefined ? options.sunColor : 0xffffff );
+			const waterColor = new Color( options.waterColor !== undefined ? options.waterColor : 0x7F7F7F );
+			const eye = options.eye !== undefined ? options.eye : new Vector3( 0, 0, 0 );
+			const distortionScale = options.distortionScale !== undefined ? options.distortionScale : 20.0;
+			const side = options.side !== undefined ? options.side : FrontSide;
+			const fog = options.fog !== undefined ? options.fog : false;
+
+			//
+
+			const mirrorPlane = new Plane();
+			const normal = new Vector3();
+			const mirrorWorldPosition = new Vector3();
+			const cameraWorldPosition = new Vector3();
+			const rotationMatrix = new Matrix4();
+			const lookAtPosition = new Vector3( 0, 0, - 1 );
+			const clipPlane = new Vector4();
+
+			const view = new Vector3();
+			const target = new Vector3();
+			const q = new Vector4();
+
+			const textureMatrix = new Matrix4();
+
+			const mirrorCamera = new PerspectiveCamera();
+
+			const parameters = {
+				minFilter: LinearFilter,
+				magFilter: LinearFilter,
+				format: RGBFormat
+			};
+
+			const renderTarget = new WebGLRenderTarget( textureWidth, textureHeight, parameters );
+
+			if ( ! MathUtils.isPowerOfTwo( textureWidth ) || ! MathUtils.isPowerOfTwo( textureHeight ) ) {
+
+				renderTarget.texture.generateMipmaps = false;
+
+			}
+
+			const mirrorShader = {
+
+				uniforms: UniformsUtils$1.merge( [
+					UniformsLib$1[ 'fog' ],
+					UniformsLib$1[ 'lights' ],
+					{
+						'normalSampler': { value: null },
+						'mirrorSampler': { value: null },
+						'alpha': { value: 1.0 },
+						'time': { value: 0.0 },
+						'size': { value: 1.0 },
+						'distortionScale': { value: 20.0 },
+						'textureMatrix': { value: new Matrix4() },
+						'sunColor': { value: new Color( 0x7F7F7F ) },
+						'sunDirection': { value: new Vector3( 0.70707, 0.70707, 0 ) },
+						'eye': { value: new Vector3() },
+						'waterColor': { value: new Color( 0x555555 ) }
+					}
+				] ),
+
+				vertexShader: /* glsl */`
+				uniform mat4 textureMatrix;
+				uniform float time;
+
+				varying vec4 mirrorCoord;
+				varying vec4 worldPosition;
+
+				#include <common>
+				#include <fog_pars_vertex>
+				#include <shadowmap_pars_vertex>
+				#include <logdepthbuf_pars_vertex>
+
+				void main() {
+					mirrorCoord = modelMatrix * vec4( position, 1.0 );
+					worldPosition = mirrorCoord.xyzw;
+					mirrorCoord = textureMatrix * mirrorCoord;
+					vec4 mvPosition =  modelViewMatrix * vec4( position, 1.0 );
+					gl_Position = projectionMatrix * mvPosition;
+
+				#include <beginnormal_vertex>
+				#include <defaultnormal_vertex>
+				#include <logdepthbuf_vertex>
+				#include <fog_vertex>
+				#include <shadowmap_vertex>
+			}`,
+
+				fragmentShader: /* glsl */`
+				uniform sampler2D mirrorSampler;
+				uniform float alpha;
+				uniform float time;
+				uniform float size;
+				uniform float distortionScale;
+				uniform sampler2D normalSampler;
+				uniform vec3 sunColor;
+				uniform vec3 sunDirection;
+				uniform vec3 eye;
+				uniform vec3 waterColor;
+
+				varying vec4 mirrorCoord;
+				varying vec4 worldPosition;
+
+				vec4 getNoise( vec2 uv ) {
+					vec2 uv0 = ( uv / 103.0 ) + vec2(time / 17.0, time / 29.0);
+					vec2 uv1 = uv / 107.0-vec2( time / -19.0, time / 31.0 );
+					vec2 uv2 = uv / vec2( 8907.0, 9803.0 ) + vec2( time / 101.0, time / 97.0 );
+					vec2 uv3 = uv / vec2( 1091.0, 1027.0 ) - vec2( time / 109.0, time / -113.0 );
+					vec4 noise = texture2D( normalSampler, uv0 ) +
+						texture2D( normalSampler, uv1 ) +
+						texture2D( normalSampler, uv2 ) +
+						texture2D( normalSampler, uv3 );
+					return noise * 0.5 - 1.0;
+				}
+
+				void sunLight( const vec3 surfaceNormal, const vec3 eyeDirection, float shiny, float spec, float diffuse, inout vec3 diffuseColor, inout vec3 specularColor ) {
+					vec3 reflection = normalize( reflect( -sunDirection, surfaceNormal ) );
+					float direction = max( 0.0, dot( eyeDirection, reflection ) );
+					specularColor += pow( direction, shiny ) * sunColor * spec;
+					diffuseColor += max( dot( sunDirection, surfaceNormal ), 0.0 ) * sunColor * diffuse;
+				}
+
+				#include <common>
+				#include <packing>
+				#include <bsdfs>
+				#include <fog_pars_fragment>
+				#include <logdepthbuf_pars_fragment>
+				#include <lights_pars_begin>
+				#include <shadowmap_pars_fragment>
+				#include <shadowmask_pars_fragment>
+
+				void main() {
+
+					#include <logdepthbuf_fragment>
+					vec4 noise = getNoise( worldPosition.xz * size );
+					vec3 surfaceNormal = normalize( noise.xzy * vec3( 1.5, 1.0, 1.5 ) );
+
+					vec3 diffuseLight = vec3(0.0);
+					vec3 specularLight = vec3(0.0);
+
+					vec3 worldToEye = eye-worldPosition.xyz;
+					vec3 eyeDirection = normalize( worldToEye );
+					sunLight( surfaceNormal, eyeDirection, 100.0, 2.0, 0.5, diffuseLight, specularLight );
+
+					float distance = length(worldToEye);
+
+					vec2 distortion = surfaceNormal.xz * ( 0.001 + 1.0 / distance ) * distortionScale;
+					vec3 reflectionSample = vec3( texture2D( mirrorSampler, mirrorCoord.xy / mirrorCoord.w + distortion ) );
+
+					float theta = max( dot( eyeDirection, surfaceNormal ), 0.0 );
+					float rf0 = 0.3;
+					float reflectance = rf0 + ( 1.0 - rf0 ) * pow( ( 1.0 - theta ), 5.0 );
+					vec3 scatter = max( 0.0, dot( surfaceNormal, eyeDirection ) ) * waterColor;
+					vec3 albedo = mix( ( sunColor * diffuseLight * 0.3 + scatter ) * getShadowMask(), ( vec3( 0.1 ) + reflectionSample * 0.9 + reflectionSample * specularLight ), reflectance);
+					vec3 outgoingLight = albedo;
+					gl_FragColor = vec4( outgoingLight, alpha );
+
+					#include <tonemapping_fragment>
+					#include <fog_fragment>
+				}`
+
+			};
+
+			const material = new ShaderMaterial( {
+				fragmentShader: mirrorShader.fragmentShader,
+				vertexShader: mirrorShader.vertexShader,
+				uniforms: UniformsUtils$1.clone( mirrorShader.uniforms ),
+				lights: true,
+				side: side,
+				fog: fog
+			} );
+
+			material.uniforms[ 'mirrorSampler' ].value = renderTarget.texture;
+			material.uniforms[ 'textureMatrix' ].value = textureMatrix;
+			material.uniforms[ 'alpha' ].value = alpha;
+			material.uniforms[ 'time' ].value = time;
+			material.uniforms[ 'normalSampler' ].value = normalSampler;
+			material.uniforms[ 'sunColor' ].value = sunColor;
+			material.uniforms[ 'waterColor' ].value = waterColor;
+			material.uniforms[ 'sunDirection' ].value = sunDirection;
+			material.uniforms[ 'distortionScale' ].value = distortionScale;
+
+			material.uniforms[ 'eye' ].value = eye;
+
+			scope.material = material;
+
+			scope.onBeforeRender = function ( renderer, scene, camera ) {
+
+				mirrorWorldPosition.setFromMatrixPosition( scope.matrixWorld );
+				cameraWorldPosition.setFromMatrixPosition( camera.matrixWorld );
+
+				rotationMatrix.extractRotation( scope.matrixWorld );
+
+				normal.set( 0, 0, 1 );
+				normal.applyMatrix4( rotationMatrix );
+
+				view.subVectors( mirrorWorldPosition, cameraWorldPosition );
+
+				// Avoid rendering when mirror is facing away
+
+				if ( view.dot( normal ) > 0 ) return;
+
+				view.reflect( normal ).negate();
+				view.add( mirrorWorldPosition );
+
+				rotationMatrix.extractRotation( camera.matrixWorld );
+
+				lookAtPosition.set( 0, 0, - 1 );
+				lookAtPosition.applyMatrix4( rotationMatrix );
+				lookAtPosition.add( cameraWorldPosition );
+
+				target.subVectors( mirrorWorldPosition, lookAtPosition );
+				target.reflect( normal ).negate();
+				target.add( mirrorWorldPosition );
+
+				mirrorCamera.position.copy( view );
+				mirrorCamera.up.set( 0, 1, 0 );
+				mirrorCamera.up.applyMatrix4( rotationMatrix );
+				mirrorCamera.up.reflect( normal );
+				mirrorCamera.lookAt( target );
+
+				mirrorCamera.far = camera.far; // Used in WebGLBackground
+
+				mirrorCamera.updateMatrixWorld();
+				mirrorCamera.projectionMatrix.copy( camera.projectionMatrix );
+
+				// Update the texture matrix
+				textureMatrix.set(
+					0.5, 0.0, 0.0, 0.5,
+					0.0, 0.5, 0.0, 0.5,
+					0.0, 0.0, 0.5, 0.5,
+					0.0, 0.0, 0.0, 1.0
+				);
+				textureMatrix.multiply( mirrorCamera.projectionMatrix );
+				textureMatrix.multiply( mirrorCamera.matrixWorldInverse );
+
+				// Now update projection matrix with new clip plane, implementing code from: http://www.terathon.com/code/oblique.html
+				// Paper explaining this technique: http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
+				mirrorPlane.setFromNormalAndCoplanarPoint( normal, mirrorWorldPosition );
+				mirrorPlane.applyMatrix4( mirrorCamera.matrixWorldInverse );
+
+				clipPlane.set( mirrorPlane.normal.x, mirrorPlane.normal.y, mirrorPlane.normal.z, mirrorPlane.constant );
+
+				const projectionMatrix = mirrorCamera.projectionMatrix;
+
+				q.x = ( Math.sign( clipPlane.x ) + projectionMatrix.elements[ 8 ] ) / projectionMatrix.elements[ 0 ];
+				q.y = ( Math.sign( clipPlane.y ) + projectionMatrix.elements[ 9 ] ) / projectionMatrix.elements[ 5 ];
+				q.z = - 1.0;
+				q.w = ( 1.0 + projectionMatrix.elements[ 10 ] ) / projectionMatrix.elements[ 14 ];
+
+				// Calculate the scaled plane vector
+				clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
+
+				// Replacing the third row of the projection matrix
+				projectionMatrix.elements[ 2 ] = clipPlane.x;
+				projectionMatrix.elements[ 6 ] = clipPlane.y;
+				projectionMatrix.elements[ 10 ] = clipPlane.z + 1.0 - clipBias;
+				projectionMatrix.elements[ 14 ] = clipPlane.w;
+
+				eye.setFromMatrixPosition( camera.matrixWorld );
+
+				// Render
+
+				const currentRenderTarget = renderer.getRenderTarget();
+
+				const currentXrEnabled = renderer.xr.enabled;
+				const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
+
+				scope.visible = false;
+
+				renderer.xr.enabled = false; // Avoid camera modification and recursion
+				renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
+
+				renderer.setRenderTarget( renderTarget );
+
+				renderer.state.buffers.depth.setMask( true ); // make sure the depth buffer is writable so it can be properly cleared, see #18897
+
+				if ( renderer.autoClear === false ) renderer.clear();
+				renderer.render( scene, mirrorCamera );
+
+				scope.visible = true;
+
+				renderer.xr.enabled = currentXrEnabled;
+				renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
+
+				renderer.setRenderTarget( currentRenderTarget );
+
+				// Restore viewport
+
+				const viewport = camera.viewport;
+
+				if ( viewport !== undefined ) {
+
+					renderer.state.viewport( viewport );
+
+				}
+
+			};
+
+		}
+
+	}
+
+	Water.prototype.isWater = true;
+
+	class Reflector$1 extends Mesh {
+
+		constructor( geometry, options = {} ) {
+
+			super( geometry );
+
+			this.type = 'Reflector';
+
+			const scope = this;
+
+			const color = ( options.color !== undefined ) ? new Color( options.color ) : new Color( 0x7F7F7F );
+			const textureWidth = options.textureWidth || 512;
+			const textureHeight = options.textureHeight || 512;
+			const clipBias = options.clipBias || 0;
+			const shader = options.shader || Reflector$1.ReflectorShader;
+
+			//
+
+			const reflectorPlane = new Plane();
+			const normal = new Vector3();
+			const reflectorWorldPosition = new Vector3();
+			const cameraWorldPosition = new Vector3();
+			const rotationMatrix = new Matrix4();
+			const lookAtPosition = new Vector3( 0, 0, - 1 );
+			const clipPlane = new Vector4();
+
+			const view = new Vector3();
+			const target = new Vector3();
+			const q = new Vector4();
+
+			const textureMatrix = new Matrix4();
+			const virtualCamera = new PerspectiveCamera();
+
+			const parameters = {
+				minFilter: LinearFilter,
+				magFilter: LinearFilter,
+				format: RGBFormat
+			};
+
+			const renderTarget = new WebGLRenderTarget( textureWidth, textureHeight, parameters );
+
+			if ( ! MathUtils.isPowerOfTwo( textureWidth ) || ! MathUtils.isPowerOfTwo( textureHeight ) ) {
+
+				renderTarget.texture.generateMipmaps = false;
+
+			}
+
+			const material = new ShaderMaterial( {
+				uniforms: UniformsUtils$1.clone( shader.uniforms ),
+				fragmentShader: shader.fragmentShader,
+				vertexShader: shader.vertexShader
+			} );
+
+			material.uniforms[ 'tDiffuse' ].value = renderTarget.texture;
+			material.uniforms[ 'color' ].value = color;
+			material.uniforms[ 'textureMatrix' ].value = textureMatrix;
+
+			this.material = material;
+
+			this.onBeforeRender = function ( renderer, scene, camera ) {
+
+				reflectorWorldPosition.setFromMatrixPosition( scope.matrixWorld );
+				cameraWorldPosition.setFromMatrixPosition( camera.matrixWorld );
+
+				rotationMatrix.extractRotation( scope.matrixWorld );
+
+				normal.set( 0, 0, 1 );
+				normal.applyMatrix4( rotationMatrix );
+
+				view.subVectors( reflectorWorldPosition, cameraWorldPosition );
+
+				// Avoid rendering when reflector is facing away
+
+				if ( view.dot( normal ) > 0 ) return;
+
+				view.reflect( normal ).negate();
+				view.add( reflectorWorldPosition );
+
+				rotationMatrix.extractRotation( camera.matrixWorld );
+
+				lookAtPosition.set( 0, 0, - 1 );
+				lookAtPosition.applyMatrix4( rotationMatrix );
+				lookAtPosition.add( cameraWorldPosition );
+
+				target.subVectors( reflectorWorldPosition, lookAtPosition );
+				target.reflect( normal ).negate();
+				target.add( reflectorWorldPosition );
+
+				virtualCamera.position.copy( view );
+				virtualCamera.up.set( 0, 1, 0 );
+				virtualCamera.up.applyMatrix4( rotationMatrix );
+				virtualCamera.up.reflect( normal );
+				virtualCamera.lookAt( target );
+
+				virtualCamera.far = camera.far; // Used in WebGLBackground
+
+				virtualCamera.updateMatrixWorld();
+				virtualCamera.projectionMatrix.copy( camera.projectionMatrix );
+
+				// Update the texture matrix
+				textureMatrix.set(
+					0.5, 0.0, 0.0, 0.5,
+					0.0, 0.5, 0.0, 0.5,
+					0.0, 0.0, 0.5, 0.5,
+					0.0, 0.0, 0.0, 1.0
+				);
+				textureMatrix.multiply( virtualCamera.projectionMatrix );
+				textureMatrix.multiply( virtualCamera.matrixWorldInverse );
+				textureMatrix.multiply( scope.matrixWorld );
+
+				// Now update projection matrix with new clip plane, implementing code from: http://www.terathon.com/code/oblique.html
+				// Paper explaining this technique: http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
+				reflectorPlane.setFromNormalAndCoplanarPoint( normal, reflectorWorldPosition );
+				reflectorPlane.applyMatrix4( virtualCamera.matrixWorldInverse );
+
+				clipPlane.set( reflectorPlane.normal.x, reflectorPlane.normal.y, reflectorPlane.normal.z, reflectorPlane.constant );
+
+				const projectionMatrix = virtualCamera.projectionMatrix;
+
+				q.x = ( Math.sign( clipPlane.x ) + projectionMatrix.elements[ 8 ] ) / projectionMatrix.elements[ 0 ];
+				q.y = ( Math.sign( clipPlane.y ) + projectionMatrix.elements[ 9 ] ) / projectionMatrix.elements[ 5 ];
+				q.z = - 1.0;
+				q.w = ( 1.0 + projectionMatrix.elements[ 10 ] ) / projectionMatrix.elements[ 14 ];
+
+				// Calculate the scaled plane vector
+				clipPlane.multiplyScalar( 2.0 / clipPlane.dot( q ) );
+
+				// Replacing the third row of the projection matrix
+				projectionMatrix.elements[ 2 ] = clipPlane.x;
+				projectionMatrix.elements[ 6 ] = clipPlane.y;
+				projectionMatrix.elements[ 10 ] = clipPlane.z + 1.0 - clipBias;
+				projectionMatrix.elements[ 14 ] = clipPlane.w;
+
+				// Render
+
+				renderTarget.texture.encoding = renderer.outputEncoding;
+
+				scope.visible = false;
+
+				const currentRenderTarget = renderer.getRenderTarget();
+
+				const currentXrEnabled = renderer.xr.enabled;
+				const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
+
+				renderer.xr.enabled = false; // Avoid camera modification
+				renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
+
+				renderer.setRenderTarget( renderTarget );
+
+				renderer.state.buffers.depth.setMask( true ); // make sure the depth buffer is writable so it can be properly cleared, see #18897
+
+				if ( renderer.autoClear === false ) renderer.clear();
+				renderer.render( scene, virtualCamera );
+
+				renderer.xr.enabled = currentXrEnabled;
+				renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
+
+				renderer.setRenderTarget( currentRenderTarget );
+
+				// Restore viewport
+
+				const viewport = camera.viewport;
+
+				if ( viewport !== undefined ) {
+
+					renderer.state.viewport( viewport );
+
+				}
+
+				scope.visible = true;
+
+			};
+
+			this.getRenderTarget = function () {
+
+				return renderTarget;
+
+			};
+
+		}
+
+	}
+
+	Reflector$1.prototype.isReflector = true;
+
+	Reflector$1.ReflectorShader = {
+
+		uniforms: {
+
+			'color': {
+				value: null
+			},
+
+			'tDiffuse': {
+				value: null
+			},
+
+			'textureMatrix': {
+				value: null
+			}
+
+		},
+
+		vertexShader: /* glsl */`
+		uniform mat4 textureMatrix;
+		varying vec4 vUv;
+
+		#include <common>
+		#include <logdepthbuf_pars_vertex>
+
+		void main() {
+
+			vUv = textureMatrix * vec4( position, 1.0 );
+
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+			#include <logdepthbuf_vertex>
+
+		}`,
+
+		fragmentShader: /* glsl */`
+		uniform vec3 color;
+		uniform sampler2D tDiffuse;
+		varying vec4 vUv;
+
+		#include <logdepthbuf_pars_fragment>
+
+		float blendOverlay( float base, float blend ) {
+
+			return( base < 0.5 ? ( 2.0 * base * blend ) : ( 1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );
+
+		}
+
+		vec3 blendOverlay( vec3 base, vec3 blend ) {
+
+			return vec3( blendOverlay( base.r, blend.r ), blendOverlay( base.g, blend.g ), blendOverlay( base.b, blend.b ) );
+
+		}
+
+		void main() {
+
+			#include <logdepthbuf_fragment>
+
+			vec4 base = texture2DProj( tDiffuse, vUv );
+			gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );
+
+		}`
+	};
+
+	class ReflectorRTT extends Reflector$1 {
+
+		constructor( geometry, options ) {
+
+			super( geometry, options );
+
+			this.geometry.setDrawRange( 0, 0 ); // avoid rendering geometry
+
+		}
+
+	}
+
+	class Reflector extends Mesh {
+	  constructor(geometry, options = {}) {
+	    super(geometry);
+
+	    this.type = 'Reflector';
+
+	    const scope = this;
+
+	    const color = options.color !== undefined ? new Color(options.color) : new Color(0x7f7f7f);
+	    const textureWidth = options.textureWidth || 512;
+	    const textureHeight = options.textureHeight || 512;
+	    const clipBias = options.clipBias || 0;
+	    const shader = options.shader || Reflector.ReflectorShader;
+
+	    //
+
+	    const reflectorPlane = new Plane();
+	    const normal = new Vector3();
+	    const reflectorWorldPosition = new Vector3();
+	    const cameraWorldPosition = new Vector3();
+	    const rotationMatrix = new Matrix4();
+	    const lookAtPosition = new Vector3(0, 0, -1);
+	    const clipPlane = new Vector4();
+
+	    const view = new Vector3();
+	    const target = new Vector3();
+	    const q = new Vector4();
+
+	    const textureMatrix = new Matrix4();
+	    const virtualCamera = new PerspectiveCamera();
+
+	    const parameters = {
+	      minFilter: LinearFilter,
+	      magFilter: LinearFilter,
+	      format: RGBFormat
+	    };
+
+	    const renderTarget = new WebGLRenderTarget(textureWidth, textureHeight, parameters);
+
+	    if (!MathUtils.isPowerOfTwo(textureWidth) || !MathUtils.isPowerOfTwo(textureHeight)) {
+	      renderTarget.texture.generateMipmaps = false;
+	    }
+
+	    const material = new ShaderMaterial({
+	      transparent: true,
+	      uniforms: UniformsUtils$1.clone(shader.uniforms),
+	      fragmentShader: shader.fragmentShader,
+	      vertexShader: shader.vertexShader
+	    });
+
+	    material.uniforms['tDiffuse'].value = renderTarget.texture;
+	    material.uniforms['color'].value = color;
+	    material.uniforms['textureMatrix'].value = textureMatrix;
+	    material.uniforms['opacity'].value = 1;
+
+	    this.material = material;
+
+	    this.onBeforeRender = function (renderer, scene, camera) {
+	      reflectorWorldPosition.setFromMatrixPosition(scope.matrixWorld);
+	      cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
+
+	      rotationMatrix.extractRotation(scope.matrixWorld);
+
+	      normal.set(0, 0, 1);
+	      normal.applyMatrix4(rotationMatrix);
+
+	      view.subVectors(reflectorWorldPosition, cameraWorldPosition);
+
+	      // Avoid rendering when reflector is facing away
+
+	      if (view.dot(normal) > 0) return
+
+	      view.reflect(normal).negate();
+	      view.add(reflectorWorldPosition);
+
+	      rotationMatrix.extractRotation(camera.matrixWorld);
+
+	      lookAtPosition.set(0, 0, -1);
+	      lookAtPosition.applyMatrix4(rotationMatrix);
+	      lookAtPosition.add(cameraWorldPosition);
+
+	      target.subVectors(reflectorWorldPosition, lookAtPosition);
+	      target.reflect(normal).negate();
+	      target.add(reflectorWorldPosition);
+
+	      virtualCamera.position.copy(view);
+	      virtualCamera.up.set(0, 1, 0);
+	      virtualCamera.up.applyMatrix4(rotationMatrix);
+	      virtualCamera.up.reflect(normal);
+	      virtualCamera.lookAt(target);
+
+	      virtualCamera.far = camera.far; // Used in WebGLBackground
+
+	      virtualCamera.updateMatrixWorld();
+	      virtualCamera.projectionMatrix.copy(camera.projectionMatrix);
+
+	      // Update the texture matrix
+	      textureMatrix.set(0.5, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0);
+	      textureMatrix.multiply(virtualCamera.projectionMatrix);
+	      textureMatrix.multiply(virtualCamera.matrixWorldInverse);
+	      textureMatrix.multiply(scope.matrixWorld);
+
+	      // Now update projection matrix with new clip plane, implementing code from: http://www.terathon.com/code/oblique.html
+	      // Paper explaining this technique: http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
+	      reflectorPlane.setFromNormalAndCoplanarPoint(normal, reflectorWorldPosition);
+	      reflectorPlane.applyMatrix4(virtualCamera.matrixWorldInverse);
+
+	      clipPlane.set(reflectorPlane.normal.x, reflectorPlane.normal.y, reflectorPlane.normal.z, reflectorPlane.constant);
+
+	      const projectionMatrix = virtualCamera.projectionMatrix;
+
+	      q.x = (Math.sign(clipPlane.x) + projectionMatrix.elements[8]) / projectionMatrix.elements[0];
+	      q.y = (Math.sign(clipPlane.y) + projectionMatrix.elements[9]) / projectionMatrix.elements[5];
+	      q.z = -1.0;
+	      q.w = (1.0 + projectionMatrix.elements[10]) / projectionMatrix.elements[14];
+
+	      // Calculate the scaled plane vector
+	      clipPlane.multiplyScalar(2.0 / clipPlane.dot(q));
+
+	      // Replacing the third row of the projection matrix
+	      projectionMatrix.elements[2] = clipPlane.x;
+	      projectionMatrix.elements[6] = clipPlane.y;
+	      projectionMatrix.elements[10] = clipPlane.z + 1.0 - clipBias;
+	      projectionMatrix.elements[14] = clipPlane.w;
+
+	      // Render
+
+	      renderTarget.texture.encoding = renderer.outputEncoding;
+
+	      scope.visible = false;
+
+	      const currentRenderTarget = renderer.getRenderTarget();
+
+	      const currentXrEnabled = renderer.xr.enabled;
+	      const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
+
+	      renderer.xr.enabled = false; // Avoid camera modification
+	      renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
+
+	      renderer.setRenderTarget(renderTarget);
+
+	      renderer.state.buffers.depth.setMask(true); // make sure the depth buffer is writable so it can be properly cleared, see #18897
+
+	      if (renderer.autoClear === false) renderer.clear();
+	      renderer.render(scene, virtualCamera);
+
+	      renderer.xr.enabled = currentXrEnabled;
+	      renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
+
+	      renderer.setRenderTarget(currentRenderTarget);
+
+	      // Restore viewport
+
+	      const viewport = camera.viewport;
+
+	      if (viewport !== undefined) {
+	        renderer.state.viewport(viewport);
+	      }
+
+	      scope.visible = true;
+	    };
+
+	    this.getRenderTarget = function () {
+	      return renderTarget
+	    };
+	  }
+	}
+
+	Reflector.prototype.isReflector = true;
+
+	Reflector.ReflectorShader = {
+	  uniforms: {
+	    color: {
+	      value: null
+	    },
+
+	    tDiffuse: {
+	      value: null
+	    },
+
+	    textureMatrix: {
+	      value: null
+	    },
+
+	    opacity: {
+	      value: 1
+	    }
+	  },
+
+	  vertexShader: /* glsl */ `
+		uniform mat4 textureMatrix;
+		varying vec4 vUv;
+
+		#include <common>
+		#include <logdepthbuf_pars_vertex>
+
+		void main() {
+
+			vUv = textureMatrix * vec4( position, 1.0 );
+
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+			#include <logdepthbuf_vertex>
+
+		}`,
+
+	  fragmentShader: /* glsl */ `
+		uniform vec3 color;
+		uniform sampler2D tDiffuse;
+		uniform float opacity;
+		varying vec4 vUv;
+
+		#include <logdepthbuf_pars_fragment>
+
+		float blendOverlay( float base, float blend ) {
+
+			return( base < 0.5 ? ( 2.0 * base * blend ) : ( 1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );
+
+		}
+
+		vec3 blendOverlay( vec3 base, vec3 blend ) {
+
+			return vec3( blendOverlay( base.r, blend.r ), blendOverlay( base.g, blend.g ), blendOverlay( base.b, blend.b ) );
+
+		}
+
+		void main() {
+
+			#include <logdepthbuf_fragment>
+
+			vec4 base = texture2DProj( tDiffuse, vUv );
+			gl_FragColor = vec4( blendOverlay( base.rgb, color ), opacity);
+
+		}`
+	};
+
+	class SkeletonUtils {
+
+		static retarget( target, source, options = {} ) {
+
+			const pos = new Vector3(),
+				quat = new Quaternion(),
+				scale = new Vector3(),
+				bindBoneMatrix = new Matrix4(),
+				relativeMatrix = new Matrix4(),
+				globalMatrix = new Matrix4();
+
+			options.preserveMatrix = options.preserveMatrix !== undefined ? options.preserveMatrix : true;
+			options.preservePosition = options.preservePosition !== undefined ? options.preservePosition : true;
+			options.preserveHipPosition = options.preserveHipPosition !== undefined ? options.preserveHipPosition : false;
+			options.useTargetMatrix = options.useTargetMatrix !== undefined ? options.useTargetMatrix : false;
+			options.hip = options.hip !== undefined ? options.hip : 'hip';
+			options.names = options.names || {};
+
+			const sourceBones = source.isObject3D ? source.skeleton.bones : this.getBones( source ),
+				bones = target.isObject3D ? target.skeleton.bones : this.getBones( target );
+
+			let bindBones,
+				bone, name, boneTo,
+				bonesPosition;
+
+			// reset bones
+
+			if ( target.isObject3D ) {
+
+				target.skeleton.pose();
+
+			} else {
+
+				options.useTargetMatrix = true;
+				options.preserveMatrix = false;
+
+			}
+
+			if ( options.preservePosition ) {
+
+				bonesPosition = [];
+
+				for ( let i = 0; i < bones.length; i ++ ) {
+
+					bonesPosition.push( bones[ i ].position.clone() );
+
+				}
+
+			}
+
+			if ( options.preserveMatrix ) {
+
+				// reset matrix
+
+				target.updateMatrixWorld();
+
+				target.matrixWorld.identity();
+
+				// reset children matrix
+
+				for ( let i = 0; i < target.children.length; ++ i ) {
+
+					target.children[ i ].updateMatrixWorld( true );
+
+				}
+
+			}
+
+			if ( options.offsets ) {
+
+				bindBones = [];
+
+				for ( let i = 0; i < bones.length; ++ i ) {
+
+					bone = bones[ i ];
+					name = options.names[ bone.name ] || bone.name;
+
+					if ( options.offsets && options.offsets[ name ] ) {
+
+						bone.matrix.multiply( options.offsets[ name ] );
+
+						bone.matrix.decompose( bone.position, bone.quaternion, bone.scale );
+
+						bone.updateMatrixWorld();
+
+					}
+
+					bindBones.push( bone.matrixWorld.clone() );
+
+				}
+
+			}
+
+			for ( let i = 0; i < bones.length; ++ i ) {
+
+				bone = bones[ i ];
+				name = options.names[ bone.name ] || bone.name;
+
+				boneTo = this.getBoneByName( name, sourceBones );
+
+				globalMatrix.copy( bone.matrixWorld );
+
+				if ( boneTo ) {
+
+					boneTo.updateMatrixWorld();
+
+					if ( options.useTargetMatrix ) {
+
+						relativeMatrix.copy( boneTo.matrixWorld );
+
+					} else {
+
+						relativeMatrix.copy( target.matrixWorld ).invert();
+						relativeMatrix.multiply( boneTo.matrixWorld );
+
+					}
+
+					// ignore scale to extract rotation
+
+					scale.setFromMatrixScale( relativeMatrix );
+					relativeMatrix.scale( scale.set( 1 / scale.x, 1 / scale.y, 1 / scale.z ) );
+
+					// apply to global matrix
+
+					globalMatrix.makeRotationFromQuaternion( quat.setFromRotationMatrix( relativeMatrix ) );
+
+					if ( target.isObject3D ) {
+
+						const boneIndex = bones.indexOf( bone ),
+							wBindMatrix = bindBones ? bindBones[ boneIndex ] : bindBoneMatrix.copy( target.skeleton.boneInverses[ boneIndex ] ).invert();
+
+						globalMatrix.multiply( wBindMatrix );
+
+					}
+
+					globalMatrix.copyPosition( relativeMatrix );
+
+				}
+
+				if ( bone.parent && bone.parent.isBone ) {
+
+					bone.matrix.copy( bone.parent.matrixWorld ).invert();
+					bone.matrix.multiply( globalMatrix );
+
+				} else {
+
+					bone.matrix.copy( globalMatrix );
+
+				}
+
+				if ( options.preserveHipPosition && name === options.hip ) {
+
+					bone.matrix.setPosition( pos.set( 0, bone.position.y, 0 ) );
+
+				}
+
+				bone.matrix.decompose( bone.position, bone.quaternion, bone.scale );
+
+				bone.updateMatrixWorld();
+
+			}
+
+			if ( options.preservePosition ) {
+
+				for ( let i = 0; i < bones.length; ++ i ) {
+
+					bone = bones[ i ];
+					name = options.names[ bone.name ] || bone.name;
+
+					if ( name !== options.hip ) {
+
+						bone.position.copy( bonesPosition[ i ] );
+
+					}
+
+				}
+
+			}
+
+			if ( options.preserveMatrix ) {
+
+				// restore matrix
+
+				target.updateMatrixWorld( true );
+
+			}
+
+		}
+
+		static retargetClip( target, source, clip, options = {} ) {
+
+			options.useFirstFramePosition = options.useFirstFramePosition !== undefined ? options.useFirstFramePosition : false;
+			options.fps = options.fps !== undefined ? options.fps : 30;
+			options.names = options.names || [];
+
+			if ( ! source.isObject3D ) {
+
+				source = this.getHelperFromSkeleton( source );
+
+			}
+
+			const numFrames = Math.round( clip.duration * ( options.fps / 1000 ) * 1000 ),
+				delta = 1 / options.fps,
+				convertedTracks = [],
+				mixer = new AnimationMixer( source ),
+				bones = this.getBones( target.skeleton ),
+				boneDatas = [];
+			let positionOffset,
+				bone, boneTo, boneData,
+				name;
+
+			mixer.clipAction( clip ).play();
+			mixer.update( 0 );
+
+			source.updateMatrixWorld();
+
+			for ( let i = 0; i < numFrames; ++ i ) {
+
+				const time = i * delta;
+
+				this.retarget( target, source, options );
+
+				for ( let j = 0; j < bones.length; ++ j ) {
+
+					name = options.names[ bones[ j ].name ] || bones[ j ].name;
+
+					boneTo = this.getBoneByName( name, source.skeleton );
+
+					if ( boneTo ) {
+
+						bone = bones[ j ];
+						boneData = boneDatas[ j ] = boneDatas[ j ] || { bone: bone };
+
+						if ( options.hip === name ) {
+
+							if ( ! boneData.pos ) {
+
+								boneData.pos = {
+									times: new Float32Array( numFrames ),
+									values: new Float32Array( numFrames * 3 )
+								};
+
+							}
+
+							if ( options.useFirstFramePosition ) {
+
+								if ( i === 0 ) {
+
+									positionOffset = bone.position.clone();
+
+								}
+
+								bone.position.sub( positionOffset );
+
+							}
+
+							boneData.pos.times[ i ] = time;
+
+							bone.position.toArray( boneData.pos.values, i * 3 );
+
+						}
+
+						if ( ! boneData.quat ) {
+
+							boneData.quat = {
+								times: new Float32Array( numFrames ),
+								values: new Float32Array( numFrames * 4 )
+							};
+
+						}
+
+						boneData.quat.times[ i ] = time;
+
+						bone.quaternion.toArray( boneData.quat.values, i * 4 );
+
+					}
+
+				}
+
+				mixer.update( delta );
+
+				source.updateMatrixWorld();
+
+			}
+
+			for ( let i = 0; i < boneDatas.length; ++ i ) {
+
+				boneData = boneDatas[ i ];
+
+				if ( boneData ) {
+
+					if ( boneData.pos ) {
+
+						convertedTracks.push( new VectorKeyframeTrack(
+							'.bones[' + boneData.bone.name + '].position',
+							boneData.pos.times,
+							boneData.pos.values
+						) );
+
+					}
+
+					convertedTracks.push( new QuaternionKeyframeTrack(
+						'.bones[' + boneData.bone.name + '].quaternion',
+						boneData.quat.times,
+						boneData.quat.values
+					) );
+
+				}
+
+			}
+
+			mixer.uncacheAction( clip );
+
+			return new AnimationClip( clip.name, - 1, convertedTracks );
+
+		}
+
+		static getHelperFromSkeleton( skeleton ) {
+
+			const source = new SkeletonHelper( skeleton.bones[ 0 ] );
+			source.skeleton = skeleton;
+
+			return source;
+
+		}
+
+		static getSkeletonOffsets( target, source, options = {} ) {
+
+			const targetParentPos = new Vector3(),
+				targetPos = new Vector3(),
+				sourceParentPos = new Vector3(),
+				sourcePos = new Vector3(),
+				targetDir = new Vector2(),
+				sourceDir = new Vector2();
+
+			options.hip = options.hip !== undefined ? options.hip : 'hip';
+			options.names = options.names || {};
+
+			if ( ! source.isObject3D ) {
+
+				source = this.getHelperFromSkeleton( source );
+
+			}
+
+			const nameKeys = Object.keys( options.names ),
+				nameValues = Object.values( options.names ),
+				sourceBones = source.isObject3D ? source.skeleton.bones : this.getBones( source ),
+				bones = target.isObject3D ? target.skeleton.bones : this.getBones( target ),
+				offsets = [];
+
+			let bone, boneTo,
+				name, i;
+
+			target.skeleton.pose();
+
+			for ( i = 0; i < bones.length; ++ i ) {
+
+				bone = bones[ i ];
+				name = options.names[ bone.name ] || bone.name;
+
+				boneTo = this.getBoneByName( name, sourceBones );
+
+				if ( boneTo && name !== options.hip ) {
+
+					const boneParent = this.getNearestBone( bone.parent, nameKeys ),
+						boneToParent = this.getNearestBone( boneTo.parent, nameValues );
+
+					boneParent.updateMatrixWorld();
+					boneToParent.updateMatrixWorld();
+
+					targetParentPos.setFromMatrixPosition( boneParent.matrixWorld );
+					targetPos.setFromMatrixPosition( bone.matrixWorld );
+
+					sourceParentPos.setFromMatrixPosition( boneToParent.matrixWorld );
+					sourcePos.setFromMatrixPosition( boneTo.matrixWorld );
+
+					targetDir.subVectors(
+						new Vector2( targetPos.x, targetPos.y ),
+						new Vector2( targetParentPos.x, targetParentPos.y )
+					).normalize();
+
+					sourceDir.subVectors(
+						new Vector2( sourcePos.x, sourcePos.y ),
+						new Vector2( sourceParentPos.x, sourceParentPos.y )
+					).normalize();
+
+					const laterialAngle = targetDir.angle() - sourceDir.angle();
+
+					const offset = new Matrix4().makeRotationFromEuler(
+						new Euler(
+							0,
+							0,
+							laterialAngle
+						)
+					);
+
+					bone.matrix.multiply( offset );
+
+					bone.matrix.decompose( bone.position, bone.quaternion, bone.scale );
+
+					bone.updateMatrixWorld();
+
+					offsets[ name ] = offset;
+
+				}
+
+			}
+
+			return offsets;
+
+		}
+
+		static renameBones( skeleton, names ) {
+
+			const bones = this.getBones( skeleton );
+
+			for ( let i = 0; i < bones.length; ++ i ) {
+
+				const bone = bones[ i ];
+
+				if ( names[ bone.name ] ) {
+
+					bone.name = names[ bone.name ];
+
+				}
+
+			}
+
+			return this;
+
+		}
+
+		static getBones( skeleton ) {
+
+			return Array.isArray( skeleton ) ? skeleton : skeleton.bones;
+
+		}
+
+		static getBoneByName( name, skeleton ) {
+
+			for ( let i = 0, bones = this.getBones( skeleton ); i < bones.length; i ++ ) {
+
+				if ( name === bones[ i ].name )
+
+					return bones[ i ];
+
+			}
+
+		}
+
+		static getNearestBone( bone, names ) {
+
+			while ( bone.isBone ) {
+
+				if ( names.indexOf( bone.name ) !== - 1 ) {
+
+					return bone;
+
+				}
+
+				bone = bone.parent;
+
+			}
+
+		}
+
+		static findBoneTrackData( name, tracks ) {
+
+			const regexp = /\[(.*)\]\.(.*)/,
+				result = { name: name };
+
+			for ( let i = 0; i < tracks.length; ++ i ) {
+
+				// 1 is track name
+				// 2 is track type
+				const trackData = regexp.exec( tracks[ i ].name );
+
+				if ( trackData && name === trackData[ 1 ] ) {
+
+					result[ trackData[ 2 ] ] = i;
+
+				}
+
+			}
+
+			return result;
+
+		}
+
+		static getEqualsBonesNames( skeleton, targetSkeleton ) {
+
+			const sourceBones = this.getBones( skeleton ),
+				targetBones = this.getBones( targetSkeleton ),
+				bones = [];
+
+			search : for ( let i = 0; i < sourceBones.length; i ++ ) {
+
+				const boneName = sourceBones[ i ].name;
+
+				for ( let j = 0; j < targetBones.length; j ++ ) {
+
+					if ( boneName === targetBones[ j ].name ) {
+
+						bones.push( boneName );
+
+						continue search;
+
+					}
+
+				}
+
+			}
+
+			return bones;
+
+		}
+
+		static clone( source ) {
+
+			const sourceLookup = new Map();
+			const cloneLookup = new Map();
+
+			const clone = source.clone();
+
+			parallelTraverse( source, clone, function ( sourceNode, clonedNode ) {
+
+				sourceLookup.set( clonedNode, sourceNode );
+				cloneLookup.set( sourceNode, clonedNode );
+
+			} );
+
+			clone.traverse( function ( node ) {
+
+				if ( ! node.isSkinnedMesh ) return;
+
+				const clonedMesh = node;
+				const sourceMesh = sourceLookup.get( node );
+				const sourceBones = sourceMesh.skeleton.bones;
+
+				clonedMesh.skeleton = sourceMesh.skeleton.clone();
+				clonedMesh.bindMatrix.copy( sourceMesh.bindMatrix );
+
+				clonedMesh.skeleton.bones = sourceBones.map( function ( bone ) {
+
+					return cloneLookup.get( bone );
+
+				} );
+
+				clonedMesh.bind( clonedMesh.skeleton, clonedMesh.bindMatrix );
+
+			} );
+
+			return clone;
+
+		}
+
+	}
+
+
+	function parallelTraverse( a, b, callback ) {
+
+		callback( a, b );
+
+		for ( let i = 0; i < a.children.length; i ++ ) {
+
+			parallelTraverse( a.children[ i ], b.children[ i ], callback );
+
+		}
+
+	}
+
+	exports.ACESFilmicToneMapping = ACESFilmicToneMapping;
+	exports.AddEquation = AddEquation;
+	exports.AddOperation = AddOperation;
+	exports.AdditiveAnimationBlendMode = AdditiveAnimationBlendMode;
+	exports.AdditiveBlending = AdditiveBlending;
+	exports.AlphaFormat = AlphaFormat;
+	exports.AlwaysDepth = AlwaysDepth;
+	exports.AlwaysStencilFunc = AlwaysStencilFunc;
+	exports.AmbientLight = AmbientLight;
+	exports.AmbientLightProbe = AmbientLightProbe;
+	exports.AnimationClip = AnimationClip;
+	exports.AnimationLoader = AnimationLoader;
+	exports.AnimationMixer = AnimationMixer;
+	exports.AnimationObjectGroup = AnimationObjectGroup;
+	exports.AnimationUtils = AnimationUtils;
+	exports.ArcCurve = ArcCurve;
+	exports.ArrayCamera = ArrayCamera;
+	exports.ArrowHelper = ArrowHelper;
+	exports.Audio = Audio;
+	exports.AudioAnalyser = AudioAnalyser;
+	exports.AudioContext = AudioContext;
+	exports.AudioListener = AudioListener;
+	exports.AudioLoader = AudioLoader;
+	exports.AxesHelper = AxesHelper;
+	exports.AxisHelper = AxisHelper;
+	exports.BackSide = BackSide;
+	exports.BaseParticles = BaseParticles;
+	exports.BasicDepthPacking = BasicDepthPacking;
+	exports.BasicShadowMap = BasicShadowMap;
+	exports.BinaryTextureLoader = BinaryTextureLoader;
+	exports.BlurNode = BlurNode;
+	exports.Bone = Bone;
+	exports.BooleanKeyframeTrack = BooleanKeyframeTrack;
+	exports.BoundingBoxHelper = BoundingBoxHelper;
+	exports.Box2 = Box2;
+	exports.Box3 = Box3;
+	exports.Box3Helper = Box3Helper;
+	exports.BoxBufferGeometry = BoxGeometry;
+	exports.BoxGeometry = BoxGeometry;
+	exports.BoxHelper = BoxHelper;
+	exports.BufferAttribute = BufferAttribute;
+	exports.BufferGeometry = BufferGeometry;
+	exports.BufferGeometryLoader = BufferGeometryLoader;
+	exports.ByteType = ByteType;
+	exports.Cache = Cache;
+	exports.Camera = Camera;
+	exports.CameraHelper = CameraHelper;
+	exports.CanvasRenderer = CanvasRenderer;
+	exports.CanvasTexture = CanvasTexture;
+	exports.CatmullRomCurve3 = CatmullRomCurve3;
+	exports.CineonToneMapping = CineonToneMapping;
+	exports.CircleBufferGeometry = CircleGeometry;
+	exports.CircleGeometry = CircleGeometry;
+	exports.ClampToEdgeWrapping = ClampToEdgeWrapping;
+	exports.Clock = Clock;
+	exports.Color = Color;
+	exports.ColorKeyframeTrack = ColorKeyframeTrack;
+	exports.ColumnarTag = ColumnarTag;
+	exports.CompositeIconHTML = CompositeIconHTML;
+	exports.CompositeIconPopup = CompositeIconPopup;
+	exports.CompositeIconSimple = CompositeIconSimple;
+	exports.CompositeIconTag = CompositeIconTag;
+	exports.CompositeIconTitle = CompositeIconTitle;
+	exports.CompressedTexture = CompressedTexture;
+	exports.CompressedTextureLoader = CompressedTextureLoader;
+	exports.ConeBufferGeometry = ConeGeometry;
+	exports.ConeGeometry = ConeGeometry;
+	exports.Container = Container;
+	exports.CubeCamera = CubeCamera;
+	exports.CubeReflectionMapping = CubeReflectionMapping;
+	exports.CubeRefractionMapping = CubeRefractionMapping;
+	exports.CubeTexture = CubeTexture;
+	exports.CubeTextureLoader = CubeTextureLoader;
+	exports.CubeUVReflectionMapping = CubeUVReflectionMapping;
+	exports.CubeUVRefractionMapping = CubeUVRefractionMapping;
+	exports.CubicBezierCurve = CubicBezierCurve;
+	exports.CubicBezierCurve3 = CubicBezierCurve3;
+	exports.CubicInterpolant = CubicInterpolant;
+	exports.CullFaceBack = CullFaceBack;
+	exports.CullFaceFront = CullFaceFront;
+	exports.CullFaceFrontBack = CullFaceFrontBack;
+	exports.CullFaceNone = CullFaceNone;
+	exports.Curve = Curve;
+	exports.CurvePath = CurvePath;
+	exports.CustomBlending = CustomBlending;
+	exports.CustomToneMapping = CustomToneMapping;
+	exports.CylinderBufferGeometry = CylinderGeometry;
+	exports.CylinderGeometry = CylinderGeometry;
+	exports.Cylindrical = Cylindrical;
+	exports.DataTexture = DataTexture;
+	exports.DataTexture2DArray = DataTexture2DArray;
+	exports.DataTexture3D = DataTexture3D;
+	exports.DataTextureLoader = DataTextureLoader;
+	exports.DataUtils = DataUtils;
+	exports.DecrementStencilOp = DecrementStencilOp;
+	exports.DecrementWrapStencilOp = DecrementWrapStencilOp;
+	exports.DefaultLoadingManager = DefaultLoadingManager;
+	exports.DepthFormat = DepthFormat;
+	exports.DepthStencilFormat = DepthStencilFormat;
+	exports.DepthTexture = DepthTexture;
+	exports.DirectionalLight = DirectionalLight;
+	exports.DirectionalLightHelper = DirectionalLightHelper;
+	exports.DiscreteInterpolant = DiscreteInterpolant;
+	exports.DodecahedronBufferGeometry = DodecahedronGeometry;
+	exports.DodecahedronGeometry = DodecahedronGeometry;
+	exports.DoubleSide = DoubleSide;
+	exports.DstAlphaFactor = DstAlphaFactor;
+	exports.DstColorFactor = DstColorFactor;
+	exports.DynamicBufferAttribute = DynamicBufferAttribute;
+	exports.DynamicCopyUsage = DynamicCopyUsage;
+	exports.DynamicDrawUsage = DynamicDrawUsage;
+	exports.DynamicReadUsage = DynamicReadUsage;
+	exports.EdgesGeometry = EdgesGeometry;
+	exports.EdgesHelper = EdgesHelper;
+	exports.EllipseCurve = EllipseCurve;
+	exports.EqualDepth = EqualDepth;
+	exports.EqualStencilFunc = EqualStencilFunc;
+	exports.EquirectangularReflectionMapping = EquirectangularReflectionMapping;
+	exports.EquirectangularRefractionMapping = EquirectangularRefractionMapping;
+	exports.Euler = Euler;
+	exports.EventDispatcher = EventDispatcher;
+	exports.Events = Events;
+	exports.ExpressionNode = ExpressionNode;
+	exports.ExtrudeBufferGeometry = ExtrudeGeometry;
+	exports.ExtrudeGeometry = ExtrudeGeometry;
+	exports.FaceColors = FaceColors;
+	exports.FileLoader = FileLoader;
+	exports.FlatShading = FlatShading;
+	exports.Float16BufferAttribute = Float16BufferAttribute;
+	exports.Float32Attribute = Float32Attribute;
+	exports.Float32BufferAttribute = Float32BufferAttribute;
+	exports.Float64Attribute = Float64Attribute;
+	exports.Float64BufferAttribute = Float64BufferAttribute;
+	exports.FloatNode = FloatNode;
+	exports.FloatType = FloatType;
+	exports.Fog = Fog;
+	exports.FogExp2 = FogExp2;
+	exports.Font = Font;
+	exports.FontLoader = FontLoader;
+	exports.FrontSide = FrontSide;
+	exports.Frustum = Frustum;
+	exports.GLBufferAttribute = GLBufferAttribute;
+	exports.GLSL1 = GLSL1;
+	exports.GLSL3 = GLSL3;
+	exports.GammaEncoding = GammaEncoding;
+	exports.GreaterDepth = GreaterDepth;
+	exports.GreaterEqualDepth = GreaterEqualDepth;
+	exports.GreaterEqualStencilFunc = GreaterEqualStencilFunc;
+	exports.GreaterStencilFunc = GreaterStencilFunc;
+	exports.GridHelper = GridHelper;
+	exports.Group = Group$1;
+	exports.HalfFloatType = HalfFloatType;
+	exports.HemisphereLight = HemisphereLight;
+	exports.HemisphereLightHelper = HemisphereLightHelper;
+	exports.HemisphereLightProbe = HemisphereLightProbe;
+	exports.IcosahedronBufferGeometry = IcosahedronGeometry;
+	exports.IcosahedronGeometry = IcosahedronGeometry;
+	exports.ImageBitmapLoader = ImageBitmapLoader;
+	exports.ImageLoader = ImageLoader;
+	exports.ImageUtils = ImageUtils;
+	exports.ImmediateRenderObject = ImmediateRenderObject;
+	exports.IncrementStencilOp = IncrementStencilOp;
+	exports.IncrementWrapStencilOp = IncrementWrapStencilOp;
+	exports.InformationTag = InformationTag;
+	exports.InstancedBufferAttribute = InstancedBufferAttribute;
+	exports.InstancedBufferGeometry = InstancedBufferGeometry;
+	exports.InstancedInterleavedBuffer = InstancedInterleavedBuffer;
+	exports.InstancedMesh = InstancedMesh;
+	exports.Int16Attribute = Int16Attribute;
+	exports.Int16BufferAttribute = Int16BufferAttribute;
+	exports.Int32Attribute = Int32Attribute;
+	exports.Int32BufferAttribute = Int32BufferAttribute;
+	exports.Int8Attribute = Int8Attribute;
+	exports.Int8BufferAttribute = Int8BufferAttribute;
+	exports.IntType = IntType;
+	exports.InterleavedBuffer = InterleavedBuffer;
+	exports.InterleavedBufferAttribute = InterleavedBufferAttribute;
+	exports.Interpolant = Interpolant;
+	exports.InterpolateDiscrete = InterpolateDiscrete;
+	exports.InterpolateLinear = InterpolateLinear;
+	exports.InterpolateSmooth = InterpolateSmooth;
+	exports.InvertStencilOp = InvertStencilOp;
+	exports.JSONLoader = JSONLoader;
+	exports.JSONParser = JSONParser;
+	exports.KeepStencilOp = KeepStencilOp;
+	exports.KeyframeTrack = KeyframeTrack;
+	exports.LOD = LOD;
+	exports.LatheBufferGeometry = LatheGeometry;
+	exports.LatheGeometry = LatheGeometry;
+	exports.Layers = Layers;
+	exports.LensFlare = LensFlare;
+	exports.LessDepth = LessDepth;
+	exports.LessEqualDepth = LessEqualDepth;
+	exports.LessEqualStencilFunc = LessEqualStencilFunc;
+	exports.LessStencilFunc = LessStencilFunc;
+	exports.Light = Light;
+	exports.LightProbe = LightProbe;
+	exports.Line = Line;
+	exports.Line3 = Line3;
+	exports.LineBasicMaterial = LineBasicMaterial;
+	exports.LineCurve = LineCurve;
+	exports.LineCurve3 = LineCurve3;
+	exports.LineDashedMaterial = LineDashedMaterial;
+	exports.LineGeometry = LineGeometry;
+	exports.LineLoop = LineLoop;
+	exports.LinePieces = LinePieces;
+	exports.LineSegments = LineSegments;
+	exports.LineStrip = LineStrip;
+	exports.LinearEncoding = LinearEncoding;
+	exports.LinearFilter = LinearFilter;
+	exports.LinearInterpolant = LinearInterpolant;
+	exports.LinearMipMapLinearFilter = LinearMipMapLinearFilter;
+	exports.LinearMipMapNearestFilter = LinearMipMapNearestFilter;
+	exports.LinearMipmapLinearFilter = LinearMipmapLinearFilter;
+	exports.LinearMipmapNearestFilter = LinearMipmapNearestFilter;
+	exports.LinearToneMapping = LinearToneMapping;
+	exports.Loader = Loader;
+	exports.LoaderUtils = LoaderUtils;
+	exports.LoadingManager = LoadingManager;
+	exports.LogLuvEncoding = LogLuvEncoding;
+	exports.LoopOnce = LoopOnce;
+	exports.LoopPingPong = LoopPingPong;
+	exports.LoopRepeat = LoopRepeat;
+	exports.LuminanceAlphaFormat = LuminanceAlphaFormat;
+	exports.LuminanceFormat = LuminanceFormat;
+	exports.MOUSE = MOUSE;
+	exports.Material = Material;
+	exports.MaterialLoader = MaterialLoader;
+	exports.Math = MathUtils;
+	exports.MathNode = MathNode;
+	exports.MathUtils = MathUtils;
+	exports.Matrix3 = Matrix3;
+	exports.Matrix4 = Matrix4;
+	exports.MaxEquation = MaxEquation;
+	exports.Mesh = Mesh;
+	exports.MeshBasicMaterial = MeshBasicMaterial;
+	exports.MeshDepthMaterial = MeshDepthMaterial;
+	exports.MeshDistanceMaterial = MeshDistanceMaterial;
+	exports.MeshFaceMaterial = MeshFaceMaterial;
+	exports.MeshLambertMaterial = MeshLambertMaterial;
+	exports.MeshMatcapMaterial = MeshMatcapMaterial;
+	exports.MeshNormalMaterial = MeshNormalMaterial;
+	exports.MeshPhongMaterial = MeshPhongMaterial;
+	exports.MeshPhysicalMaterial = MeshPhysicalMaterial;
+	exports.MeshStandardMaterial = MeshStandardMaterial;
+	exports.MeshToonMaterial = MeshToonMaterial;
+	exports.MinEquation = MinEquation;
+	exports.MirroredRepeatWrapping = MirroredRepeatWrapping;
+	exports.MixOperation = MixOperation;
+	exports.MultiMaterial = MultiMaterial;
+	exports.MultiplyBlending = MultiplyBlending;
+	exports.MultiplyOperation = MultiplyOperation;
+	exports.NearestFilter = NearestFilter;
+	exports.NearestMipMapLinearFilter = NearestMipMapLinearFilter;
+	exports.NearestMipMapNearestFilter = NearestMipMapNearestFilter;
+	exports.NearestMipmapLinearFilter = NearestMipmapLinearFilter;
+	exports.NearestMipmapNearestFilter = NearestMipmapNearestFilter;
+	exports.NeverDepth = NeverDepth;
+	exports.NeverStencilFunc = NeverStencilFunc;
+	exports.NoBlending = NoBlending;
+	exports.NoColors = NoColors;
+	exports.NoToneMapping = NoToneMapping;
+	exports.NodeFrame = NodeFrame;
+	exports.NormalAnimationBlendMode = NormalAnimationBlendMode;
+	exports.NormalBlending = NormalBlending;
+	exports.NormalMapNode = NormalMapNode;
+	exports.NotEqualDepth = NotEqualDepth;
+	exports.NotEqualStencilFunc = NotEqualStencilFunc;
+	exports.NumberKeyframeTrack = NumberKeyframeTrack;
+	exports.Object3D = Object3D;
+	exports.ObjectLoader = ObjectLoader;
+	exports.ObjectSpaceNormalMap = ObjectSpaceNormalMap;
+	exports.OctahedronBufferGeometry = OctahedronGeometry;
+	exports.OctahedronGeometry = OctahedronGeometry;
+	exports.OneFactor = OneFactor;
+	exports.OneMinusDstAlphaFactor = OneMinusDstAlphaFactor;
+	exports.OneMinusDstColorFactor = OneMinusDstColorFactor;
+	exports.OneMinusSrcAlphaFactor = OneMinusSrcAlphaFactor;
+	exports.OneMinusSrcColorFactor = OneMinusSrcColorFactor;
+	exports.OperatorNode = OperatorNode;
+	exports.OrthographicCamera = OrthographicCamera;
+	exports.PCFShadowMap = PCFShadowMap;
+	exports.PCFSoftShadowMap = PCFSoftShadowMap;
+	exports.PMREMGenerator = PMREMGenerator;
+	exports.POI = POI;
+	exports.ParametricBufferGeometry = ParametricGeometry;
+	exports.ParametricGeometry = ParametricGeometry;
+	exports.Particle = Particle;
+	exports.ParticleBasicMaterial = ParticleBasicMaterial;
+	exports.ParticleSystem = ParticleSystem;
+	exports.ParticleSystemMaterial = ParticleSystemMaterial;
+	exports.Path = Path;
+	exports.PerspectiveCamera = PerspectiveCamera;
+	exports.PhongNodeMaterial = PhongNodeMaterial;
+	exports.PictureDropdownTag = PictureDropdownTag;
+	exports.Plane = Plane;
+	exports.PlaneBufferGeometry = PlaneGeometry;
+	exports.PlaneGeometry = PlaneGeometry;
+	exports.PlaneHelper = PlaneHelper;
+	exports.PointCloud = PointCloud;
+	exports.PointCloudMaterial = PointCloudMaterial;
+	exports.PointLight = PointLight;
+	exports.PointLightHelper = PointLightHelper;
+	exports.Points = Points;
+	exports.PointsMaterial = PointsMaterial;
+	exports.PolarGridHelper = PolarGridHelper;
+	exports.PolyhedronBufferGeometry = PolyhedronGeometry;
+	exports.PolyhedronGeometry = PolyhedronGeometry;
+	exports.PositionalAudio = PositionalAudio;
+	exports.PrimitiveMaterial = PrimitiveMaterial;
+	exports.Primitives = Primitives;
+	exports.PropertyBinding = PropertyBinding;
+	exports.PropertyMixer = PropertyMixer;
+	exports.QuadraticBezierCurve = QuadraticBezierCurve;
+	exports.QuadraticBezierCurve3 = QuadraticBezierCurve3;
+	exports.Quaternion = Quaternion;
+	exports.QuaternionKeyframeTrack = QuaternionKeyframeTrack;
+	exports.QuaternionLinearInterpolant = QuaternionLinearInterpolant;
+	exports.REVISION = REVISION;
+	exports.RGBADepthPacking = RGBADepthPacking;
+	exports.RGBAFormat = RGBAFormat;
+	exports.RGBAIntegerFormat = RGBAIntegerFormat;
+	exports.RGBA_ASTC_10x10_Format = RGBA_ASTC_10x10_Format;
+	exports.RGBA_ASTC_10x5_Format = RGBA_ASTC_10x5_Format;
+	exports.RGBA_ASTC_10x6_Format = RGBA_ASTC_10x6_Format;
+	exports.RGBA_ASTC_10x8_Format = RGBA_ASTC_10x8_Format;
+	exports.RGBA_ASTC_12x10_Format = RGBA_ASTC_12x10_Format;
+	exports.RGBA_ASTC_12x12_Format = RGBA_ASTC_12x12_Format;
+	exports.RGBA_ASTC_4x4_Format = RGBA_ASTC_4x4_Format;
+	exports.RGBA_ASTC_5x4_Format = RGBA_ASTC_5x4_Format;
+	exports.RGBA_ASTC_5x5_Format = RGBA_ASTC_5x5_Format;
+	exports.RGBA_ASTC_6x5_Format = RGBA_ASTC_6x5_Format;
+	exports.RGBA_ASTC_6x6_Format = RGBA_ASTC_6x6_Format;
+	exports.RGBA_ASTC_8x5_Format = RGBA_ASTC_8x5_Format;
+	exports.RGBA_ASTC_8x6_Format = RGBA_ASTC_8x6_Format;
+	exports.RGBA_ASTC_8x8_Format = RGBA_ASTC_8x8_Format;
+	exports.RGBA_BPTC_Format = RGBA_BPTC_Format;
+	exports.RGBA_ETC2_EAC_Format = RGBA_ETC2_EAC_Format;
+	exports.RGBA_PVRTC_2BPPV1_Format = RGBA_PVRTC_2BPPV1_Format;
+	exports.RGBA_PVRTC_4BPPV1_Format = RGBA_PVRTC_4BPPV1_Format;
+	exports.RGBA_S3TC_DXT1_Format = RGBA_S3TC_DXT1_Format;
+	exports.RGBA_S3TC_DXT3_Format = RGBA_S3TC_DXT3_Format;
+	exports.RGBA_S3TC_DXT5_Format = RGBA_S3TC_DXT5_Format;
+	exports.RGBDEncoding = RGBDEncoding;
+	exports.RGBEEncoding = RGBEEncoding;
+	exports.RGBEFormat = RGBEFormat;
+	exports.RGBFormat = RGBFormat;
+	exports.RGBIntegerFormat = RGBIntegerFormat;
+	exports.RGBM16Encoding = RGBM16Encoding;
+	exports.RGBM7Encoding = RGBM7Encoding;
+	exports.RGB_ETC1_Format = RGB_ETC1_Format;
+	exports.RGB_ETC2_Format = RGB_ETC2_Format;
+	exports.RGB_PVRTC_2BPPV1_Format = RGB_PVRTC_2BPPV1_Format;
+	exports.RGB_PVRTC_4BPPV1_Format = RGB_PVRTC_4BPPV1_Format;
+	exports.RGB_S3TC_DXT1_Format = RGB_S3TC_DXT1_Format;
+	exports.RGFormat = RGFormat;
+	exports.RGIntegerFormat = RGIntegerFormat;
+	exports.RawShaderMaterial = RawShaderMaterial;
+	exports.Ray = Ray;
+	exports.Raycaster = Raycaster;
+	exports.RectAreaLight = RectAreaLight;
+	exports.RedFormat = RedFormat;
+	exports.RedIntegerFormat = RedIntegerFormat;
+	exports.Reflector = Reflector;
+	exports.ReflectorNode = ReflectorNode;
+	exports.ReflectorRTT = ReflectorRTT;
+	exports.ReinhardToneMapping = ReinhardToneMapping;
+	exports.RepeatWrapping = RepeatWrapping;
+	exports.ReplaceStencilOp = ReplaceStencilOp;
+	exports.ReverseSubtractEquation = ReverseSubtractEquation;
+	exports.RingBufferGeometry = RingGeometry;
+	exports.RingGeometry = RingGeometry;
+	exports.SRGB8_ALPHA8_ASTC_10x10_Format = SRGB8_ALPHA8_ASTC_10x10_Format;
+	exports.SRGB8_ALPHA8_ASTC_10x5_Format = SRGB8_ALPHA8_ASTC_10x5_Format;
+	exports.SRGB8_ALPHA8_ASTC_10x6_Format = SRGB8_ALPHA8_ASTC_10x6_Format;
+	exports.SRGB8_ALPHA8_ASTC_10x8_Format = SRGB8_ALPHA8_ASTC_10x8_Format;
+	exports.SRGB8_ALPHA8_ASTC_12x10_Format = SRGB8_ALPHA8_ASTC_12x10_Format;
+	exports.SRGB8_ALPHA8_ASTC_12x12_Format = SRGB8_ALPHA8_ASTC_12x12_Format;
+	exports.SRGB8_ALPHA8_ASTC_4x4_Format = SRGB8_ALPHA8_ASTC_4x4_Format;
+	exports.SRGB8_ALPHA8_ASTC_5x4_Format = SRGB8_ALPHA8_ASTC_5x4_Format;
+	exports.SRGB8_ALPHA8_ASTC_5x5_Format = SRGB8_ALPHA8_ASTC_5x5_Format;
+	exports.SRGB8_ALPHA8_ASTC_6x5_Format = SRGB8_ALPHA8_ASTC_6x5_Format;
+	exports.SRGB8_ALPHA8_ASTC_6x6_Format = SRGB8_ALPHA8_ASTC_6x6_Format;
+	exports.SRGB8_ALPHA8_ASTC_8x5_Format = SRGB8_ALPHA8_ASTC_8x5_Format;
+	exports.SRGB8_ALPHA8_ASTC_8x6_Format = SRGB8_ALPHA8_ASTC_8x6_Format;
+	exports.SRGB8_ALPHA8_ASTC_8x8_Format = SRGB8_ALPHA8_ASTC_8x8_Format;
+	exports.Scene = Scene;
+	exports.SceneUtils = SceneUtils;
+	exports.ShaderChunk = ShaderChunk$1;
+	exports.ShaderLib = ShaderLib$1;
+	exports.ShaderMaterial = ShaderMaterial;
+	exports.ShadowMaterial = ShadowMaterial;
+	exports.Shape = Shape;
+	exports.ShapeBufferGeometry = ShapeGeometry;
+	exports.ShapeGeometry = ShapeGeometry;
+	exports.ShapePath = ShapePath;
+	exports.ShapeUtils = ShapeUtils;
+	exports.ShortType = ShortType;
+	exports.Skeleton = Skeleton;
+	exports.SkeletonHelper = SkeletonHelper;
+	exports.SkeletonUtils = SkeletonUtils;
+	exports.SkinnedMesh = SkinnedMesh;
+	exports.SmoothShading = SmoothShading;
+	exports.Sphere = Sphere;
+	exports.SphereBufferGeometry = SphereGeometry;
+	exports.SphereGeometry = SphereGeometry;
+	exports.Spherical = Spherical;
+	exports.SphericalHarmonics3 = SphericalHarmonics3;
+	exports.SplineCurve = SplineCurve;
+	exports.SpotLight = SpotLight;
+	exports.SpotLightHelper = SpotLightHelper;
+	exports.Sprite = Sprite;
+	exports.SpriteMaterial = SpriteMaterial;
+	exports.SrcAlphaFactor = SrcAlphaFactor;
+	exports.SrcAlphaSaturateFactor = SrcAlphaSaturateFactor;
+	exports.SrcColorFactor = SrcColorFactor;
+	exports.StaticCopyUsage = StaticCopyUsage;
+	exports.StaticDrawUsage = StaticDrawUsage;
+	exports.StaticReadUsage = StaticReadUsage;
+	exports.StereoCamera = StereoCamera;
+	exports.StreamCopyUsage = StreamCopyUsage;
+	exports.StreamDrawUsage = StreamDrawUsage;
+	exports.StreamReadUsage = StreamReadUsage;
+	exports.StringKeyframeTrack = StringKeyframeTrack;
+	exports.SubtractEquation = SubtractEquation;
+	exports.SubtractiveBlending = SubtractiveBlending;
+	exports.SwitchNode = SwitchNode;
+	exports.TOUCH = TOUCH;
+	exports.TWEEN = tween_esm;
+	exports.TangentSpaceNormalMap = TangentSpaceNormalMap;
+	exports.TemplateParser = TemplateParser;
+	exports.TetrahedronBufferGeometry = TetrahedronGeometry;
+	exports.TetrahedronGeometry = TetrahedronGeometry;
+	exports.TextBufferGeometry = TextGeometry;
+	exports.TextGeometry = TextGeometry;
+	exports.Texture = Texture;
+	exports.TextureLoader = TextureLoader;
+	exports.TextureNode = TextureNode;
+	exports.TorusBufferGeometry = TorusGeometry;
+	exports.TorusGeometry = TorusGeometry;
+	exports.TorusKnotBufferGeometry = TorusKnotGeometry;
+	exports.TorusKnotGeometry = TorusKnotGeometry;
+	exports.Triangle = Triangle;
+	exports.TriangleFanDrawMode = TriangleFanDrawMode;
+	exports.TriangleStripDrawMode = TriangleStripDrawMode;
+	exports.TrianglesDrawMode = TrianglesDrawMode;
+	exports.TubeBufferGeometry = TubeGeometry;
+	exports.TubeGeometry = TubeGeometry;
+	exports.UVMapping = UVMapping;
+	exports.Uint16Attribute = Uint16Attribute;
+	exports.Uint16BufferAttribute = Uint16BufferAttribute;
+	exports.Uint32Attribute = Uint32Attribute;
+	exports.Uint32BufferAttribute = Uint32BufferAttribute;
+	exports.Uint8Attribute = Uint8Attribute;
+	exports.Uint8BufferAttribute = Uint8BufferAttribute;
+	exports.Uint8ClampedAttribute = Uint8ClampedAttribute;
+	exports.Uint8ClampedBufferAttribute = Uint8ClampedBufferAttribute;
+	exports.Uniform = Uniform;
+	exports.UniformsLib = UniformsLib;
+	exports.UniformsUtils = UniformsUtils;
+	exports.UnsignedByteType = UnsignedByteType;
+	exports.UnsignedInt248Type = UnsignedInt248Type;
+	exports.UnsignedIntType = UnsignedIntType;
+	exports.UnsignedShort4444Type = UnsignedShort4444Type;
+	exports.UnsignedShort5551Type = UnsignedShort5551Type;
+	exports.UnsignedShort565Type = UnsignedShort565Type;
+	exports.UnsignedShortType = UnsignedShortType;
+	exports.VSMShadowMap = VSMShadowMap;
+	exports.Vector2 = Vector2;
+	exports.Vector3 = Vector3;
+	exports.Vector4 = Vector4;
+	exports.VectorKeyframeTrack = VectorKeyframeTrack;
+	exports.Vertex = Vertex;
+	exports.VertexColors = VertexColors;
+	exports.VideoTexture = VideoTexture;
+	exports.Water = Water;
+	exports.WebGL1Renderer = WebGL1Renderer;
+	exports.WebGLCubeRenderTarget = WebGLCubeRenderTarget;
+	exports.WebGLMultipleRenderTargets = WebGLMultipleRenderTargets;
+	exports.WebGLMultisampleRenderTarget = WebGLMultisampleRenderTarget;
+	exports.WebGLRenderTarget = WebGLRenderTarget;
+	exports.WebGLRenderTargetCube = WebGLRenderTargetCube;
+	exports.WebGLRenderer = WebGLRenderer$1;
+	exports.WebGLUtils = WebGLUtils$1;
+	exports.WireframeGeometry = WireframeGeometry;
+	exports.WireframeHelper = WireframeHelper;
+	exports.WrapAroundEnding = WrapAroundEnding;
+	exports.XHRLoader = XHRLoader;
+	exports.ZeroCurvatureEnding = ZeroCurvatureEnding;
+	exports.ZeroFactor = ZeroFactor;
+	exports.ZeroSlopeEnding = ZeroSlopeEnding;
+	exports.ZeroStencilOp = ZeroStencilOp;
+	exports.lnglat2mercator = lnglat2mercator;
+	exports.mercator2lnglat = mercator2lnglat;
+	exports.sRGBEncoding = sRGBEncoding;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

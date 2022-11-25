@@ -23,27 +23,24 @@ const isShowBack = () => {
 // 底部菜单点击事件
 const handleFooters = (item, leve, son) => {
   if (leve === 1) {
-    store.commit("setMenuBid", null);
     if (STATE.isAnimating) return;
+    if(store.state.LEVEL == 4) return
+    store.commit("setMenuBid", null);
     // 一级菜单点击事件
     store.commit("setMenuAid", item.id);
     if (item.id === 1) {
       const _son = item.children.find((v) => v.id === "1-1");
       store.commit("setMenuBid", _son.id);
-      router.push(_son.path);
-    } else if (item.id === 2) {
-      router.push("/Area");
-    } else {
-      //
     }
+    router.push(item.path);
     pickId.value = item.id;
   } else {
+    if (STATE.isAnimating) return;
     // 二级菜单点击事件
-    if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
+    // if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
     store.commit("setMenuBid", son.id);
     if (item.id === 1) router.push(son.path);
-    if (item.id === 2) {
-    }
+    if (son.id === '3-2') router.push(son.path);
   }
 
   // 3d
@@ -60,11 +57,11 @@ const handleMenu = (item) => {
 const goBack = () => {
   // window.top.location.href = "/aie_web"; // 返回用户 home 地址(废弃)
   store.commit("setMenuBid", null);
+  store.commit('changeLevel' , 3)
   USE3D.goBack();
 };
 
 const routerName = ref("/IndustrialEconomy");
-const isNewView = ref(true);
 
 watch(
   () => router,
@@ -80,7 +77,7 @@ watch(
     <div class="footer-main">
       <ul class="button-box2 animated bounceInUp">
         <li
-          v-for="item in footers"
+          v-for="item in menu"
           :key="item.id"
           @click.stop="handleFooters(item, 1)"
           :class="[store.state.menuAid === item.id ? `pick2` : '']"
@@ -121,12 +118,17 @@ watch(
       </ul>
 
       <!-- 返回按钮 -->
-      <img
-        v-show="isShowBack()"
-        src="../../assets/images/fanhui.png"
-        class="back"
-        @click="goBack"
+      <Transition
+        enter-active-class="bounceInUp"
+        leave-active-class="bounceOutDown"
       >
+        <img
+          v-show="store.state.LEVEL == 4"
+          src="../../assets/images/fanhui.png"
+          class="back animated"
+          @click="goBack"
+        >
+      </Transition>
     </div>
   </div>
 </template>
@@ -209,6 +211,7 @@ watch(
   position: absolute;
   width: 5%;
   right: -8%;
+  top: -15%;
   cursor: pointer;
 }
 .xiajian {
@@ -289,6 +292,58 @@ watch(
   }
 }
 
+.pickClass4 {
+  width: 7.7% !important;
+  left: 30%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 36%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 71%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 34%;
+  }
+}
+
+.pickClass5 {
+  width: 7.7% !important;
+  left: 39%;
+  &::before {
+    position: absolute;
+    content: "";
+    width: 36%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid rgb(179, 179, 179);
+    bottom: 28%;
+    left: 71%;
+  }
+  .xiajian {
+    position: absolute;
+    height: 42%;
+    bottom: 0%;
+    left: 34%;
+  }
+}
+
 .pickClass7 {
   width: 23% !important;
   left: 49%;
@@ -341,8 +396,8 @@ watch(
   }
 }
 .pickClass9 {
-  width: 23% !important;
-  left: 67%;
+  width: 30% !important;
+  left: 64%;
   &::before {
     position: absolute;
     content: "";
@@ -356,7 +411,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 54%;
+    left: 51%;
   }
   .xiajian {
     position: absolute;
