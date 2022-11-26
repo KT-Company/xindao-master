@@ -313,7 +313,7 @@ const message = ref("page2");
 </script>
 
 <template>
-  <Left>
+  <Left v-if="false">
     <Title>历年人口数据</Title>
     <div id="fire-chart">
       <Echart :option="optionYearManNumber.data" class="fire-chart"></Echart>
@@ -364,7 +364,7 @@ const message = ref("page2");
       </div>
     </div>
   </Left>
-  <Right>
+  <Right v-if="false">
     <Title>城市天气质量</Title>
     <div class="uq-wrap dpy-row">
       <div

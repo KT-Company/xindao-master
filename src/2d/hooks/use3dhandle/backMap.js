@@ -1,17 +1,39 @@
-import {API} from '@/3d/API'
-import {STATE} from '@/3d/STATE'
+import { API } from '@/3d/API'
+import { STATE } from '@/3d/STATE'
 // 三维返回事件
 const handleBackMap = {
   3: () => {
-      API.hideAll();
-      API.showRoutes();
-      API.showModels();
-      API.cameraAnimation({
-        cameraState: STATE.enterpriseStates.zhizaojituan,
-        callback: () => {
-          API.showEnterpriseIconByName('制造集团');
-        },
-      });
+    API.hideAll();
+    API.showRoutes();
+    API.showModels();
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseStates.zhizaojituan,
+      callback: () => {
+        API.showEnterpriseIconByName('制造集团');
+      },
+    });
+  },
+  4: () => {
+    API.hideAll();
+    API.showRoutes();
+    API.showModels();
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseStates.yinhangyuanqu,
+      callback: () => {
+        API.showEnterpriseIconByName('工商银行');
+      },
+    });
+  },
+  5: () => {
+    API.hideAll();
+    API.showRoutes();
+    API.showModels();
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseStates.zhengwuzhongxin,
+      callback: () => {
+        API.showEnterpriseIconByName('政务服务');
+      },
+    });
   },
   7: () => {
     API.hideAll();

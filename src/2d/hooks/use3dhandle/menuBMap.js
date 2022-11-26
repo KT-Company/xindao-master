@@ -160,6 +160,32 @@ const handleBMenuBMap = {
     });
   },
   // ******* 制造集团 end *******
+  '4-1': () => {
+    API.hideAll()
+    API.showRoutes();
+    API.showModels();
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseStates.yinhangyuanqu,
+      callback: () => {
+        API.hideAll();
+        API.showEnterpriseByName('yinghang')
+        API.showMirror()
+      },
+    });
+  },
+  '5-1': () => {
+    API.hideAll()
+      API.showRoutes();
+      API.showModels();
+      API.cameraAnimation({
+        cameraState: STATE.enterpriseStates.zhengwuzhongxin,
+        callback: () => {
+          API.hideAll();
+          API.showEnterpriseByName('zhengwuzhongxinbangongshi')
+          API.showMirror()
+        },
+      });
+  },
   // ******* 物流公司 start *******
   "7-0": () => {
     // 整体布局
@@ -300,7 +326,7 @@ const handleBMenuBMap = {
   },
   // ******* 销售公司 end *******
   // ******* 供应企业 start *******
-   "10-0": () => {
+  "10-0": () => {
     API.hideAll()
     API.showEnterpriseByName('GongYingBanGongShi')
     API.showEnterpriseIconInnerByType('GongYingBanGongShi')

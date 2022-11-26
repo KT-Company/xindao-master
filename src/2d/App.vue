@@ -3,9 +3,12 @@ import { nextTick, onMounted, provide, ref } from "vue";
 import * as echarts from "echarts";
 import { sceneOnLoad } from "@/3d/index.js";
 import { useStore } from "vuex";
+import { useRouter } from 'vue-router'
 const store = useStore();
+const router = useRouter();
 provide("echarts", echarts);
 const canvas3d = ref(null);
+router.push('/');
 onMounted(() => {
     nextTick(() => {
       sceneOnLoad({

@@ -10,7 +10,7 @@ import { handleBackMap, handleBMenuBMap } from "./use3dhandle";
  * @param  {object} son   二级菜单信息
  */
 function menuInteraction(item, leve, son) {
-  store.commit('changeLevel' , son !== undefined ? son.level : item.level)
+  store.commit('changeLevel', son !== undefined ? son.level : item.level)
   if (leve === 1) {
     if (item.name == "社会层") {
       API.hideAll();
@@ -43,29 +43,9 @@ function menuInteraction(item, leve, son) {
         },
       });
     } else if (item.name == "工商银行") {
-      API.hideAll()
-      API.showRoutes();
-      API.showModels();
-      API.cameraAnimation({
-        cameraState: STATE.enterpriseStates.yinhangyuanqu,
-        callback: () => {
-          API.hideAll();
-          API.showEnterpriseByName('yinghang')
-          API.showMirror()
-        },
-      });
+      handleBackMap[4]()
     } else if (item.name == "政务服务") {
-      API.hideAll()
-      API.showRoutes();
-      API.showModels();
-      API.cameraAnimation({
-        cameraState: STATE.enterpriseStates.zhengwuzhongxin,
-        callback: () => {
-          API.hideAll();
-          API.showEnterpriseByName('zhengwuzhongxinbangongshi')
-          API.showMirror()
-        },
-      });
+      handleBackMap[5]()
     } else if (item.name == "管委会") {
       // 无内部
       API.hideAll();
@@ -130,18 +110,19 @@ function menuInteraction(item, leve, son) {
     }
   } else {
     // 二级菜单点击事件
-    console.log('son.id' , son.id)
+    console.log('son.id', son.id)
     try {
-        handleBMenuBMap[son.id](store.state.menuBid.includes(son.id));
-    } catch (error) {
-    }
+      handleBMenuBMap[son.id](store.state.menuBid.includes(son.id));
+    } catch (error) { }
   }
 }
 
 // 返回
 function goBack() {
   const currentId = store.state.menuAid; // 当前激活的一级菜单id
-  handleBackMap[currentId]();
+  try {
+    handleBackMap[currentId]();
+  } catch (error) { }
 }
 
 const USE3D = {

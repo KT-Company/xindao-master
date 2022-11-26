@@ -104,7 +104,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Left class="z-left">
+  <Left class="z-left" v-if="false">
     <Bar>
       <div class="b-title">能源总消耗</div>
       <div class="b-content">
@@ -127,7 +127,7 @@ onMounted(() => {
     </Bar>
 
   </Left>
-  <Right class="z-right">
+  <Right class="z-right" v-if="false">
     <Bar>
       <div class="b-title">全国碳排放</div>
       <div class="b-content">

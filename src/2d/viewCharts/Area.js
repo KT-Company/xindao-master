@@ -35,7 +35,7 @@ export function setYuanChart(res, obj) {
           },
         },
       ],
-      2:{
+      2: {
         text: res.name,
         x: 'center',
         y: 'center',
@@ -408,6 +408,117 @@ export function setBingChart(res, obj) {
   return option
 }
 
+// 饼图2 --》
+export function setBingChart2(res, obj) {
+  let color = ['rgba(72,124,223)', 'rgba(112,100,188)'];
+  let _title = () => {
+    let type = obj?.title ? obj.title : 1
+    const titleMap = {
+      1: {
+        text: res.name,
+        x: 'center',
+        y: 'center',
+        textStyle: {
+          fontSize: chart.fontSize + 6,
+          color: '#FFFFFF',
+          fontFamily: 'DINAlternate-Bold, DINAlternate',
+          foontWeight: '600',
+        },
+      },
+      2: [
+        {
+          text: '铁路总里程',
+          x: 'center',
+          top: '47%',
+          textStyle: {
+            fontSize: chart.fontSize, 
+            color: 'rgba(168, 198, 245)',
+            fontWeight: '100',
+          },
+        },
+        {
+          text: '单位(公里)',
+          x: 'center',
+          top: '63%',
+          textStyle: {
+            fontSize: chart.fontSize,
+            color: 'rgba(168, 198, 245)',
+            fontWeight: '100',
+          },
+        },
+        {
+          text: `${res.data[0].value + res.data[1].value}`,
+          x: 'center',
+          top: '25%',
+          textStyle: {
+            fontSize: chart.fontSize + 6,
+            color: '#FFFFFF',
+            fontFamily: 'DINAlternate-Bold, DINAlternate',
+            foontWeight: '600',
+          },
+        },
+      ],
+    }
+
+    return titleMap[type]
+  }
+  var option = {
+    color: color,
+    title: _title(),
+    series: [
+      {
+        name: '已纳管',
+        type: 'pie',
+        radius: ['100%', '80%'],
+        center: ['50%', '50%'],
+        data: res.data,
+        hoverAnimation: false,
+        labelLine: {
+          normal: {
+            length: 0,
+            length2: 20,
+            lineStyle: {
+              color: '#0099EA',
+            },
+          },
+        },
+        label: {
+          normal: {
+            show: false,
+            formatter: '{a|{a}}\n{hr|}\n{c|{c}人}',
+            rich: {
+              a: {
+                fontSize: 14,
+                fontFamily: 'PingFang SC',
+                fontWeight: 400,
+                color: '#fff',
+                padding: 10,
+                lineHeight: 40,
+                textAlign: 'center'
+              },
+              hr: {
+                borderColor: '#4681ec',
+                width: '100%',
+                borderWidth: 2,
+                height: 0,
+              },
+              c: {
+                fontSize: 14,
+                fontFamily: 'Source Han Sans CN',
+                color: '#E7B943',
+                fontWeight: 400,
+                lineHeight: 30,
+                align: 'center',
+              },
+            }
+          },
+        },
+      },
+    ],
+  };
+
+  return option
+}
 // *************************
 
 export function setStackedChart(res) {

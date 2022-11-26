@@ -13,7 +13,6 @@ import USE3D from "@/2d/hooks/use3d";
 const router = useRouter();
 const store = useStore();
 
-const footers = menu; // 底部菜单
 const pickId = ref(1); // 二级菜单显示
 const isShowBack = () => {
   const isDepartment = ![1, 2].includes(store.state.menuAid);
@@ -24,7 +23,7 @@ const isShowBack = () => {
 const handleFooters = (item, leve, son) => {
   if (leve === 1) {
     if (STATE.isAnimating) return;
-    if(store.state.LEVEL == 4) return
+    if (store.state.LEVEL == 4) return;
     store.commit("setMenuBid", null);
     // 一级菜单点击事件
     store.commit("setMenuAid", item.id);
@@ -37,10 +36,10 @@ const handleFooters = (item, leve, son) => {
   } else {
     if (STATE.isAnimating) return;
     // 二级菜单点击事件
-    // if (["1-2", "1-3", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
+    // if (["1-2", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
     store.commit("setMenuBid", son.id);
     if (item.id === 1) router.push(son.path);
-    if (son.id === '3-2') router.push(son.path);
+    if (son.id === "3-2") router.push(son.path);
   }
 
   // 3d
@@ -57,7 +56,11 @@ const handleMenu = (item) => {
 const goBack = () => {
   // window.top.location.href = "/aie_web"; // 返回用户 home 地址(废弃)
   store.commit("setMenuBid", null);
-  store.commit('changeLevel' , 3)
+  store.commit("changeLevel", 3);
+  const currentRoute = menu.value.find(
+    (item) => item.id === store.state.menuAid
+  );
+  router.push(currentRoute.path);
   USE3D.goBack();
 };
 
@@ -104,11 +107,6 @@ watch(
                 :key="son.id"
                 :class="store.state.menuBid.includes(son.id) ? 'pick2' : ''"
                 @click.stop="handleFooters(item, 2, son)"
-                :style="{
-                  cursor: ['1-2', '1-3', '1-4'].includes(son.id)
-                    ? 'no-drop'
-                    : 'pointer',
-                }"
               >
                 {{ son.name }}
               </li>
