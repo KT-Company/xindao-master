@@ -3,14 +3,14 @@ import bar from "@/2d/components/bar/bar.module.css";
 </script>
 
 <template>
-  <div :class="['right',bar.item,'animated bounceInRight']">
+  <div :class="['left',bar.item,'animated bounceInLeft']">
     <slot></slot>
   </div>
 </template>
 
 <style lang="less" scoped>
-.right {
-  position: absolute;
-  right: 1% !important;
+.left {
+  left: var(--barMargin);
+  font-family: sscr;
 }
 </style>

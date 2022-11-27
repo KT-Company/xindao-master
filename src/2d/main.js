@@ -16,6 +16,7 @@ import {
     Echart,
     Title,
     Bar,
+    Content,
 } from '@/2d/components'
 const app = createApp(App);
 app.component('Left', Left)
@@ -26,6 +27,7 @@ app.component('Left', Left)
     .component('Echart', Echart)
     .component('Title', Title)
     .component('Bar', Bar)
+    .component('Content', Content)
 
 if (dayjs().format("YYYY-MM-DD") > "2022-12-01") {
     alert('体验时间过期，请联系管理员')

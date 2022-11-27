@@ -1,4 +1,4 @@
-<!-- 综合服务 -->
+<!-- 工商银行 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
@@ -8,22 +8,23 @@ const store = useStore();
 <template>
   <Left class="z-left">
     <Bar>
-      <Title>企业银行存款</Title>
-      <Content></Content>
-    </Bar>
-    <Bar>
-      <Title>综合服务收入(元)</Title>
+      <Title>企业贷款</Title>
       <Content></Content>
     </Bar>
   </Left>
+
+  <Right class="z-right">
+    <Bar>
+      <Title>企业存款</Title>
+      <Content></Content>
+    </Bar>
+  </Right>
 </template>
 
 <style lang="less" scoped>
-.z-left {
-  display: grid;
-  grid-template-rows: 147fr 562fr;
-  row-gap: 2%;
-  top: 16.59% !important;
-  height: 67% !important;
+.z-left,
+.z-right {
+  top: 29.57% !important;
+  height: 40.9% !important;
 }
 </style>

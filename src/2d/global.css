@@ -2,7 +2,7 @@
   box-sizing: border-box;
   color: rgb(255, 255, 255);
   /* font-size: .85vw; */
-  font-size: .65vw;
+  font-size: 0.75vw;
 }
 
 div,
@@ -46,8 +46,7 @@ li {
 }
 
 /* ************************************************** */
-.z-left {
-  /* border: 1px solid red; */
+/* .z-left {
   position: absolute;
   width: 19.8% !important;
   height: 89.72% !important;
@@ -56,13 +55,12 @@ li {
 }
 
 .z-right {
-  /* border: 1px solid red; */
   position: absolute;
   width: 19.8% !important;
   height: 89.72% !important;
   top: 7% !important;
   right: 1% !important;
-}
+} */
 
 .b-title {
   font-size: var(--titleSize);
@@ -81,6 +79,11 @@ li {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 3px;
+}
+
+.big-val {
+  /* font-weight: bold; */
+  font-size: 0.75vw;
 }
 
 /* ************************************************** */

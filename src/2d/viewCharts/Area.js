@@ -2,7 +2,7 @@ import * as echarts from 'echarts'
 import store from '@/2d/store/index'
 const { chart } = store.state
 
-// 圆圈 --》区域EGP
+// 圆圈 --》（Area：区域EGP，HR:3个）
 export function setYuanChart(res, obj) {
   let colorList = [
     ['rgba(213,110,42)', 'rgba(106,82,85)'],
@@ -105,10 +105,56 @@ export function setYuanChart(res, obj) {
   return option
 }
 
-// 柱状图 --》增加值
+/** 柱状图 --》（Area：增加值，....）
+ * @param  {object} res   数据
+ * @param  {object} obj   配置项
+ * 备注：obj:{
+      color: [0, 2],（颜色索引）
+      legend: true,（是否显示图例）
+      legendType: 2,（图例类型）
+      barW: "25%",（柱子宽度）
+      unit: "单位：亿千瓦小时", （单位）
+      interval: 0, （显示全部 x 轴 Label）
+ * }
+ */
 export function setZhuChart(res, obj) {
-  let colorList = ['rgba(92, 115, 230)', 'rgba(223,153,92)']
+  let colorList = ['rgba(92, 115, 230)', 'rgba(223,153,92)', 'rgba(72,192,151)']
   let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
+  const _legend = () => {
+    const type = obj?.legendType ? obj.legendType : 1
+    const legendMap = {
+      1: {
+        show: obj?.legend ?? false,
+        icon: 'rect',
+        orient: 'horizontal',
+        // align: 'center',
+        itemWidth: 12,
+        itemHeight: 8,
+        textStyle: {
+          fontSize: 12,
+          color: chart.fontColor,
+        },
+      },
+      2: {
+        show: obj?.legend ?? false,
+        icon: 'rect',
+        right: "0%",
+        orient: 'horizontal',
+        itemWidth: 6,
+        itemHeight: 6,
+        itemGap: 25,
+        padding: [0, 0, 0, 0],
+        textStyle: {
+          fontSize: 12,
+          color: chart.fontColor,
+        },
+        formatter: (a) => {
+          return a + '年'
+        }
+      }
+    }
+    return legendMap[type]
+  }
   var option = {
     color: _colorList,
     tooltip: {
@@ -117,20 +163,9 @@ export function setZhuChart(res, obj) {
         type: "shadow",
       },
     },
-    legend: {
-      show: obj?.legend ? true : false,
-      icon: 'rect',
-      orient: 'horizontal',
-      // align: 'center',
-      itemWidth: 12,
-      itemHeight: 8,
-      textStyle: {
-        fontSize: 12,
-        color: chart.fontColor,
-      },
-    },
+    legend: _legend(),
     grid: {
-      top: "15%",
+      top: obj?.grid?.top || "15%",
       left: "0%",
       bottom: "0%",
       right: "0%",
@@ -171,12 +206,10 @@ export function setZhuChart(res, obj) {
       nameTextStyle: {
         color: chart.fontColor,
         fontSize: chart.fontSize,
+        padding: [0, 0, 0, 40]
       },
-      // nameGap: -250,  // 通过你生成的图表来调整
+      // nameGap: 20,  // 通过你生成的图表来调整
       // nameLocation: "start", // y轴name处于y轴的什么位置
-      // max: function (value) {
-      //   return parseInt(value.max * 1.2);
-      // },
       axisLine: {
         show: false,
       },
@@ -194,20 +227,6 @@ export function setZhuChart(res, obj) {
         },
       },
     },
-    // legend: {
-    //   show: true,
-    //   right: "7%",
-    //   top: '5%',
-    //   // itemWidth: 20,
-    //   // itemHeight: 20,
-    //   // data: [
-    //   //     { icon: 'image://' + require('@/2d/assets/images/zft-lan.png'), name: res.data[0].name },
-    //   //     { icon: 'image://' + require('@/2d/assets/images/zft-ju.png'), name: res.data[1].name },
-    //   // ],
-    //   textStyle: {
-    //     color: chart.fontColor,
-    //   },
-    // },
     series: function () {
       let series = []
       for (let i = 0; i < res.data.length; i++) {
@@ -226,7 +245,7 @@ export function setZhuChart(res, obj) {
   return option
 }
 
-// 曲线图 --》消费
+// 曲线图 --》（Area：消费）
 export function setQuXianChart(res, obj) {
   let colorList = ['85,106,215', '239,150,63']
   let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
@@ -312,13 +331,13 @@ export function setQuXianChart(res, obj) {
   return option
 }
 
-// 饼图 --》区域资产结构
+// 饼图 --》（Area：区域资产结构，Education：院校分布与数量）
 export function setBingChart(res, obj) {
   const legendStyle = () => {
     if (obj?.legend === 1) {
       return {
         orient: 'vertical',
-        left: '52%',
+        right: '3%',
         top: 'middle',
         itemWidth: 10,
         itemHeight: 10,
@@ -350,7 +369,7 @@ export function setBingChart(res, obj) {
     } else {
       return {
         orient: 'vertical',
-        left: '50%',
+        right: '4%',
         top: 'middle',
         itemWidth: 10,
         itemHeight: 10,
@@ -408,7 +427,7 @@ export function setBingChart(res, obj) {
   return option
 }
 
-// 饼图2 --》
+// 饼图2 --》（Transportation：铁路总里程）
 export function setBingChart2(res, obj) {
   let color = ['rgba(72,124,223)', 'rgba(112,100,188)'];
   let _title = () => {
@@ -431,7 +450,7 @@ export function setBingChart2(res, obj) {
           x: 'center',
           top: '47%',
           textStyle: {
-            fontSize: chart.fontSize, 
+            fontSize: chart.fontSize,
             color: 'rgba(168, 198, 245)',
             fontWeight: '100',
           },
@@ -519,639 +538,215 @@ export function setBingChart2(res, obj) {
 
   return option
 }
-// *************************
 
-export function setStackedChart(res) {
-  var option = {
-    color: ['rgba(0,214,78)', '#F4A419', '#3CBE89',],
-    tooltip: {
-      confine: true,
-      trigger: 'axis',
-      axisPointer: { // 坐标轴指示器，坐标轴触发有效
-        type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
-      },
-    },
-    grid: {
-      left: '5%',
-      right: '4%',
-      bottom: '10%',
-      top: '10%',
-    },
-    legend: {
-      icon: 'rect',
-      orient: 'horizontal',
-      left: 'right',
-      itemWidth: 12,
-      itemHeight: 12,
-      formatter: ['{a|{name}}'].join('\n'),
-      textStyle: {
-        fontSize: 12,
-        color: '#6A93B9',
-        height: 8,
-        rich: {
-          a: {
-            verticalAlign: 'bottom',
-          },
-        },
-      },
-    },
-    xAxis: {
-      type: 'category',
-      axisLine: {
-        lineStyle: {
-          color: 'rgba(255,255,255,0.45)',
-        },
-      },
-      axisLabel: {
-        // interval:0,
-        fontSize: 12,
-        color: '#6A93B9',
-      },
-      // axisTick: {
-      //   show: false,
-      // },
-      data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-    },
-    yAxis: {
-      type: 'value',
-      // min: 0,
-      // minInterval: 1,
-      nameTextStyle: {
-        fontSize: 12,
-        color: '#BAE7FF',
-        align: 'center',
-      },
-      axisLine: { show: false },
-      axisTick: { show: false },
-      splitArea: { show: false },
-      splitLine: {
-        lineStyle: {
-          color: 'rgba(255, 255, 255, 0.15)',
-          // type: 'dashed', // dotted 虚线
-        },
-      },
-      axisLabel: {
-        fontSize: 12,
-        color: '#6A93B9',
-        fontFamily: 'Bebas',
-      },
-    },
-    series: [
-      { name: '红码', type: 'bar', barWidth: 25, stack: 'total', data: [6, 8, 9, 3, 2, 5, 8, 10], },
-      { name: '黄码', type: 'bar', barWidth: 25, stack: 'total', data: [6, 8, 9, 3, 2, 5, 8, 10], },
-      { name: '绿码', type: 'bar', barWidth: 25, stack: 'total', data: [7, 4, 2, 9, 5, 7, 8, 9] },
-    ],
-  };
-
-  return option
-}
-
-
-// 区域纳税总额
-export function setLineCharts(res, color1, color2, color3, color4, max, legendData) {
-  console.log(res);
-  let xData = res.map(item => item.name)
-  let yData = res.map(item => item.value)
-
-  return {
-    grid: {
-      left: '3%',
-      right: '3%',
-      top: '20%',
-      bottom: '10%',
-      containLabel: true
-    },
-    tooltip: {
-      confine: true,
-      trigger: 'axis',
-      axisPointer: { // 坐标轴指示器，坐标轴触发有效
-        type: 'line', // 默认为直线，可选为：'line' | 'shadow'
-      },
-    },
-    legend: {
-      // // icon: 'rect',
-      // itemWidth: 30,
-      // itemHeight: 15,
-      // itemGap: 20,
-      // // data: legendData,
-      // right: '10',
-      // position: 'left',
-      // textStyle: {
-      //   fontSize: 18,
-      //   color: '#fff'
-      // },
-      icon: 'rect',
-      orient: 'horizontal',
-      left: 'right',
-      itemWidth: 12,
-      itemHeight: 12,
-      formatter: ['{a|{name}}'].join('\n'),
-      textStyle: {
-        fontSize: 12,
-        color: '#6A93B9',
-        height: 8,
-        rich: {
-          a: {
-            verticalAlign: 'bottom',
-          },
-        },
-      },
-      data: [
-        {
-          name: legendData,
-          icon: 'image://http://example.website/a/b.png',
-          textStyle: {
-            fontSize: 12,
-            fontWeight: 'bolder',
-            color: '#FFFFFF'
-          },
-          icon: 'stack'
-
-        },
-        // {
-        //   name: name.length>1?name[1]:'',
-        //   icon: 'image://http://example.website/a/b.png',
-        //   textStyle: {
-        //     fontSize: 12,
-        //     fontWeight: 'bolder',
-        //     color: '#df3434'
-        //   },
-        //   icon: 'pie'
-        // }
-      ]
-
-    },
-    // legend: {
-    //   show: true,
-    //   icon: 'rect',
-    //   orient: 'horizontal',
-    //   left: 'right',
-    //   itemWidth: 12,
-    //   itemHeight: 12
-    // },
-    xAxis: [{
-      type: 'category',
-      boundaryGap: true,
-
-      axisLabel: {
-        interval: 0,
-
-        textStyle: {
-          color: '#ffffff',
-          fontSize: 12,
-        }
-
-      },
-      axisLine: {
-        lineStyle: {
-          type: 'solid',
-          color: 'rgba(108, 166, 219, 1)'
-        }
-      },
-      axisTick: {
-        show: false
-      },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: 'rgba(108, 166, 219, 0.5)',
-          type: 'dashed',
-        }
-      },
-      data: xData
-    },
-    ],
-    yAxis: [{
-      type: 'value',
-      min: 0,
-      max: max,
-      axisTick: {
-        show: false
-      },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: 'rgba(108, 166, 219, 0.5)',
-          type: 'dashed',
-        },
-      },
-      axisLine: {
-        // show: true,
-        lineStyle: {
-          color: 'rgba(149, 162, 170,.8)',
-          type: 'dotted',
-          width: 1
-        }
-      },
-      axisLabel: {
-        textStyle: {
-          color: '#ffffff',
-          fontSize: 12
-        }
-
-      },
-
-      splitArea: {
-        show: true,
-        areaStyle: {
-          color: 'rgba(1, 147, 244,0.1)'
-        }
-      }
-    },
-
-    ],
-    series: [{
-      name: legendData, type: 'line', stack: '',
-      // 修改的是线下区域的颜色
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-          offset: 0,
-          color: color1
-        }, {
-          offset: 1,
-          color: color2
-        }])
-      },
-      // 修改的是线的颜色
-      lineStyle: {
-        normal: {
-          color: {
-            type: 'linear', x: 0, y: 1, x2: 0, y2: 0,
-            // 0% 处的颜色                           // 100% 处的颜色
-            colorStops: [{ offset: 0, color: '#fff' }, { offset: .25, color: color4 }, { offset: .75, color: '#fff' }, { offset: 1, color: '#fff' }],
-            global: false // 缺省为 false
-          }, width: 3,
-          shadowBlur: 1,
-          shadowColor: color3,
-          shadowOffsetY: 10
-        }
-      },
-      symbol: 'none',
-      data: yData,
-
-    },
-    {
-      name: legendData, type: 'line', stack: '',
-      // 修改的是线下区域的颜色
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-          offset: 0,
-          color: color1
-        }, {
-          offset: 1,
-          color: color2
-        }])
-      },
-      // 修改的是线的颜色
-      lineStyle: {
-        normal: {
-          color: {
-            type: 'linear', x: 0, y: 1, x2: 0, y2: 0,
-            // 0% 处的颜色                           // 100% 处的颜色
-            colorStops: [{ offset: 0, color: '#fff' }, { offset: .25, color: color4 }, { offset: .75, color: '#fff' }, { offset: 1, color: '#fff' }],
-            global: false // 缺省为 false
-          }, width: 3,
-          shadowBlur: 1,
-          shadowColor: color3,
-          shadowOffsetY: 10
-        }
-      },
-      symbol: 'none',
-      data: yData,
-
-    },
-    ]
-  };
-
-}
-
-// 服务增值
-export function setAddValue(res, color, img) {
-  // { name: '红码', type: 'bar', barWidth: 25, stack: 'total', data: [6, 8, 9, 3, 2, 5, 8, 10], },
-  //第二种获取target值的方式，通过json序列化之后可获取值
-  let data = JSON.parse(JSON.stringify(res.data));
-  data.forEach((item, index) => {
-    item.type = 'bar';
-    item.barWidth = 25;
-    item.stack = 'total';
-    item.data = item.value;
-    item.itemStyle = {
-      normal: {
-        color: {
-          type: "linear",
-          x: 0,
-          y: 0,
-          x2: 0,
-          y2: 1,
-          colorStops: [
-            {
-              offset: 1,
-              color: color[index][0], // 0% 处的颜色
-            },
-            {
-              offset: 1,
-              color: color[index][0], // 100% 处的颜色
-            },
-          ],
-          global: false, // 缺省为 false
-        },
-      },
-
-    }
+// 饼图3 --》（Energy：全国碳排放）
+export function setBingChart3(res, obj) {
+  res.data.sort((a, b) => {
+    return a.index - b.index
   })
+  console.log('res: ', res.data);
   var option = {
-    color: ['rgb(0,214,78)', '#F4A419', '#3CBE89',],
-    tooltip: {
-      confine: true,
-      trigger: 'axis',
-      axisPointer: { // 坐标轴指示器，坐标轴触发有效
-        type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
-      },
-    },
-    grid: {
-      left: '10%',
-      right: '4%',
-      bottom: '10%',
-      top: '10%',
-    },
-    legend: {
-      icon: 'rect',
-      orient: 'horizontal',
-      left: 'right',
-      itemWidth: 12,
-      itemHeight: 12,
-      formatter: ['{a|{name}}'].join('\n'),
-      textStyle: {
-        fontSize: 12,
-        color: '#6A93B9',
-        height: 8,
-        rich: {
-          a: {
-            verticalAlign: 'bottom',
+    series: [
+      {
+        type: "pie",
+        selectedMode: "single",
+        radius: ["25%", "58%"],
+        label: {
+          normal: {
+            formatter(name) {
+              return `{a|a} {b|b}`;
+            },
+            textStyle: {
+              color: '#000',
+              rich: {
+                a: {
+                  fontSize: chart.fontSize,
+                  color: 'rgba(177,197,255)',
+                },
+                b: {
+                  fontSize: 14,
+                  color: 'rgba(255,255,255)',
+                },
+              },
+            },
           },
         },
-      },
-    },
-    xAxis: {
-      type: 'category',
-      axisLine: {
-        lineStyle: {
-          color: 'rgba(255,255,255,0.45)',
+        labelLine: {
+          normal: {
+            lineStyle: {
+              color: '#e6e6e6',
+            },
+          },
         },
+        data: res.data,
       },
-      axisLabel: {
-        // interval:0,
-        fontSize: 12,
-        color: '#6A93B9',
-      },
-      // axisTick: {
-      //   show: false,
+      // {
+      //   type: "pie",
+      //   radius: ["58%", "83%"],
+      //   label: {
+      //     normal: {
+      //       position: "inner",
+      //       formatter: "{c}家",
+      //       textStyle: {
+      //         color: "#777777",
+      //         fontWeight: "bold",
+      //         fontSize: 14,
+      //       },
+      //     },
+      //   },
+      //   data: res.data,
       // },
-      data: res.xData,
-    },
-    yAxis: {
-      type: 'value',
-      // min: 0,
-      // minInterval: 1,
-      nameTextStyle: {
-        fontSize: 12,
-        color: '#BAE7FF',
-        align: 'center',
-      },
-      axisLine: { show: false },
-      axisTick: { show: false },
-      splitArea: { show: false },
-      splitLine: {
-        lineStyle: {
-          color: 'rgba(255, 255, 255, 0.15)',
-          // type: 'dashed', // dotted 虚线
-        },
-      },
-      axisLabel: {
-        fontSize: 12,
-        color: '#6A93B9',
-        fontFamily: 'Bebas',
-      },
-    },
-    series: data,
+    ],
   };
-
   return option
 }
 
-
-// 企业家 
-export function setLineChartsQYJ(res, color1, color2, color3, color4, max, xftjdata2) {
-  let xData = res.map(item => item.name)
-  let yData = res.map(item => item.value)
-
-  return {
+/** 折线图 --》（Energy：全国人均碳排放，本市人均排放）
+ * @param  {object} res   数据
+ * @param  {object} obj   配置项
+ * 备注：obj:{
+ *    color: [2,3]  =》 注：取 _colorList[2], _colorList[3] 的颜色
+ *    legend: 1     =》 ：全国人均碳排放，本市人均排放
+ * }
+ */
+export function setLineChart(res, obj) {
+  const colorList = ["rgba(202,202,205)", "rgba(243,162,84)", "rgba(106,189,154)", "rgba(94,118,223)"]
+  let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
+  const _legend = () => {
+    let legend = {
+      orient: "horizontal",
+      textStyle: {
+        color: chart.fontColor,
+        fontSize: chart.fontSize,
+      },
+    }
+    if (obj?.legend === 1) {
+      legend = {
+        orient: "horizontal",
+        // itemGap: 5,
+        // right: "3%",
+        // itemWidth: 20,
+        // itemHeight: 4,
+        // icon: "react",
+        // itemGap: 17,
+        // align: "right",
+        formatter: (a) => {
+          const _a = a.split('/')
+          return `${_a[0]}\n${_a[1]}`
+        },
+        textStyle: {
+          color: chart.fontColor,
+          fontSize: chart.fontSize,
+        },
+      }
+    }
+    return legend
+  }
+  var option = {
+    color: _colorList,
     grid: {
-      left: '3%',
-      right: '3%',
-      top: '20%',
-      bottom: '10%',
-      containLabel: true
+      top: "30%",
+      left: "1%",
+      right: "3%",
+      bottom: "1%",
+      containLabel: true,
     },
     tooltip: {
-      confine: true,
-      trigger: 'axis',
-      axisPointer: { // 坐标轴指示器，坐标轴触发有效
-        type: 'line', // 默认为直线，可选为：'line' | 'shadow'
-      },
+      trigger: "axis",
     },
-    legend: {
-      // // icon: 'rect',
-      // itemWidth: 30,
-      // itemHeight: 15,
-      // itemGap: 20,
-      // // data: legendData,
-      // right: '10',
-      // position: 'left',
-      // textStyle: {
-      //   fontSize: 18,
-      //   color: '#fff'
-      // },
-      icon: 'rect',
-      orient: 'horizontal',
-      left: 'right',
-      itemWidth: 12,
-      itemHeight: 12,
-      formatter: ['{a|{name}}'].join('\n'),
-      textStyle: {
-        fontSize: 12,
-        color: '#6A93B9',
-        height: 8,
-        rich: {
-          a: {
-            verticalAlign: 'bottom',
-          },
-        },
-      },
-      data: [
-        {
-          name: '企业数量/家',
-          // icon: 'image://http://example.website/a/b.png',
-          textStyle: {
-            fontSize: 12,
-            fontWeight: 'bolder',
-            color: '#FFFFFF'
-          },
-          icon: 'stack'
-
-        },
-        {
-          name: '总资产/亿',
-          // icon: 'image://http://example.website/a/b.png',
-          textStyle: {
-            fontSize: 12,
-            fontWeight: 'bolder',
-            color: '#FFFFFF'
-          },
-          icon: 'stack'
-
-        },
-
-      ]
-
-    },
-    // legend: {
-    //   show: true,
-    //   icon: 'rect',
-    //   orient: 'horizontal',
-    //   left: 'right',
-    //   itemWidth: 12,
-    //   itemHeight: 12
-    // },
-    xAxis: [{
-      type: 'category',
+    legend: _legend(),
+    xAxis: {
+      data: res.xData,
       boundaryGap: true,
-
-      axisLabel: {
-        interval: 0,
-
-        textStyle: {
-          color: '#ffffff',
-          fontSize: 12,
-        }
-
-      },
       axisLine: {
-        lineStyle: {
-          type: 'solid',
-          color: 'rgba(108, 166, 219, 1)'
-        }
-      },
-      axisTick: {
-        show: false
-      },
-      splitLine: {
         show: true,
         lineStyle: {
-          color: 'rgba(108, 166, 219, 0.5)',
-          type: 'dashed',
-        }
-      },
-      data: xData
-    },
-    ],
-    yAxis: [{
-      type: 'value',
-      min: 0,
-      max: max,
-      axisTick: {
-        show: false
-      },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: 'rgba(108, 166, 219, 0.5)',
-          type: 'dashed',
+          color: chart.xLine,
         },
       },
-      axisLine: {
-        // show: true,
-        lineStyle: {
-          color: 'rgba(149, 162, 170,.8)',
-          type: 'dotted',
-          width: 1
-        }
+      axisTick: {
+        show: false,
       },
-      axisLabel: {
-        textStyle: {
-          color: '#ffffff',
-          fontSize: 12
-        }
-
-      },
-
-      splitArea: {
-        show: true,
-        areaStyle: {
-          color: 'rgba(1, 147, 244,0.1)'
-        }
+    },
+    yAxis: [
+      {
+        name: obj.hasOwnProperty('unit') ? obj?.unit[0] : null,
+        nameTextStyle: {
+          color: chart.fontColor,
+          fontSize: chart.fontSize,
+        },
+        axisLabel: {
+          color: "#AEC9FF",
+        },
+        axisLine: {
+          show: false,
+          lineStyle: {
+            color: chart.xLine,
+          },
+        },
+        axisTick: {
+          show: false,
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed', // dotted 虚线 solid 实线
+            color: chart.xLine,
+          },
+        },
+      }, {
+        name: obj.hasOwnProperty('unit') ? obj?.unit[1] : null,
+        nameTextStyle: {
+          color: chart.fontColor,
+          fontSize: chart.fontSize,
+        },
+        axisLabel: {
+          color: chart.fontColor,
+          fontSize: chart.fontSize,
+        },
+        axisLine: {
+          show: false,
+          lineStyle: {
+            color: chart.xLine,
+          },
+        },
+        axisTick: {
+          show: false,
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed', // dotted 虚线 solid 实线
+            color: chart.xLine,
+          },
+        },
       }
-    },
-
     ],
-    series: [{
-      name: '企业数量/家', type: 'line', stack: '',
-      // 修改的是线下区域的颜色
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-          offset: 0,
-          color: color1
-        }, {
-          offset: 1,
-          color: color2
-        }])
-      },
-      // 修改的是线的颜色
-      lineStyle: {
-        normal: {
-          color: {
-            type: 'linear', x: 0, y: 1, x2: 0, y2: 0,
-            // 0% 处的颜色                           // 100% 处的颜色
-            colorStops: [{ offset: 0, color: '#fff' }, { offset: .25, color: '#FFCD6D' }, { offset: .75, color: '#fff' }, { offset: 1, color: '#fff' }],
-            global: false // 缺省为 false
-          }, width: 3,
-          shadowBlur: 1,
-          shadowColor: color3,
-          shadowOffsetY: 10
+    series: function () {
+      let series = []
+      for (let i = 0; i < res.data.length; i++) {
+        let serie = {
+          name: res.data[i].name,
+          yAxisIndex: i,
+          data: res.data[i].value,
+          type: "line",
+          symbol: "circle",
+          symbolSize: 6,
+          // itemStyle: {
+          //     color: "#FF845A",
+          //     shadowColor: "#FF845A",
+          //     shadowBlur: 10,
+          //     borderColor: "#FF845A",
+          //     borderWidth: 3,
+          //     lineStyle: {
+          //         color: "#FF845A",
+          //     },
+          // },
         }
-      },
-      symbol: 'none',
-      data: yData,
-
-    },
-    {
-      name: '总资产/亿', type: 'line', stack: '',
-      // // 修改的是线下区域的颜色
-      // areaStyle: {
-      //   color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-      //     offset: 0,
-      //     color: color1
-      //   }, {
-      //     offset: 1,
-      //     color: color2
-      //   }])
-      // },
-      // 修改的是线的颜色
-      lineStyle: {
-        normal: {
-          color: {
-            type: 'linear', x: 0, y: 1, x2: 0, y2: 0,
-            // 0% 处的颜色                           // 100% 处的颜色
-            colorStops: [{ offset: 0, color: '#fff' }, { offset: .25, color: color4 }, { offset: .75, color: '#fff' }, { offset: 1, color: '#fff' }],
-            global: false // 缺省为 false
-          }, width: 3,
-        }
-      },
-      symbol: 'none',
-      data: xftjdata2,
-
-    },
-    ]
+        series.push(serie)
+      }
+      return series
+    }(),
   };
-
+  return option
 }

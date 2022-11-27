@@ -74,29 +74,29 @@ onMounted(() => {
           </li>
           <li>
             <span class="hui">教育支出占比</span
-            ><span>{{ base.data.sjztr }}</span>
+            ><span>{{ base.data.sjztr }}亿</span>
           </li>
         </ul>
 
         <ul class="bg-hui">
           <li>
-            <span class="hui">教职工总人数(人)</span
-            ><span>{{ base.data.jzgzrs }}</span>
+            <span class="hui">教职工总人数</span
+            ><span>{{ base.data.jzgzrs }}人</span>
           </li>
           <li>
-            <span class="hui">专任教师总人数(人)</span
-            ><span>{{ base.data.zrjszrs }}</span>
+            <span class="hui">专任教师总人数</span
+            ><span>{{ base.data.zrjszrs }}人</span>
           </li>
         </ul>
 
         <ul class="bg-hui">
           <li>
-            <span class="hui">高考报名人数(人)</span
-            ><span>{{ base.data.gkbmrs }}</span>
+            <span class="hui">高考报名人数</span
+            ><span>{{ base.data.gkbmrs }}人</span>
           </li>
           <li>
-            <span class="hui">中考报名人数(人)</span
-            ><span>{{ base.data.zkbmrs }}</span>
+            <span class="hui">中考报名人数</span
+            ><span>{{ base.data.zkbmrs }}人</span>
           </li>
         </ul>
       </div>
@@ -115,25 +115,25 @@ onMounted(() => {
       <div class="b-content content1 content-r1">
         <ul class="bg-hui">
           <li>
-            <span class="hui">医疗卫生机构(家)</span
-            ><span>{{ base.data.ylwsjg }}</span>
+            <span class="hui">医疗卫生机构</span
+            ><span>{{ base.data.ylwsjg }}家</span>
           </li>
           <li>
-            <span class="hui">市属医疗机构(家)</span
-            ><span>{{ base.data.ssyljg }}</span>
+            <span class="hui">市属医疗机构</span
+            ><span>{{ base.data.ssyljg }}家</span>
           </li>
         </ul>
         <ul class="bg-hui">
           <li>
-            <span class="hui">床位(万)</span><span>{{ base.data.cw }}</span>
+            <span class="hui">床位</span><span>{{ base.data.cw }}张</span>
           </li>
           <li>
-            <span class="hui">医护人员(万)</span
-            ><span>{{ base.data.yhrs }}</span>
+            <span class="hui">医护人员</span
+            ><span>{{ base.data.yhrs }}万</span>
           </li>
           <li>
-            <span class="hui">总诊疗人次(亿)</span
-            ><span>{{ base.data.zzlrc }}</span>
+            <span class="hui">总诊疗人次</span
+            ><span>{{ base.data.zzlrc }}亿</span>
           </li>
         </ul>
       </div>

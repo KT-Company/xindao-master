@@ -131,7 +131,7 @@ onMounted(() => {
       <div class="b-title">经济总量</div>
       <ul class="b-content content1">
         <li v-for="(item, i) in jjzlData" :key="i">
-          <span class="t1-val">{{ item.val }}</span>
+          <span class="big-val">{{ item.val }}</span>
           <span class="t1-name hui">{{ item.name }}</span>
         </li>
       </ul>
@@ -279,12 +279,6 @@ onMounted(() => {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 3px;
-    .t1-val {
-      font-family: Source Han Sans CN;
-      font-weight: bold;
-      color: #ffffff;
-      font-size: 0.85vw;
-    }
     .t1-name {
       font-size: 0.7vw;
     }

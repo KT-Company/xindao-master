@@ -1,6 +1,7 @@
 <!-- 人力资源部 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { getrlzy } from "@/2d/api";
 import { useStore } from "vuex";
 import { setYuanChart } from "@/2d/viewCharts/Area";
 const store = useStore();
@@ -29,6 +30,9 @@ const data3 = reactive({
   hb: "22696684.59",
 });
 onMounted(() => {
+  getrlzy().then((res) => {
+    console.log("人力资源: ", res);
+  });
   option.data1 = setYuanChart(data1, { color: 1, title: 2 });
   option.data2 = setYuanChart(data2, {});
   option.data3 = setYuanChart(data3, { color: 1 });

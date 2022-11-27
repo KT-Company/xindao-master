@@ -1,4 +1,4 @@
-<!-- 政务服务 -->
+<!-- 物流公司 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
@@ -8,22 +8,22 @@ const store = useStore();
 <template>
   <Left class="z-left">
     <Bar>
-      <Title>个人所得税税负率</Title>
+      <Title>客户销量</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>碳排放</Title>
+      <Title>客单价</Title>
       <Content></Content>
     </Bar>
   </Left>
 
   <Right class="z-right">
     <Bar>
-      <Title>企业增值税税负率</Title>
+      <Title>销售毛利率</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>企业数量</Title>
+      <Title>销售结构</Title>
       <Content></Content>
     </Bar>
   </Right>
@@ -33,9 +33,9 @@ const store = useStore();
 .z-left,
 .z-right {
   display: grid;
-  grid-template-rows: 201fr 262fr;
-  row-gap: 2.9%;
-  top: 28% !important;
-  height: 44.197% !important;
+  grid-template-rows: 297fr 317fr;
+  row-gap: 2%;
+  top: 20.95% !important;
+  height: 58.1% !important;
 }
 </style>

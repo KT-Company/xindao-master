@@ -6,6 +6,7 @@ import Item from './bar/Item.vue'
 import Bar from './bar/Bar.vue'
 import Title from './bar/Title.vue'
 import Echart from './util/Echart.vue'
+import Content from './bar/Content.vue'
 export {
   Left,
   Right,
@@ -15,4 +16,5 @@ export {
   Echart,
   Title,
   Bar,
+  Content
 }

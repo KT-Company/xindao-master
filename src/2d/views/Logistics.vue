@@ -1,4 +1,4 @@
-<!-- 制造集团 -->
+<!-- 物流公司 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
@@ -12,34 +12,26 @@ const store = useStore();
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>企业银行贷款</Title>
+      <Title>物流成本支出</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>年度收入指标</Title>
-      <Content></Content>
-    </Bar>
-    <Bar>
-      <Title>年度采购预算</Title>
+      <Title>货主下单排行</Title>
       <Content></Content>
     </Bar>
   </Left>
 
   <Right class="z-right">
     <Bar>
-      <Title>企业营业收入</Title>
+      <Title>车辆情况</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>企业成本支出</Title>
+      <Title>订单情况</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>企业仓库容积</Title>
-      <Content></Content>
-    </Bar>
-    <Bar>
-      <Title>企业库存情况</Title>
+      <Title>货主下单趋势</Title>
       <Content></Content>
     </Bar>
   </Right>
@@ -48,12 +40,12 @@ const store = useStore();
 <style lang="less" scoped>
 .z-left {
   display: grid;
-  grid-template-rows: 205fr 212fr 253fr 253fr;
+  grid-template-rows: 197fr 271fr 470fr;
   row-gap: 1.6%;
 }
 .z-right {
   display: grid;
-  grid-template-rows: 223.1fr 225.1fr 218.1fr 257fr;
+  grid-template-rows: 369fr 243fr 326fr;
   row-gap: 1.6%;
 }
 </style>

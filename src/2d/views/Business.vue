@@ -1,4 +1,4 @@
-<!-- 制造集团 -->
+<!-- 业务部 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
@@ -8,34 +8,34 @@ const store = useStore();
 <template>
   <Left class="z-left">
     <Bar>
-      <Title>企业银行存款</Title>
+      <Title>采购支出</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>企业银行贷款</Title>
+      <Title>供应商排名</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>年度收入指标</Title>
+      <Title>物流费用</Title>
       <Content></Content>
     </Bar>
     <Bar>
-      <Title>年度采购预算</Title>
+      <Title>客户销量</Title>
       <Content></Content>
     </Bar>
   </Left>
 
   <Right class="z-right">
     <Bar>
-      <Title>企业营业收入</Title>
-      <Content></Content>
-    </Bar>
-    <Bar>
-      <Title>企业成本支出</Title>
-      <Content></Content>
-    </Bar>
-    <Bar>
       <Title>企业仓库容积</Title>
+      <Content></Content>
+    </Bar>
+    <Bar>
+      <Title>存货周转率</Title>
+      <Content></Content>
+    </Bar>
+    <Bar>
+      <Title>销售结构/客单价</Title>
       <Content></Content>
     </Bar>
     <Bar>
@@ -48,12 +48,12 @@ const store = useStore();
 <style lang="less" scoped>
 .z-left {
   display: grid;
-  grid-template-rows: 205fr 212fr 253fr 253fr;
-  row-gap: 1.6%;
+  grid-template-rows: 201fr 222fr 196fr 295fr;
+  row-gap: 2%;
 }
 .z-right {
   display: grid;
-  grid-template-rows: 223.1fr 225.1fr 218.1fr 257fr;
-  row-gap: 1.6%;
+  grid-template-rows: 201.3fr 196fr 259fr 259fr;
+  row-gap: 2%;
 }
 </style>

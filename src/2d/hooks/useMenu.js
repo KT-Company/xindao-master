@@ -37,17 +37,17 @@ export const menu = ref([
         isPick: false,
         children: [
             { id: "3-0", name: "整体布局", isPick: false, level: 4 },
-            { id: "3-1", name: "企管部", isPick: false, level: 4 },
+            { id: "3-1", name: "企管部", isPick: false, level: 4, path: '/Corporate' },
             { id: "3-2", name: "人力资源部", isPick: false, level: 4, path: "/HR" },
-            { id: "3-3", name: "财务部", isPick: false, level: 4 },
-            { id: "3-4", name: "采购部", isPick: false, level: 4 },
-            { id: "3-5", name: "营销部", isPick: false, level: 4 },
-            { id: "3-6", name: "生产部", isPick: false, level: 4 },
+            { id: "3-3", name: "财务部", isPick: false, level: 4, path: "/Financial" },
+            { id: "3-4", name: "采购部", isPick: false, level: 4, path: '/Procurement' },
+            { id: "3-5", name: "营销部", isPick: false, level: 4, path: '/GroupMarketing' },
+            { id: "3-6", name: "生产部", isPick: false, level: 4, path: '/Production' },
         ],
         level: 3,
     },
     {
-        id: 4, 
+        id: 4,
         name: "工商银行",
         path: '/ICBC',
         isPick: false,
@@ -57,7 +57,7 @@ export const menu = ref([
         level: 3
     },
     {
-        id: 5, 
+        id: 5,
         name: "政务服务",
         path: '/Government',
         isPick: false,
@@ -80,7 +80,7 @@ export const menu = ref([
         isPick: false,
         children: [
             { id: "7-0", name: "整体布局", isPick: false, level: 4 },
-            { id: "7-1", name: "企管部", isPick: false, level: 4 },
+            { id: "7-1", name: "企管部", isPick: false, level: 4, },
             { id: "7-2", name: "业务部", isPick: false, level: 4 },
         ],
         level: 3
@@ -105,8 +105,8 @@ export const menu = ref([
         children: [
             { id: "9-0", name: "整体布局", isPick: false, level: 4 },
             { id: "9-1", name: "企管部", isPick: false, level: 4 },
-            { id: "9-2", name: "行政部", isPick: false, level: 4 },
-            { id: "9-3", name: "业务部", isPick: false, level: 4 },
+            { id: "9-2", name: "业务部", isPick: false, level: 4, path: '/Business' },
+            // { id: "9-3", name: "行政部", isPick: false, level: 4 },
         ],
         level: 3
     },
@@ -131,9 +131,9 @@ export const menu = ref([
         children: [
             { id: "11-0", name: "整体布局", isPick: false, level: 4 },
             { id: "11-1", name: "企管部", isPick: false, level: 4 },
-            { id: "11-2", name: "财务部", isPick: false, level: 4 },
             { id: "11-3", name: "采购部", isPick: false, level: 4 },
-            { id: "11-4", name: "营销部", isPick: false, level: 4 },
+            { id: "11-2", name: "财务部", isPick: false, level: 4 },
+            { id: "11-4", name: "营销部", isPick: false, level: 4, path: '/Market' },
         ],
         level: 3
     },

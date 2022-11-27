@@ -6,7 +6,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <p class="item-title"><img
+  <p class="b-title"><img
       v-if="icon"
       :src="icon"
       class="icon"
@@ -16,20 +16,11 @@ const props = defineProps({
 </template>
 
 <style lang="less" scoped>
-.item-title {
-  color: rgb(255, 255, 255);
-  display: flex;
-  align-items: center;
-  // font-family: Source Han Sans CN;
-  font-size: 0.96vw;
-  padding-left: 18%;
-  background: url("@/2d/assets/images/item-title.png") no-repeat center center /
-    100% 100%;
-  height: var(--titleH);
-}
-.icon {
-  margin-right: 10px;
-  width: 15px;
-  margin-top: 2.5px;
+.b-title {
+  font-size: var(--titleSize);
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  color: #ffffff;
+  height: 2rem;
 }
 </style>

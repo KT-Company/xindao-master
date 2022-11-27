@@ -124,3 +124,11 @@ export function getqyqyxx(){
         method: 'get',
     })
 }
+
+// 人力资源
+export function getrlzy(){
+    return request({
+        url: `${url}rlzy`,
+        method: 'get',
+    })
+}

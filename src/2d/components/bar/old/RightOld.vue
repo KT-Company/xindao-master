@@ -10,7 +10,7 @@ import bar from "@/2d/components/bar/bar.module.css";
 
 <style lang="less" scoped>
 .right {
-  position: absolute;
-  right: 1% !important;
+  right: var(--barMargin);
+  font-family: sscr;
 }
 </style>

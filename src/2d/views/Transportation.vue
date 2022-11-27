@@ -76,11 +76,11 @@ onMounted(() => {
       <div class="b-content jtlc-c">
         <ul class="jtlc-titles">
           <li class="bg-hui">
-            <p class="ggjt-val">{{base.data.glzlcs}}<span class="hui">公里</span></p>
+            <p class="big-val">{{base.data.glzlcs}}<span class="hui">公里</span></p>
             <p class="hui">公路总里程</p>
           </li>
           <li class="bg-hui">
-            <p class="ggjt-val">{{base.data.gsglzlc}}<span class="hui">公里</span></p>
+            <p class="big-val">{{base.data.gsglzlc}}<span class="hui">公里</span></p>
             <p class="hui">高速公路总里程</p>
           </li>
         </ul>
@@ -102,7 +102,7 @@ onMounted(() => {
         <div class="csgdjt bg-hui">
           <span class="hui">城市轨道交通总里程</span>
           <p>
-            <span class="ggjt-val">{{base.data.csgdjtzlc}}</span>
+            <span class="big-val">{{base.data.csgdjtzlc}}</span>
             <span class="hui">公里</span>
           </p>
         </div>
@@ -118,7 +118,7 @@ onMounted(() => {
         >
           <span class="hui-s">{{item.name}}</span>
           <p>
-            <span class="ggjt-val">{{item.value}}</span>
+            <span class="big-val">{{item.value}}</span>
             <span class="hui">{{item.unit}}</span>
           </p>
         </li>
@@ -135,7 +135,7 @@ onMounted(() => {
           v-for="(item,i) in chuxing"
           :key="i"
         >
-          <p class="ggjt-val">{{item.value}}</p>
+          <p class="big-val">{{item.value}}</p>
           <p class="hui">{{item.unit}}</p>
           <p class="hui-s">{{item.name}}</p>
         </li>
@@ -149,7 +149,7 @@ onMounted(() => {
           v-for="(item,i) in zhineng"
           :key="i"
         >
-          <p class="ggjt-val">{{item.value}}</p>
+          <p class="big-val">{{item.value}}</p>
           <p class="hui">{{item.unit}}</p>
           <p class="hui-s">{{item.name}}</p>
         </li>
@@ -164,7 +164,7 @@ onMounted(() => {
           :key="i"
         >
           <div>
-            <p class="ggjt-val">{{item.value}}</p>
+            <p class="big-val">{{item.value}}</p>
             <p class="hui">{{item.unit}}</p>
           </div>
           <p class="hui-s">{{item.name}}</p>
@@ -219,10 +219,10 @@ onMounted(() => {
       100% 100%;
   }
 }
-.ggjt-val {
-  font-weight: bold;
-  font-size: 0.85vw;
-}
+// .big-val {
+//   font-weight: bold;
+//   font-size: 0.85vw;
+// }
 .jtlc-c {
   display: grid;
   grid-template-rows: 54fr 120fr 40fr;

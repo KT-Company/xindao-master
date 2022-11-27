@@ -38,8 +38,9 @@ const handleFooters = (item, leve, son) => {
     // 二级菜单点击事件
     // if (["1-2", "1-4"].includes(son.id)) return; // 这三个页面未完成不能点击
     store.commit("setMenuBid", son.id);
-    if (item.id === 1) router.push(son.path);
-    if (son.id === "3-2") router.push(son.path);
+    son.path && router.push(son.path);
+    // if (item.id === 1) router.push(son.path);
+    // if (son.id === "3-2") router.push(son.path);
   }
 
   // 3d
@@ -172,6 +173,7 @@ watch(
     transition: 0.3s;
     cursor: pointer;
     pointer-events: auto;
+    white-space: nowrap;
   }
 }
 
