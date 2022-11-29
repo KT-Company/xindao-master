@@ -80,8 +80,6 @@ export function setPiePercentage(data) {
 }
 // 折现图----------------------------
 export function setLine(data) {
-
-
     return {
         tooltip: {
             trigger: 'axis',
@@ -142,7 +140,129 @@ export function setLine(data) {
                     color: 'rgba(202,224,255,.6)',
                     fontSize: 12,
                 },
-                formatter: '{value}%'
+                formatter: data.isShow ? '{value}%' : '{value}'
+            },
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(202,202,202,0.2)',
+                    type: 'dashed',
+                }
+            },
+            show: true,
+
+        }],
+        series: [{
+            name: data.name,
+            type: 'line',
+            smooth: true, //是否平滑曲线显示
+            showSymbol: false,
+
+            itemStyle: {
+                color: data.color,
+                borderColor: data.color,
+                borderWidth: 1
+            },
+            lineStyle: {
+                normal: {
+                    width: 2,
+                    color: {
+                        type: 'linear',
+                        colorStops: [{
+                            offset: 0,
+                            color: data.color // 0% 处的颜色
+                        },
+                        {
+                            offset: 1,
+                            color: data.color // 100% 处的颜色
+                        }
+                        ],
+                        globalCoord: false // 缺省为 false
+                    },
+                    shadowColor: data.color,
+                    shadowBlur: 30,
+                    shadowOffsetY: 5
+                }
+            },
+            data: data.dataList
+        }]
+    };
+
+}
+// 折现图----------------------------
+export function setLineFinancial(data) {
+    console.log(data);
+    console.log('data---------------------');
+    return {
+        tooltip: {
+            trigger: 'axis',
+        },
+        title: {
+            left: 26,
+            top: 26,
+            textStyle: {
+                color: '#FFFFFF',
+                fontSize: 15,
+                fontWeight: 50000,
+                fontFamily: 'PingFang SC'
+            }
+        },
+        grid: {
+            left: '1%',
+            right: '1%',
+            bottom: '4%',
+            top: '10%',
+            containLabel: true
+        },
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: data.dataList.length > 15 ? 35 : 100
+        }],
+        xAxis: {
+            axisTick: {
+                show: true, // 是否显示坐标轴轴线
+                alignWithLabel: true,
+                length: 3,
+                lineStyle: {
+                    color: 'rgba(202,224,255,.3)',
+                }
+            },
+            axisLabel: {
+                margin: 10,
+                color: 'rgba(202,224,255,.6)',
+                fontSize: 12,
+                interval: 0
+            },
+            splitLine: {
+                show: false
+            },
+            boundaryGap: true,
+            axisLine: { //坐标轴轴线相关设置。
+                show: false,
+                inside: false,
+                lineStyle: {
+                    color: 'rgba(255,255,255,.3)'
+                }
+            },
+            data: data.Xdata
+        },
+        yAxis: [{
+            type: 'value',
+            splitNumber: 4,
+            splitLine: { show: true },
+            axisLabel: { //坐标轴刻度标签的相关设置。
+                show: true,
+                textStyle: {
+                    color: 'rgba(202,224,255,.6)',
+                    fontSize: 12,
+                },
+                formatter: data.isShow ? '{value}%' : '{value}'
             },
             axisLine: {
                 show: false,

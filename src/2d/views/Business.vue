@@ -381,7 +381,7 @@ const data8Echarts = () => {
   .data4-warp {
     .echart-data {
       width: 100%;
-      height: 19vh;
+      height: 20vh;
     }
 
 
