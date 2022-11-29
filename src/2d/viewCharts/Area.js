@@ -118,7 +118,7 @@ export function setYuanChart(res, obj) {
  * }
  */
 export function setZhuChart(res, obj) {
-  let colorList = ['rgba(92, 115, 230)', 'rgba(223,153,92)', 'rgba(72,192,151)']
+  let colorList = ['rgba(92, 115, 230)', 'rgba(223,153,92)', 'rgba(72,192,151)', 'rgba(158,159,171)']
   let _colorList = obj?.color ? obj.color.map(item => colorList[item]) : colorList
   const _legend = () => {
     const type = obj?.legendType ? obj.legendType : 1
@@ -206,7 +206,6 @@ export function setZhuChart(res, obj) {
       nameTextStyle: {
         color: chart.fontColor,
         fontSize: chart.fontSize,
-        padding: [0, 0, 0, 40]
       },
       // nameGap: 20,  // 通过你生成的图表来调整
       // nameLocation: "start", // y轴name处于y轴的什么位置
@@ -544,27 +543,38 @@ export function setBingChart3(res, obj) {
   res.data.sort((a, b) => {
     return a.index - b.index
   })
-  console.log('res: ', res.data);
   var option = {
+    tooltip: {
+      show: true,
+    },
     series: [
       {
         type: "pie",
-        selectedMode: "single",
-        radius: ["25%", "58%"],
+        selectedMode: false,
+        radius: ["25%", "40%"],
+        itemStyle: {
+          normal: {
+            color: (item) => {
+              return `rgba(${item.data.color},1)`
+            }
+          }
+        },
         label: {
           normal: {
-            formatter(name) {
-              return `{a|a} {b|b}`;
+            position: 'outside',
+            overflow: 'brea',
+            formatter: (a, b) => {
+              const { name, value } = { ...a.data }
+              return `{b|${name}：}{c|${value}%}`
             },
             textStyle: {
-              color: '#000',
               rich: {
-                a: {
-                  fontSize: chart.fontSize,
-                  color: 'rgba(177,197,255)',
-                },
                 b: {
-                  fontSize: 14,
+                  fontSize: chart.fontSize,
+                  color: chart.fontColor,
+                },
+                c: {
+                  fontSize: chart.fontSize + 1,
                   color: 'rgba(255,255,255)',
                 },
               },
@@ -573,29 +583,28 @@ export function setBingChart3(res, obj) {
         },
         labelLine: {
           normal: {
-            lineStyle: {
-              color: '#e6e6e6',
-            },
+            length: 20,
+            length2: 20
           },
+
         },
         data: res.data,
       },
-      // {
-      //   type: "pie",
-      //   radius: ["58%", "83%"],
-      //   label: {
-      //     normal: {
-      //       position: "inner",
-      //       formatter: "{c}家",
-      //       textStyle: {
-      //         color: "#777777",
-      //         fontWeight: "bold",
-      //         fontSize: 14,
-      //       },
-      //     },
-      //   },
-      //   data: res.data,
-      // },
+      {
+        type: "pie",
+        radius: ["40%", "100%"],
+        itemStyle: {
+          normal: {
+            color: (item) => {
+              return `rgba(${item.data.color},.2)`
+            }
+          }
+        },
+        label: {
+          show: false
+        },
+        data: res.data,
+      },
     ],
   };
   return option
@@ -690,8 +699,10 @@ export function setLineChart(res, obj) {
         splitLine: {
           show: true,
           lineStyle: {
-            type: 'dashed', // dotted 虚线 solid 实线
             color: chart.xLine,
+            opacity: 0.2,
+            type: 'dotted',
+            width: 1,
           },
         },
       }, {
@@ -716,8 +727,10 @@ export function setLineChart(res, obj) {
         splitLine: {
           show: true,
           lineStyle: {
-            type: 'dashed', // dotted 虚线 solid 实线
             color: chart.xLine,
+            opacity: 0.2,
+            type: 'dotted',
+            width: 1,
           },
         },
       }
@@ -747,6 +760,109 @@ export function setLineChart(res, obj) {
       }
       return series
     }(),
+  };
+  return option
+}
+
+export function setBingChart4(res, obj) {
+  let option = {
+    tooltip: {
+      trigger: 'item',
+    },
+    series: [
+      {
+        name: res.name,
+        type: 'pie',
+        radius: '70%',
+        center: ['50%', '50%'],
+        label: {
+          fontSize: chart.fontSize,
+          formatter: function (params) {
+            return `{p${params.dataIndex}|${params.data.value + '%'}}`;
+          },
+          rich: {
+            p0: {
+              color: 'rgba(92,115,230)',
+            },
+            p1: {
+              color: 'rgba(255,159,64)',
+            },
+            p2: {
+              color: 'rgba(72,192,151)',
+            },
+          },
+        },
+        labelLine: {
+          lineStyle: {
+            type: [5, 4],
+            dashOffset: 5
+          },
+        },
+        data: (() => {
+          let _data = []
+          res.data.forEach(item => {
+            _data.push({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                normal: {
+                  color: `rgba(${item.color},.4)`,
+                  borderColor: `rgba(${item.color},1)`,
+                  borderWidth: 1,
+                }
+              },
+            })
+          })
+          return _data
+        })(
+
+        ),
+        roseType: 'area',
+      },
+      {
+        name: '外部刻度',
+        type: 'gauge',
+        center: ['50%', '50%'],
+        radius: '95%',
+        startAngle: 90,
+        endAngle: -270,
+        // endAngle: -45,
+        axisLine: {
+          show: true,
+          lineStyle: {
+            width: 1,
+            color: [[1, 'rgba(0,0,0,0)']],
+          },
+        }, //仪表盘轴线
+        axisLabel: {
+          show: false,
+          color: '#4d5bd1',
+          distance: 25,
+        }, //刻度标签。
+        axisTick: {
+          show: true,
+          splitNumber: 8,
+          lineStyle: {
+            color: 'rgba(72,76,98)', //用颜色渐变函数不起作用
+            width: 1,
+          },
+          length: -6,
+        }, //刻度样式
+        splitLine: {
+          show: false,
+          length: -20,
+          lineStyle: {
+            color: 'rgba(72,76,98)', //用颜色渐变函数不起作用
+          },
+        }, //分隔线样式
+        detail: {
+          show: false,
+        },
+        pointer: {
+          show: false,
+        },
+      },
+    ],
   };
   return option
 }

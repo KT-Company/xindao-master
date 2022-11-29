@@ -85,12 +85,6 @@ export function setLine(data) {
     return {
         tooltip: {
             trigger: 'axis',
-            backgroundColor: 'rgba(17,95,182,0.5)',
-            textStyle: {
-                color: "#fff"
-            },
-            triggerOn: "mousemove",
-            showContent: true,
         },
         title: {
             left: 26,
@@ -209,12 +203,6 @@ export function setBar(data) {
     return {
         tooltip: {
             trigger: 'axis',
-            backgroundColor: 'rgba(17,95,182,0.5)',
-            textStyle: {
-                color: "#fff"
-            },
-            triggerOn: "mousemove",
-            showContent: true,
         },
         title: {
             left: 26,
