@@ -84,7 +84,7 @@ export function setLine(data) {
 
     return {
         tooltip: {
-            trigger: "axis",
+            trigger: 'axis',
         },
         title: {
             left: 26,
@@ -202,7 +202,7 @@ export function setBar(data) {
 
     return {
         tooltip: {
-            trigger: "axis",
+            trigger: 'axis',
         },
         title: {
             left: 26,

@@ -65,10 +65,10 @@ onMounted(() => {
     quanguoTan.value = data.filter((item) => item.year == store.state.year);
 
     const colors = [
-      "rgba(84,116,234)",
-      "rgba(255,159,64)",
-      "rgba(72,192,151)",
-      "rgba(227,227,232)",
+      "84,116,234",
+      "255,159,64",
+      "72,192,151",
+      "227,227,232",
     ];
     const qita = [
       "山东",

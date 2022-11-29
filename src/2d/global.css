@@ -81,9 +81,26 @@ li {
   border-radius: 3px;
 }
 
+.bg-hui1 {
+  background: rgba(124, 124, 124, 0.2);
+}
+
 .big-val {
   /* font-weight: bold; */
   font-size: 0.75vw;
+}
+
+.val1 {
+  font-size: .85vw;
+}
+
+.unit1 {
+  font-size: .6vw;
+  color: var(--hui);
+}
+
+.zi {
+  color: rgba(92, 115, 230);
 }
 
 /* ************************************************** */
@@ -95,6 +112,7 @@ li {
   --itemPL: 5%;
   --titleH: 6.3%;
   --titleSize: .85vw;
+  --hui: rgb(165, 168, 175)
 }
 
 .unit {
@@ -151,7 +169,7 @@ li {
 }
 
 .hui {
-  color: rgb(165, 168, 175);
+  color: var(--hui);
 }
 
 .yuanxiao-val {
