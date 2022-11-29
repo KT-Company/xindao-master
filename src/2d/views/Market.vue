@@ -306,18 +306,7 @@ const data7Echarts = () => {
     }
 
     .type-wrap-pie {
-      top: -2vh;
-
-      &>div {
-        font-size: .71vw;
-        font-family: Source Han Sans CN;
-        font-weight: 400;
-        color: #CAE0FF;
-      }
-
-      &>div:nth-of-type(2) {
-        width: 70%;
-      }
+      top: -.2vh;
     }
   }
 
