@@ -102735,6 +102735,7 @@ void main(){
 varying vec2 vUv;
 uniform vec3 color;
 
+
 #include <logdepthbuf_pars_fragment>
 
 void main(){
@@ -102756,6 +102757,7 @@ void main(){
 	    `
 varying vec2 vUv;
 uniform vec3 color;
+uniform vec3 edgeColor;
 
 #include <logdepthbuf_pars_fragment>
 
@@ -102766,7 +102768,7 @@ void main(){
     if(pct > .35 && pct < .495){
       gl_FragColor = vec4(color, pct / .35 - 1.);
     }else if(pct > .495 && pct < .5){
-      gl_FragColor = vec4(color, 1.);
+      gl_FragColor = vec4(edgeColor, 1.);
     } else{
         discard;
     }
@@ -102787,10 +102789,10 @@ void main(){
 #include <logdepthbuf_fragment>
   float pct = distance(vUv, vec2(.5));
 
-  if(pct > uTime && pct < (uTime + ringWidth)){
+  if(pct >= uTime && pct <= (uTime + ringWidth)){
     gl_FragColor = vec4(color, pct / (uTime + ringWidth) - (uTime / (uTime + ringWidth)));
   } else{
-      discard;
+    discard;
   }
 
   #include <tonemapping_fragment>
@@ -103079,6 +103081,7 @@ void main(){
 	        this.opts = Object.assign({
 	            radius: 1,
 	            color: '#ffffff',
+	            edgeColor: '#ffffff',
 	            type: 0,
 	            spreadReset: true,
 	            spreadStartRadius: 0.02,
@@ -103107,6 +103110,7 @@ void main(){
 	            side: 2,
 	            transparent: true,
 	            uniforms: {
+	                edgeColor: { value: new Color(this.opts.edgeColor) },
 	                color: { value: new Color(this.opts.color) },
 	                uTime: { value: 0 },
 	                uClockwise: { value: this.clockwise },
@@ -103270,7 +103274,7 @@ void main(){
 	            size: this.canvasSize,
 	            type: this.textType
 	        }, opts);
-	        const { canvas: canvasEle, width, height } = drawText$1[this.opts.type]({
+	        const { canvas: canvasEle, width, height } = drawText$1[this.textType]({
 	            text: this.opts.text,
 	            fontColor: this.opts.fontColor,
 	            bgColor: this.opts.bgColor,
@@ -103529,6 +103533,68 @@ void main(){
 	    }
 	}
 
+	class BaseFlyLine extends BaseLine {
+	    path;
+	    height;
+	    constructor(opts) {
+	        super(opts);
+	        this.height = opts?.height !== undefined ? opts.height : 100;
+	        this.path = new CubicBezierCurve3(new Vector3(), new Vector3(), new Vector3(), new Vector3());
+	        if (opts && opts.startPoint && opts.endPoint) {
+	            const p41 = new Vector3(); // 4分之1点
+	            const p43 = new Vector3(); // 4分之3点
+	            const dir = new Vector3().subVectors(opts.endPoint, opts.startPoint).normalize();
+	            const len = opts.startPoint.distanceTo(opts.endPoint);
+	            const len41 = len / 4;
+	            const len43 = (3 * len) / 4;
+	            p41.copy(opts.startPoint).add(dir.clone().multiplyScalar(len41));
+	            p41.y = this.height;
+	            p43.copy(opts.startPoint).add(dir.clone().multiplyScalar(len43));
+	            p43.y = this.height;
+	            this.path.v0.copy(opts.startPoint);
+	            this.path.v1.copy(p41);
+	            this.path.v2.copy(p43);
+	            this.path.v3.copy(opts.endPoint);
+	            const points = this.path.getPoints(500);
+	            const positions = [];
+	            points.forEach((p) => {
+	                positions.push(p.x, p.y, p.z);
+	            });
+	            this.setPositions(positions);
+	            const center = opts.startPoint.clone().add(opts.endPoint).multiplyScalar(0.5);
+	            // title
+	            if (opts.title !== undefined) {
+	                const title = new BaseTitle({
+	                    strokeColor: '#ffffff',
+	                    bgColor: opts.color,
+	                    text: opts.title,
+	                    type: 0,
+	                    size: opts.titleSize
+	                });
+	                this.add(title);
+	                title.position.copy(center);
+	                title.position.y = this.height;
+	            }
+	        }
+	    }
+	    updatePath({ v0, v1, v2, v3 }) {
+	        if (v0 !== undefined)
+	            this.path.v0.copy(v0);
+	        if (v1 !== undefined)
+	            this.path.v1.copy(v1);
+	        if (v2 !== undefined)
+	            this.path.v2.copy(v2);
+	        if (v3 !== undefined)
+	            this.path.v3.copy(v3);
+	        const points = this.path.getPoints(500);
+	        const positions = [];
+	        points.forEach((p) => {
+	            positions.push(p.x, p.y, p.z);
+	        });
+	        this.setPositions(positions);
+	    }
+	}
+
 	const Primitives = {
 	    BaseLine,
 	    BaseExtrudeShape,
@@ -103536,7 +103602,8 @@ void main(){
 	    BaseCircle,
 	    BaseTitle,
 	    BaseShapeVic,
-	    BaseSpreadCircle
+	    BaseSpreadCircle,
+	    BaseFlyLine
 	};
 
 	class BaseBuildingStripeMaterial extends ShaderMaterial {

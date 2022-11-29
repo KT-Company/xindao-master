@@ -5,7 +5,7 @@ import { DATA } from "./DATA.js";
 import store from "@/2d/store";
 import router from "@/2d/router";
 
-let Bol3D = window.Bol3D
+let Bol3D = window.Bol3D;
 
 export const sceneOnLoad = ({ domElement, callback }) => {
   CACHE.container = new Bol3D.Container({
@@ -14,7 +14,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     viewState: "orbit",
     bloomEnabled: true,
     bloom: {
-      bloomStrength: .75,
+      bloomStrength: 0.75,
       bloomRadius: 0.45,
       threshold: 0.015,
     },
@@ -97,7 +97,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       "/assets/models/BeiJing/yinhangyuanqu.glb",
       "/assets/models/BeiJing/zhengwuzhongxin.glb",
       "/assets/models/BeiJing/zhizaojituan.glb",
-      // *** 内部 ***
+      // // *** 内部 ***
       "/assets/models/NeiBu/GongYingBanGongShi.glb",
       "/assets/models/NeiBu/JingXiaoBanGongShi.glb",
       "/assets/models/NeiBu/Xiao_Shou_Gong_Si.glb",
@@ -107,15 +107,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       "/assets/models/NeiBu/zonghefuwulou.glb",
       "/assets/models/NeiBu/wuliubangongshi.glb",
       // *** seperate ***
-      "/assets/models/seperate/fuwugongsi_s.glb",
-      "/assets/models/seperate/gongyingqiye_s.glb",
-      "/assets/models/seperate/guanweihui_s.glb",
-      "/assets/models/seperate/jingxiaoqiye_s.glb",
-      "/assets/models/seperate/wuliuqiye_s.glb",
-      "/assets/models/seperate/xiaoshougongsi_s.glb",
-      "/assets/models/seperate/yinhangyuanqu_s.glb",
-      "/assets/models/seperate/zhengwuzhongxin_s.glb",
-      "/assets/models/seperate/zhizaojituan_s.glb",
+      "/assets/models/seperate/peilou.glb",
     ],
     hdrUrls: ["/assets/hdr/st_peters_square_night_1k.hdr"],
     enableShadow: false,
@@ -194,19 +186,16 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         CACHE.models.push(model);
 
         // model.visible = false
-      } else if (STATE.modelSeperate.includes(model.name)) {
+      } else if(model.name == 'peilou'){
         model.scale.set(2, 3.8, 2);
-
         let count = 0;
-        model.children.forEach((child) => {
+        model.children.forEach((child , index) => {
           if (child.type == "Object3D") {
             child.children.forEach((gchild) => {
               count++;
 
-              // gchild.visible = count%25 == 0
               // education/medical data
-              if (count % 25 == 0) {
-                // CACHE.container.addBloom(gchild)
+              if (count % 2 == 0 && index == 1) {
                 const v3 = new Bol3D.Vector3();
                 gchild.getWorldPosition(v3);
 
@@ -216,10 +205,12 @@ export const sceneOnLoad = ({ domElement, callback }) => {
                   type,
                 });
 
-                gchild.material.color.set(type == 'education' ? '#00617f' : '#156d00')
-                gchild.material.roughness = 1
-                gchild.material.matalness = 1
-                gchild.material.envMapIntensity = 4.7
+                gchild.material.color.set(
+                  type == "education" ? "#00617f" : "#156d00"
+                );
+                gchild.material.roughness = 1;
+                gchild.material.matalness = 1;
+                gchild.material.envMapIntensity = 4.7;
 
                 gchild.userData[type] = {
                   roughness: 1,
@@ -227,9 +218,9 @@ export const sceneOnLoad = ({ domElement, callback }) => {
                   envMapIntensity: 4.7,
                   color: type == "education" ? "#00617f" : "#156d00",
                 };
-                CACHE.educationModels.push(gchild)
+                CACHE.educationModels.push(gchild);
               }
-              gchild.scale.set(1.1, 1.1, 1.1);
+              gchild.scale.set(1, 1.9, 1);
               if (gchild.geometry.boundingSphere.radius > 50) {
                 gchild.material.color.set("#3f3c00");
                 gchild.material.roughness = 0.8;
@@ -263,7 +254,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             child.visible = false;
           }
         });
-      } else {
+      }else {
         model.scale.set(100, 100, 100);
         if (STATE.enterprisesNames.includes(model.name)) {
           CACHE.innerEnterprises.push(model);
@@ -278,39 +269,60 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       window.position = evt.orbitControls.object;
       evt.clickObjects = [];
 
+      CACHE.cities2.forEach((c) => {
+        c.children.forEach((d) => {
+          if (d.isGroup) {
+            d.traverse((m) => {
+              if (m.isMesh) {
+                evt.clickObjects.push(m);
+                m.userData.name = STATE.modelExcludeMap[c.name];
+              }
+            });
+          }
+        });
+      });
+
       // console.log(evt.sceneModels , evt.clickObjects);
 
       // ************** init icons start **************
-      // API.loadIcons();  // 6大区标签
       API.loadEnterPrises(); // 企业标签
-      API.loadEnterPrisesInnerIcon() // 企业内部标签
+      API.loadEnterPrisesInnerIcon(); // 企业内部标签
       // ************** init icons end **************
 
       // 5大板块
       API.loadIndustrialEconomy();
       API.loadTraffic();
       API.loadEducation();
-      API.loadEnergy()
+      API.loadEnergy();
+
+      // 3圈3流
+      API.loadThreeCircles();
+      API.loadThreeFlows();
 
       // 地球模块
       API.loadEarth(() => {
         API.hideFloor();
+        API.hideMirror()
         API.hideSkyBox();
         // earth load finish
         API.cameraAnimation({
           duration: 0,
           cameraState: STATE.earthState,
           callback: () => {
-            
             API.earthRotateAnimation();
             API.startEarthLineAnimation();
 
-            if (CACHE.container.loadingBar) CACHE.container.loadingBar.style.visibility = "hidden";
+            if (CACHE.container.loadingBar)
+              CACHE.container.loadingBar.style.visibility = "hidden";
 
             API.hideAll();
           },
         });
       });
+
+      // API.hideAll();
+      // API.showModels();
+      // API.showRoutes();
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
@@ -338,7 +350,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       groundMirror.position.y = -1;
       groundMirror.rotateX(-Math.PI / 2);
       CACHE.floorMirror = groundMirror;
-      evt.scene.add(groundMirror)
+      evt.scene.add(groundMirror);
 
       // ********************** gui start **********************
       // const gui = new dat.GUI();
@@ -671,6 +683,40 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
       // ****************** seperate end ******************
 
+      // ****************** 3圈 start ****************
+      // const threeCirclesFolder = gui.addFolder('3圈')
+      // const threeCircles = {size: 1000 , color: '#ff0000' , edgeColor: '#ff0000', position: {x: 0, y:0 ,z :0}}
+      // threeCirclesFolder.add(threeCircles , 'size').onChange(val => {
+      //   CACHE.threeCircles[2].scale.set(val, val, val)
+      // })
+      // threeCirclesFolder.add(threeCircles.position , 'x').onChange(val => {
+      //   CACHE.threeCircles[2].position.x = val
+      // })
+      // threeCirclesFolder.add(threeCircles.position , 'y').onChange(val => {
+      //   CACHE.threeCircles[2].position.y = val
+      // })
+      // threeCirclesFolder.add(threeCircles.position , 'z').onChange(val => {
+      //   CACHE.threeCircles[2].position.z = val
+      // })
+      // threeCirclesFolder.addColor(threeCircles , 'color').onChange(val => {
+      //   CACHE.threeCircles[2].material.uniforms.color.value.set(val)
+      // })
+      // threeCirclesFolder.addColor(threeCircles , 'edgeColor').onChange(val => {
+      //   CACHE.threeCircles[2].material.uniforms.edgeColor.value.set(val)
+      // })
+      // ****************** 3圈 end ****************
+
+      // ****************** 3流 start ****************
+      // const threeFlowsFolder = gui.addFolder('3流')
+      // const threeFlows = {color: '#ff0000'}
+      // threeFlowsFolder.addColor(threeFlows , 'color').onChange(val => {
+      //   CACHE.threeFlows['money'].forEach( tf => {
+      //     tf.material.uniforms.diffuse.value.set(val)
+      //   })
+
+      // })
+      // ****************** 3流 end ****************
+
       // ********************** gui end **********************
     },
   });
@@ -696,8 +742,53 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     // CACHE.container.scene.attach(icon)
     // icon.scale.set(3000, 3000, 3000)
 
-    if (e.objects.length > 0) {
-      // const name = e.objects[0].object.name;
+    if (e.objects.length == 0) return;
+
+    // 过滤检测到的visible为false的物体
+    let count = e.objects.length;
+    while (count > 0) {
+      if (e.objects[0].object.visible) {
+        count = 0;
+      } else {
+        e.objects.splice(0, 1);
+        count--;
+      }
+    }
+
+    if (e.objects.length == 0) return;
+
+    const obj = e.objects[0].object;
+    if (STATE.enterpriseIconNames.includes(obj.name) && obj.parent.visible) {
+      if (store.state.LEVEL == 2) {
+        store.commit("setMenuBid", null);
+        API.hideEnterpriseIcons();
+        API.hideThreeCircles();
+        API.hideThreeFlows();
+        API.cameraAnimation({
+          cameraState: STATE.enterpriseStates[obj.parent.userData.type],
+          callback: () => {
+            obj.parent.children[obj.parent.children.length - 1].visible = true;
+          },
+        });
+      }
+    } else if (
+      Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
+    ) {
+      if (store.state.LEVEL == 2) {
+        store.commit("setMenuBid", null);
+        API.hideEnterpriseIcons();
+        API.hideThreeFlows();
+        API.hideThreeCircles();
+        API.cameraAnimation({
+          cameraState: STATE.enterpriseStates[obj.userData.name],
+          callback: () => {
+            CACHE.enterpriseIcons.forEach((d) => {
+              if (d.userData.type == obj.userData.name)
+                d.children[d.children.length - 1].visible = true;
+            });
+          },
+        });
+      }
     }
   };
 
@@ -706,8 +797,22 @@ export const sceneOnLoad = ({ domElement, callback }) => {
   events.onclick = (e) => {
     // console.log('ee', e)
     if (e.objects.length == 0) return;
+
+    // 过滤检测到的visible为false的物体
+    let count = e.objects.length;
+    while (count > 0) {
+      if (e.objects[0].object.visible) {
+        count = 0;
+      } else {
+        e.objects.splice(0, 1);
+        count--;
+      }
+    }
+
+    if (e.objects.length == 0) return;
+
     const obj = e.objects[0].object;
-    if (obj.userData.name == "智能制造") {
+    if (obj.userData.name == "智能制造" && obj.visible) {
       API.showModels();
       API.showIcons();
       // console.log('下钻')
@@ -715,40 +820,87 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         cameraState: STATE.earthState,
         callback: () => {
           API.cameraAnimation({
-            cameraState: STATE.earthState2,
+            cameraState: STATE.earthState3,
             callback: () => {
+              API.hideEarth();
+              API.showFloor();
+              API.showSkyBox();
+              API.showRoutes();
+              API.showMirror()
               API.cameraAnimation({
-                cameraState: STATE.industrialState,
+                delayTime: 200,
+                duration: 1600,
+                cameraState: STATE.earthState4,
                 callback: () => {
-                  store.commit("changeLevel", 1);
-                  router.push("/IndustrialEconomy");
+                  API.cameraAnimation({
+                    delayTime: 200,
+                    duration: 1600,
+                    cameraState: STATE.earthState5,
+                    callback: () => {
+                      API.cameraAnimation({
+                        cameraState: STATE.earthState6,
+                        callback: () => {
+                          API.cameraAnimation({
+                            delayTime: 200,
+                            duration: 2000,
+                            cameraState: STATE.industrialState,
+                            callback: () => {
+                              store.commit("changeLevel", 1);
+                              router.push("/IndustrialEconomy");
 
-                  CACHE.container.orbitControls.maxDistance =
-                    STATE.CAMERA_BOUNDS;
-                  CACHE.container.orbitControls.minPolarAngle = Math.PI * 0.05;
-                  CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.44;
-                  CACHE.container.orbitCamera.far = 100000;
-                  CACHE.container.bounds.radius = STATE.CAMERA_BOUNDS;
-                  CACHE.container.bounds.center.set(0, 0, 0);
+                              CACHE.container.orbitControls.maxDistance =  STATE.CAMERA_BOUNDS;
+                              CACHE.container.orbitControls.minPolarAngle =  Math.PI * 0.01;
+                              CACHE.container.orbitControls.maxPolarAngle =  Math.PI * 0.49;
+                              CACHE.container.orbitCamera.far = 100000;
+                              CACHE.container.bounds.radius = STATE.CAMERA_BOUNDS;
+                              CACHE.container.bounds.center.set(0, 0, 0);
 
-                  API.hideEarth();
-                  API.showFloor();
-                  API.showSkyBox();
-                  API.showRoutes();
-                  API.showIndustrialEconomy();
+                              API.showIndustrialEconomy();
+                            },
+                          });
+                        }
+                      })
+                    }
+                  
+                  });
                 },
               });
             },
           });
         },
       });
-    } else if (STATE.enterpriseIconNames.includes(obj.name)) {
-      // obj.parent.visible && obj.parent.showTitle && obj.parent.showTitle();
-    } else if(obj.userData.type == 'enterpriseIconInner'){
+    } else if (
+      STATE.enterpriseIconNames.includes(obj.name) &&
+      obj.parent.visible
+    ) {
+      if (store.state.LEVEL == 2 && obj.name != "管委会") {
+        store.commit("setMenuBid", null);
+        API.showEnterpriseIcons();
+        API.hideEnterpriseIconPopups();
+        API.hideThreeCircles();
+        API.hideThreeFlows();
+        API.showThreeFlowsByName(obj.name);
+      }
+    } else if (obj.userData.type == "enterpriseIconInner" && obj.visible) {
       CACHE.container.cameraFocus({
         target: obj.position,
-        distance: 2000
-      })
+        distance: 2000,
+      });
+    } else if (
+      Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
+    ) {
+      // 企业模型
+      if (
+        store.state.LEVEL == 2 &&
+        STATE.threeFlowsMap[obj.userData.name] != "管委会"
+      ) {
+        store.commit("setMenuBid", null);
+        API.showEnterpriseIcons();
+        API.hideEnterpriseIconPopups();
+        API.hideThreeCircles();
+        API.hideThreeFlows();
+        API.showThreeFlowsByName(STATE.threeFlowsMap[obj.userData.name]);
+      }
     }
   };
 };

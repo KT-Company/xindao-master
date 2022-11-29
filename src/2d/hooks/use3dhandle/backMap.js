@@ -6,6 +6,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.zhizaojituan,
       callback: () => {
@@ -17,6 +18,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.yinhangyuanqu,
       callback: () => {
@@ -28,6 +30,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.zhengwuzhongxin,
       callback: () => {
@@ -39,6 +42,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.wuliuqiye,
       callback: () => {
@@ -50,6 +54,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.zonghefuwulou,
       callback: () => {
@@ -61,6 +66,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.Xiao_Shou_Gong_Si,
       callback: () => {
@@ -72,6 +78,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.GongYingBanGongShi,
       callback: () => {
@@ -83,6 +90,7 @@ const handleBackMap = {
     API.hideAll();
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
       cameraState: STATE.enterpriseStates.JingXiaoBanGongShi,
       callback: () => {

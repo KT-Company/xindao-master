@@ -13,49 +13,6 @@ const title = ref("AIE智境-数智商业综合实践平台");
 // const year = ref(dayjs().format("YYYY-MM-DD"));
 // const time = ref(dayjs().format("HH:mm:ss"));
 
-// 返回
-const back = () => {
-  if (store.state.LEVEL > 0) {
-    store.commit("changeLevel", --store.state.LEVEL);
-
-    if (store.state.LEVEL == 0) {
-      CACHE.container.orbitControls.maxDistance = 1000000;
-      CACHE.container.orbitControls.minPolarAngle = 0;
-      CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.5;
-      CACHE.container.orbitCamera.far = 1000000;
-      CACHE.container.bounds.radius = 1000000;
-
-      API.cameraAnimation({
-        cameraState: STATE.earthState2,
-        callback: () => {
-          API.hideSkyBox();
-          API.hideFloor();
-          API.hideAll();
-          API.showEarth();
-
-          API.cameraAnimation({
-            cameraState: STATE.earthState,
-            callback: () => {},
-          });
-        },
-      });
-    } else if (store.state.LEVEL == 1) {
-      API.cameraAnimation({
-        cameraState: STATE.industrialState,
-        callback: () => {
-          router.push("/IndustrialEconomy");
-        },
-      });
-    } else if (store.state.LEVEL == 2) {
-      //
-    } else if (store.state.LEVEL == 3) {
-      //
-    } else if (store.state.LEVEL == 4) {
-      //
-    }
-  }
-};
-
 const handleHome = () => {
   // store.commit("changeLevel", 0);
 
