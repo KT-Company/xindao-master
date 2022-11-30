@@ -16,6 +16,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.industrialState,
         callback: () => {
@@ -26,6 +27,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.areaState,
         callback: () => {
@@ -36,6 +38,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.enterpriseStates.zhizaojituan,
         callback: () => {
@@ -51,6 +54,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.enterpriseStates.guanweihui,
         callback: () => {
@@ -61,6 +65,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.enterpriseStates.wuliuqiye,
         callback: () => {
@@ -71,6 +76,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.enterpriseStates.zonghefuwulou,
         callback: () => {
@@ -81,6 +87,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.enterpriseStates.Xiao_Shou_Gong_Si,
         callback: () => {
@@ -91,6 +98,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.enterpriseStates.GongYingBanGongShi,
         callback: () => {
@@ -101,6 +109,7 @@ function menuInteraction(item, leve, son) {
       API.hideAll();
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.enterpriseStates.JingXiaoBanGongShi,
         callback: () => {
@@ -110,7 +119,7 @@ function menuInteraction(item, leve, son) {
     }
   } else {
     // 二级菜单点击事件
-    console.log('son.id', son.id)
+    // console.log('son.id', son.id)
     try {
       handleBMenuBMap[son.id](store.state.menuBid.includes(son.id));
     } catch (error) { }

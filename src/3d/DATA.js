@@ -1,33 +1,5 @@
 let Bol3D = window.Bol3D
 
-// ICONS 
-const iconsData = [
-  {
-    name: '海景区',
-    position: new Bol3D.Vector3(-19425.43533103114, 0.1, -15968.667815998684)
-  },
-  {
-    name: '崇武区',
-    position: new Bol3D.Vector3(14999.590085793356, 0.1, -24570.312039456356)
-  },
-  {
-    name: '延平区',
-    position: new Bol3D.Vector3(30660.107029163068, 0.1, -932.139094563925)
-  },
-  {
-    name: '丰阳区',
-    position: new Bol3D.Vector3(-23998.7867404583, 0.1, 21093.928057913305)
-  },
-  {
-    name: '兴通区',
-    position: new Bol3D.Vector3(8384.14138935829, 0.1, 5726.746226325336)
-  },
-  {
-    name: '平云区',
-    position: new Bol3D.Vector3(30753.86698923057, 0.1, 25198.43153192119)
-  }
-]
-
 
 // ICONS 产业经济
 const industryBaseHeight = 5000
@@ -242,7 +214,6 @@ const earthIcons = [
 const educationPos = []
 
 export const DATA = {
-  iconsData,
   industryBaseHeight,
   industryData,
   energyIconsData,

@@ -1,6 +1,7 @@
 import { API } from "@/3d/API";
 import { STATE } from "@/3d/STATE";
 import { CACHE } from "@/3d/CACHE";
+import store from "@/2d/store";
 
 // 二级菜单事件
 const handleBMenuBMap = {
@@ -8,6 +9,7 @@ const handleBMenuBMap = {
   "1-1": () => {
     // 产业经济
     API.hideAll();
+    API.showMirror()
     API.showRoutes();
     API.showModels();
     API.showIndustrialEconomy();
@@ -15,6 +17,7 @@ const handleBMenuBMap = {
   "1-2": () => {
     // 能源碳排放
     API.hideAll();
+    API.showMirror()
     API.showRoutes();
     API.showModels();
     API.showEnergy();
@@ -22,6 +25,7 @@ const handleBMenuBMap = {
   "1-3": () => {
     // 交通出行
     API.hideAll();
+    API.showMirror()
     API.showRoutes();
     API.showModels();
     API.showTraffics();
@@ -46,16 +50,37 @@ const handleBMenuBMap = {
   // ******* 社会层 end *******
   // ******* 区域层 start *******
   "2-1": (isPick) => {
-    // alert('三圈关系' + isPick)
+    API.showEnterpriseIcons()
+    API.hideEnterpriseIconPopups();
+    API.hideThreeFlows()
+    isPick ? API.showThreeCircles() :  API.hideThreeCircles()
   },
   "2-2": (isPick) => {
-    // alert('资金流关系' + isPick)
+    API.showEnterpriseIcons()
+    API.hideEnterpriseIconPopups();
+    API.hideThreeCircles()
+    API.hideThreeFlows()
+    if(store.state.menuBid.includes('2-2'))API.showThreeFlowsByType('money')
+    if(store.state.menuBid.includes('2-3'))API.showThreeFlowsByType('logistics')
+    if(store.state.menuBid.includes('2-4'))API.showThreeFlowsByType('information')
   },
   "2-3": (isPick) => {
-    // alert('物流关系' + isPick)
+    API.showEnterpriseIcons()
+    API.hideEnterpriseIconPopups();
+    API.hideThreeCircles()
+    API.hideThreeFlows()
+    if(store.state.menuBid.includes('2-2'))API.showThreeFlowsByType('money')
+    if(store.state.menuBid.includes('2-3'))API.showThreeFlowsByType('logistics')
+    if(store.state.menuBid.includes('2-4'))API.showThreeFlowsByType('information')
   },
   "2-4": (isPick) => {
-    // alert('信息流关系' + isPick)
+    API.showEnterpriseIcons()
+    API.hideEnterpriseIconPopups();
+    API.hideThreeCircles()
+    API.hideThreeFlows()
+    if(store.state.menuBid.includes('2-2'))API.showThreeFlowsByType('money')
+    if(store.state.menuBid.includes('2-3'))API.showThreeFlowsByType('logistics')
+    if(store.state.menuBid.includes('2-4'))API.showThreeFlowsByType('information')
   },
   // ******* 区域层 end *******
   // ******* 制造集团 start *******
@@ -66,7 +91,7 @@ const handleBMenuBMap = {
     API.showEnterpriseIconInnerByType('zhizaojituanbangongshi')
     API.showMirror()
     API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.zhizaojituan,
+      cameraState: STATE.enterpriseInnerStates.zhizaojituan,
     });
   },
   "3-1": () => {
@@ -164,8 +189,9 @@ const handleBMenuBMap = {
     API.hideAll()
     API.showRoutes();
     API.showModels();
+    API.showMirror()
     API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.yinhangyuanqu,
+      cameraState: STATE.enterpriseInnerStates.yinhangyuanqu,
       callback: () => {
         API.hideAll();
         API.showEnterpriseByName('yinghang')
@@ -177,8 +203,9 @@ const handleBMenuBMap = {
     API.hideAll()
       API.showRoutes();
       API.showModels();
+      API.showMirror()
       API.cameraAnimation({
-        cameraState: STATE.enterpriseStates.zhengwuzhongxin,
+        cameraState: STATE.enterpriseInnerStates.zhengwuzhongxin,
         callback: () => {
           API.hideAll();
           API.showEnterpriseByName('zhengwuzhongxinbangongshi')
@@ -194,7 +221,7 @@ const handleBMenuBMap = {
     API.showEnterpriseIconInnerByType('wuliubangongshi')
     API.showMirror()
     API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.wuliuqiye,
+      cameraState: STATE.enterpriseInnerStates.wuliuqiye,
     });
   },
   "7-1": () => {
@@ -235,7 +262,7 @@ const handleBMenuBMap = {
     API.showEnterpriseIconInnerByType('zonghefuwulou')
     API.showMirror()
     API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.zonghefuwulou,
+      cameraState: STATE.enterpriseInnerStates.zonghefuwulou,
     });
   },
   "8-1": () => {
@@ -276,7 +303,7 @@ const handleBMenuBMap = {
     API.showEnterpriseIconInnerByType('Xiao_Shou_Gong_Si')
     API.showMirror()
     API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.Xiao_Shou_Gong_Si,
+      cameraState: STATE.enterpriseInnerStates.Xiao_Shou_Gong_Si,
     });
   },
   "9-1": () => {
@@ -332,7 +359,7 @@ const handleBMenuBMap = {
     API.showEnterpriseIconInnerByType('GongYingBanGongShi')
     API.showMirror()
     API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.GongYingBanGongShi,
+      cameraState: STATE.enterpriseInnerStates.GongYingBanGongShi,
     });
   },
   "10-1": () => {
@@ -388,7 +415,7 @@ const handleBMenuBMap = {
     API.showEnterpriseIconInnerByType('JingXiaoBanGongShi')
     API.showMirror()
     API.cameraAnimation({
-      cameraState: STATE.enterpriseStates.JingXiaoBanGongShi,
+      cameraState: STATE.enterpriseInnerStates.JingXiaoBanGongShi,
     });
   },
   "11-1": () => {

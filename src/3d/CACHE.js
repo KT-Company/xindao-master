@@ -5,7 +5,6 @@ const industries = [];
 const traffics = [];
 const environment = [];
 let environmentAnimateIndex = -1;
-const completeBoundrays = {};
 let educationAnimateIndex = -1;
 const education = [];
 const energy = [];
@@ -32,7 +31,7 @@ const enterpriseIcons = [] // 企业标签
 const seperateModels = [] // 单体化模型
 const educationModels = [] // 单体化模型： 教育/医疗
 let heatmap = null // 能源： 热力图
-const enterpriseIconsInner = {
+const enterpriseIconsInner = { // 企业内部标签
   zonghefuwulou: [],
   GongYingBanGongShi: [],
   JingXiaoBanGongShi: [],
@@ -40,6 +39,12 @@ const enterpriseIconsInner = {
   Xiao_Shou_Gong_Si: [],
   zhizaojituanbangongshi: []
 }
+const threeCircles = [] // 3圈
+const threeFlows = {
+  information: [], //信息
+  logistics: [], //物流
+  money: []  //资金
+} // 3流
 
 export const CACHE = {
   container,
@@ -57,7 +62,6 @@ export const CACHE = {
   models,
   energyIcons,
   linesBottom,
-  completeBoundrays,
   floor,
   floorMirror,
   earthGroup,
@@ -74,5 +78,7 @@ export const CACHE = {
   seperateModels,
   educationModels,
   heatmap,
-  enterpriseIconsInner
+  enterpriseIconsInner,
+  threeCircles,
+  threeFlows,
 };
