@@ -16,8 +16,14 @@ const store = createStore({
             szxs: window.publicParams.szxs, // 全局省/直辖市
             LEVEL: 0, // 3维层级： 0地球1社会层2区域层3企业层4内部层
             enterpriseData: [],  // 企业总量
-            dataYear: [],    // 年数据
-            dataMonth: [],   // 月份数据
+            data1: {},    // 看板数据1 
+            data2: {},    // 看板数据2 
+            data3: [],    // 看板数据3 
+            data4: [],    // 看板数据4 
+            data5: {},
+            data6: {},
+            data7: {},
+            data8: {},
         }
     },
     mutations: {
@@ -60,11 +66,29 @@ const store = createStore({
         setEnterpriseData(state, value) {
             state.enterpriseData = value
         },
-        setDataYear(state, value) {
-            state.dataYear = value
+        setData1(state, value) {
+            state.data1 = value
         },
-        setDataMonth(state, value) {
-            state.dataMonth = value
+        setData2(state, value) {
+            state.data2 = value
+        },
+        setData3(state, value) {
+            state.data3 = value
+        },
+        setData4(state, value) {
+            state.data4 = value
+        },
+        setData5(state, value) {
+            state.data5 = value
+        },
+        setData6(state, value) {
+            state.data6 = value
+        },
+        setData7(state, value) {
+            state.data7 = value
+        },
+        setData8(state, value) {
+            state.data8 = value
         },
     }
 })

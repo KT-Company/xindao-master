@@ -2,112 +2,188 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
-import { createEcharts, getEchartsAndOption } from "@/2d/viewCharts/common"
-import { toThreeDigitRating } from "@/2d/utils/num"
-import ProgressEl from "@/2d/components/Progress.vue"
+import { createEcharts, getEchartsAndOption } from "@/2d/viewCharts/common";
+import { toThreeDigitRating } from "@/2d/utils/num";
+import ProgressEl from "@/2d/components/Progress.vue";
+import useData from "@/2d/hooks/useData";
+import CHART from "@/2d/viewCharts/Params";
+import { setBar } from "@/2d/viewCharts/Business";
 const store = useStore();
+const base = useData.data5("制造集团");
+const base1 = useData.data7("制造集团");
+const base2 = useData.data8("制造集团");
+const base3 = useData.data2("制造集团");
+const base4 = useData.data1("制造集团");
+const option = reactive({
+  data1: {},
+});
 
 // 采购支出
-const purchaseChar = ref(null)
+const purchaseChar = ref(null);
 const drawPurchaseChar = (el) => {
   const { char, option } = getEchartsAndOption(el, "gauge1", {
-    color: [{
-      type: 'linear',
-      x: 0,
-      y: 0,
-      x2: 0,
-      y2: 1,
-      colorStops: [{
-        offset: 0, color: 'RGBA(230, 105, 11, .3)' // 0% 处的颜色
-      }, {
-        offset: 1, color: 'RGBA(230, 105, 11, 1)' // 100% 处的颜色
-      }],
-      global: false // 缺省为 false
-    }],
-    series: [{
-      detail: {
-        formatter(val) {
-          return `{val|+${val}%}\n{name|环比率}`;
-        }
-      }
-    }]
-  })
-  char.setOption(option)
-}
+    color: [
+      {
+        type: "linear",
+        x: 0,
+        y: 0,
+        x2: 0,
+        y2: 1,
+        colorStops: [
+          {
+            offset: 0,
+            color: "RGBA(230, 105, 11, .3)", // 0% 处的颜色
+          },
+          {
+            offset: 1,
+            color: "RGBA(230, 105, 11, 1)", // 100% 处的颜色
+          },
+        ],
+        global: false, // 缺省为 false
+      },
+    ],
+    series: [
+      {
+        detail: {
+          formatter(val) {
+            return `{val|+${val}%}\n{name|环比率}`;
+          },
+        },
+        data: [{ value: base.qycgzc004 }],
+      },
+    ],
+  });
+  char.setOption(option);
+};
 const peMoney = reactive([
-  { unit: "￥", value: 22696684.59, prefix: "", desc: "" },
-  { unit: "￥", value: 22696684.59, prefix: "", desc: "本月" },
-  { unit: "￥", value: 22696684.59, prefix: "+", desc: "环比" },
-])
+  { unit: "￥", value: base.qycgzc001, prefix: "", desc: "" },
+  { unit: "￥", value: base.qycgzc002, prefix: "", desc: "本月" },
+  { unit: "￥", value: base.qycgzc003, prefix: "+", desc: "环比" },
+]);
 // 供应商排行
-const supplier = reactive([
-  { name: "1、丰弘创新科技销售有限公司", value: 2500, percentage: 60 },
-  { name: "2、晶弘贸易有限公司", value: 1604.88, percentage: 50 },
-  { name: "3、金德商贸有限公司", value: 16, percentage: 10 },
-  { name: "4、新宇创新科技销售有限公司", value: 14, percentage: 8 },
-  { name: "5、捷凯创新科技(集团)有限公司", value: 10, percentage: 6 },
-])
+const supplier = reactive(
+  base1.map((item, i) => {
+    return {
+      name: `${i + 1}、${item.qygyspm01}`,
+      value: item.qygyspm02 || 0,
+      percentage: item.qygyspm02 || 0,
+    };
+  })
+);
+
 // 物流费用
-const logisticsEl = ref(null)
+const logisticsEl = ref(null);
 const drawLogisticsChar = (el) => {
-  const { char, option } = getEchartsAndOption(el, "line1",)
-  char.setOption(option)
-}
+  const { char, option } = getEchartsAndOption(el, "line1", {
+    xAxis: {
+      data: base2.map((item) => item.month),
+    },
+    series: [
+      {
+        data: base2.map((item) => item.qywlfy02),
+      },
+    ],
+  });
+  char.setOption(option);
+};
 // 企业仓库容积
-const businessRepoEl = ref(null)
+const businessRepoEl = ref(null);
 const drawBusinessRepoChar = (el) => {
   const { char, option } = getEchartsAndOption(el, "gauge1", {
-    color: [{
-      type: 'linear',
-      x: 0,
-      y: 0,
-      x2: 0,
-      y2: 1,
-      colorStops: [{
-        offset: 0, color: 'RGBA(86, 106, 207, .3)' // 0% 处的颜色
-      }, {
-        offset: 1, color: 'RGBA(86, 106, 207, 1)' // 100% 处的颜色
-      }],
-      global: false // 缺省为 false
-    }],
-    series: [{
-      detail: {
-        formatter(val) {
-          return `{val|${val}%}\n{name|总空闲率}`;
-        }
-      }
-    }]
-  }
-  )
-  char.setOption(option)
-}
+    color: [
+      {
+        type: "linear",
+        x: 0,
+        y: 0,
+        x2: 0,
+        y2: 1,
+        colorStops: [
+          {
+            offset: 0,
+            color: "RGBA(86, 106, 207, .3)", // 0% 处的颜色
+          },
+          {
+            offset: 1,
+            color: "RGBA(86, 106, 207, 1)", // 100% 处的颜色
+          },
+        ],
+        global: false, // 缺省为 false
+      },
+    ],
+    series: [
+      {
+        detail: {
+          formatter(val) {
+            return `{val|${val}%}\n{name|总空闲率}`;
+          },
+        },
+        data: [{ value: base3.qyckzy03 }],
+      },
+    ],
+  });
+  char.setOption(option);
+};
 const brMoney = reactive([
-  { value: 267001, prefix: "", desc: "总占用量" },
-  { value: 52999, prefix: "", desc: "总空闲量" },
-])
+  { value: base3.qyckzy01, prefix: "", desc: "总占用量" },
+  { value: base3.qyckzy02, prefix: "", desc: "总空闲量" },
+]);
 
 // 货币周转率
-const goodsTREL = ref(null)
+const goodsTREL = ref(null);
 const drawGoodsTRELChar = (el) => {
-  const { char, option } = getEchartsAndOption(el, "line1", { series: [{ data: [1.2, .9, .8, .6, .5, .5, .7, .66, .44, .3, 1.1, .5] }] })
-  char.setOption(option)
-}
+  const { char, option } = getEchartsAndOption(el, "line1", {
+    xAxis: {
+      data: base2.map((item) => item.month),
+    },
+    series: [{ data: base2.map((item) => item.qychzzl02 || 0) }],
+  });
+  char.setOption(option);
+  console.log("option: ", option);
+};
 // 企业库存情况
-const businessRepoSituationEl = ref(null)
-const drawBusinessRepoSituationElChar = (el) => {
-  const { char, option } = getEchartsAndOption(el, "bar1",)
-  char.setOption(option)
-}
+const data1 = reactive({
+  color: "rgba(255,159,64)",
+  name: "企业库存情况",
+  Xdata: CHART.inventoryNames,
+  dataList: [
+    base4.rm01001,
+    base4.rm01002,
+    base4.rm01003,
+    base4.rm01004,
+    base4.rm01005,
+    base4.rm01006,
+    base4.rm01007,
+    base4.rm01008,
+    base4.rm01009,
+    base4.rm01010,
+    base4.rm01011,
+    base4.rm01012,
+    base4.rm01013,
+    base4.rm01014,
+    base4.rm01015,
+    base4.rm01016,
+    base4.rm01017,
+    base4.rm01018,
+    base4.fp00001,
+    base4.fp00002,
+    base4.fp00003,
+  ],
+  isShow: true,
+});
+option.data1 = setBar(data1);
+// const businessRepoSituationEl = ref(null);
+// const drawBusinessRepoSituationElChar = (el) => {
+//   const { char, option } = getEchartsAndOption(el, "bar1", {});
+//   char.setOption(option);
+// };
 
 onMounted(() => {
-  drawPurchaseChar(purchaseChar.value)
-  drawLogisticsChar(logisticsEl.value)
-  drawBusinessRepoChar(businessRepoEl.value)
-  drawGoodsTRELChar(goodsTREL.value)
-  drawBusinessRepoSituationElChar(businessRepoSituationEl.value)
-})
-
-
+  drawPurchaseChar(purchaseChar.value);
+  drawLogisticsChar(logisticsEl.value);
+  drawBusinessRepoChar(businessRepoEl.value);
+  drawGoodsTRELChar(goodsTREL.value);
+  // drawBusinessRepoSituationElChar(businessRepoSituationEl.value);
+});
 </script>
 
 <template>
@@ -116,9 +192,17 @@ onMounted(() => {
       <Title>采购支出</Title>
       <Content>
         <div class="purchase-expend">
-          <div class="char" ref="purchaseChar" v-once></div>
+          <div
+            class="char"
+            ref="purchaseChar"
+            v-once
+          ></div>
           <ul class="pe-money-list">
-            <li class="pe-money-item" v-for="item in peMoney" :key="item">
+            <li
+              class="pe-money-item"
+              v-for="item in peMoney"
+              :key="item"
+            >
               <p class="pe-m-i-desc">{{ item.desc }}</p>
               <p class="pe-m-i-content">
                 <span class="pe-m-i-prefix">{{ item.prefix }}</span>
@@ -135,7 +219,11 @@ onMounted(() => {
       <Content>
         <div class="supplier-top">
           <ul class="supplier-top-list">
-            <li class="supplier-top-item" v-for="item in supplier">
+            <li
+              class="supplier-top-item"
+              v-for="(item,i) in supplier"
+              :key="i"
+            >
               <p class="supplier-info">
                 <span class="supplier-name">{{ item.name }}</span>
                 <span class="supplier-value">{{ toThreeDigitRating(item.value) }}</span>
@@ -150,7 +238,10 @@ onMounted(() => {
       <Title>物流费用</Title>
       <Content>
         <div class="logistics-expenses">
-          <div class="char" ref="logisticsEl"></div>
+          <div
+            class="char"
+            ref="logisticsEl"
+          ></div>
         </div>
       </Content>
     </Bar>
@@ -161,9 +252,17 @@ onMounted(() => {
       <Title>企业仓库容积</Title>
       <Content>
         <div class="business-repo">
-          <div class="char" ref="businessRepoEl" v-once></div>
+          <div
+            class="char"
+            ref="businessRepoEl"
+            v-once
+          ></div>
           <ul class="br-money-list">
-            <li class="br-money-item" v-for="item in brMoney" :key="item">
+            <li
+              class="br-money-item"
+              v-for="item in brMoney"
+              :key="item"
+            >
               <p class="br-m-i-desc">{{ item.desc }}</p>
               <p class="br-m-i-content">
                 <span class="br-m-i-prefix">{{ item.prefix }}</span>
@@ -179,7 +278,10 @@ onMounted(() => {
       <Title>存货周转率</Title>
       <Content>
         <div class="goods-turnover-rate">
-          <div class="char" ref="goodsTREL"></div>
+          <div
+            class="char"
+            ref="goodsTREL"
+          ></div>
         </div>
       </Content>
     </Bar>
@@ -187,7 +289,13 @@ onMounted(() => {
       <Title>企业库存情况</Title>
       <Content>
         <div class="business-repo-situation">
-          <div class="char" ref="businessRepoSituationEl"></div>
+          <span class="hui unit1 class unit-span">单位:亿</span>
+          <div
+            class="char"
+            ref="businessRepoSituationEl"
+          >
+            <Echart :option="option.data1"></Echart>
+          </div>
         </div>
       </Content>
     </Bar>
@@ -249,17 +357,16 @@ onMounted(() => {
           left: -12px;
         }
       }
-
     }
   }
 }
 
-.supplier-top::-webkit-scrollbar{
- padding-left: 20px;
+.supplier-top::-webkit-scrollbar {
+  padding-left: 20px;
   width: 5px;
 }
-.supplier-top::-webkit-scrollbar-thumb{
-  background-color: rgba(255, 255, 255, .4);
+.supplier-top::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4);
 }
 .supplier-top {
   overflow-y: auto;
@@ -282,7 +389,13 @@ onMounted(() => {
 .goods-turnover-rate,
 .business-repo-situation {
   height: 100%;
-
+  position: relative;
+  .unit-span{
+    position: absolute;
+    right: 2%;
+    top: -5%;
+    color: rgb(190,211,244);
+  }
   .char {
     height: 100%;
   }

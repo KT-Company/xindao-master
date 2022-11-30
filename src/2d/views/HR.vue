@@ -1,38 +1,37 @@
 <!-- 人力资源部 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { getrlzy } from "@/2d/api";
 import { useStore } from "vuex";
 import { setYuanChart } from "@/2d/viewCharts/Area";
+import useData from "@/2d/hooks/useData";
+import { toThreeDigitRating } from "@/2d/utils/num";
 const store = useStore();
+const base = useData.data5("制造集团");
 const option = reactive({
   data1: {},
   data2: {},
   data3: {},
 });
 const data1 = reactive({
-  name: "88:12",
-  value: 88,
-  nanzy: 161,
-  nvzy: 20,
+  name: `${base.ryxbzb01}:${base.ryxbzb02}`,
+  value: base.ryxbzb03,
+  nanzy: base.ryxbzb01,
+  nvzy: base.ryxbzb02,
 });
 const data2 = reactive({
   name: "月离职率",
-  value: 1.09,
-  dyzzrs: 181,
-  dylzrs: 2,
+  value: base.ryld03,
+  dyzzrs: base.ryld01,
+  dylzrs: base.ryld02,
 });
 const data3 = reactive({
   name: "环比率",
-  value: 58,
-  lj: "22696684.59",
-  by: "22696684.59",
-  hb: "22696684.59",
+  value: base.ryxczc04,
+  lj: toThreeDigitRating(base.ryxczc01),
+  by: toThreeDigitRating(base.ryxczc02),
+  hb: toThreeDigitRating(base.ryxczc03),
 });
 onMounted(() => {
-  getrlzy().then((res) => {
-    console.log("人力资源: ", res);
-  });
   option.data1 = setYuanChart(data1, { color: 1, title: 2 });
   option.data2 = setYuanChart(data2, {});
   option.data3 = setYuanChart(data3, { color: 1 });

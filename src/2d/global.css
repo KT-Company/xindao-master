@@ -2,12 +2,23 @@
   box-sizing: border-box;
   /* font-size: .85vw; */
 }
-html{
+
+*::-webkit-scrollbar {
+  padding-left: 20px;
+  width: 5px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: .5rem;
+}
+
+html {
   font-size: 0.75vw;
   color: rgb(255, 255, 255);
 }
-:root{
-  --value-color:rgba(202, 224, 255, 1);
+
+:root {
+  --value-color: rgba(202, 224, 255, 1);
 }
 
 div,
@@ -99,11 +110,11 @@ li {
   font-size: .85vw;
 }
 
-.valb{
+.valb {
   font-weight: bold;
 }
 
-.name1{
+.name1 {
   font-size: .6vw;
 }
 
@@ -120,8 +131,8 @@ li {
   color: rgba(125, 96, 176) !important;
 }
 
-.lvse{
-  color: rgba(77,179,144) !important;
+.lvse {
+  color: rgba(77, 179, 144) !important;
 }
 
 /* ************************************************** */
@@ -133,7 +144,8 @@ li {
   --itemPL: 5%;
   --titleH: 6.3%;
   --titleSize: .85vw;
-  --hui: rgb(165, 168, 175)
+  --hui: rgb(165, 168, 175);
+  --valbgSize: 46px
 }
 
 .unit {

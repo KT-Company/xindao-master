@@ -2,18 +2,21 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
-// import useData from "@/2d//hooks/useData";
-import { getData1, getData2, getData3, getData4 } from "@/2d/api";
+import useData from "@/2d//hooks/useData";
 import {
   setYuanChart,
   setQuXianChart,
   setShuiQiuChart,
 } from "@/2d/viewCharts/Area";
+import { toThreeDigitRating } from "@/2d/utils/num";
 const store = useStore();
-
+const base = useData.data2("物流企业");
+const base3 = useData.data3("物流企业");
+const base4 = useData.data4("物流企业");
+console.log("物流企业: ", base3);
 const qyyhck = reactive({
-  value1: "4965548547",
-  value2: "49.65亿",
+  value1: 4965 || 0,
+  value2: `${4965 || 0}亿`,
 });
 
 const option = reactive({
@@ -24,69 +27,50 @@ const option = reactive({
 
 const data1 = reactive({
   name: "环比率",
-  value: 58,
-  value1: "3,400,111",
-  value2: "3,400,111",
-  value3: "3,400,111",
+  value: base.wlcbzc04,
+  value1: toThreeDigitRating(base.wlcbzc01),
+  value2: toThreeDigitRating(base.wlcbzc02),
+  value3: toThreeDigitRating(base.wlcbzc03),
 });
 
 const data2 = reactive({
   name: "环比率",
-  value: "62.9",
-  value1: "12451254",
-  value2: "12451254",
-  value3: "12451254",
+  value: base.wlddqk04,
+  value1: base.wlddqk01,
+  value2: base.wlddqk03,
+  value3: base.wlddqk02,
 });
 
 const data3 = reactive({
-  xData: [],
-  data: [{ name: "货主下单趋势", value: [] }],
+  xData: base4.map((item) => item.month),
+  data: [{ name: "货主下单趋势", value: base4.map((item) => item.wlhzxdqs02) }],
 });
 
-const hzxdph = ref([
-  { name: "企业名称企业名称", value: "1542874" },
-  { name: "企业名称企业名称", value: "1542874" },
-  { name: "企业名称企业名称", value: "1542874" },
-  { name: "企业名称企业名称", value: "1542874" },
-  { name: "企业名称企业名称", value: "1542874" },
-]);
+const hzxdph = ref(
+  base3.map((item) => {
+    return { name: item.wlhzxd01, value: item.wlhzxd02 };
+  })
+);
 
 const clqk = reactive({
   data1: [
-    { name: "运行中", value: 4358, unit: "辆" },
-    { name: "空闲中", value: 54784, unit: "辆" },
-    { name: "总空闲率", value: 16.56 + "%", unit: "" },
+    { name: "运行中", value: base.wlclqk01, unit: "辆" },
+    { name: "空闲中", value: base.wlclqk02, unit: "辆" },
+    { name: "总空闲率", value: base.wlclqk03 + "%", unit: "" },
   ],
   data2: [
-    { name: "中型货车空闲率", value: "87.98%" },
-    { name: "大型货车空闲率", value: "87.98%" },
+    { name: "中型货车空闲率", value: base.wlclqk04 + "%" },
+    { name: "大型货车空闲率", value: base.wlclqk05 + "%" },
   ],
 });
 
 onMounted(() => {
-  getData1().then(res=>{
-    console.log('getData1: ', res);
-  })
-  getData2().then(res=>{
-    console.log('getData2: ', res);
-  })
-  getData3().then(res=>{
-    console.log('getData3: ', res);
-  })
-  getData4().then(res=>{
-    console.log('getData4: ', res);
-  })
   option.data1 = setYuanChart(data1, { color: 2, title: 1 });
-
-  for (let index = 0; index < 12; index++) {
-    data3.xData.push(index + 1 + "月");
-    data3.data[0].value.push(index + 1);
-  }
-
   option.data2 = setShuiQiuChart(data2);
 
   option.data3 = setQuXianChart(data3, {
     color: [1],
+    interval: 0,
   });
 });
 </script>
@@ -225,6 +209,7 @@ onMounted(() => {
         margin: 0;
       }
       .money-bg {
+        max-width: var(--valbgSize);
         // contain
         background: url("@/2d/assets/icons/ico-comsive-0.png") no-repeat center
           center/ 100% 100%;
@@ -260,6 +245,7 @@ onMounted(() => {
 
   .hzxdph-main {
     padding: 5% 0;
+    overflow: auto;
     .hzxdph-item {
       height: 20%;
       display: flex;

@@ -2,77 +2,37 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
+import useData from "@/2d/hooks/useData";
+const base = useData.data1();
+console.log("base: ", base);
 const store = useStore();
-const dataLeft = ref([
-  {
-    id: '1',
-    color: '#FF5349',
-    bg: require('@/2d/assets/icons/ICBC-bg-left-1.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '2',
-    color: '#FF9F40',
-    bg: require('@/2d/assets/icons/ICBC-bg-left-2.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '3',
-    color: '#5C73E6',
-    bg: require('@/2d/assets/icons/ICBC-bg-left-3.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '4',
-    color: '#CCCCCC',
-    bg: require('@/2d/assets/icons/ICBC-bg-left-4.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '5',
-    color: '#CCCCCC',
-    bg: require('@/2d/assets/icons/ICBC-bg-left-5.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-]);
-const dataRight = ref([
-  {
-    id: '1',
-    bg: require('@/2d/assets/icons/ICBC-bg-right-1.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '2',
-    bg: require('@/2d/assets/icons/ICBC-bg-right-2.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '3',
-    bg: require('@/2d/assets/icons/ICBC-bg-right-3.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '4',
-    bg: require('@/2d/assets/icons/ICBC-bg-right-4.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-  {
-    id: '5',
-    bg: require('@/2d/assets/icons/ICBC-bg-right-5.png'),
-    name: '企业类型',
-    value: '2154788'
-  },
-]);
-onMounted(() => { })
+let leftIndex = 0;
+let rightIndex = 0;
+const dataLeft = ref(
+  base.map((item, i) => {
+    leftIndex++;
+    if (leftIndex > 5) leftIndex = 1;
+    return {
+      id: i + 1,
+      bg: require(`@/2d/assets/icons/ICBC-bg-left-${leftIndex}.png`),
+      name: item.qylx,
+      value: item.qyyhdkxj,
+    };
+  })
+);
+const dataRight = ref(
+  base.map((item, i) => {
+    rightIndex++;
+    if (rightIndex > 5) rightIndex = 1;
+    return {
+      id: i + 1,
+      bg: require(`@/2d/assets/icons/ICBC-bg-right-${rightIndex}.png`),
+      name: item.qylx,
+      value: item.qyyhckxj,
+    };
+  })
+);
+onMounted(() => {});
 </script>
 
 <template>
@@ -80,10 +40,15 @@ onMounted(() => { })
     <Bar>
       <Title>企业贷款</Title>
       <Content class="dpy-column">
-        <div class="left-wrap dpy-row" v-for="(item, index) in dataLeft" :key="index" :style="{
+        <div
+          class="left-wrap dpy-row"
+          v-for="(item, index) in dataLeft"
+          :key="index"
+          :style="{
           background: `url(${item.bg})`,
           'background-size': '100% 100%'
-        }">
+        }"
+        >
           <div class="dpy-row">
             <span :style="{ color: item.color }">{{ item.id }}</span>
             <p>{{ item.name }}</p>
@@ -98,10 +63,15 @@ onMounted(() => { })
     <Bar>
       <Title>企业存款</Title>
       <Content class="dpy-column">
-        <div class="right-wrap dpy-row" v-for="(item, index) in dataRight" :key="index" :style="{
+        <div
+          class="right-wrap dpy-row"
+          v-for="(item, index) in dataRight"
+          :key="index"
+          :style="{
           background: `url(${item.bg})`,
           'background-size': '100% 100%'
-        }">
+        }"
+        >
           <div class="dpy-row">
             <p>{{ item.name }}</p>
           </div>
@@ -127,14 +97,14 @@ onMounted(() => { })
   span {
     font-family: SourceHanSansCN;
     font-weight: bold;
-    font-size: .8vw;
+    font-size: 0.8vw;
   }
 
   p {
     padding-left: 1.5vh;
   }
 
-  &>div:nth-of-type(2) {
+  & > div:nth-of-type(2) {
     font-family: SourceHanSansCN;
     font-weight: bold;
     font-size: 1vw;

@@ -1,5 +1,7 @@
 import request from '@/2d/utils/request'
 import store from '@/2d/store'
+import getData from './getDatas'
+import useData from '../hooks/useData'
 // const url = 'https://dapi.seentao.com/custom-form/customForm.formInfos.get?caseVersionId=82347900509093947&enterpriseId=82441349728567340&userName=18871870420&userId=74791556441702461&userType=PLATFORM&userToken=a23defc6acd8954460b543d23bcfee2d&memberId=74791556450091021&orgType=SCHOOL&orgId=100678506119168&schoolId=100678506119168&sceneId=portal_logo&sysCode='
 const p = store.state.urlParam
 // https://dapi.seentao.com/custom-form/customForm.formInfos.get
@@ -155,6 +157,7 @@ export function getData3() {
         method: 'get',
     })
 }
+
 // 企业看板4
 export function getData4() {
     return request({
@@ -163,12 +166,36 @@ export function getData4() {
     })
 }
 
-// getDataYear().then(res => {
-//     console.log('res: ', res);
-//     store.commit('setDataYear', res.data.formInfoList)
-// })
+// 企业看板5
+export function getData5() {
+    return request({
+        url: `${url}bmzbhzb01`,
+        method: 'get',
+    })
+}
 
-// getDataMonth().then(res => {
-//     console.log('res: ', res);
-//     store.commit('setDataMonth', res.data.formInfoList)
-// })
+// 企业看板6
+export function getData6() {
+    return request({
+        url: `${url}bmzbhzb02`,
+        method: 'get',
+    })
+}
+
+// 企业看板7
+export function getData7() {
+    return request({
+        url: `${url}bmzbmx`,
+        method: 'get',
+    })
+}
+
+// 企业看板8
+export function getData8() {
+    return request({
+        url: `${url}bmzbyfqs`,
+        method: 'get',
+    })
+}
+
+getData.All()

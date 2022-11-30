@@ -7,4 +7,4 @@ window.publicParams = {
   szxs: '北京',      // 全局省直辖市
   fireBackup: false, // 开启火力备用图
 }
-window.myToken = '2ea6ea1acf8f4698023e43b2408aeadc' // 仅用于测试
+window.myToken = '1e6993b2ebff0cfcb542686ec85aa048' // 仅用于测试

@@ -2,9 +2,15 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
-import {
-  setBar, setLineFinancial
-} from "@/2d/viewCharts/Business";
+import { setBar, setLineFinancial } from "@/2d/viewCharts/Business";
+import useData from "@/2d/hooks/useData";
+import { toThreeDigitRating } from "@/2d/utils/num";
+import CHART from "@/2d/viewCharts/Params";
+const base7 = useData.data7("制造集团");
+const base5 = useData.data5("制造集团");
+const base8 = useData.data8("制造集团");
+const base6 = useData.data6("制造集团");
+
 const store = useStore();
 const option = reactive({
   data1: {},
@@ -13,109 +19,97 @@ const option = reactive({
   data4: {},
 });
 onMounted(() => {
-  data1Echarts()
-  data2Echarts()
-  data3Echarts()
-  data4Echarts()
-})
-const data1List = ref([])
-const Xdata1 = ref(["山东精杭制造有限公司", "新明创新科技销售有限公司"])
+  data1Echarts();
+  data2Echarts();
+  data3Echarts();
+  data4Echarts();
+});
 const data1Echarts = () => {
-  Xdata1.value.forEach(item => {
-    data1List.value.push({
-      name: item,
-      value: (Math.random() * 3000 + 1000).toFixed(2)
-    })
-  })
   const data1 = reactive({
-    color: '#C99827',
-    name: '客户销量',
-    Xdata: Xdata1.value,
-    dataList: data1List.value,
-    isShow: false
+    color: "#C99827",
+    name: "客户销量",
+    Xdata: base7.map((item) => item.qykhxl01),
+    dataList: base7.map((item) => item.qykhxl02),
+    isShow: false,
   });
-  option.data1 = setBar(data1)
-}
+  option.data1 = setBar(data1);
+};
 
-const data2List = ref([])
-const Xdata2 = ref([
-  "FP00 001",
-  "RM01 001",
-  "RM01 002",
-  "RM01 003",
-  "RM01 004",
-  "RM01 005",
-  "RM01 006",
-  "RM01 007",
-  "RM01 008",
-])
 const data2Echarts = () => {
-  Xdata2.value.forEach(item => {
-    data2List.value.push({
-      name: item,
-      value: (Math.random() * 3000 + 1000).toFixed(2)
-    })
-  })
   const data2 = reactive({
-    color: '#5C73E6',
-    name: '客单价',
-    Xdata: Xdata2.value,
-    dataList: data2List.value,
-    isShow: true
+    color: "#5C73E6",
+    name: "客单价",
+    Xdata: CHART.inventoryNames,
+    dataList: [
+      base5.rm01001,
+      base5.rm01002,
+      base5.rm01003,
+      base5.rm01004,
+      base5.rm01005,
+      base5.rm01006,
+      base5.rm01007,
+      base5.rm01008,
+      base5.rm01009,
+      base5.rm01010,
+      base5.rm01011,
+      base5.rm01012,
+      base5.rm01013,
+      base5.rm01014,
+      base5.rm01015,
+      base5.rm01016,
+      base5.rm01017,
+      base5.rm01018,
+      base5.fp00001,
+      base5.fp00002,
+      base5.fp00003,
+    ],
+    isShow: true,
   });
-  option.data2 = setBar(data2)
-}
+  option.data2 = setBar(data2);
+};
 
-const data3List = ref([])
-const Xdata3 = ref([])
 const data3Echarts = () => {
-  for (let i = 1; i < 13; i++) {
-    Xdata3.value.push(i + '月')
-  }
-  Xdata3.value.forEach(item => {
-    data3List.value.push({
-      name: item,
-      value: (Math.random() * 100).toFixed(2)
-    })
-  })
   const data3 = reactive({
-    color: '#4EBA92',
-    name: '销售毛利率',
-    Xdata: Xdata3.value,
-    dataList: data3List.value,
-    isShow: true
+    color: "#4EBA92",
+    name: "销售毛利率",
+    Xdata: base8.map((item) => item.month),
+    dataList: base8.map((item) => item.qyxsmlv02),
+    isShow: true,
   });
-  option.data3 = setLineFinancial(data3)
-}
-
-const data4List = ref([])
-const Xdata4 = ref([
-  "FP00 001",
-  "RM01 001",
-  "RM01 002",
-  "RM01 003",
-  "RM01 004",
-  "RM01 005",
-  "RM01 006",
-  "RM01 007",
-  "RM01 008",
-])
+  option.data3 = setLineFinancial(data3);
+};
 const data4Echarts = () => {
-  Xdata4.value.forEach(item => {
-    data4List.value.push({
-      name: item,
-      value: (Math.random() * 3000 + 1000).toFixed(2)
-    })
-  })
   const data4 = reactive({
-    color: '#CCCCCC',
-    name: '销售结构',
-    Xdata: Xdata4.value,
-    dataList: data4List.value,
-    isShow: true
+    color: "#CCCCCC",
+    name: "销售结构",
+    Xdata: CHART.inventoryNames,
+    dataList: [
+      base6.rm01001,
+      base6.rm01002,
+      base6.rm01003,
+      base6.rm01004,
+      base6.rm01005,
+      base6.rm01006,
+      base6.rm01007,
+      base6.rm01008,
+      base6.rm01009,
+      base6.rm01010,
+      base6.rm01011,
+      base6.rm01012,
+      base6.rm01013,
+      base6.rm01014,
+      base6.rm01015,
+      base6.rm01016,
+      base6.rm01017,
+      base6.rm01018,
+      base6.fp00001,
+      base6.fp00002,
+      base6.fp00003,
+    ],
+    isShow: true,
   });
-  option.data4 = setBar(data4)
-}
+  option.data4 = setBar(data4);
+};
 </script>
 
 <template>
@@ -124,7 +118,10 @@ const data4Echarts = () => {
       <Title>客户销量</Title>
       <Content>
         <div class="data1-warp">
-          <Echart :option="option.data1" class="echart-data"></Echart>
+          <Echart
+            :option="option.data1"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -132,7 +129,10 @@ const data4Echarts = () => {
       <Title>客单价</Title>
       <Content>
         <div class="data2-warp">
-          <Echart :option="option.data2" class="echart-data"></Echart>
+          <Echart
+            :option="option.data2"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -143,7 +143,10 @@ const data4Echarts = () => {
       <Title>销售毛利率</Title>
       <Content>
         <div class="data3-warp">
-          <Echart :option="option.data3" class="echart-data"></Echart>
+          <Echart
+            :option="option.data3"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -151,7 +154,10 @@ const data4Echarts = () => {
       <Title>销售结构</Title>
       <Content>
         <div class="data4-warp">
-          <Echart :option="option.data4" class="echart-data"></Echart>
+          <Echart
+            :option="option.data4"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>

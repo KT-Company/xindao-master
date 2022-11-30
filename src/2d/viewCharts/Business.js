@@ -316,10 +316,12 @@ export function setLineFinancial(data) {
     };
 
 }
+
+let insertStr = (soure, start, newStr) => {
+    return soure.slice(0, start) + newStr + soure.slice(start)
+}
 // 柱状图-----------------------------
-export function setBar(data) {
-
-
+export function setBar(data, obj) {
     return {
         tooltip: {
             trigger: 'axis',
@@ -344,13 +346,13 @@ export function setBar(data) {
         dataZoom: [{
             type: 'slider',
             show: data.isShow,
-            start: 0,
-            end: data.dataList.length > 8 ? 80 : 100,
+            startValue: 0,  // 重点在这   -- 开始的值
+            endValue: 8,  // 重点在这   -- 结束的值
             height: 5, //高度 
             xAxisIndex: [0], //控制第一个x轴
             left: '10%',
             bottom: 0, //图表底部距离
-            zoomLock: true,
+            zoomLock: false,
             // show: false,
             showDetail: false,
             showDataShadow: false,
@@ -367,7 +369,7 @@ export function setBar(data) {
             axisLabel: {
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                interval: 0
+                // interval: 0
             },
             splitLine: {
                 show: false
@@ -380,7 +382,7 @@ export function setBar(data) {
                     color: 'rgba(255,255,255,.3)'
                 }
             },
-            data: data.Xdata.map(item => item.replace(" ", "\n"))
+            data: data.Xdata.map(item => insertStr(item, 4, "\n"))
         },
         yAxis: [{
             type: 'value',
@@ -411,7 +413,7 @@ export function setBar(data) {
         series: [{
             name: data.name,
             type: 'bar',
-            barWidth: '20px',
+            barWidth: obj?.barW || '40%',
             itemStyle: {
                 color: data.color
             },

@@ -315,6 +315,7 @@ export function setQuXianChart(res, obj) {
         fontSize: chart.fontSize,
         // margin: 10,
         color: chart.fontColor,
+        interval: obj?.interval ?? null,
       },
       axisTick: {
         // x轴上的小刻度
@@ -885,10 +886,11 @@ export function setBingChart4(res, obj) {
 export function setShuiQiuChart(res, obj) {
   const colorList = ['70,77,172']
   const color = obj?.color ? colorList[obj.color] : colorList[0]
+  console.log(res.value * 0.01, 'res.value * 0.01');
   return {
     series: [
       {
-        name: '合格率',
+        name: res.name,
         type: 'liquidFill',
         color: [`rgba(${color},.5)`],
         data: [res.value * 0.01],
@@ -905,7 +907,8 @@ export function setShuiQiuChart(res, obj) {
         },
         label: {
           formatter: function (p) {
-            return `{a|${p.value * 100}%}\n{b|${p.seriesName}}`;
+            console.log('p: ', p);
+            return `{a|${parseFloat((p.value * 100).toPrecision(12))}%}\n{b|${p.seriesName}}`;
           },
           rich: {
             a: {

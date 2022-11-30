@@ -396,8 +396,8 @@ watch(
   }
 }
 .pickClass9 {
-  width: 30% !important;
-  left: 64%;
+  width: 23% !important;
+  left: 67%;
   &::before {
     position: absolute;
     content: "";
@@ -411,7 +411,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 51%;
+    left: 54%;
   }
   .xiajian {
     position: absolute;

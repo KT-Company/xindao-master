@@ -5,6 +5,10 @@ import { useStore } from "vuex";
 import { setZhuChart, setBingChart4 } from "@/2d/viewCharts/Area";
 import { setZhexiantu } from "@/2d/viewCharts/Environmental";
 import { setJinduChart } from "@/2d/viewCharts/Production";
+import useData from "@/2d/hooks/useData";
+const base = useData.data7('制造集团')
+const base1 = useData.data8('制造集团')
+console.log('base: ', base);
 const store = useStore();
 const option = reactive({
   data1: {},
@@ -22,9 +26,9 @@ const data1 = reactive({
 });
 
 const data2 = reactive({
-  xData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  xData: base1.map(item=>item.month),
   data: [
-    { name: "实际产量", value: [1, 2, 3, 9, 5, 6, 7, 7, 9, 10, 11, 12] },
+    { name: "实际产量", value: base1.map(item=>item.qyclzs02) },
     { name: "计划产量", value: [1, 2, 3, 6, 5, 6, 7, 8, 9, 2, 11, 12] },
   ],
 });
@@ -39,23 +43,10 @@ const data3 = reactive({
 });
 
 const grpgqk = ref([
-  { name: "初级工人", value: 2, target: 12 },
-  { name: "中级工人", value: 2, target: 12 },
-  { name: "高级工人", value: 2, target: 12 },
+  { name: "初级工人", value: 2, target: 12,zhanbi:2 },
+  { name: "中级工人", value: 2, target: 12,zhanbi:2 },
+  { name: "高级工人", value: 2, target: 12,zhanbi:2 },
 ]);
-
-grpgqk.value[0].zhanbi = (
-  (grpgqk.value[0].value / grpgqk.value[0].target) *
-  100
-).toFixed(1);
-grpgqk.value[1].zhanbi = (
-  (grpgqk.value[0].value / grpgqk.value[0].target) *
-  100
-).toFixed(1);
-grpgqk.value[2].zhanbi = (
-  (grpgqk.value[0].value / grpgqk.value[0].target) *
-  100
-).toFixed(1);
 
 option.data1 = setZhuChart(data1, {
   barW: "10%",

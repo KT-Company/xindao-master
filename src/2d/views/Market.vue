@@ -3,8 +3,18 @@
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import {
-  setPiePercentage, setLine, setBar, setBarAcross
+  setPiePercentage,
+  setLine,
+  setBar,
+  setBarAcross,
 } from "@/2d/viewCharts/Business";
+import { toThreeDigitRating } from "@/2d/utils/num";
+import useData from "@/2d/hooks/useData";
+import CHART from "@/2d/viewCharts/Params";
+const base = useData.data6("经销企业");
+const base1 = useData.data7("经销企业");
+const base2 = useData.data8("经销企业");
+const base3 = useData.data5("经销企业");
 const store = useStore();
 const option = reactive({
   data1: {},
@@ -16,154 +26,139 @@ const option = reactive({
   data7: {},
 });
 onMounted(() => {
-  data1Echarts()
-  data2Echarts()
-  data3Echarts()
-  data4Echarts()
-  data5Echarts()
-  data6Echarts()
-  data7Echarts()
-})
+  data1Echarts();
+  data2Echarts();
+  data3Echarts();
+  data4Echarts();
+  data5Echarts();
+  data6Echarts();
+  data7Echarts();
+});
 const data1 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
-  data: [70],
-  perCentum: '+70%',
-  titleData: '环比率',
-  value0: "22,696,684.59",
-  value1: "22,696,684.59",
-  value2: "22,696,684.59",
+  data: [base.schdqk04],
+  perCentum: `+${base.schdqk04}%`,
+  titleData: "环比率",
+  value0: toThreeDigitRating(base.schdqk04),
+  value1: toThreeDigitRating(base.schdqk02),
+  value2: toThreeDigitRating(base.schdqk03),
 });
 const data1Echarts = () => {
-  option.data1 = setPiePercentage(data1)
-}
+  option.data1 = setPiePercentage(data1);
+};
 const data2 = reactive({
   color: ["rgb(91,114,227)", "rgba(91,114,227,.5)"],
-  data: [70],
-  perCentum: '+70%',
-  titleData: '环比率',
-  value0: "22,696,684.59",
-  value1: "22,696,684.59",
-  value2: "22,696,684.59",
+  data: [base.ggtfqk04],
+  perCentum: `+${base.ggtfqk04}%`,
+  titleData: "环比率",
+  value0: toThreeDigitRating(base.ggtfqk01),
+  value1: toThreeDigitRating(base.ggtfqk02),
+  value2: toThreeDigitRating(base.ggtfqk03),
 });
 const data2Echarts = () => {
-  option.data2 = setPiePercentage(data2)
-}
+  option.data2 = setPiePercentage(data2);
+};
 
 const data3 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
-  data: [70],
-  perCentum: '+70%',
-  titleData: '环比率',
-  value0: "50,000",
-  value1: "东北、华北、华东、 华中、西北",
-  value2: "华南、西南",
+  data: [base.scktqk04],
+  perCentum: "+70%",
+  titleData: "环比率",
+  value0: toThreeDigitRating(base.scktqk01),
+  value1: base.scktqk02,
+  value2: base.scktqk03,
 });
 const data3Echarts = () => {
-  option.data3 = setPiePercentage(data3)
+  option.data3 = setPiePercentage(data3);
+};
 
-}
-
-const data4List = ref([])
-const Xdata4 = ref(["山东精航制造有限公司", "新明创新科技销售有限公司"])
 const data4Echarts = () => {
-  Xdata4.value.forEach(item => {
-    data4List.value.push({
-      name: item,
-      value: (Math.random() * 3000 + 1000).toFixed(2)
-    })
-  })
   const data4 = reactive({
-    color: '#5C73E6',
-    name: '客户销量',
-    Xdata: Xdata4.value,
-    dataList: data4List.value,
-    isShow: false
+    color: "#5C73E6",
+    name: "客户销量",
+    Xdata: base1.map((item) => item.qykhxl01),
+    dataList: base1.map((item) => item.qykhxl02),
+    isShow: false,
   });
-  option.data4 = setBar(data4)
-}
-
-const data5List = ref([])
-const Xdata5 = ref([])
+  option.data4 = setBar(data4);
+};
 
 const data5Echarts = () => {
-  for (let i = 1; i < 13; i++) {
-    Xdata5.value.push(i + '月')
-  }
-  Xdata5.value.forEach(item => {
-    data5List.value.push({
-      name: 'item',
-      value: (Math.random() * 100).toFixed(2)
-    })
-  })
   const data5 = reactive({
-    color: '#FF9F40',
-    name: '存货周转率',
-    Xdata: Xdata5.value,
-    dataList: data5List.value,
-    isShow: true
+    color: "#FF9F40",
+    name: "销售毛利率",
+    Xdata: base2.map((item) => item.month),
+    dataList: base2.map((item) => item.qyxsmlv02),
+    isShow: true,
   });
-  option.data5 = setLine(data5)
+  option.data5 = setLine(data5);
+};
 
-}
-
-
-const data6List = ref([])
-const Xdata6 = ref([
-  "FP00 001",
-  "RM01 001",
-  "RM01 002",
-  "RM01 003",
-  "RM01 004",
-  "RM01 005",
-  "RM01 006",
-  "RM01 007",
-  "RM01 008",
-])
 const data6Echarts = () => {
-  Xdata6.value.forEach(item => {
-    data6List.value.push({
-      name: item,
-      value: (Math.random() * 3000 + 1000).toFixed(2)
-    })
-  })
   const data6 = reactive({
-    color: '#5C73E6',
-    name: '销售结构',
-    Xdata: Xdata6.value,
-    dataList: data6List.value,
-    isShow: true
+    color: "#5C73E6",
+    name: "销售结构",
+    Xdata: CHART.inventoryNames,
+    dataList: [
+      base.rm01001,
+      base.rm01002,
+      base.rm01003,
+      base.rm01004,
+      base.rm01005,
+      base.rm01006,
+      base.rm01007,
+      base.rm01008,
+      base.rm01009,
+      base.rm01010,
+      base.rm01011,
+      base.rm01012,
+      base.rm01013,
+      base.rm01014,
+      base.rm01015,
+      base.rm01016,
+      base.rm01017,
+      base.rm01018,
+      base.fp00001,
+      base.fp00002,
+      base.fp00003,
+    ],
+    isShow: true,
   });
-  option.data6 = setBar(data6)
-}
+  option.data6 = setBar(data6);
+};
 
-const data7List = ref([])
-const Xdata7 = ref([
-  "FP00 001",
-  "RM01 001",
-  "RM01 002",
-  "RM01 003",
-  "RM01 004",
-  "RM01 005",
-  "RM01 006",
-  "RM01 007",
-  "RM01 008",
-])
 const data7Echarts = () => {
-  Xdata7.value.forEach(item => {
-    data7List.value.push({
-      name: item,
-      value: (Math.random() * 18000 + 9300).toFixed(2)
-    })
-  })
-  const data7 = reactive({
-    color: 'rgba(255,159,64)',
-    name: '客单价',
-    Xdata: Xdata7.value,
-    dataList: data7List.value,
-    isShow: true
+ const data7 = reactive({
+    color: "rgba(255,159,64)",
+    name: "客单价",
+    Xdata: CHART.inventoryNames,
+    dataList: [
+      base3.rm01001,
+      base3.rm01002,
+      base3.rm01003,
+      base3.rm01004,
+      base3.rm01005,
+      base3.rm01006,
+      base3.rm01007,
+      base3.rm01008,
+      base3.rm01009,
+      base3.rm01010,
+      base3.rm01011,
+      base3.rm01012,
+      base3.rm01013,
+      base3.rm01014,
+      base3.rm01015,
+      base3.rm01016,
+      base3.rm01017,
+      base3.rm01018,
+      base3.fp00001,
+      base3.fp00002,
+      base3.fp00003,
+    ],
+    isShow: true,
   });
-  option.data7 = setBar(data7)
-}
+  option.data7 = setBar(data7);
+};
 </script>
 
 <template>
@@ -172,14 +167,17 @@ const data7Echarts = () => {
       <Title>市场获单情况</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data1" class="echart-data"></Echart>
+          <Echart
+            :option="option.data1"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap">
           <div>￥{{ data1.value0 }}</div>
           <p>本月</p>
           <div>￥{{ data1.value1 }}</div>
           <p>环比</p>
-          <div class="type-left">+￥{{ data1.value2 }}</div>
+          <div class="type-left">￥{{ data1.value2 }}</div>
         </div>
       </Content>
     </Bar>
@@ -187,14 +185,17 @@ const data7Echarts = () => {
       <Title>广告投放情况</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data2" class="echart-data"></Echart>
+          <Echart
+            :option="option.data2"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap">
           <div>￥{{ data2.value0 }}</div>
           <p>本月</p>
           <div>￥{{ data2.value1 }}</div>
           <p>环比</p>
-          <div class="type-left">+￥{{ data2.value2 }}</div>
+          <div class="type-left">￥{{ data2.value2 }}</div>
         </div>
       </Content>
     </Bar>
@@ -202,7 +203,10 @@ const data7Echarts = () => {
       <Title>市场开拓情况</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data3" class="echart-data"></Echart>
+          <Echart
+            :option="option.data3"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap type-wrap-pie">
           <p>累计投入</p>
@@ -218,7 +222,10 @@ const data7Echarts = () => {
       <Title>客户销量</Title>
       <div class="data4-warp">
         <span>单位：亿</span>
-        <Echart :option="option.data4" class="echart-data"></Echart>
+        <Echart
+          :option="option.data4"
+          class="echart-data"
+        ></Echart>
       </div>
     </Bar>
   </Left>
@@ -229,7 +236,10 @@ const data7Echarts = () => {
       <Content>
         <div class="data5-warp">
           <span>单位：亿</span>
-          <Echart :option="option.data5" class="echart-data"></Echart>
+          <Echart
+            :option="option.data5"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -238,7 +248,10 @@ const data7Echarts = () => {
       <Content>
         <div class="data6-warp">
           <span>单位：亿</span>
-          <Echart :option="option.data6" class="echart-data"></Echart>
+          <Echart
+            :option="option.data6"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -247,7 +260,10 @@ const data7Echarts = () => {
       <Content>
         <div class="data7-warp">
           <span>单位：亿</span>
-          <Echart :option="option.data7" class="echart-data"></Echart>
+          <Echart
+            :option="option.data7"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -276,37 +292,35 @@ const data7Echarts = () => {
       }
     }
 
-
-
     .type-wrap {
       position: absolute;
       top: 1vh;
       left: 45%;
 
-      &>div {
-        font-size: .8vw;
+      & > div {
+        font-size: 0.8vw;
         font-family: Source Han Sans CN;
         font-weight: 400;
-        color: #CAE0FF;
+        color: #cae0ff;
       }
 
-      &>p {
-        font-size: .4rem;
+      & > p {
+        font-size: 0.4rem;
         font-family: Source Han Sans CN;
         font-weight: 400;
-        color: #CAE0FF;
+        color: #cae0ff;
         opacity: 0.7;
-        padding-top: .7vh;
+        padding-top: 0.7vh;
       }
 
       .type-left {
         position: absolute;
-        left: -.8vw;
+        // left: -.8vw;
       }
     }
 
     .type-wrap-pie {
-      top: -.2vh;
+      top: -0.2vh;
     }
   }
 
@@ -348,10 +362,10 @@ const data7Echarts = () => {
 }
 
 span {
-  font-size: .1vw;
+  font-size: 0.1vw;
   font-family: Source Han Sans CN;
   font-weight: 500;
-  color: #CAE0FF;
+  color: #cae0ff;
   opacity: 0.7;
   float: right;
   padding-right: 1vw;

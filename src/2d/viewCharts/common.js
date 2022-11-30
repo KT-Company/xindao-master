@@ -50,7 +50,7 @@ const optionCache = {
         },
         data: [
           {
-            value: 70
+            value: 60
           }
         ]
       }
@@ -303,28 +303,28 @@ const optionCache = {
         type: 'liquidFill',
         name: "完成率",
         data: [0.6],
-        color:["rgba(242, 153, 71, .5)"],
+        color: ["rgba(242, 153, 71, .5)"],
         radius: "92%",
-        backgroundStyle:{
-          borderWidth:0,
+        backgroundStyle: {
+          borderWidth: 0,
           borderColor: 'transparent',
-          color:"transparent"
+          color: "transparent"
         },
-        outline:{
-          borderDistance :8,
-          
-          itemStyle:{
-            borderWidth:8,
-            borderColor:"rgba(242, 153, 71, .5)"
+        outline: {
+          borderDistance: 8,
+
+          itemStyle: {
+            borderWidth: 8,
+            borderColor: "rgba(242, 153, 71, .5)"
           }
         },
         label: {
           rich: {
-            val:{fontSize:14,color:"#FFF",fontWeight:"bold",},
-            name:{fontSize:14,color:"rgba(202, 224, 255, .5)",lineHeight:25}
+            val: { fontSize: 14, color: "#FFF", fontWeight: "bold", },
+            name: { fontSize: 14, color: "rgba(202, 224, 255, .5)", lineHeight: 25 }
           },
           formatter(params) {
-            return `{val|${params.value * 100 + "%"}}\n{name|${params.seriesName}}`
+            return `{val|${parseFloat((params.value * 100).toPrecision(12)) + "%"}}\n{name|${params.seriesName}}`
           }
         }
       }

@@ -3,8 +3,13 @@
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { setShuiQiuChart, setYuanChart } from "@/2d/viewCharts/Area";
+import CHART from "@/2d/viewCharts/Params";
 import { setBar } from "@/2d/viewCharts/Business";
+import useData from "@/2d/hooks/useData";
+import { toThreeDigitRating } from "@/2d/utils/num";
 const store = useStore();
+const base = useData.data1("制造集团");
+const base2 = useData.data2("制造集团");
 const option = reactive({
   data1: {},
   data2: {},
@@ -13,77 +18,83 @@ const option = reactive({
   data5: {},
 });
 const qyyhck = reactive({
-  value1: "4965548547",
-  value2: "49.65亿",
+  value1: base.qyyhckxj,
+  value2: base.qyyhckxj02 + "亿",
 });
 
 const qyyhdk = reactive({
-  value1: "4965548547",
-  value2: "49.65亿",
+  value1: base.qyyhdkxj,
+  value2: base.qyyhdkxj02 + "亿",
 });
 
 const data1 = reactive({
   name: "完成率",
-  value: 62.9,
-  value1: "12451254",
-  value2: "0",
+  value: base.ndsrzb03,
+  value1: base.ndsrzb01,
+  value2: base.ndsrzb02,
 });
 
 const data2 = reactive({
   name: "支出率",
-  value: 62.9,
-  value1: "12451254",
-  value2: "0",
+  value: base.ndcgys03,
+  value1: base.ndcgys01,
+  value2: base.ndcgys02,
 });
 
 const data3 = reactive({
   name: "环比率",
-  value: 58,
-  value1: "3,400,111",
-  value2: "3,400,111",
-  value3: "3,400,111",
+  value: base.qyyysr04,
+  value1: toThreeDigitRating(base.ndcgys01),
+  value2: toThreeDigitRating(base.qyyysr02),
+  value3: toThreeDigitRating(base.qyyysr03),
 });
 
 const data4 = reactive({
   name: "环比率",
-  value: 58,
-  value1: "3,400,111",
-  value2: "3,400,111",
-  value3: "3,400,111",
+  value: base.qycbzc04,
+  value1: toThreeDigitRating(base.qycbzc01),
+  value2: toThreeDigitRating(base.qycbzc02),
+  value3: toThreeDigitRating(base.qycbzc03),
 });
 
-const data6List = ref([]);
-const Xdata6 = ref([
-  "FP00 001",
-  "RM01 001",
-  "RM01 002",
-  "RM01 003",
-  "RM01 004",
-  "RM01 005",
-  "RM01 006",
-  "RM01 007",
-  "RM01 008",
+const data6List = ref([
+  base.rm01001,
+  base.rm01002,
+  base.rm01003,
+  base.rm01004,
+  base.rm01005,
+  base.rm01006,
+  base.rm01007,
+  base.rm01008,
+  base.rm01009,
+  base.rm01010,
+  base.rm01011,
+  base.rm01012,
+  base.rm01013,
+  base.rm01014,
+  base.rm01015,
+  base.rm01016,
+  base.rm01017,
+  base.rm01018,
+  base.fp00001,
+  base.fp00002,
+  base.fp00003,
 ]);
-Xdata6.value.forEach((item) => {
-  data6List.value.push({
-    name: item,
-    value: (Math.random() * 3000 + 1000).toFixed(2),
-  });
-});
+const Xdata6 = CHART.inventoryNames;
 
 const data5 = reactive({
   color: "rgba(255,159,64)",
   name: "企业库存情况",
-  Xdata: Xdata6.value,
+  Xdata: Xdata6,
   dataList: data6List.value,
   isShow: true,
 });
 option.data5 = setBar(data5);
 
 const ckrj = ref([
-  { name: "总占用量", value: 267001, unit: "㎡" },
-  { name: "总空闲量", value: 267001, unit: "㎡" },
-  { name: "总空闲率", value: 267001 + "%", unit: "" },
+  { name: "总占用量", value: base2.qyckzy01, unit: "㎡" },
+  { name: "总空闲量", value: base2.qyckzy02, unit: "㎡" },
+  { name: "总空闲率", value: base2.qyckzy03 + "%", unit: "" },
 ]);
 
 onMounted(() => {
@@ -193,7 +204,7 @@ onMounted(() => {
           v-for="(item,i) in ckrj"
           :key="i"
         >
-          <p class="big-val">{{item.value}}</p>
+          <p class="big-val valb">{{item.value}}</p>
           <p class="hui">{{item.unit}}</p>
           <p class="hui-s">{{item.name}}</p>
         </div>
@@ -244,11 +255,13 @@ onMounted(() => {
         margin: 0;
       }
       .money-bg {
+        max-width: var(--valbgSize);
         // contain
         background: url("@/2d/assets/icons/ico-comsive-0.png") no-repeat center
           center/ 100% 100%;
       }
       .money-bg1 {
+        max-width: var(--valbgSize);
         // contain
         background: url("@/2d/assets/icons/ico-comsive-14.png") no-repeat center
           center/ 100% 100%;
