@@ -144,7 +144,6 @@ onMounted(() => {
 
   getqynytpfy().then((res) => {
     quanguoArea.value = res.data.formInfoList;
-    console.log("getqynytpfy: ", res);
   });
 });
 </script>

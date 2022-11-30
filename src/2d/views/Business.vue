@@ -195,7 +195,6 @@ const data8List = ref([
   base5.fp00002,
   base5.fp00003,
 ]);
-console.log('base5: ', base5);
 const Xdata8 = ref(CHART.inventoryNames);
 const data8Echarts = () => {
   const data8 = reactive({

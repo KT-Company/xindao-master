@@ -13,7 +13,6 @@ const store = useStore();
 const base = useData.data2("物流企业");
 const base3 = useData.data3("物流企业");
 const base4 = useData.data4("物流企业");
-console.log("物流企业: ", base3);
 const qyyhck = reactive({
   value1: 4965 || 0,
   value2: `${4965 || 0}亿`,

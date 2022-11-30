@@ -24,6 +24,7 @@ const store = createStore({
             data6: {},
             data7: {},
             data8: {},
+            debug: false, // console
         }
     },
     mutations: {

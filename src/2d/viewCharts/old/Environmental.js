@@ -10,16 +10,12 @@ export function setYearManNumber(res) {
         dataX.push(element.name);
         dataY.push(element.value);
     });
-    console.log(dataX);
-    console.log(dataY);
-    console.log('dataY----------------------------------dataY');
     let Max = Math.max.apply(null, dataY);
     let dataM = []
     dataY.forEach(element => {
         dataM.push(600);
 
     });
-    console.log(dataX, dataY, dataM);
     return {
         grid: {
             left: '3%',
@@ -285,7 +281,6 @@ export function setConsumptionStatistics(res) {
         dataM.push(500);
 
     });
-    console.log(dataX, dataY, dataM);
     return {
         grid: {
             left: '3%',

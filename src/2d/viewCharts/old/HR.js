@@ -73,7 +73,6 @@ export function setBarCharts(res, color, data, titleData) {
             }
         });
     }
-    console.log(data1, data2);
     return {
         title: [
 
