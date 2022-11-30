@@ -305,10 +305,6 @@ onMounted(() => {
   background: url("@/2d/assets/images/kuang-jubiao.png") no-repeat center center /
     100% 100%;
 }
-.ct1-2 {
-  background: url("@/2d/assets/images/kuang-jubiao.png") no-repeat center center /
-    100% 100%;
-}
 .ct3 {
   column-gap: 0%;
   li {

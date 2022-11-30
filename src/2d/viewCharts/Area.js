@@ -7,6 +7,8 @@ export function setYuanChart(res, obj) {
   let colorList = [
     ['rgba(213,110,42)', 'rgba(106,82,85)'],
     ['rgba(84,115,232)', 'rgba(63,84,147)'],
+    ['rgba(124,95,174)', 'rgba(82,76,128)'],
+    ['rgba(78,184,146)', 'rgba(70,105,121)'],
   ]
   let _colorList = obj?.color ? colorList[obj.color] : colorList[0]
   let _title = () => {
@@ -35,6 +37,17 @@ export function setYuanChart(res, obj) {
           },
         },
       ],
+      2: {
+        text: res.name,
+        x: 'center',
+        y: 'center',
+        textStyle: {
+          fontSize: chart.fontSize + 6,
+          color: '#FFFFFF',
+          fontFamily: 'DINAlternate-Bold, DINAlternate',
+          foontWeight: '600',
+        },
+      },
       2: {
         text: res.name,
         x: 'center',
@@ -316,7 +329,8 @@ export function setQuXianChart(res, obj) {
         show: true,
         lineStyle: {
           type: 'dotted', // dotted 虚线 solid 实线
-          color: chart.xLine
+          color: chart.xLine,
+          opacity: 0.2,
         }
       },
       axisLabel: {
@@ -865,4 +879,51 @@ export function setBingChart4(res, obj) {
     ],
   };
   return option
+}
+
+// 水球图
+export function setShuiQiuChart(res, obj) {
+  const colorList = ['70,77,172']
+  const color = obj?.color ? colorList[obj.color] : colorList[0]
+  return {
+    series: [
+      {
+        name: '合格率',
+        type: 'liquidFill',
+        color: [`rgba(${color},.5)`],
+        data: [res.value * 0.01],
+        center: ['50%', '50%'],
+        radius: obj?.size || '80%',
+        outline: {
+          itemStyle: {
+            borderWidth: 10,
+            borderColor: `rgba(${color},.5)`,
+          },
+        },
+        backgroundStyle: {
+          color: 'rgba(0, 0, 0, 0)',
+        },
+        label: {
+          formatter: function (p) {
+            return `{a|${p.value * 100}%}\n{b|${p.seriesName}}`;
+          },
+          rich: {
+            a: {
+              fontSize: chart.fontSize + 5,
+              color: '#fff',
+              fontWeight: 'bold',
+              padding: [0, 0, 5, 0]
+            },
+            b: {
+              fontSize: chart.fontSize,
+              color: '#a5a8af'
+            }
+          },
+          position: ['50%', '50%'],
+        },
+      },
+    ],
+  };
+
+
 }

@@ -94,6 +94,14 @@ li {
   font-size: .85vw;
 }
 
+.valb{
+  font-weight: bold;
+}
+
+.name1{
+  font-size: .6vw;
+}
+
 .unit1 {
   font-size: .6vw;
   color: var(--hui);
@@ -101,6 +109,14 @@ li {
 
 .zi {
   color: rgba(92, 115, 230);
+}
+
+.zise {
+  color: rgba(125, 96, 176) !important;
+}
+
+.lvse{
+  color: rgba(77,179,144) !important;
 }
 
 /* ************************************************** */

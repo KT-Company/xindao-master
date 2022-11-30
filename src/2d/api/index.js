@@ -102,7 +102,7 @@ export function getnyzxhm() {
 
 
 // 全国碳排放
-export function getqynytpfy(){
+export function getqynytpfy() {
     return request({
         url: `${url}qynytpfy`,
         method: 'get',
@@ -110,7 +110,7 @@ export function getqynytpfy(){
 }
 
 // 区域产业经济
-export function getqycyjj(){
+export function getqycyjj() {
     return request({
         url: `${url}qycyjj`,
         method: 'get',
@@ -118,7 +118,7 @@ export function getqycyjj(){
 }
 
 // 区域企业信息
-export function getqyqyxx(){
+export function getqyqyxx() {
     return request({
         url: `${url}qyqyxx`,
         method: 'get',
@@ -126,9 +126,49 @@ export function getqyqyxx(){
 }
 
 // 人力资源
-export function getrlzy(){
+export function getrlzy() {
     return request({
         url: `${url}rlzy`,
         method: 'get',
     })
 }
+
+// 企业看板1
+export function getData1() {
+    return request({
+        url: `${url}qyzbhzb01`,
+        method: 'get',
+    })
+}
+// 企业看板2
+export function getData2() {
+    return request({
+        url: `${url}qyzbhzb02`,
+        method: 'get',
+    })
+}
+
+// 企业看板3
+export function getData3() {
+    return request({
+        url: `${url}qyzbmx`,
+        method: 'get',
+    })
+}
+// 企业看板4
+export function getData4() {
+    return request({
+        url: `${url}qyzbyfqs`,
+        method: 'get',
+    })
+}
+
+// getDataYear().then(res => {
+//     console.log('res: ', res);
+//     store.commit('setDataYear', res.data.formInfoList)
+// })
+
+// getDataMonth().then(res => {
+//     console.log('res: ', res);
+//     store.commit('setDataMonth', res.data.formInfoList)
+// })

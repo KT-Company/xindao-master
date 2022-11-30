@@ -8,7 +8,8 @@ import {
   defineProps,
   watch,
 } from "vue";
-const echarts = inject("echarts");
+import * as echarts from 'echarts'
+import 'echarts-liquidfill'
 //获取 dom 和 父组件数据 并定义"myChart"用于初始化图表
 const chartDom = ref();
 let myChart = null;

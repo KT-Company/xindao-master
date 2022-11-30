@@ -12,9 +12,12 @@ const store = createStore({
             menuAid: 1, // 底部一级导航选中 id
             menuBid: ['1-1'], // 底部二级导航选中 id
             year: window.publicParams.year, // 全局年份
+            year2: window.publicParams.year2, // 全局年份
             szxs: window.publicParams.szxs, // 全局省/直辖市
             LEVEL: 0, // 3维层级： 0地球1社会层2区域层3企业层4内部层
-            enterpriseData: []  // 企业总量
+            enterpriseData: [],  // 企业总量
+            dataYear: [],    // 年数据
+            dataMonth: [],   // 月份数据
         }
     },
     mutations: {
@@ -23,7 +26,7 @@ const store = createStore({
         },
         setMenuBid(state, value) {
             if (state.menuAid === 2) {
-                if (!value) return state.menuBid = [] 
+                if (!value) return state.menuBid = []
                 const index = state.menuBid.findIndex(item => item === value)
                 if (index === -1) {
                     if (value === '2-1') {
@@ -56,7 +59,13 @@ const store = createStore({
         },
         setEnterpriseData(state, value) {
             state.enterpriseData = value
-        }
+        },
+        setDataYear(state, value) {
+            state.dataYear = value
+        },
+        setDataMonth(state, value) {
+            state.dataMonth = value
+        },
     }
 })
 export default store
