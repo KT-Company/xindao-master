@@ -886,7 +886,6 @@ export function setBingChart4(res, obj) {
 export function setShuiQiuChart(res, obj) {
   const colorList = ['70,77,172']
   const color = obj?.color ? colorList[obj.color] : colorList[0]
-  console.log(res.value * 0.01, 'res.value * 0.01');
   return {
     series: [
       {
@@ -907,7 +906,6 @@ export function setShuiQiuChart(res, obj) {
         },
         label: {
           formatter: function (p) {
-            console.log('p: ', p);
             return `{a|${parseFloat((p.value * 100).toPrecision(12))}%}\n{b|${p.seriesName}}`;
           },
           rich: {
