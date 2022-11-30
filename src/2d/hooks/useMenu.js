@@ -118,7 +118,7 @@ export const menu = ref([
         children: [
             { id: "10-0", name: "整体布局", isPick: false, level: 4 },
             { id: "10-1", name: "企管部", isPick: false, level: 4, path: '/Corporate' },
-            { id: "10-2", name: "财务部", isPick: false, level: 4 },
+            { id: "10-2", name: "财务部", isPick: false, level: 4, path: "/Financial" },
             { id: "10-3", name: "业务部", isPick: false, level: 4 },
         ],
         level: 3
@@ -131,8 +131,8 @@ export const menu = ref([
         children: [
             { id: "11-0", name: "整体布局", isPick: false, level: 4 },
             { id: "11-1", name: "企管部", isPick: false, level: 4, path: '/Corporate' },
-            { id: "11-3", name: "采购部", isPick: false, level: 4 },
-            { id: "11-2", name: "财务部", isPick: false, level: 4 },
+            { id: "11-3", name: "采购部", isPick: false, level: 4, path: '/Procurement' },
+            { id: "11-2", name: "财务部", isPick: false, level: 4, path: "/Financial" },
             { id: "11-4", name: "营销部", isPick: false, level: 4, path: '/Market' },
         ],
         level: 3
