@@ -1,8 +1,13 @@
 * {
   box-sizing: border-box;
-  color: rgb(255, 255, 255);
   /* font-size: .85vw; */
+}
+html{
   font-size: 0.75vw;
+  color: rgb(255, 255, 255);
+}
+:root{
+  --value-color:rgba(202, 224, 255, 1);
 }
 
 div,
