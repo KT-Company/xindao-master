@@ -533,7 +533,6 @@ export function setBingChart3(res, obj) {
   res.data.sort((a, b) => {
     return a.index - b.index
   })
-  console.log('res: ', res.data);
   var option = {
     series: [
       {
@@ -679,7 +678,6 @@ export function setStackedChart(res) {
 
 // 区域纳税总额
 export function setLineCharts(res, color1, color2, color3, color4, max, legendData) {
-  console.log(res);
   let xData = res.map(item => item.name)
   let yData = res.map(item => item.value)
 
