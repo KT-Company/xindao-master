@@ -9,7 +9,7 @@ const base = useData.data3("综合服务");
 const base1 = useData.data1("综合服务");
 const qyyhck = reactive({
   value1: base1?.qyyhckxj || 0,
-  value2: (base1?.qyyhckxj02 || 0)  + "亿",
+  value2: (base1?.qyyhckxj02 || 0) + "亿",
 });
 
 let sum = ref(4965548547);
@@ -52,12 +52,8 @@ let synthesizeIncome = reactive({
           <span class="hui">详细金额：{{ qyyhck.value1 }}元</span>
         </p>
         <div class="qyyhck-value">
-          <span
-            :class="[item.includes('.') ? 'fg' :'money-bg']"
-            v-for="(item,i) in qyyhck.value2"
-            :key="i"
-          >
-            {{item}}
+          <span :class="[item.includes('.') ? 'fg' : 'money-bg']" v-for="(item, i) in qyyhck.value2" :key="i">
+            {{ item }}
           </span>
         </div>
       </Content>
@@ -68,20 +64,14 @@ let synthesizeIncome = reactive({
         <div class="synthesizeIncome-wrap">
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-1.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-1.png" alt=""></div>
               <div>
                 <div>市场开拓</div>
                 <div>{{ synthesizeIncome.SCKT }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-2.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-2.png" alt=""></div>
               <div>
                 <div>广告投放</div>
                 <div>{{ synthesizeIncome.GGTF }}</div>
@@ -90,20 +80,14 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-3.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-3.png" alt=""></div>
               <div>
                 <div>3C认证</div>
                 <div>{{ synthesizeIncome.RZ3C }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-4.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-4.png" alt=""></div>
               <div>
                 <div>高新认证</div>
                 <div>{{ synthesizeIncome.GXRZ }}</div>
@@ -112,20 +96,14 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-5.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-5.png" alt=""></div>
               <div>
                 <div>ISO认证</div>
                 <div>{{ synthesizeIncome.ISORZ }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-6.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-6.png" alt=""></div>
               <div>
                 <div>软件著作权</div>
                 <div>{{ synthesizeIncome.RJZZQ }}</div>
@@ -134,20 +112,14 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-7.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-7.png" alt=""></div>
               <div>
                 <div>产品研发</div>
                 <div>{{ synthesizeIncome.CPYF }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-8.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-8.png" alt=""></div>
               <div>
                 <div>碳交易</div>
                 <div>{{ synthesizeIncome.TJY }}</div>
@@ -156,20 +128,14 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-9.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-9.png" alt=""></div>
               <div>
                 <div>电费代收</div>
                 <div>{{ synthesizeIncome.DFDS }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-10.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-10.png" alt=""></div>
               <div>
                 <div>人员招聘</div>
                 <div>{{ synthesizeIncome.RYZP }}</div>
@@ -178,20 +144,14 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-11.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-11.png" alt=""></div>
               <div>
                 <div>人员解聘</div>
                 <div>{{ synthesizeIncome.RYJP }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-12.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-12.png" alt=""></div>
               <div>
                 <div>资产购买</div>
                 <div>{{ synthesizeIncome.ZCGM }}</div>
@@ -200,10 +160,7 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img
-                  src="@/2d/assets/icons/ico-comsive-13.png"
-                  alt=""
-                ></div>
+              <div><img src="@/2d/assets/icons/ico-comsive-13.png" alt=""></div>
               <div>
                 <div>资产回收</div>
                 <div>{{ synthesizeIncome.ZCHS }}</div>
@@ -231,18 +188,21 @@ let synthesizeIncome = reactive({
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     .qyyhck-info {
       height: 30%;
       width: 100%;
       display: flex;
       justify-content: space-between;
     }
+
     .qyyhck-value {
       height: 65%;
       margin-top: 2%;
       width: 100%;
       display: flex;
       justify-content: center;
+
       span {
         margin: 0 0.5rem;
         flex: 1;
@@ -251,15 +211,16 @@ let synthesizeIncome = reactive({
         justify-content: center;
         font-size: 1.9vw;
       }
+
       .fg {
         flex: 0.1;
         margin: 0;
       }
+
       .money-bg {
         max-width: var(--valbgSize);
         // contain
-        background: url("@/2d/assets/icons/ico-comsive-0.png") no-repeat center
-          center/ 100% 100%;
+        background: url("@/2d/assets/icons/ico-comsive-0.png") no-repeat center center/ 100% 100%;
       }
     }
   }
@@ -315,24 +276,26 @@ let synthesizeIncome = reactive({
   .synthesizeIncome-wrap {
     margin: 0 1rem;
 
-    & > div:not(:last-child) {
+    &>div:not(:last-child) {
       border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    & > div {
+    &>div {
       padding: 6% 0 5% 0;
 
-      & > div {
+      &>div {
         align-items: self-end;
+        flex: 1;
+        justify-content: flex-start;
 
-        & > div:nth-of-type(2) {
+        &>div:nth-of-type(2) {
           display: flex;
           flex-flow: column;
           justify-content: space-between;
           height: 4vh;
           padding-left: 1rem;
 
-          & > div:nth-of-type(1) {
+          &>div:nth-of-type(1) {
             height: 1vh;
             font-size: 14px;
             font-family: Source Han Sans CN;
@@ -341,7 +304,7 @@ let synthesizeIncome = reactive({
             opacity: 0.5;
           }
 
-          & > div:nth-of-type(2) {
+          &>div:nth-of-type(2) {
             height: 1vh;
             font-size: 16px;
             font-family: Source Han Sans CN;
