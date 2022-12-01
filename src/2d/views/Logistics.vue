@@ -13,9 +13,11 @@ const store = useStore();
 const base = useData.data2("物流企业");
 const base3 = useData.data3("物流企业");
 const base4 = useData.data4("物流企业");
+const base1 = useData.data1("物流企业");
+console.log("base1: ", base1);
 const qyyhck = reactive({
-  value1: 4965 || 0,
-  value2: `${4965 || 0}亿`,
+  value1: base1?.qyyhckxj || 0,
+  value2: `${base1?.qyyhckxj02 || 0}亿`,
 });
 
 const option = reactive({
@@ -250,6 +252,7 @@ onMounted(() => {
       display: flex;
       flex-direction: column;
       justify-content: center;
+      padding-right: 10px;
       img {
         width: 100%;
         margin-top: 0.5rem;

@@ -175,6 +175,9 @@ const data5Echarts = () => {
 </template>
 
 <style lang="less" scoped>
+.z-left,.z-right{
+  top: 15.9% !important;
+}
 .z-left {
   display: grid;
   grid-template-rows: 231fr 233fr 244fr;

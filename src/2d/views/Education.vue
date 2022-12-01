@@ -12,8 +12,8 @@ const base = reactive({
 // const baseList = ref([]);
 
 const schoolChartData = ref([
-  { name: "小学教育", value: 0 },
   { name: "学前教育", value: 0 },
+  { name: "小学教育", value: 0 },
   { name: "中等院校", value: 0 },
   { name: "高等院校", value: 0 },
 ]);

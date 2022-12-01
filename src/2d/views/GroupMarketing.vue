@@ -29,10 +29,11 @@ const data1Echarts = () => {
     color: "#C99827",
     name: "客户销量",
     Xdata: base7.map((item) => item.qykhxl01),
-    dataList: base7.map((item) => item.qykhxl02),
+    dataList: base7.map((item) => item.qykhxl02 || 0),
     isShow: false,
   });
-  option.data1 = setBar(data1);
+  option.data1 = setBar(data1, { interval: 1 });
+  console.log("data1: ", option.data1);
 };
 
 const data2Echarts = () => {

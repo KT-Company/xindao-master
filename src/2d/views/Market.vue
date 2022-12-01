@@ -80,7 +80,7 @@ const data4Echarts = () => {
     dataList: base1.map((item) => item.qykhxl02),
     isShow: false,
   });
-  option.data4 = setBar(data4);
+  option.data4 = setBar(data4,{ interval: 1 });
 };
 
 const data5Echarts = () => {

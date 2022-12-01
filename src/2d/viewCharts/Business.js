@@ -339,7 +339,7 @@ export function setBar(data, obj) {
         grid: {
             left: '1%',
             right: '5%',
-            bottom: '10%',
+            bottom: data.isShow ? '10%' : '0%',
             top: '10%',
             containLabel: true
         },
@@ -369,7 +369,7 @@ export function setBar(data, obj) {
             axisLabel: {
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                // interval: 0
+                interval: obj?.interval ?? null
             },
             splitLine: {
                 show: false

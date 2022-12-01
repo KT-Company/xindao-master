@@ -6,9 +6,13 @@ import { setZhuChart, setBingChart4 } from "@/2d/viewCharts/Area";
 import { setZhexiantu } from "@/2d/viewCharts/Environmental";
 import { setJinduChart } from "@/2d/viewCharts/Production";
 import useData from "@/2d/hooks/useData";
-const base = useData.data7('制造集团')
-const base1 = useData.data8('制造集团')
-console.log('base: ', base);
+const base = useData.data7("制造集团");
+console.log(
+  "制造集团data7: ",
+  base.filter((item) => item.qygrqk01 == "高级工人")
+);
+const base1 = useData.data8("制造集团");
+console.log("制造集团data8: ", base);
 const store = useStore();
 const option = reactive({
   data1: {},
@@ -16,19 +20,45 @@ const option = reactive({
   data3: {},
 });
 
+// 生产进度
+function geting(name, satate) {
+  return base.find((item) => item.qyscjd01 == name && item.qyscjd02 == satate)
+    .qyscjd03;
+}
 const data1 = reactive({
-  xData: ["X4mini", "X4SE", "X4PRO"],
+  xData: ["X4MINI", "X4SE", "X4pro"],
   data: [
-    { name: "已完工", value: [1, 2, 3] },
-    { name: "生产中", value: [1, 2, 3] },
-    { name: "待生产", value: [1, 2, 3] },
+    {
+      name: "已完工",
+      value: [
+        geting("X4MINI", "已完工"),
+        geting("X4SE", "已完工"),
+        geting("X4pro", "已完工"),
+      ],
+    },
+    {
+      name: "生产中",
+      value: [
+        geting("X4MINI", "生产中"),
+        geting("X4SE", "生产中"),
+        geting("X4pro", "生产中"),
+      ],
+    },
+    {
+      name: "待生产",
+      value: [
+        geting("X4MINI", "待生产"),
+        geting("X4SE", "待生产"),
+        geting("X4pro", "待生产"),
+      ],
+    },
   ],
 });
 
 const data2 = reactive({
-  xData: base1.map(item=>item.month),
+  xData: base1.map((item) => item.month),
   data: [
-    { name: "实际产量", value: base1.map(item=>item.qyclzs02) },
+    { name: "实际产量", value: base1.map((item) => item.qyclzs02) },
     { name: "计划产量", value: [1, 2, 3, 6, 5, 6, 7, 8, 9, 2, 11, 12] },
   ],
 });
@@ -36,23 +66,38 @@ const data2 = reactive({
 const data3 = reactive({
   name: "设备状态",
   data: [
-    { name: "完工", color: "92,115,230", value: 20 },
-    { name: "生产中", color: "255,159,64", value: 30 },
-    { name: "空闲", color: "72,192,151", value: 50 },
+    {
+      name: "完工",
+      color: "92,115,230",
+      value: base.find((item) => item.qysbzt01 == "完工").qysbzt02,
+    },
+    {
+      name: "生产中",
+      color: "255,159,64",
+      value: base.find((item) => item.qysbzt01 == "生产中").qysbzt02,
+    },
+    {
+      name: "空闲",
+      color: "72,192,151",
+      value: base.find((item) => item.qysbzt01 == "空闲").qysbzt02,
+    },
   ],
 });
 
+function geting2(type, key) {
+  return base.find((item) => item.qygrqk01 == type)[key];
+}
 const grpgqk = ref([
-  { name: "初级工人", value: 2, target: 12,zhanbi:2 },
-  { name: "中级工人", value: 2, target: 12,zhanbi:2 },
-  { name: "高级工人", value: 2, target: 12,zhanbi:2 },
+  { name: "初级工人", value: geting2('初级工人','qygrqk03'), target: geting2('初级工人','qygrqk02'), zhanbi: geting2('初级工人','qygrqk04') },
+  { name: "中级工人", value: geting2('中级工人','qygrqk03'), target: geting2('中级工人','qygrqk02'), zhanbi: geting2('中级工人','qygrqk04') },
+  { name: "高级工人", value: geting2('高级工人','qygrqk03'), target: geting2('高级工人','qygrqk02'), zhanbi: geting2('高级工人','qygrqk04') },
 ]);
 
 option.data1 = setZhuChart(data1, {
   barW: "10%",
   color: [0, 3, 1],
   legend: true,
-  unit: "亿元",
+  // unit: "亿元",
   grid: {
     top: "20%",
   },
@@ -215,8 +260,8 @@ grpgqk.value[2].option = setJinduChart(grpgqk.value[2].zhanbi);
       }
     }
 
-    .grpgqk-cahrt{
-      padding-top: .4rem !important;
+    .grpgqk-cahrt {
+      padding-top: 0.4rem !important;
     }
     .grpgqk2 {
       padding-left: 10%;

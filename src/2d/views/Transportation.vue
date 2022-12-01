@@ -10,10 +10,10 @@ const base = reactive({
 });
 
 const ggjt = ref([
-  { name: "公交总里程", value: 28580.0, unit: "公里" },
-  { name: "年客运量", value: 53.5, unit: "亿人次" },
-  { name: "出租车保有量", value: 100, unit: "万辆" },
-  { name: "共享自行车投放量", value: 85.3, unit: "万辆" },
+  { name: "公交总里程", value: 0, unit: "公里" },
+  { name: "年客运量", value: 0, unit: "亿人次" },
+  { name: "出租车保有量", value: 0, unit: "万辆" },
+  { name: "共享自行车投放量", value: 0, unit: "万辆" },
 ]);
 
 const option = reactive({
@@ -46,11 +46,17 @@ const wuliu = ref([
 ]);
 onMounted(() => {
   getjtcx().then((res) => {
+    console.log('res: ', res);
     const data = res.data.formInfoList;
     base.data = data.find((item) => item.year == store.state.year);
     data1.data[0].value = base.data.gstlzlc;
     data1.data[1].value = base.data.pttlzlc;
     option.data1 = setBingChart2(data1, { title: 2 });
+
+    ggjt.value[0].value = base.data.gjzlc
+    ggjt.value[1].value = base.data.nkyl
+    ggjt.value[2].value = base.data.czcbyl
+    ggjt.value[3].value = base.data.gxzxctfl
 
     chuxing.value[0].value = base.data.jttxzc;
     chuxing.value[1].value = base.data.pjtqsh;
@@ -137,7 +143,7 @@ onMounted(() => {
         >
           <p class="big-val">{{item.value}}</p>
           <p class="hui">{{item.unit}}</p>
-          <p class="hui-s">{{item.name}}</p>
+          <p class="hui-s ct-name">{{item.name}}</p>
         </li>
       </ul>
     </Bar>
@@ -175,6 +181,9 @@ onMounted(() => {
 </template>
 
 <style lang="less" scoped>
+.ct-name{
+  font-size: .6vw !important;
+}
 .z-left {
   display: grid;
   grid-template-rows: 406fr 321fr;

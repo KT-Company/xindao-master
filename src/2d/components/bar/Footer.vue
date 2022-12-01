@@ -395,9 +395,34 @@ watch(
     left: 42%;
   }
 }
+// .pickClass9 {
+//   width: 23% !important;
+//   left: 67%;
+//   &::before {
+//     position: absolute;
+//     content: "";
+//     width: 43%;
+//     border-bottom: 1px solid rgb(179, 179, 179);
+//     bottom: 28%;
+//   }
+//   &::after {
+//     position: absolute;
+//     content: "";
+//     width: 100%;
+//     border-bottom: 1px solid rgb(179, 179, 179);
+//     bottom: 28%;
+//     left: 54%;
+//   }
+//   .xiajian {
+//     position: absolute;
+//     height: 42%;
+//     bottom: 0%;
+//     left: 42%;
+//   }
+// }
 .pickClass9 {
-  width: 23% !important;
-  left: 67%;
+  width: 30% !important;
+  left: 64%;
   &::before {
     position: absolute;
     content: "";
@@ -411,7 +436,7 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 54%;
+    left: 51%;
   }
   .xiajian {
     position: absolute;
