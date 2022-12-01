@@ -33,7 +33,6 @@ const data1Echarts = () => {
     isShow: false,
   });
   option.data1 = setBar(data1, { interval: 1 });
-  console.log("data1: ", option.data1);
 };
 
 const data2Echarts = () => {

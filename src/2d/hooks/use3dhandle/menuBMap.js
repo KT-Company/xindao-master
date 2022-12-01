@@ -53,34 +53,34 @@ const handleBMenuBMap = {
     API.showEnterpriseIcons()
     API.hideEnterpriseIconPopups();
     API.hideThreeFlows()
-    isPick ? API.showThreeCircles() :  API.hideThreeCircles()
+    isPick ? API.showThreeCircles() : API.hideThreeCircles()
   },
   "2-2": (isPick) => {
     API.showEnterpriseIcons()
     API.hideEnterpriseIconPopups();
     API.hideThreeCircles()
     API.hideThreeFlows()
-    if(store.state.menuBid.includes('2-2'))API.showThreeFlowsByType('money')
-    if(store.state.menuBid.includes('2-3'))API.showThreeFlowsByType('logistics')
-    if(store.state.menuBid.includes('2-4'))API.showThreeFlowsByType('information')
+    if (store.state.menuBid.includes('2-2')) API.showThreeFlowsByType('money')
+    if (store.state.menuBid.includes('2-3')) API.showThreeFlowsByType('logistics')
+    if (store.state.menuBid.includes('2-4')) API.showThreeFlowsByType('information')
   },
   "2-3": (isPick) => {
     API.showEnterpriseIcons()
     API.hideEnterpriseIconPopups();
     API.hideThreeCircles()
     API.hideThreeFlows()
-    if(store.state.menuBid.includes('2-2'))API.showThreeFlowsByType('money')
-    if(store.state.menuBid.includes('2-3'))API.showThreeFlowsByType('logistics')
-    if(store.state.menuBid.includes('2-4'))API.showThreeFlowsByType('information')
+    if (store.state.menuBid.includes('2-2')) API.showThreeFlowsByType('money')
+    if (store.state.menuBid.includes('2-3')) API.showThreeFlowsByType('logistics')
+    if (store.state.menuBid.includes('2-4')) API.showThreeFlowsByType('information')
   },
   "2-4": (isPick) => {
     API.showEnterpriseIcons()
     API.hideEnterpriseIconPopups();
     API.hideThreeCircles()
     API.hideThreeFlows()
-    if(store.state.menuBid.includes('2-2'))API.showThreeFlowsByType('money')
-    if(store.state.menuBid.includes('2-3'))API.showThreeFlowsByType('logistics')
-    if(store.state.menuBid.includes('2-4'))API.showThreeFlowsByType('information')
+    if (store.state.menuBid.includes('2-2')) API.showThreeFlowsByType('money')
+    if (store.state.menuBid.includes('2-3')) API.showThreeFlowsByType('logistics')
+    if (store.state.menuBid.includes('2-4')) API.showThreeFlowsByType('information')
   },
   // ******* 区域层 end *******
   // ******* 制造集团 start *******
@@ -201,17 +201,17 @@ const handleBMenuBMap = {
   },
   '5-1': () => {
     API.hideAll()
-      API.showRoutes();
-      API.showModels();
-      API.showMirror()
-      API.cameraAnimation({
-        cameraState: STATE.enterpriseInnerStates.zhengwuzhongxin,
-        callback: () => {
-          API.hideAll();
-          API.showEnterpriseByName('zhengwuzhongxinbangongshi')
-          API.showMirror()
-        },
-      });
+    API.showRoutes();
+    API.showModels();
+    API.showMirror()
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseInnerStates.zhengwuzhongxin,
+      callback: () => {
+        API.hideAll();
+        API.showEnterpriseByName('zhengwuzhongxinbangongshi')
+        API.showMirror()
+      },
+    });
   },
   // ******* 物流公司 start *******
   "7-0": () => {
@@ -345,6 +345,21 @@ const handleBMenuBMap = {
     const obj = API.findEnterpriseInnerIconByName(
       STATE.enterprisesInnerIcons["Xiao_Shou_Gong_Si"],
       "业务部"
+    );
+    CACHE.container.cameraFocus({
+      target: [obj.position.x, obj.position.y, obj.position.z],
+      distance: 2000,
+    });
+  }, 
+  "9-4": () => {
+    // 财务部
+    API.hideAll()
+    API.showEnterpriseByName('Xiao_Shou_Gong_Si')
+    API.showEnterpriseIconInnerByType('Xiao_Shou_Gong_Si')
+    API.showMirror()
+    const obj = API.findEnterpriseInnerIconByName(
+      STATE.enterprisesInnerIcons["Xiao_Shou_Gong_Si"],
+      "财务部"
     );
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],

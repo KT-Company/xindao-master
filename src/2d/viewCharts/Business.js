@@ -196,8 +196,6 @@ export function setLine(data) {
 }
 // 折现图----------------------------
 export function setLineFinancial(data) {
-    console.log(data);
-    console.log('data---------------------');
     return {
         tooltip: {
             trigger: 'axis',
