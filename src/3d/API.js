@@ -75,7 +75,7 @@ function loadEnterPrises() {
 
 
     const bgColor = 'rgba(0,0,0,.5)'
-    const titleColor = '#ff0000'
+    const titleColor = '#ffffff'
     const titleSize = 14
     const content = data.content
     const infoPopup = new Bol3D.POI.Popup({
@@ -438,7 +438,7 @@ function loadByJson() {
       return value.json();
     })
     .then((result) => {
-      console.log("result", result);
+      // console.log("result", result);
 
       let count = 0;
       result.road.forEach((d) => {

@@ -96994,6 +96994,7 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	    ddpPass;
 	    ssrSkyBox;
 	    ssrtPass;
+	    filterPass;
 	    envMap;
 	    hdrUrls;
 	    sceneModels;
@@ -98040,6 +98041,10 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	            this.sceneComposer.addPass(this.ssrtPass);
 	        }
 	        // *** test depth peeling end ***
+	        // *** filter pass start ***
+	        // this.filterPass = new FilterPass()
+	        // this.sceneComposer.addPass(this.filterPass)
+	        // *** filter pass end ***
 	        // **** TEST PASS start ******
 	        // const testPass = new ShaderPass(
 	        //   new ShaderMaterial({
@@ -103612,14 +103617,17 @@ void main(){
 	        super();
 	        this.opts = Object.assign({
 	            color: '#0000ff',
-	            emissive: '#ffffff',
-	            minHeight: -155,
-	            maxHeight: -36
+	            emissiveBase: '#ffffff',
+	            minHeightBase: -155,
+	            maxHeightBase: -36,
+	            mixColorBase: '#ff0000',
+	            thresholdBase: 0,
+	            minHeightStripe: -155,
+	            maxHeightStripe: -36,
+	            emissiveStripe: '#ffffff'
 	        }, opts);
 	        this.lights = true;
 	        this.transparent = true;
-	        this.depthWrite = true;
-	        this.depthTest = true;
 	        this.uniforms = {
 	            color: {
 	                value: new Color(this.opts.color)
@@ -103627,14 +103635,29 @@ void main(){
 	            opacity: {
 	                value: 1
 	            },
-	            emissive: {
-	                value: new Color(this.opts.emissive)
+	            emissiveBase: {
+	                value: new Color(this.opts.emissiveBase)
 	            },
-	            minHeight: {
-	                value: this.opts.minHeight
+	            minHeightBase: {
+	                value: this.opts.minHeightBase
 	            },
-	            maxHeight: {
-	                value: this.opts.maxHeight
+	            maxHeightBase: {
+	                value: this.opts.maxHeightBase
+	            },
+	            mixColorBase: {
+	                value: new Color(this.opts.mixColorBase)
+	            },
+	            thresholdBase: {
+	                value: this.opts.thresholdBase
+	            },
+	            emissiveStripe: {
+	                value: new Color(this.opts.emissiveStripe)
+	            },
+	            minHeightStripe: {
+	                value: this.opts.minHeightStripe
+	            },
+	            maxHeightStripe: {
+	                value: this.opts.maxHeightStripe
 	            }
 	        };
 	        this.vertexShader = `
@@ -103691,14 +103714,20 @@ void main(){
         varying vec3 v_normal;
 
         uniform vec3 color;
-        uniform vec3 emissive;
+        uniform vec3 emissiveBase;
+        uniform vec3 emissiveStripe;
         uniform float opacity;
+        uniform float thresholdBase;
 
         varying vec3 vLightFront;
         varying vec3 vIndirectFront;
 
-        uniform float minHeight;
-        uniform float maxHeight;
+        uniform vec3 mixColorBase;
+
+        uniform float minHeightBase;
+        uniform float maxHeightBase;
+        uniform float minHeightStripe;
+        uniform float maxHeightStripe;
 
         #ifdef DOUBLE_SIDED
           varying vec3 vLightBack;
@@ -103734,7 +103763,7 @@ void main(){
           // gl_FragColor = diffuseColor; // 基础色
           #include <clipping_planes_fragment>
           ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
-          vec3 totalEmissiveRadiance = emissive;
+          vec3 totalEmissiveRadiance = emissiveBase;
 
           #include <logdepthbuf_fragment>
           #include <map_fragment>
@@ -103770,13 +103799,20 @@ void main(){
           vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
           gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 
+          float interval = maxHeightBase - minHeightBase;
+          float offsetHeight = baseHeight - minHeightBase;
 
-          float centerY = (maxHeight - minHeight) / 2.;
+          float dc = (offsetHeight + thresholdBase) / interval;
+
+          gl_FragColor.rgb += emissiveBase * dc / 2.;
+          gl_FragColor.rgb += mixColorBase * (dc / 2. + .5);
+
+          float centerY = (maxHeightStripe - minHeightStripe) / 2.;
           float ds = dot(v_normal, vec3(0., 1. ,0.));
-          if(baseHeight >= minHeight && baseHeight <= maxHeight && ds < 0.0001 && ds > -0.0001){
+          if(baseHeight >= minHeightStripe && baseHeight <= maxHeightStripe && ds < 0.0001 && ds > -0.0001){
             float rs = mod(abs(abs(centerY) - abs(baseHeight)), 10.);
             if(rs <= 2. && rs >= .2){
-              gl_FragColor.rgb += totalEmissiveRadiance;
+              gl_FragColor.rgb += emissiveStripe;
             }
           }
 
@@ -103805,8 +103841,6 @@ void main(){
 	        }, opts);
 	        this.lights = true;
 	        this.transparent = true;
-	        // this.depthWrite = true
-	        // this.depthTest = true
 	        this.uniforms = {
 	            color: {
 	                value: new Color(this.opts.color)

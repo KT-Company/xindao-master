@@ -25,9 +25,13 @@ const store = createStore({
             data7: {},
             data8: {},
             debug: true, // console
+            pickId: 1, // 二级菜单显示
         }
     },
     mutations: {
+        setPickId(state,value){
+            state.pickId = value
+        },
         setMenuAid(state, value) {
             state.menuAid = value
         },
