@@ -7,12 +7,9 @@ import { setZhexiantu } from "@/2d/viewCharts/Environmental";
 import { setJinduChart } from "@/2d/viewCharts/Production";
 import useData from "@/2d/hooks/useData";
 const base = useData.data7("制造集团");
-console.log(
-  "制造集团data7: ",
-  base.filter((item) => item.qygrqk01 == "高级工人")
-);
 const base1 = useData.data8("制造集团");
-console.log("制造集团data8: ", base);
+const base9 = useData.data9("制造集团");
+const base10 = useData.data10("制造集团");
 const store = useStore();
 const option = reactive({
   data1: {},
@@ -56,10 +53,10 @@ const data1 = reactive({
 });
 
 const data2 = reactive({
-  xData: base1.map((item) => item.month),
+  xData: base10.map((item) => item.month),
   data: [
-    { name: "实际产量", value: base1.map((item) => item.qyclzs02) },
-    { name: "计划产量", value: [1, 2, 3, 6, 5, 6, 7, 8, 9, 2, 11, 12] },
+    { name: "实际产量", value: base10.map((item) => item.qyclzs02) },
+    { name: "计划产量", value: base10.map((item) => item.qyclzs03) },
   ],
 });
 
@@ -69,17 +66,20 @@ const data3 = reactive({
     {
       name: "完工",
       color: "92,115,230",
-      value: base.find((item) => item.qysbzt01 == "完工").qysbzt02,
+      value: base9.find((item) => item.qysbzt01 == "完工").qysbzt03,
+      value1: base9.find((item) => item.qysbzt01 == "完工").qysbzt02,
     },
     {
       name: "生产中",
       color: "255,159,64",
-      value: base.find((item) => item.qysbzt01 == "生产中").qysbzt02,
+      value: base9.find((item) => item.qysbzt01 == "生产中").qysbzt03,
+      value1: base9.find((item) => item.qysbzt01 == "生产中").qysbzt02,
     },
     {
       name: "空闲",
       color: "72,192,151",
-      value: base.find((item) => item.qysbzt01 == "空闲").qysbzt02,
+      value: base9.find((item) => item.qysbzt01 == "空闲").qysbzt03,
+      value1: base9.find((item) => item.qysbzt01 == "生产中").qysbzt02,
     },
   ],
 });
@@ -161,7 +161,7 @@ grpgqk.value[2].option = setJinduChart(grpgqk.value[2].zhanbi);
             :key="i"
           >
             <span class="sbzt-name hui">{{item.name}}</span>
-            <span class="sbzt-val">{{item.value}}</span>
+            <span class="sbzt-val">{{item.value1}}</span>
           </li>
         </ul>
       </Content>

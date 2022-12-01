@@ -1,5 +1,5 @@
 
-import { getData1, getData2, getData3, getData4, getData5, getData6, getData7, getData8 } from '@/2d/api'
+import { getData1, getData2, getData3, getData4, getData5, getData6, getData7, getData8, getData9, getData10 } from '@/2d/api'
 import store from '@/2d/store'
 
 const All = () => {
@@ -41,6 +41,16 @@ const All = () => {
   getData8().then(res => {
     store.commit('setData8', res.data.formInfoList)
     store.state.debug && console.log('data8：', store.state.data8);
+  })
+
+  getData9().then(res => {
+    store.commit('setData9', res.data.formInfoList)
+    store.state.debug && console.log('data9：', store.state.data9);
+  })
+
+  getData10().then(res => {
+    store.commit('setData10', res.data.formInfoList)
+    store.state.debug && console.log('data10：', store.state.data10);
   })
 }
 

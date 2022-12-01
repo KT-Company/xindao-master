@@ -49,7 +49,7 @@ const handleHome = () => {
 
 <template>
   <p class="time">
-    <span>数据统计时间： {{ store.state.year }}年</span>
+    <span>数据统计时间： {{ store.state.globalYear }}年</span>
   </p>
   <img src="../../assets/images/home.png" class="home" @click="handleHome" />
   <img src="../../assets/images/logoa.png" class="head" />
