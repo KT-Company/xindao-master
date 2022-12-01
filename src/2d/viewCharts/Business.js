@@ -460,7 +460,7 @@ export function setBarAcross(data) {
                 height: '84%',
                 top: 30,
                 start: 0,
-                end: 40,
+                end: data.labelData.length > 3 ? 50 : 100,
                 zoomLock: true,
                 // show: false,
                 showDetail: false,
