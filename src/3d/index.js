@@ -32,8 +32,8 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           STATE.earthState.position.y,
           STATE.earthState.position.z,
         ],
-        near: 0.001,
-        far: 400000,
+        near: 0.1,
+        far: 1000000,
         fov: 60,
       },
     },
@@ -97,7 +97,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       "/assets/models/BeiJing/yinhangyuanqu.glb",
       "/assets/models/BeiJing/zhengwuzhongxin.glb",
       "/assets/models/BeiJing/zhizaojituan.glb",
-      // // *** 内部 ***
+      // *** 内部 ***
       "/assets/models/NeiBu/GongYingBanGongShi.glb",
       "/assets/models/NeiBu/JingXiaoBanGongShi.glb",
       "/assets/models/NeiBu/Xiao_Shou_Gong_Si.glb",
@@ -161,22 +161,27 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         model.scale.set(2, 3.8, 2);
         model.children.forEach((m) => {
           if (m.isMesh) {
-            m.material =
-              new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
-                color: "#1a2199",
-                emissive: "#ff004b",
-                minHeight: -142,
-                maxHeight: -82,
-                threshold: 0,
-                mixColor: "#512c2c",
-              });
+            // m.material =
+            //   new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
+            //     color: "#1a2199",
+            //     emissive: "#ff004b",
+            //     minHeight: -142,
+            //     maxHeight: -82,
+            //     threshold: 0,
+            //     mixColor: "#512c2c",
+            //   });
 
-            // m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
-            //   color: '#0000ff',
-            //   emissive: '#00ffff',
-            //   minHeight: -142,
-            //   maxHeight: -27
-            // })
+            m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
+              color: '#405887',
+              emissiveBase: '#969696',
+              minHeightBase: -142,
+              maxHeightBase: -125,
+              mixColorBase: '#01010a',
+              thresholdBase: 0,
+              minHeightStripe: -183,
+              maxHeightStripe: -90,
+              emissiveStripe: '#555555'
+            })
             // CACHE.container.addBloom(m)
             // todo
             // m.material.envMap = CACHE.container.envMap
@@ -320,9 +325,9 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         });
       });
 
-      // API.hideAll();
-      // API.showModels();
-      // API.showRoutes();
+      API.hideAll();
+      API.showModels();
+      API.showRoutes();
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
@@ -342,7 +347,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // mirror
       const mirrorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
       const groundMirror = new Bol3D.Reflector(mirrorGeo, {
-        clipBias: 0.0003,
+        clipBias: -.005,
         textureWidth: window.innerWidth * window.devicePixelRatio,
         textureHeight: window.innerHeight * window.devicePixelRatio,
         color: 0x777777,
@@ -717,6 +722,102 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // })
       // ****************** 3流 end ****************
 
+      // models
+      // const areaModels = {
+      //   color: '#606089',
+      //         emissiveBase: '#282828',
+      //         minHeightBase: -122,
+      //         maxHeightBase: -112,
+      //         mixColorBase: '#545575',
+      //         thresholdBase: 0,
+      //         minHeightStripe: -183,
+      //         maxHeightStripe: -90,
+      //         emissiveStripe: '#555555'
+      // }
+      // const areasModelFolder = gui.addFolder('区域模型')
+      // areasModelFolder.addColor(areaModels, 'color').onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.color.value.set(val)
+      //       }
+      //     })
+      //   })
+      // })
+      // areasModelFolder.addColor(areaModels, 'emissiveBase').onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.emissiveBase.value.set(val)
+      //       }
+      //     })
+      //   })
+      // })
+      // areasModelFolder.addColor(areaModels, 'mixColorBase').onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.mixColorBase.value.set(val)
+      //       }
+      //     })
+      //   })
+      // })
+      // areasModelFolder.addColor(areaModels, 'emissiveStripe').onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.emissiveStripe.value.set(val)
+      //       }
+      //     })
+      //   })
+      // })
+
+      // areasModelFolder.add(areaModels, 'minHeightBase').step(1).onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.minHeightBase.value = val
+      //       }
+      //     })
+      //   })
+      // })
+      // areasModelFolder.add(areaModels, 'maxHeightBase').step(1).onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.maxHeightBase.value = val
+      //       }
+      //     })
+      //   })
+      // })
+      // areasModelFolder.add(areaModels, 'thresholdBase').onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.thresholdBase.value = val
+      //       }
+      //     })
+      //   })
+      // })
+      // areasModelFolder.add(areaModels, 'minHeightStripe').onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.minHeightStripe.value = val
+      //       }
+      //     })
+      //   })
+      // })
+      // areasModelFolder.add(areaModels, 'maxHeightStripe').onChange((val) => {
+      //   CACHE.cities2.forEach( cs => {
+      //     cs.children.forEach( d => {
+      //       if(d.isMesh){
+      //         d.material.uniforms.maxHeightStripe.value = val
+      //       }
+      //     })
+      //   })
+      // })
+
       // ********************** gui end **********************
     },
   });
@@ -768,6 +869,10 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           cameraState: STATE.enterpriseStates[obj.parent.userData.type],
           callback: () => {
             obj.parent.children[obj.parent.children.length - 1].visible = true;
+            store.commit("changeLevel", 3);
+            store.commit("setMenuBid", null);
+            if(STATE.enterpriseInnerMap[obj.parent.userData.type])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.parent.userData.type].id)
+            store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.parent.userData.type].id);
           },
         });
       }
@@ -775,19 +880,37 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
     ) {
       if (store.state.LEVEL == 2) {
-        store.commit("setMenuBid", null);
-        API.hideEnterpriseIcons();
-        API.hideThreeFlows();
-        API.hideThreeCircles();
-        API.cameraAnimation({
-          cameraState: STATE.enterpriseStates[obj.userData.name],
-          callback: () => {
-            CACHE.enterpriseIcons.forEach((d) => {
-              if (d.userData.type == obj.userData.name)
-                d.children[d.children.length - 1].visible = true;
-            });
-          },
-        });
+          store.commit("setMenuBid", null);
+          API.hideEnterpriseIcons();
+          API.hideThreeFlows();
+          API.hideThreeCircles();
+          API.cameraAnimation({
+            cameraState: STATE.enterpriseStates[obj.userData.name],
+            callback: () => {
+              CACHE.enterpriseIcons.forEach((d) => {
+                if (d.userData.type == obj.userData.name) d.children[d.children.length - 1].visible = true;
+              });
+              store.commit("changeLevel", 3);
+              store.commit("setMenuBid", null);
+              if(STATE.enterpriseInnerMap[obj.userData.name])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.userData.name].id)
+              store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.userData.name].id);
+            },
+          });
+      }else if(store.state.LEVEL == 3){
+        if(Object.keys(STATE.enterpriseInnerMap).includes(obj.userData.name)){
+          // 整体布局
+          API.hideAll()
+          API.showEnterpriseByName(STATE.enterpriseInnerMap[obj.userData.name].name)
+          if(STATE.enterpriseInnerMap[obj.userData.name].hasInnerIcon)API.showEnterpriseIconInnerByType(STATE.enterpriseInnerMap[obj.userData.name].name)
+          API.showMirror()
+          API.cameraAnimation({
+            cameraState: STATE.enterpriseInnerStates[obj.userData.name],
+          });
+          store.commit("setMenuBid", null);
+          store.commit("setMenuBid", `${STATE.enterpriseInnerMap[obj.userData.name].id}-${STATE.enterpriseInnerMap[obj.userData.name].cid}`);
+          store.commit("changeLevel", 4);
+          router.push(STATE.enterpriseInnerMap[obj.userData.name].path);
+        }
       }
     }
   };

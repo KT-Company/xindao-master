@@ -27,10 +27,14 @@ const store = createStore({
             data9: [],
             data10: [],
             debug: true, // console
-            globalYear: window.publicParams.year // 左上角年份
+            globalYear: window.publicParams.year, // 左上角年份
+            pickId: 1, // 二级菜单显示
         }
     },
     mutations: {
+        setPickId(state,value){
+            state.pickId = value
+        },
         setMenuAid(state, value) {
             state.menuAid = value
         },

@@ -865,6 +865,65 @@ const isAnimating = false;
 const RADIUS = 55000;
 const CAMERA_BOUNDS = 48000;
 
+const enterpriseInnerMap = {
+  zhizaojituan : {
+    hasInnerIcon : true,
+    name: 'zhizaojituanbangongshi',
+    id: 3,
+    cid: 0,
+    path: '/Manufacture',
+  },
+  yinhangyuanqu : {
+    hasInnerIcon : false,
+    name: 'yinghang',
+    id: 4,
+    cid: 1,
+    path: '/ICBC',
+  },
+  zhengwuzhongxin : {
+    hasInnerIcon : false,
+    name: 'zhengwuzhongxinbangongshi',
+    id: 5,
+    cid: 1,
+    path: '/Government',
+  },
+  wuliuqiye : {
+    hasInnerIcon : true,
+    name: 'wuliubangongshi',
+    id: 7,
+    cid: 0,
+    path: '/Logistics',
+  },
+  zonghefuwulou: {
+    hasInnerIcon : true,
+    name: 'zonghefuwulou',
+    id: 8,
+    cid: 0,
+    path: "/Comprehensive",
+  },
+  Xiao_Shou_Gong_Si: {
+    hasInnerIcon : true,
+    name: 'Xiao_Shou_Gong_Si',
+    id: 9,
+    cid: 0,
+    path: '/Manufacture',
+  },
+  GongYingBanGongShi: {
+    hasInnerIcon : true,
+    name: 'GongYingBanGongShi',
+    id: 10,
+    cid: 0,
+    path: '/Manufacture',
+  },
+  JingXiaoBanGongShi:{
+    hasInnerIcon : true,
+    name: 'JingXiaoBanGongShi',
+    id: 11,
+    cid: 0,
+    path: '/Manufacture',
+  }
+}
+
 export const STATE = {
   DEV_ENV,
   boundrayGeojson,
@@ -904,5 +963,6 @@ export const STATE = {
   threeCirclesStates,
   threeFlowsStates,
   modelExcludeMap,
-  threeFlowsMap
+  threeFlowsMap,
+  enterpriseInnerMap
 };

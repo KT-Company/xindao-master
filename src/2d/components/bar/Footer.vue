@@ -13,7 +13,6 @@ import USE3D from "@/2d/hooks/use3d";
 const router = useRouter();
 const store = useStore();
 
-const pickId = ref(1); // 二级菜单显示
 const isShowBack = () => {
   const isDepartment = ![1, 2].includes(store.state.menuAid);
   return isDepartment && store.state.menuBid.length;
@@ -32,7 +31,7 @@ const handleFooters = (item, leve, son) => {
       store.commit("setMenuBid", _son.id);
     }
     router.push(item.path);
-    pickId.value = item.id;
+    store.commit('setPickId' , item.id)
   } else {
     if (STATE.isAnimating) return;
     // 二级菜单点击事件
@@ -96,7 +95,7 @@ watch(
           <!-- 二级菜单 -->
           <ul
             :class="['menu-children', 'animated fadeIn']"
-            v-show="item.id === pickId"
+            v-show="item.id === store.state.pickId"
           >
             <div :class="['c-main', `pickClass${item.id}`]">
               <img
