@@ -440,10 +440,9 @@ export function setBarAcross(data) {
             },
         },
         grid: {
-            containLabel: true,
             left: 0,
             top: 20,
-            right: 0,
+            right: 20,
             bottom: 0,
         },
         tooltip: {

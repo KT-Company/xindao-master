@@ -258,7 +258,6 @@ const data7Echarts = () => {
   height: 76.64% !important;
 
   .wrap-data-pie {
-    padding: 1vh 0;
     box-sizing: border-box;
     justify-content: left;
 
@@ -305,7 +304,7 @@ const data7Echarts = () => {
   .data4-warp {
     .echart-data {
       width: 100%;
-      height: 15vh;
+      height: 13vh;
     }
   }
 }

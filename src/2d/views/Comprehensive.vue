@@ -275,13 +275,17 @@ let synthesizeIncome = reactive({
 
   .synthesizeIncome-wrap {
     margin: 0 1rem;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
 
     &>div:not(:last-child) {
       border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     &>div {
-      padding: 6% 0 5% 0;
+      padding: 2% 0 4% 0;
 
       &>div {
         align-items: self-end;
