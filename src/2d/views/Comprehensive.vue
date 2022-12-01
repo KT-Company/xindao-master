@@ -205,11 +205,17 @@ let synthesizeIncome = reactive({
 
       span {
         margin: 0 0.5rem;
-        flex: 1;
+        // flex: 1;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
+        // font-size: 1.9vw;
+        width: 12%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.9vw;
+        font-size: 1.5vw;
+        padding: 0.8vh 0vh;
       }
 
       .fg {
@@ -285,10 +291,10 @@ let synthesizeIncome = reactive({
     }
 
     &>div {
-      padding: 2% 0 4% 0;
+      flex: 1;
 
       &>div {
-        align-items: self-end;
+        align-items: center;
         flex: 1;
         justify-content: flex-start;
 
@@ -300,7 +306,6 @@ let synthesizeIncome = reactive({
           padding-left: 1rem;
 
           &>div:nth-of-type(1) {
-            height: 1vh;
             font-size: 14px;
             font-family: Source Han Sans CN;
             font-weight: 500;
@@ -309,7 +314,6 @@ let synthesizeIncome = reactive({
           }
 
           &>div:nth-of-type(2) {
-            height: 1vh;
             font-size: 16px;
             font-family: Source Han Sans CN;
             font-weight: 500;
@@ -319,8 +323,8 @@ let synthesizeIncome = reactive({
       }
 
       img {
-        width: 2rem;
-        height: 2rem;
+        width: 1.5rem;
+        height: 1.5rem;
         margin-right: 11%;
       }
     }
