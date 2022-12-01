@@ -103,10 +103,7 @@ const data5Echarts = () => {
       <Title>企业营业收入</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart
-            :option="option.data1"
-            class="echart-data"
-          ></Echart>
+          <Echart :option="option.data1" class="echart-data"></Echart>
         </div>
         <div class="type-wrap">
           <div class="purple">￥{{ data1.value0 }}</div>
@@ -121,10 +118,7 @@ const data5Echarts = () => {
       <Title>企业成本支出</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart
-            :option="option.data2"
-            class="echart-data"
-          ></Echart>
+          <Echart :option="option.data2" class="echart-data"></Echart>
         </div>
         <div class="type-wrap">
           <div class="green">￥{{ data2.value0 }}</div>
@@ -139,10 +133,7 @@ const data5Echarts = () => {
       <Title>总资产增长率</Title>
       <Content>
         <div class="data3-warp">
-          <Echart
-            :option="option.data3"
-            class="echart-data"
-          ></Echart>
+          <Echart :option="option.data3" class="echart-data"></Echart>
         </div>
       </Content>
     </Bar>
@@ -153,10 +144,7 @@ const data5Echarts = () => {
       <Title>资产负债率</Title>
       <Content>
         <div class="data4-warp">
-          <Echart
-            :option="option.data4"
-            class="echart-data"
-          ></Echart>
+          <Echart :option="option.data4" class="echart-data"></Echart>
         </div>
       </Content>
     </Bar>
@@ -164,10 +152,7 @@ const data5Echarts = () => {
       <Title>销售毛利率</Title>
       <Content>
         <div class="data5-warp">
-          <Echart
-            :option="option.data5"
-            class="echart-data"
-          ></Echart>
+          <Echart :option="option.data5" class="echart-data"></Echart>
         </div>
       </Content>
     </Bar>
@@ -183,6 +168,7 @@ const data5Echarts = () => {
   grid-template-rows: 231fr 233fr 244fr;
   row-gap: 2%;
   height: 68.44% !important;
+  top: 17% !important;
 
   .wrap-data-pie {
     padding: 1vh 0;
@@ -202,7 +188,7 @@ const data5Echarts = () => {
       position: relative;
       top: -1vh;
 
-      & > div {
+      &>div {
         font-size: 1vw;
         font-family: Source Han Sans CN;
         font-weight: 400;
@@ -217,7 +203,7 @@ const data5Echarts = () => {
         color: #4eba92;
       }
 
-      & > p {
+      &>p {
         font-size: 0.5rem;
         font-family: Source Han Sans CN;
         font-weight: 400;
@@ -241,6 +227,7 @@ const data5Echarts = () => {
   grid-template-rows: 362fr 362fr;
   row-gap: 2%;
   height: 68.44% !important;
+  top: 17% !important;
 
   .data4-warp {
     .echart-data {
