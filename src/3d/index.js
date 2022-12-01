@@ -325,9 +325,9 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         });
       });
 
-      // API.hideAll();
-      // API.showModels();
-      // API.showRoutes();
+      API.hideAll();
+      API.showModels();
+      API.showRoutes();
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
@@ -869,6 +869,10 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           cameraState: STATE.enterpriseStates[obj.parent.userData.type],
           callback: () => {
             obj.parent.children[obj.parent.children.length - 1].visible = true;
+            store.commit("changeLevel", 3);
+            store.commit("setMenuBid", null);
+            if(STATE.enterpriseInnerMap[obj.parent.userData.type])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.parent.userData.type].id)
+            store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.parent.userData.type].id);
           },
         });
       }
@@ -888,7 +892,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
               });
               store.commit("changeLevel", 3);
               store.commit("setMenuBid", null);
-              store.commit('setPickId' , STATE.enterpriseInnerMap[obj.userData.name].id)
+              if(STATE.enterpriseInnerMap[obj.userData.name])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.userData.name].id)
               store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.userData.name].id);
             },
           });
@@ -903,7 +907,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             cameraState: STATE.enterpriseInnerStates[obj.userData.name],
           });
           store.commit("setMenuBid", null);
-          store.commit("setMenuBid", `${STATE.enterpriseInnerMap[obj.userData.name].id}-0`);
+          store.commit("setMenuBid", `${STATE.enterpriseInnerMap[obj.userData.name].id}-${STATE.enterpriseInnerMap[obj.userData.name].cid}`);
           store.commit("changeLevel", 4);
           router.push(STATE.enterpriseInnerMap[obj.userData.name].path);
         }
