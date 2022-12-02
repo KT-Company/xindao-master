@@ -213,8 +213,15 @@ export function setZhuChart(res, obj) {
         },
       },
     },
+    title:{
+      text: obj?.unit ? obj.unit : '',
+      left: 0,
+      textStyle: {
+        color: chart.fontColor,
+        fontSize: chart.fontSize,
+      }
+    },
     yAxis: {
-      name: obj?.unit ? obj.unit : '',
       type: "value",
       nameTextStyle: {
         color: chart.fontColor,
@@ -587,6 +594,7 @@ export function setBingChart3(res, obj) {
                 b: {
                   fontSize: chart.fontSize,
                   color: chart.fontColor,
+                  padding: [3, 4, 5, 6],
                 },
                 c: {
                   fontSize: chart.fontSize + 1,
@@ -599,9 +607,8 @@ export function setBingChart3(res, obj) {
         labelLine: {
           normal: {
             length: 20,
-            length2: 20
+            length2: 20,
           },
-
         },
         data: res.data,
       },

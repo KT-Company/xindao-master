@@ -79,7 +79,7 @@ const data3 = reactive({
       name: "空闲",
       color: "72,192,151",
       value: base9.find((item) => item.qysbzt01 == "空闲").qysbzt03,
-      value1: base9.find((item) => item.qysbzt01 == "生产中").qysbzt02,
+      value1: base9.find((item) => item.qysbzt01 == "空闲").qysbzt02,
     },
   ],
 });

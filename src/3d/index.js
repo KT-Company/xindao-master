@@ -4,6 +4,7 @@ import { CACHE } from "./CACHE.js";
 import { DATA } from "./DATA.js";
 import store from "@/2d/store";
 import router from "@/2d/router";
+import { handleMenu } from '@/3d/handle2d'
 
 let Bol3D = window.Bol3D;
 
@@ -191,10 +192,10 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         CACHE.models.push(model);
 
         // model.visible = false
-      } else if(model.name == 'peilou'){
+      } else if (model.name == 'peilou') {
         model.scale.set(2, 3.8, 2);
         let count = 0;
-        model.children.forEach((child , index) => {
+        model.children.forEach((child, index) => {
           if (child.type == "Object3D") {
             child.children.forEach((gchild) => {
               count++;
@@ -259,7 +260,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             child.visible = false;
           }
         });
-      }else {
+      } else {
         model.scale.set(100, 100, 100);
         if (STATE.enterprisesNames.includes(model.name)) {
           CACHE.innerEnterprises.push(model);
@@ -871,7 +872,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             obj.parent.children[obj.parent.children.length - 1].visible = true;
             store.commit("changeLevel", 3);
             store.commit("setMenuBid", null);
-            if(STATE.enterpriseInnerMap[obj.parent.userData.type])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.parent.userData.type].id)
+            if (STATE.enterpriseInnerMap[obj.parent.userData.type]) store.commit('setPickId', STATE.enterpriseInnerMap[obj.parent.userData.type].id)
             store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.parent.userData.type].id);
           },
         });
@@ -880,28 +881,28 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
     ) {
       if (store.state.LEVEL == 2) {
-          store.commit("setMenuBid", null);
-          API.hideEnterpriseIcons();
-          API.hideThreeFlows();
-          API.hideThreeCircles();
-          API.cameraAnimation({
-            cameraState: STATE.enterpriseStates[obj.userData.name],
-            callback: () => {
-              CACHE.enterpriseIcons.forEach((d) => {
-                if (d.userData.type == obj.userData.name) d.children[d.children.length - 1].visible = true;
-              });
-              store.commit("changeLevel", 3);
-              store.commit("setMenuBid", null);
-              if(STATE.enterpriseInnerMap[obj.userData.name])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.userData.name].id)
-              store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.userData.name].id);
-            },
-          });
-      }else if(store.state.LEVEL == 3){
-        if(Object.keys(STATE.enterpriseInnerMap).includes(obj.userData.name)){
+        store.commit("setMenuBid", null);
+        API.hideEnterpriseIcons();
+        API.hideThreeFlows();
+        API.hideThreeCircles();
+        API.cameraAnimation({
+          cameraState: STATE.enterpriseStates[obj.userData.name],
+          callback: () => {
+            CACHE.enterpriseIcons.forEach((d) => {
+              if (d.userData.type == obj.userData.name) d.children[d.children.length - 1].visible = true;
+            });
+            store.commit("changeLevel", 3);
+            store.commit("setMenuBid", null);
+            if (STATE.enterpriseInnerMap[obj.userData.name]) store.commit('setPickId', STATE.enterpriseInnerMap[obj.userData.name].id)
+            store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.userData.name].id);
+          },
+        });
+      } else if (store.state.LEVEL == 3) {
+        if (Object.keys(STATE.enterpriseInnerMap).includes(obj.userData.name)) {
           // 整体布局
           API.hideAll()
           API.showEnterpriseByName(STATE.enterpriseInnerMap[obj.userData.name].name)
-          if(STATE.enterpriseInnerMap[obj.userData.name].hasInnerIcon)API.showEnterpriseIconInnerByType(STATE.enterpriseInnerMap[obj.userData.name].name)
+          if (STATE.enterpriseInnerMap[obj.userData.name].hasInnerIcon) API.showEnterpriseIconInnerByType(STATE.enterpriseInnerMap[obj.userData.name].name)
           API.showMirror()
           API.cameraAnimation({
             cameraState: STATE.enterpriseInnerStates[obj.userData.name],
@@ -971,9 +972,9 @@ export const sceneOnLoad = ({ domElement, callback }) => {
                               store.commit("changeLevel", 1);
                               router.push("/IndustrialEconomy");
 
-                              CACHE.container.orbitControls.maxDistance =  STATE.CAMERA_BOUNDS;
-                              CACHE.container.orbitControls.minPolarAngle =  Math.PI * 0.01;
-                              CACHE.container.orbitControls.maxPolarAngle =  Math.PI * 0.49;
+                              CACHE.container.orbitControls.maxDistance = STATE.CAMERA_BOUNDS;
+                              CACHE.container.orbitControls.minPolarAngle = Math.PI * 0.01;
+                              CACHE.container.orbitControls.maxPolarAngle = Math.PI * 0.49;
                               CACHE.container.orbitCamera.far = 100000;
                               CACHE.container.bounds.radius = STATE.CAMERA_BOUNDS;
                               CACHE.container.bounds.center.set(0, 0, 0);
@@ -984,7 +985,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
                         }
                       })
                     }
-                  
+
                   });
                 },
               });
@@ -1005,6 +1006,8 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         API.showThreeFlowsByName(obj.name);
       }
     } else if (obj.userData.type == "enterpriseIconInner" && obj.visible) {
+      console.log('标签: ', obj);
+      handleMenu(store.state.menuAid, obj.text)
       CACHE.container.cameraFocus({
         target: obj.position,
         distance: 2000,

@@ -24,46 +24,33 @@ onMounted(() => {
   data3Echarts();
   data4Echarts();
 });
+const khxl = base7.filter((item) => item.qykhxl01);
 const data1Echarts = () => {
   const data1 = reactive({
     color: "#C99827",
     name: "客户销量",
-    Xdata: base7.map((item) => item.qykhxl01),
-    dataList: base7.map((item) => item.qykhxl02 || 0),
+    Xdata: khxl.map((item) => item.qykhxl01),
+    dataList: khxl.map((item) => item.qykhxl02 || 0),
     isShow: false,
   });
-  option.data1 = setBar(data1, { interval: 1 });
+  option.data1 = setBar(data1, { interval: 1, barW: "5%" });
 };
-
+let dataObj = {
+  x:[],
+  val:[]
+}
+CHART.inventoryNamesLow.forEach((item,i)=>{
+  if(base5[item]) {
+    dataObj.x.push(CHART.inventoryNames[i])
+    dataObj.val.push(base5[item])
+  }
+})
 const data2Echarts = () => {
   const data2 = reactive({
     color: "#5C73E6",
     name: "客单价",
-    Xdata: CHART.inventoryNames,
-    dataList: [
-      base5.rm01001,
-      base5.rm01002,
-      base5.rm01003,
-      base5.rm01004,
-      base5.rm01005,
-      base5.rm01006,
-      base5.rm01007,
-      base5.rm01008,
-      base5.rm01009,
-      base5.rm01010,
-      base5.rm01011,
-      base5.rm01012,
-      base5.rm01013,
-      base5.rm01014,
-      base5.rm01015,
-      base5.rm01016,
-      base5.rm01017,
-      base5.rm01018,
-      base5.fp00001,
-      base5.fp00002,
-      base5.fp00003,
-    ],
-    isShow: true,
+    Xdata: dataObj.x,
+    dataList: dataObj.val,
   });
   option.data2 = setBar(data2);
 };
@@ -78,34 +65,23 @@ const data3Echarts = () => {
   });
   option.data3 = setLineFinancial(data3);
 };
+
+let dataObj1 = {
+  x:[],
+  val:[]
+}
+CHART.inventoryNamesLow.forEach((item,i)=>{
+  if(base6[item]) {
+    dataObj1.x.push(CHART.inventoryNames[i])
+    dataObj1.val.push(base6[item])
+  }
+})
 const data4Echarts = () => {
   const data4 = reactive({
     color: "#CCCCCC",
     name: "销售结构",
-    Xdata: CHART.inventoryNames,
-    dataList: [
-      base6.rm01001,
-      base6.rm01002,
-      base6.rm01003,
-      base6.rm01004,
-      base6.rm01005,
-      base6.rm01006,
-      base6.rm01007,
-      base6.rm01008,
-      base6.rm01009,
-      base6.rm01010,
-      base6.rm01011,
-      base6.rm01012,
-      base6.rm01013,
-      base6.rm01014,
-      base6.rm01015,
-      base6.rm01016,
-      base6.rm01017,
-      base6.rm01018,
-      base6.fp00001,
-      base6.fp00002,
-      base6.fp00003,
-    ],
+    Xdata: dataObj1.x,
+    dataList: dataObj1.val,
     isShow: true,
   });
   option.data4 = setBar(data4);

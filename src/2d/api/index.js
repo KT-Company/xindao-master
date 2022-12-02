@@ -6,34 +6,34 @@ import useData from '../hooks/useData'
 const p = store.state.urlParam
 // https://dapi.seentao.com/custom-form/customForm.formInfos.get
 // 部署环境 api 地址
-const url = `${window.publicUrl}?
-caseVersionId=${p.caseVersionId}
-&enterpriseId=${p.enterpriseId}
-&userName=${p.userName}
-&userId=${p.userId}
-&userType=${p.userType}
-&userToken=${p.userToken}
-&memberId=${p.memberId}
-&orgType=${p.orgType}
-&orgId=${p.orgId}
-&schoolId=${p.schoolId}
-&sceneId=${p.sceneId}
-&sysCode=`
+// const url = `${window.publicUrl}?
+// caseVersionId=${p.caseVersionId}
+// &enterpriseId=${p.enterpriseId}
+// &userName=${p.userName}
+// &userId=${p.userId}
+// &userType=${p.userType}
+// &userToken=${p.userToken}
+// &memberId=${p.memberId}
+// &orgType=${p.orgType}
+// &orgId=${p.orgId}
+// &schoolId=${p.schoolId}
+// &sceneId=${p.sceneId}
+// &sysCode=`
 
 // 开发环境 api 地址（如果没有数据就替换 token -----》 获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：1234qwer!）
-// const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
-// caseVersionId=82347900509093947
-// &enterpriseId=82441349728567340
-// &userName=15178904534
-// &userId=85566304814628903
-// &userType=PLATFORM
-// &userToken=${window.myToken}
-// &memberId=85566304824590394
-// &orgType=SCHOOL
-// &orgId=31978613954314240
-// &schoolId=31978613954314240
-// &sceneId=portal_logo
-// &sysCode=`
+const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+caseVersionId=82347900509093947
+&enterpriseId=82441349728567340
+&userName=15178904534
+&userId=85566304814628903
+&userType=PLATFORM
+&userToken=${window.myToken}
+&memberId=85566304824590394
+&orgType=SCHOOL
+&orgId=31978613954314240
+&schoolId=31978613954314240
+&sceneId=portal_logo
+&sysCode=`
 
 // // get
 // export function get(params) {

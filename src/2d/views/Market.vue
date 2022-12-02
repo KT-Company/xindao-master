@@ -76,8 +76,8 @@ const data4Echarts = () => {
   const data4 = reactive({
     color: "#5C73E6",
     name: "客户销量",
-    Xdata: base1.map((item) => item.qykhxl01),
-    dataList: base1.map((item) => item.qykhxl02),
+    Xdata: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl01),
+    dataList: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl02),
     isShow: false,
   });
   option.data4 = setBar(data4,{ interval: 1 });
@@ -93,68 +93,42 @@ const data5Echarts = () => {
   });
   option.data5 = setLine(data5);
 };
-
+let dataObj = {
+  x:[],
+  val:[]
+}
+CHART.inventoryNamesLow.forEach((item,i)=>{
+  if(base[item]) {
+    dataObj.x.push(CHART.inventoryNames[i])
+    dataObj.val.push(base[item])
+  }
+})
 const data6Echarts = () => {
   const data6 = reactive({
     color: "#5C73E6",
     name: "销售结构",
-    Xdata: CHART.inventoryNames,
-    dataList: [
-      base.rm01001,
-      base.rm01002,
-      base.rm01003,
-      base.rm01004,
-      base.rm01005,
-      base.rm01006,
-      base.rm01007,
-      base.rm01008,
-      base.rm01009,
-      base.rm01010,
-      base.rm01011,
-      base.rm01012,
-      base.rm01013,
-      base.rm01014,
-      base.rm01015,
-      base.rm01016,
-      base.rm01017,
-      base.rm01018,
-      base.fp00001,
-      base.fp00002,
-      base.fp00003,
-    ],
+    Xdata: dataObj.x,
+    dataList: dataObj.val,
     isShow: true,
   });
   option.data6 = setBar(data6);
 };
-
+let dataObj3 = {
+  x:[],
+  val:[]
+}
+CHART.inventoryNamesLow.forEach((item,i)=>{
+  if(base3[item]) {
+    dataObj3.x.push(CHART.inventoryNames[i])
+    dataObj3.val.push(base3[item])
+  }
+})
 const data7Echarts = () => {
   const data7 = reactive({
     color: "rgba(255,159,64)",
     name: "客单价",
-    Xdata: CHART.inventoryNames,
-    dataList: [
-      base3.rm01001,
-      base3.rm01002,
-      base3.rm01003,
-      base3.rm01004,
-      base3.rm01005,
-      base3.rm01006,
-      base3.rm01007,
-      base3.rm01008,
-      base3.rm01009,
-      base3.rm01010,
-      base3.rm01011,
-      base3.rm01012,
-      base3.rm01013,
-      base3.rm01014,
-      base3.rm01015,
-      base3.rm01016,
-      base3.rm01017,
-      base3.rm01018,
-      base3.fp00001,
-      base3.fp00002,
-      base3.fp00003,
-    ],
+    Xdata: dataObj3.x,
+    dataList: dataObj3.val,
     isShow: true,
   });
   option.data7 = setBar(data7);
@@ -200,11 +174,11 @@ const data7Echarts = () => {
           <Echart :option="option.data3" class="echart-data"></Echart>
         </div>
         <div class="type-wrap type-wrap-pie">
-          <p>累计投入</p>
+          <p>累计总投入</p>
           <div>￥{{ data3.value0 }}</div>
-          <p>已开拓</p>
+          <p>已开拓市场</p>
           <div>{{ data3.value1 }}</div>
-          <p>未开拓</p>
+          <p>未开拓市场</p>
           <div>{{ data3.value2 }}</div>
         </div>
       </Content>

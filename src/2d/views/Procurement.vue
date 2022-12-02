@@ -62,13 +62,22 @@ const peMoney = reactive([
 ]);
 // 供应商排行
 const supplier = reactive(
-  base1.map((item, i) => {
-    return {
-      name: `${i + 1}、${item.qygyspm01}`,
-      value: item.qygyspm02 || 0,
-      percentage: item.qygyspm02 || 0,
-    };
-  })
+  // base1.map((item, i) => {
+  //   return {
+  //     name: `${i + 1}、${item.qygyspm01}`,
+  //     value: item.qygyspm02 || 0,
+  //     percentage: item.qygyspm02 || 0,
+  //   };
+  // })
+  base1
+    .filter((item, i) => item.qygyspm01)
+    .map((item, i) => {
+      return {
+        name: `${i + 1}、${item.qygyspm01}`,
+        value: item.qygyspm02 || 0,
+        percentage: item.qygyspm02 || 0,
+      };
+    })
 );
 
 // 物流费用
@@ -114,7 +123,7 @@ const drawBusinessRepoChar = (el) => {
       {
         detail: {
           formatter(val) {
-            return `{val|${val}%}\n{name|总空闲率}`;
+            return `{val|${val}%}\n{name|总空闲占比}`;
           },
         },
         data: [{ value: base3.qyckzy03 }],
@@ -138,39 +147,26 @@ const drawGoodsTRELChar = (el) => {
     series: [{ data: base2.map((item) => item.qychzzl02 || 0) }],
   });
   char.setOption(option);
-  console.log("option: ", option);
 };
 // 企业库存情况
+let dataObj1 = {
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base4[item]) {
+    dataObj1.x.push(CHART.inventoryNames[i]);
+    dataObj1.val.push(base4[item]);
+  }
+});
 const data1 = reactive({
   color: "rgba(255,159,64)",
   name: "企业库存情况",
-  Xdata: CHART.inventoryNames,
-  dataList: [
-    base4.rm01001,
-    base4.rm01002,
-    base4.rm01003,
-    base4.rm01004,
-    base4.rm01005,
-    base4.rm01006,
-    base4.rm01007,
-    base4.rm01008,
-    base4.rm01009,
-    base4.rm01010,
-    base4.rm01011,
-    base4.rm01012,
-    base4.rm01013,
-    base4.rm01014,
-    base4.rm01015,
-    base4.rm01016,
-    base4.rm01017,
-    base4.rm01018,
-    base4.fp00001,
-    base4.fp00002,
-    base4.fp00003,
-  ],
+  Xdata: dataObj1.x,
+  dataList: dataObj1.val,
   isShow: true,
 });
-option.data1 = setBar(data1);
+option.data1 = setBar(data1, {interval: 0});
 // const businessRepoSituationEl = ref(null);
 // const drawBusinessRepoSituationElChar = (el) => {
 //   const { char, option } = getEchartsAndOption(el, "bar1", {});
@@ -390,11 +386,11 @@ onMounted(() => {
 .business-repo-situation {
   height: 100%;
   position: relative;
-  .unit-span{
+  .unit-span {
     position: absolute;
     right: 2%;
     top: -5%;
-    color: rgb(190,211,244);
+    color: rgb(190, 211, 244);
   }
   .char {
     height: 100%;

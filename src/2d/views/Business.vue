@@ -67,8 +67,14 @@ onMounted(() => {
   data8Echarts();
   data9Echarts();
 });
-const labelData = ref(base1.map((item, i) => `${i + 1}、` + item.qygyspm01));
-const valueData = ref(base1.map((item, i) => item.qygyspm02 || 0));
+const labelData = ref(
+  base1
+    .filter((item, i) => item.qygyspm01)
+    .map((item, i) => `${i + 1}、` + item.qygyspm01)
+);
+const valueData = ref(
+  base1.filter((item, i) => item.qygyspm01).map((item) => item.qygyspm02 || 0)
+);
 const data2Echarts = () => {
   labelData;
   const data2 = reactive({
@@ -85,8 +91,10 @@ const data4Echarts = () => {
   const data4 = reactive({
     color: "#5C73E6",
     name: "客户销量",
-    Xdata: base1.map((item) => item.qykhxl01),
-    dataList: base1.map((item) => item.qykhxl02),
+    Xdata: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl01),
+    dataList: base1
+      .filter((item) => item.qykhxl01)
+      .map((item) => item.qykhxl02),
     isShow: false,
   });
   option.data4 = setBar(data4);
@@ -95,7 +103,7 @@ const data5 = reactive({
   color: ["rgb(91,114,227)", "rgba(91,114,227,.5)"],
   data: [base3.qyckzy03],
   perCentum: base3.qyckzy03 + "%",
-  titleData: "总空闲率",
+  titleData: "总空闲占比",
   value0: toThreeDigitRating(base3.qyckzy01),
   value1: toThreeDigitRating(base3.qyckzy02),
 });
@@ -103,105 +111,63 @@ const data5Echarts = () => {
   option.data5 = setPiePercentage(data5);
 };
 
-const data7List = ref([
-  base4.rm01001,
-  base4.rm01002,
-  base4.rm01003,
-  base4.rm01004,
-  base4.rm01005,
-  base4.rm01006,
-  base4.rm01007,
-  base4.rm01008,
-  base4.rm01009,
-  base4.rm01010,
-  base4.rm01011,
-  base4.rm01012,
-  base4.rm01013,
-  base4.rm01014,
-  base4.rm01015,
-  base4.rm01016,
-  base4.rm01017,
-  base4.rm01018,
-  base4.fp00001,
-  base4.fp00002,
-  base4.fp00003,
-]);
-const Xdata7 = ref(CHART.inventoryNames);
+let dataObj4 = {
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base4[item]) {
+    dataObj4.x.push(CHART.inventoryNames[i]);
+    dataObj4.val.push(base4[item]);
+  }
+});
 const data7Echarts = () => {
   const data7 = reactive({
     color: "#5C73E6",
     name: "销售结构",
-    Xdata: Xdata7.value,
-    dataList: data7List.value,
+    Xdata: dataObj4.x,
+    dataList: dataObj4.val,
     isShow: true,
   });
-  option.data7 = setBar(data7);
+  option.data7 = setBar(data7, { interval: 0 });
 };
-const data9List = ref([
-  base.rm01001,
-  base.rm01002,
-  base.rm01003,
-  base.rm01004,
-  base.rm01005,
-  base.rm01006,
-  base.rm01007,
-  base.rm01008,
-  base.rm01009,
-  base.rm01010,
-  base.rm01011,
-  base.rm01012,
-  base.rm01013,
-  base.rm01014,
-  base.rm01015,
-  base.rm01016,
-  base.rm01017,
-  base.rm01018,
-  base.fp00001,
-  base.fp00002,
-  base.fp00003,
-]);
-const Xdata9 = ref(CHART.inventoryNames);
+let dataObj = {
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base[item]) {
+    dataObj.x.push(CHART.inventoryNames[i]);
+    dataObj.val.push(base[item]);
+  }
+});
 const data9Echarts = () => {
   const data9 = reactive({
     color: "#5C73E6",
     name: "客单价",
-    Xdata: Xdata9.value,
-    dataList: data9List.value,
+    Xdata: dataObj.x,
+    dataList: dataObj.val,
     isShow: true,
   });
-  option.data9 = setBar(data9);
+  option.data9 = setBar(data9, { interval: 0 });
 };
 
-const data8List = ref([
-  base5.rm01001,
-  base5.rm01002,
-  base5.rm01003,
-  base5.rm01004,
-  base5.rm01005,
-  base5.rm01006,
-  base5.rm01007,
-  base5.rm01008,
-  base5.rm01009,
-  base5.rm01010,
-  base5.rm01011,
-  base5.rm01012,
-  base5.rm01013,
-  base5.rm01014,
-  base5.rm01015,
-  base5.rm01016,
-  base5.rm01017,
-  base5.rm01018,
-  base5.fp00001,
-  base5.fp00002,
-  base5.fp00003,
-]);
-const Xdata8 = ref(CHART.inventoryNames);
+let dataObj5 = {
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base5[item]) {
+    dataObj5.x.push(CHART.inventoryNames[i]);
+    dataObj5.val.push(base5[item]);
+  }
+});
 const data8Echarts = () => {
   const data8 = reactive({
     color: "rgba(255,159,64)",
     name: "企业库存情况",
-    Xdata: Xdata8.value,
-    dataList: data8List.value,
+    Xdata: dataObj5.x,
+    dataList: dataObj5.val,
     isShow: true,
   });
   option.data8 = setBar(data8);
