@@ -19,7 +19,7 @@ const data1 = reactive({
   nvzy: base.ryxbzb02,
 });
 const data2 = reactive({
-  name: "月离职率",
+  name: "离职率",
   value: base.ryld03,
   dyzzrs: base.ryld01,
   dylzrs: base.ryld02,
