@@ -77,10 +77,12 @@ const data4Echarts = () => {
     color: "#5C73E6",
     name: "客户销量",
     Xdata: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl01),
-    dataList: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl02),
+    dataList: base1
+      .filter((item) => item.qykhxl01)
+      .map((item) => item.qykhxl02),
     isShow: false,
   });
-  option.data4 = setBar(data4,{ interval: 1 });
+  option.data4 = setBar(data4, { interval: 1 });
 };
 
 const data5Echarts = () => {
@@ -94,15 +96,15 @@ const data5Echarts = () => {
   option.data5 = setLine(data5);
 };
 let dataObj = {
-  x:[],
-  val:[]
-}
-CHART.inventoryNamesLow.forEach((item,i)=>{
-  if(base[item]) {
-    dataObj.x.push(CHART.inventoryNames[i])
-    dataObj.val.push(base[item])
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base[item]) {
+    dataObj.x.push(CHART.inventoryNames[i]);
+    dataObj.val.push(base[item]);
   }
-})
+});
 const data6Echarts = () => {
   const data6 = reactive({
     color: "#5C73E6",
@@ -114,15 +116,15 @@ const data6Echarts = () => {
   option.data6 = setBar(data6);
 };
 let dataObj3 = {
-  x:[],
-  val:[]
-}
-CHART.inventoryNamesLow.forEach((item,i)=>{
-  if(base3[item]) {
-    dataObj3.x.push(CHART.inventoryNames[i])
-    dataObj3.val.push(base3[item])
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base3[item]) {
+    dataObj3.x.push(CHART.inventoryNames[i]);
+    dataObj3.val.push(base3[item]);
   }
-})
+});
 const data7Echarts = () => {
   const data7 = reactive({
     color: "rgba(255,159,64)",
@@ -141,7 +143,10 @@ const data7Echarts = () => {
       <Title>市场获单情况</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data1" class="echart-data"></Echart>
+          <Echart
+            :option="option.data1"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap">
           <div>￥{{ data1.value0 }}</div>
@@ -156,7 +161,10 @@ const data7Echarts = () => {
       <Title>广告投放情况</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data2" class="echart-data"></Echart>
+          <Echart
+            :option="option.data2"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap">
           <div>￥{{ data2.value0 }}</div>
@@ -171,7 +179,10 @@ const data7Echarts = () => {
       <Title>市场开拓情况</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data3" class="echart-data"></Echart>
+          <Echart
+            :option="option.data3"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap type-wrap-pie">
           <p>累计总投入</p>
@@ -186,8 +197,11 @@ const data7Echarts = () => {
     <Bar>
       <Title>客户销量</Title>
       <div class="data4-warp">
-        <span>单位：亿</span>
-        <Echart :option="option.data4" class="echart-data"></Echart>
+        <!-- <span>单位：亿</span> -->
+        <Echart
+          :option="option.data4"
+          class="echart-data"
+        ></Echart>
       </div>
     </Bar>
   </Left>
@@ -197,8 +211,11 @@ const data7Echarts = () => {
       <Title>销售毛利率</Title>
       <Content>
         <div class="data5-warp">
-          <span>单位：亿</span>
-          <Echart :option="option.data5" class="echart-data"></Echart>
+          <!-- <span>单位：亿</span> -->
+          <Echart
+            :option="option.data5"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -206,8 +223,11 @@ const data7Echarts = () => {
       <Title>销售结构</Title>
       <Content>
         <div class="data6-warp">
-          <span>单位：亿</span>
-          <Echart :option="option.data6" class="echart-data"></Echart>
+          <!-- <span>单位：亿</span> -->
+          <Echart
+            :option="option.data6"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -215,8 +235,11 @@ const data7Echarts = () => {
       <Title>客单价</Title>
       <Content>
         <div class="data7-warp">
-          <span>单位：亿</span>
-          <Echart :option="option.data7" class="echart-data"></Echart>
+          <!-- <span>单位：亿</span> -->
+          <Echart
+            :option="option.data7"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -247,14 +270,14 @@ const data7Echarts = () => {
     .type-wrap {
       position: relative;
 
-      &>div {
+      & > div {
         font-size: 0.8vw;
         font-family: Source Han Sans CN;
         font-weight: 400;
         color: #cae0ff;
       }
 
-      &>p {
+      & > p {
         font-size: 0.4rem;
         font-family: Source Han Sans CN;
         font-weight: 400;
@@ -276,9 +299,10 @@ const data7Echarts = () => {
   }
 
   .data4-warp {
+    height: 100%;
     .echart-data {
       width: 100%;
-      height: 13vh;
+      height: 100%;
     }
   }
 }
@@ -291,23 +315,26 @@ const data7Echarts = () => {
   height: 76.64% !important;
 
   .data5-warp {
+    height: 100%;
     .echart-data {
       width: 100%;
-      height: 15vh;
+      height: 100%;
     }
   }
 
   .data6-warp {
+    height: 100%;
     .echart-data {
       width: 100%;
-      height: 17vh;
+      height: 100%;
     }
   }
 
   .data7-warp {
+    height: 100%;
     .echart-data {
       width: 100%;
-      height: 20vh;
+      height: 100%;
     }
   }
 }

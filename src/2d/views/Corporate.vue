@@ -5,8 +5,10 @@ import { useStore } from "vuex";
 import { createEcharts, getEchartsAndOption } from "@/2d/viewCharts/common";
 import { toThreeDigitRating } from "@/2d/utils/num";
 import useData from "@/2d/hooks/useData";
-const base = useData.data1("制造集团");
+import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
+const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const base = useData.data1(currMenu.name);
 
 // 年度收入指标
 const annualIncomeEl = ref(null);
@@ -83,7 +85,7 @@ const drawBusinessIncomeEl = (el) => {
       {
         detail: {
           formatter(val) {
-            return `{val|+${val}%}\n{name|环比率}`;
+            return `{val|${val}%}\n{name|环比率}`;
           },
         },data: [
           {
@@ -128,7 +130,7 @@ const drawBusinessExpendEl = (el) => {
       {
         detail: {
           formatter(val) {
-            return `{val|+${val}%}\n{name|环比率}`;
+            return `{val|${val}%}\n{name|环比率}`;
           },
         },data: [
           {

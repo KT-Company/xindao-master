@@ -26,7 +26,7 @@ export function setYuanChart(res, obj) {
           },
         },
         {
-          text: `+${res.value}%`,
+          text: `${res.value}%`,
           x: 'center',
           top: '35%',
           textStyle: {

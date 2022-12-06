@@ -11,14 +11,16 @@ import {
 import useData from "@/2d/hooks/useData";
 import { toThreeDigitRating } from "@/2d/utils/num";
 import CHART from "@/2d/viewCharts/Params";
-const base = useData.data5("销售公司");
-const base1 = useData.data7("销售公司");
-const base2 = useData.data8("销售公司");
-const base3 = useData.data2("销售公司");
-const base4 = useData.data6("销售公司");
-const base5 = useData.data1("销售公司");
-
+import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
+const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const base = useData.data5(currMenu.name);
+const base1 = useData.data7(currMenu.name);
+const base2 = useData.data8(currMenu.name);
+const base3 = useData.data2(currMenu.name);
+const base4 = useData.data6(currMenu.name);
+const base5 = useData.data1(currMenu.name);
+
 const option = reactive({
   data1: {},
   data2: {},
@@ -42,7 +44,7 @@ const data1 = reactive({
 });
 const data3 = reactive({
   color: "#FF9F40",
-  name: "物流费用",
+  // name: "物流费用",
   Xdata: base2.map((item) => item.month),
   dataList: base2.map((item) => item.qywlfy02),
   isShow: false,
@@ -209,7 +211,7 @@ const data8Echarts = () => {
       <Title>物流费用</Title>
       <Content>
         <div class="data3-warp">
-          <span>单位：亿</span>
+          <!-- <span>单位：亿</span> -->
           <Echart
             :option="option.data3"
             class="echart-data"
@@ -221,7 +223,7 @@ const data8Echarts = () => {
       <Title>客户销量</Title>
       <Content>
         <div class="data4-warp">
-          <span>单位：亿</span>
+          <!-- <span>单位：亿</span> -->
           <Echart
             :option="option.data4"
             class="echart-data"
@@ -253,7 +255,7 @@ const data8Echarts = () => {
       <Title>存货周转率</Title>
       <Content>
         <div class="data6-warp">
-          <span>单位：亿</span>
+          <!-- <span>单位：亿</span> -->
           <Echart
             :option="option.data6"
             class="echart-data"
@@ -277,7 +279,7 @@ const data8Echarts = () => {
           class="data7-warp"
           v-if="data7Id == 0"
         >
-          <span>单位：亿</span>
+          <!-- <span>单位：亿</span> -->
           <Echart
             :option="option.data7"
             class="echart-data"
@@ -287,7 +289,7 @@ const data8Echarts = () => {
           class="data7-warp"
           v-else
         >
-          <span>单位：亿</span>
+          <!-- <span>单位：亿</span> -->
           <Echart
             :option="option.data9"
             class="echart-data"
@@ -299,7 +301,7 @@ const data8Echarts = () => {
       <Title>企业库存情况</Title>
       <Content>
         <div class="data8-warp">
-          <span>单位：亿</span>
+          <!-- <span>单位：亿</span> -->
           <Echart
             :option="option.data8"
             class="echart-data"
@@ -358,23 +360,26 @@ const data8Echarts = () => {
   }
 
   .data2-warp {
+      height: 100%;
     .echart-data {
       width: 100%;
-      height: 14vh;
+      height: 100%;
     }
   }
 
   .data3-warp {
+      height: 100%;
     .echart-data {
       width: 100%;
-      height: 11vh;
+      height: 100%;
     }
   }
 
   .data4-warp {
+      height: 100%;
     .echart-data {
       width: 100%;
-      height: 20vh;
+      height: 100%;
     }
   }
 
@@ -431,9 +436,10 @@ const data8Echarts = () => {
   }
 
   .data6-warp {
+      height: 100%;
     .echart-data {
       width: 100%;
-      height: 11vh;
+      height: 100%;
     }
   }
 
@@ -457,16 +463,18 @@ const data8Echarts = () => {
   }
 
   .data7-warp {
+     height: 100%;
     .echart-data {
       width: 100%;
-      height: 15vh;
+      height: 100%;
     }
   }
 
   .data8-warp {
+     height: 100%;
     .echart-data {
       width: 100%;
-      height: 15vh;
+      height: 100%;
     }
   }
 

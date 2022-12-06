@@ -323,6 +323,7 @@ export function setBar(data, obj) {
     return {
         tooltip: {
             trigger: 'axis',
+            position: ['50%', '0%']
         },
         title: {
             left: 26,

@@ -8,12 +8,14 @@ import ProgressEl from "@/2d/components/Progress.vue";
 import useData from "@/2d/hooks/useData";
 import CHART from "@/2d/viewCharts/Params";
 import { setBar } from "@/2d/viewCharts/Business";
+import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
-const base = useData.data5("制造集团");
-const base1 = useData.data7("制造集团");
-const base2 = useData.data8("制造集团");
-const base3 = useData.data2("制造集团");
-const base4 = useData.data1("制造集团");
+const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const base = useData.data5(currMenu.name);
+const base1 = useData.data7(currMenu.name);
+const base2 = useData.data8(currMenu.name);
+const base3 = useData.data2(currMenu.name);
+const base4 = useData.data1(currMenu.name);
 const option = reactive({
   data1: {},
 });
@@ -285,7 +287,7 @@ onMounted(() => {
       <Title>企业库存情况</Title>
       <Content>
         <div class="business-repo-situation">
-          <span class="hui unit1 class unit-span">单位:亿</span>
+          <!-- <span class="hui unit1 class unit-span">单位:亿</span> -->
           <div
             class="char"
             ref="businessRepoSituationEl"

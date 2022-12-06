@@ -1,4 +1,4 @@
-<!-- 制造集团 -->
+<!-- 制造集团 / 销售公司 / 供应企业 / 经销企业 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
@@ -7,9 +7,11 @@ import CHART from "@/2d/viewCharts/Params";
 import { setBar } from "@/2d/viewCharts/Business";
 import useData from "@/2d/hooks/useData";
 import { toThreeDigitRating } from "@/2d/utils/num";
+import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
-const base = useData.data1("制造集团");
-const base2 = useData.data2("制造集团");
+const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const base = useData.data1(currMenu.name);
+const base2 = useData.data2(currMenu.name);
 const option = reactive({
   data1: {},
   data2: {},
@@ -74,7 +76,7 @@ const data5 = reactive({
   Xdata: dataObj1.x,
   dataList: dataObj1.val,
 });
-option.data5 = setBar(data5, {interval: 0});
+option.data5 = setBar(data5, { interval: 0 });
 
 const ckrj = ref([
   { name: "总占用量", value: base2.qyckzy01, unit: "㎡" },
@@ -115,7 +117,7 @@ onMounted(() => {
       <Content class="qyyhck">
         <p class="qyyhck-info">
           <span class="hui">单位：元</span>
-          <span class="hui">详细金额：{{ qyyhck.value1 }}元</span>
+          <span class="hui">详细金额：{{ qyyhdk.value1 }}元</span>
         </p>
         <div class="qyyhck-value">
           <span
