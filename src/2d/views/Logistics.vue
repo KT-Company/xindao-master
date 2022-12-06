@@ -14,7 +14,6 @@ const base = useData.data2("物流企业");
 const base3 = useData.data3("物流企业");
 const base4 = useData.data4("物流企业");
 const base1 = useData.data1("物流企业");
-console.log("base1: ", base1);
 const qyyhck = reactive({
   value1: base1?.qyyhckxj || 0,
   value2: `${base1?.qyyhckxj02 || 0}亿`,
@@ -57,7 +56,7 @@ const clqk = reactive({
   data1: [
     { name: "运行中", value: base.wlclqk01, unit: "辆" },
     { name: "空闲中", value: base.wlclqk02, unit: "辆" },
-    { name: "总空闲率", value: base.wlclqk03 + "%", unit: "" },
+    { name: "车辆空闲率", value: base.wlclqk03 + "%", unit: "" },
   ],
   data2: [
     { name: "中型货车空闲率", value: base.wlclqk04 + "%" },
@@ -159,8 +158,8 @@ onMounted(() => {
         </div>
         <div class="ddqk-info">
           <p class="valb">￥{{data2.value1}}</p>
-          <p class="bg-hui"><span class="hui">环比</span><span class="valb">￥{{data2.value2}}</span></p>
           <p class="bg-hui"><span class="hui">本月</span><span class="valb">￥{{data2.value3}}</span></p>
+          <p class="bg-hui"><span class="hui">环比</span><span class="valb">￥{{data2.value2}}</span></p>
         </div>
 
       </Content>

@@ -4,6 +4,7 @@ import { ref, reactive, onMounted } from "vue";
 import { getjyyl } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { setBingChart, setZhuChart } from "@/2d/viewCharts/Area";
+import { toThreeDigitRating } from "@/2d/utils/num";
 import { useStore } from "vuex";
 const store = useStore();
 const base = reactive({
@@ -73,30 +74,30 @@ onMounted(() => {
             ><span>{{ base.data.jyzczb }}%</span>
           </li>
           <li>
-            <span class="hui">教育支出占比</span
-            ><span>{{ base.data.sjztr }}亿</span>
+            <span class="hui">教育总投入</span
+            ><span>{{ toThreeDigitRating(base.data.sjztr) }}亿</span>
           </li>
         </ul>
 
         <ul class="bg-hui">
           <li>
             <span class="hui">教职工总人数</span
-            ><span>{{ base.data.jzgzrs }}人</span>
+            ><span>{{ toThreeDigitRating(base.data.jzgzrs) }}人</span>
           </li>
           <li>
             <span class="hui">专任教师总人数</span
-            ><span>{{ base.data.zrjszrs }}人</span>
+            ><span>{{ toThreeDigitRating(base.data.zrjszrs) }}人</span>
           </li>
         </ul>
 
         <ul class="bg-hui">
           <li>
             <span class="hui">高考报名人数</span
-            ><span>{{ base.data.gkbmrs }}人</span>
+            ><span>{{ toThreeDigitRating(base.data.gkbmrs) }}人</span>
           </li>
           <li>
             <span class="hui">中考报名人数</span
-            ><span>{{ base.data.zkbmrs }}人</span>
+            ><span>{{ toThreeDigitRating(base.data.zkbmrs) }}人</span>
           </li>
         </ul>
       </div>
@@ -116,16 +117,16 @@ onMounted(() => {
         <ul class="bg-hui">
           <li>
             <span class="hui">医疗卫生机构</span
-            ><span>{{ base.data.ylwsjg }}家</span>
+            ><span>{{ toThreeDigitRating(base.data.ylwsjg) }}家</span>
           </li>
           <li>
             <span class="hui">市属医疗机构</span
-            ><span>{{ base.data.ssyljg }}家</span>
+            ><span>{{ toThreeDigitRating(base.data.ssyljg) }}家</span>
           </li>
         </ul>
         <ul class="bg-hui">
           <li>
-            <span class="hui">床位</span><span>{{ base.data.cw }}张</span>
+            <span class="hui">床位</span><span>{{ base.data.cw }}万张</span>
           </li>
           <li>
             <span class="hui">医护人员</span

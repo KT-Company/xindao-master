@@ -196,8 +196,6 @@ export function setLine(data) {
 }
 // 折现图----------------------------
 export function setLineFinancial(data) {
-    console.log(data);
-    console.log('data---------------------');
     return {
         tooltip: {
             trigger: 'axis',
@@ -325,6 +323,7 @@ export function setBar(data, obj) {
     return {
         tooltip: {
             trigger: 'axis',
+            position: ['50%', '0%']
         },
         title: {
             left: 26,
@@ -339,15 +338,15 @@ export function setBar(data, obj) {
         grid: {
             left: '1%',
             right: '5%',
-            bottom: data.isShow ? '10%' : '0%',
+            bottom: data.dataList.length > 7 ? '10%' : '0%',
             top: '10%',
             containLabel: true
         },
         dataZoom: [{
             type: 'slider',
-            show: data.isShow,
+            show: data.dataList.length > 7,
             startValue: 0,  // 重点在这   -- 开始的值
-            endValue: 8,  // 重点在这   -- 结束的值
+            endValue: 6,  // 重点在这   -- 结束的值
             height: 5, //高度 
             xAxisIndex: [0], //控制第一个x轴
             left: '10%',
@@ -369,7 +368,11 @@ export function setBar(data, obj) {
             axisLabel: {
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                interval: obj?.interval ?? null
+                interval: (() => {
+                    let _interval = obj?.interval ?? null
+                    if (data.isShow) _interval = 0
+                    return _interval
+                })()
             },
             splitLine: {
                 show: false
@@ -413,7 +416,12 @@ export function setBar(data, obj) {
         series: [{
             name: data.name,
             type: 'bar',
-            barWidth: obj?.barW || '40%',
+            barWidth: (() => {
+                let w = obj?.barW || '40%'
+                const length = data.dataList.length
+                if (length >= 1 && length < 4) w = '10%'
+                return w
+            })(),
             itemStyle: {
                 color: data.color
             },

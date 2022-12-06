@@ -23,6 +23,7 @@ const handleFooters = (item, leve, son) => {
   if (leve === 1) {
     if (STATE.isAnimating) return;
     if (store.state.LEVEL == 4) return;
+    const currRouter = firstA(router.currentRoute.value.path);
     store.commit("setMenuBid", null);
     // 一级菜单点击事件
     store.commit("setMenuAid", item.id);
@@ -30,8 +31,11 @@ const handleFooters = (item, leve, son) => {
       const _son = item.children.find((v) => v.id === "1-1");
       store.commit("setMenuBid", _son.id);
     }
-    router.push(item.path);
-    store.commit('setPickId' , item.id)
+    if (currRouter === item.path) {
+      router.replace("/Replace");
+      console.log("currRouter: ", currRouter);
+    } else router.push(item.path);
+    store.commit("setPickId", item.id);
   } else {
     if (STATE.isAnimating) return;
     // 二级菜单点击事件
@@ -293,7 +297,7 @@ watch(
 
 .pickClass4 {
   width: 7.7% !important;
-  left: 30%;
+  left: 75.3%;
   &::before {
     position: absolute;
     content: "";
@@ -319,7 +323,7 @@ watch(
 
 .pickClass5 {
   width: 7.7% !important;
-  left: 39%;
+  left: 84.5%;
   &::before {
     position: absolute;
     content: "";
@@ -345,7 +349,7 @@ watch(
 
 .pickClass7 {
   width: 23% !important;
-  left: 49%;
+  left: 50%;
   &::before {
     position: absolute;
     content: "";
@@ -371,7 +375,7 @@ watch(
 
 .pickClass8 {
   width: 23% !important;
-  left: 58%;
+  left: 59%;
   &::before {
     position: absolute;
     content: "";
@@ -421,7 +425,7 @@ watch(
 // }
 .pickClass9 {
   width: 30% !important;
-  left: 64%;
+  left: 20%;
   &::before {
     position: absolute;
     content: "";
@@ -447,7 +451,7 @@ watch(
 
 .pickClass10 {
   width: 30% !important;
-  left: 70%;
+  left: 35%;
   &::before {
     position: absolute;
     content: "";
@@ -473,11 +477,11 @@ watch(
 
 .pickClass11 {
   width: 38% !important;
-  left: 62%;
+  left: 23.2%;
   &::before {
     position: absolute;
     content: "";
-    width: 86%;
+    width: 48.5%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
   }
@@ -487,13 +491,13 @@ watch(
     width: 100%;
     border-bottom: 1px solid rgb(179, 179, 179);
     bottom: 28%;
-    left: 92%;
+    left: 56%;
   }
   .xiajian {
     position: absolute;
     height: 42%;
     bottom: 0%;
-    right: 7%;
+    right: 44%;
   }
 }
 </style>

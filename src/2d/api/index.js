@@ -56,6 +56,7 @@ caseVersionId=82347900509093947
 
 // 产业经济
 export function getcyjj() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}cyjj`,
         method: 'get',
@@ -64,6 +65,7 @@ export function getcyjj() {
 
 // 交通出行
 export function getjtcx() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}jtcx`,
         method: 'get',
@@ -72,6 +74,7 @@ export function getjtcx() {
 
 // 环境人口
 export function gethjrk() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}hjrk`,
         method: 'get',
@@ -80,6 +83,7 @@ export function gethjrk() {
 
 // 教育医疗
 export function getjyyl() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}jyyl`,
         method: 'get',
@@ -88,6 +92,7 @@ export function getjyyl() {
 
 // 能源碳排放（年）
 export function getnytpfy() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}nytpfy`,
         method: 'get',
@@ -96,6 +101,7 @@ export function getnytpfy() {
 
 // 能源总消耗（月）
 export function getnyzxhm() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}nyzxhm1`,
         method: 'get',
@@ -105,6 +111,7 @@ export function getnyzxhm() {
 
 // 全国碳排放
 export function getqynytpfy() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}qynytpfy`,
         method: 'get',
@@ -113,6 +120,7 @@ export function getqynytpfy() {
 
 // 区域产业经济
 export function getqycyjj() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}qycyjj`,
         method: 'get',
@@ -121,6 +129,7 @@ export function getqycyjj() {
 
 // 区域企业信息
 export function getqyqyxx() {
+    store.state.globalYear = window.publicParams.year
     return request({
         url: `${url}qyqyxx`,
         method: 'get',
@@ -197,5 +206,22 @@ export function getData8() {
         method: 'get',
     })
 }
+
+// 企业看板9
+export function getData9() {
+    return request({
+        url: `${url}bmzbmx_b`,
+        method: 'get',
+    })
+}
+// 企业看板10
+export function getData10() {
+    return request({
+        url: `${url}bmzbyfqs_b`,
+        method: 'get',
+    })
+}
+
+
 
 getData.All()

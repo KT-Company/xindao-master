@@ -1,4 +1,4 @@
-<!-- 制造集团 -->
+<!-- 制造集团 / 销售公司 / 供应企业 / 经销企业 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
@@ -7,9 +7,11 @@ import CHART from "@/2d/viewCharts/Params";
 import { setBar } from "@/2d/viewCharts/Business";
 import useData from "@/2d/hooks/useData";
 import { toThreeDigitRating } from "@/2d/utils/num";
+import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
-const base = useData.data1("制造集团");
-const base2 = useData.data2("制造集团");
+const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const base = useData.data1(currMenu.name);
+const base2 = useData.data2(currMenu.name);
 const option = reactive({
   data1: {},
   data2: {},
@@ -57,39 +59,24 @@ const data4 = reactive({
   value3: toThreeDigitRating(base.qycbzc03),
 });
 
-const data6List = ref([
-  base.rm01001,
-  base.rm01002,
-  base.rm01003,
-  base.rm01004,
-  base.rm01005,
-  base.rm01006,
-  base.rm01007,
-  base.rm01008,
-  base.rm01009,
-  base.rm01010,
-  base.rm01011,
-  base.rm01012,
-  base.rm01013,
-  base.rm01014,
-  base.rm01015,
-  base.rm01016,
-  base.rm01017,
-  base.rm01018,
-  base.fp00001,
-  base.fp00002,
-  base.fp00003,
-]);
-const Xdata6 = CHART.inventoryNames;
+let dataObj1 = {
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base[item]) {
+    dataObj1.x.push(CHART.inventoryNames[i]);
+    dataObj1.val.push(base[item]);
+  }
+});
 
 const data5 = reactive({
   color: "rgba(255,159,64)",
   name: "企业库存情况",
-  Xdata: Xdata6,
-  dataList: data6List.value,
-  isShow: true,
+  Xdata: dataObj1.x,
+  dataList: dataObj1.val,
 });
-option.data5 = setBar(data5);
+option.data5 = setBar(data5, { interval: 0 });
 
 const ckrj = ref([
   { name: "总占用量", value: base2.qyckzy01, unit: "㎡" },
@@ -130,7 +117,7 @@ onMounted(() => {
       <Content class="qyyhck">
         <p class="qyyhck-info">
           <span class="hui">单位：元</span>
-          <span class="hui">详细金额：{{ qyyhck.value1 }}元</span>
+          <span class="hui">详细金额：{{ qyyhdk.value1 }}元</span>
         </p>
         <div class="qyyhck-value">
           <span

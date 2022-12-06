@@ -17,7 +17,6 @@ const handleCompany = (item, index) => {
   })
 
   pickIndex.value = index;
-  console.log("item: ", item);
 };
 
 const cyzb = reactive({

@@ -7,4 +7,8 @@ window.publicParams = {
   szxs: '北京',      // 全局省直辖市
   fireBackup: false, // 开启火力备用图
 }
-window.myToken = '7df82a24dff97bdef9c66c9532f592d0' // 仅用于测试
+window.myToken = '932e97653d7c4ccb33c2633daa165810' // 仅用于测试
+window.backHome = ()=>{
+  // window.window.top.location.href = "/aie_web"; // 返回用户 home 地址
+  window.location.href = 'http://www.baidu.com';
+}

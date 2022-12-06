@@ -19,7 +19,7 @@ const data1 = reactive({
   nvzy: base.ryxbzb02,
 });
 const data2 = reactive({
-  name: "月离职率",
+  name: "离职率",
   value: base.ryld03,
   dyzzrs: base.ryld01,
   dylzrs: base.ryld02,
@@ -67,11 +67,11 @@ onMounted(() => {
         </div>
         <div class="ryxb-info info">
           <div>
-            <p class="title hui">当月在职人数</p>
+            <p class="title hui">当月在职</p>
             <p class="value">{{data2.dyzzrs}}人</p>
           </div>
           <div>
-            <p class="title hui m-t1">当月离职人数</p>
+            <p class="title hui m-t1">当月离职</p>
             <p class="value">{{data2.dylzrs}}人</p>
           </div>
         </div>

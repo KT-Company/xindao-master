@@ -124,6 +124,7 @@ const drawBusinessNumChar = (el) => {
     },
   });
   option.xAxis.data = base2.map((item) => item.qylx);
+  option.title.text = '单位：家';
   option.series[0].data = base2.map((item) => item.zwqysl02);
   char.setOption(option);
   console.log("option: ", option);

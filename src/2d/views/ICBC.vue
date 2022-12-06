@@ -4,7 +4,6 @@ import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import useData from "@/2d/hooks/useData";
 const base = useData.data1();
-console.log("base: ", base);
 const store = useStore();
 let leftIndex = 0;
 let rightIndex = 0;
@@ -16,7 +15,7 @@ const dataLeft = ref(
       id: i + 1,
       bg: require(`@/2d/assets/icons/ICBC-bg-left-${leftIndex}.png`),
       name: item.qylx,
-      value: item.qyyhdkxj,
+      value: item.qyyhdkxj || 0,
     };
   })
 );
@@ -28,7 +27,7 @@ const dataRight = ref(
       id: i + 1,
       bg: require(`@/2d/assets/icons/ICBC-bg-right-${rightIndex}.png`),
       name: item.qylx,
-      value: item.qyyhckxj,
+      value: item.qyyhckxj || 0,
     };
   })
 );
@@ -39,9 +38,9 @@ onMounted(() => {});
   <Left class="z-left">
     <Bar>
       <Title>企业贷款</Title>
-      <Content class="dpy-column">
+      <Content class="dpy-column content-box">
         <div
-          class="left-wrap dpy-row"
+          class="left-wrap dpy-row item"
           v-for="(item, index) in dataLeft"
           :key="index"
           :style="{
@@ -62,9 +61,9 @@ onMounted(() => {});
   <Right class="z-right">
     <Bar>
       <Title>企业存款</Title>
-      <Content class="dpy-column">
+      <Content class="dpy-column content-box">
         <div
-          class="right-wrap dpy-row"
+          class="right-wrap dpy-row item"
           v-for="(item, index) in dataRight"
           :key="index"
           :style="{
@@ -88,26 +87,36 @@ onMounted(() => {});
   top: 29.57% !important;
   height: 40.9% !important;
 }
-
-.left-wrap,
-.right-wrap {
-  width: 100%;
-  padding: 1.2vh 2vh;
-
-  span {
-    font-family: SourceHanSansCN;
-    font-weight: bold;
-    font-size: 0.8vw;
+.item {
+  margin: 0.5rem;
+} .dpy-column{
+    justify-content: flex-start !important;
   }
+.content-box {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 5px;
+ 
+  .left-wrap,
+  .right-wrap {
+    width: 100%;
+    padding: 1.2vh 2vh;
 
-  p {
-    padding-left: 1.5vh;
-  }
+    span {
+      font-family: SourceHanSansCN;
+      font-weight: bold;
+      font-size: 0.8vw;
+    }
 
-  & > div:nth-of-type(2) {
-    font-family: SourceHanSansCN;
-    font-weight: bold;
-    font-size: 1vw;
+    p {
+      padding-left: 1.5vh;
+    }
+
+    & > div:nth-of-type(2) {
+      font-family: SourceHanSansCN;
+      font-weight: bold;
+      font-size: 1vw;
+    }
   }
 }
 </style>

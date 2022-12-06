@@ -12,14 +12,6 @@ const qyyhck = reactive({
   value2: (base1?.qyyhckxj02 || 0) + "亿",
 });
 
-let sum = ref(4965548547);
-let money = reactive({
-  one: 4,
-  two: 9,
-  three: 6,
-  four: 5,
-  unit: "亿",
-});
 const findVal = (name) => {
   return toThreeDigitRating(
     base.find((item) => item.zhwflx01 == name).zhwflx02

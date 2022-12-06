@@ -10,9 +10,11 @@ import {
 } from "@/2d/viewCharts/Business";
 import useData from "@/2d/hooks/useData";
 import { toThreeDigitRating } from "@/2d/utils/num";
-const base1 = useData.data1("制造集团");
-const base8 = useData.data8("制造集团");
+import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
+const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const base1 = useData.data1(currMenu.name);
+const base8 = useData.data8(currMenu.name);
 const option = reactive({
   data1: {},
   data2: {},
@@ -30,7 +32,7 @@ onMounted(() => {
 const data1 = reactive({
   color: ["rgb(124,95,174)", "rgba(124,95,174,.5)"],
   data: [base1.qyyysr04],
-  perCentum: `+${base1.qyyysr04}%`,
+  perCentum: `${base1.qyyysr04}%`,
   titleData: "环比率",
   value0: toThreeDigitRating(base1.qyyysr01),
   value1: toThreeDigitRating(base1.qyyysr02),
@@ -42,7 +44,7 @@ const data1Echarts = () => {
 const data2 = reactive({
   color: ["rgb(78,186,146)", "rgba(78,186,146,.5)"],
   data: [base1.qycbzc04],
-  perCentum: `+${base1.qycbzc04}%`,
+  perCentum: `${base1.qycbzc04}%`,
   titleData: "环比率",
   value0: toThreeDigitRating(base1.qycbzc01),
   value1: toThreeDigitRating(base1.qycbzc02),

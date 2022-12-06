@@ -39,7 +39,7 @@ const handleHome = () => {
 
   store.commit("changeLevel", 1);
   // router.push('/IndustrialEconomy')
-  window.top.location.href = "/aie_web"; // 返回用户 home 地址
+  window.backHome()
 };
 
 // setInterval(() => {
@@ -49,7 +49,7 @@ const handleHome = () => {
 
 <template>
   <p class="time">
-    <span>数据统计时间： {{ store.state.year }}年</span>
+    <span>数据统计时间： {{ store.state.globalYear }}年</span>
   </p>
   <img src="../../assets/images/home.png" class="home" @click="handleHome" />
   <img src="../../assets/images/logoa.png" class="head" />

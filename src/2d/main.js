@@ -29,9 +29,9 @@ app.component('Left', Left)
     .component('Bar', Bar)
     .component('Content', Content)
 
-if (dayjs().format("YYYY-MM-DD") > "2023-02-01") {
-    alert('体验时间过期，请联系管理员')
-} else {
+    if (false) {
+        // alert('体验时间过期，请联系管理员')
+    } else {
     app.use(router).use(store).mount('#app')
     store.commit('setUrlParam', getUrlParam())
 }

@@ -67,7 +67,7 @@ const optionCache = {
       bottom: 10
     },
     title: {
-      text: "单位:亿",
+      // text: "单位:亿",
       right: 0,
       textStyle: {
         color: "rgba(202, 224, 255, 1)",
@@ -136,7 +136,7 @@ const optionCache = {
       bottom: 10
     },
     title: {
-      text: "单位:亿",
+      // text: "单位:亿",
       right: 0,
       top: 0,
       textStyle: {
@@ -192,7 +192,7 @@ const optionCache = {
       bottom: 10
     },
     title: {
-      text: "单位:亿",
+      text: "单位: T",
       right: 0,
       textStyle: {
         color: "rgba(202, 224, 255, 1)",
@@ -230,7 +230,7 @@ const optionCache = {
         data: [1269, 2222, 3234, 3353, 1543, 1213, 1320, 2321, 2312, 3223, 2231, 2332],
         type: 'line',
         stack: 'Total',
-        name: "企业碳配额总量",
+        name: "碳配额总量",
         areaStyle: {
           color: {
             type: 'linear',
@@ -252,7 +252,7 @@ const optionCache = {
       {
         data: [1269, 2222, 3234, 3353, 1543, 1213, 1320, 2321, 2312, 3223, 2231, 2332],
         type: 'line',
-        name: "企业碳排放总量",
+        name: "碳排放总量",
         stack: 'Total',
         areaStyle: {
           color: {
@@ -275,7 +275,7 @@ const optionCache = {
       {
         data: [1269, 2222, 3234, 3353, 1543, 2213, 2320, 1321, 1312, 2223, 3231, 1332],
         type: 'line',
-        name: "企业碳购买总量",
+        name: "碳购买总量",
         stack: 'Total',
         areaStyle: {
           color: {
