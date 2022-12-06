@@ -842,6 +842,11 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         API.hideThreeCircles();
         API.hideThreeFlows();
         API.showThreeFlowsByName(STATE.threeFlowsMap[obj.userData.name]);
+      }else if(store.state.LEVEL == 3){
+        CACHE.enterpriseIcons.forEach((d) => {
+          if (d.userData.type == obj.userData.name)
+            d.children[d.children.length - 1].visible = true;
+        });
       }
     }
   };
