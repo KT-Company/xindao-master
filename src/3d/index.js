@@ -46,18 +46,17 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           STATE.initialState.target.y,
           STATE.initialState.target.z,
         ],
-        // maxDistance: STATE.CAMERA_BOUNDS,
-        maxDistance: 1000000,
+        maxDistance: STATE.CAMERA_BOUNDS,
         maxPolarAngle: Math.PI * 0.49,
         minPolarAngle: Math.PI * 0.01,
         enableDamping: true,
         dampingFactor: 0.05,
       },
     },
-    // bounds: {
-    //   radius: STATE.CAMERA_BOUNDS,
-    //   center: [0, 0, 0],
-    // },
+    bounds: {
+      radius: STATE.CAMERA_BOUNDS,
+      center: [0, 0, 0],
+    },
     lights: {
       directionLights: [
         {
