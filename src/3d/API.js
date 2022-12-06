@@ -70,27 +70,26 @@ function loadEnterPrises() {
 
     icon.renderOrder = 100;
     icon.name = data.name;
-    icon.userData.type = data.type
+    icon.userData.type = data.type;
     icon.visible = false;
 
-
-    const bgColor = 'rgba(0,0,0,.5)'
-    const titleColor = '#ffffff'
-    const titleSize = 14
-    const content = data.content
+    const bgColor = "rgba(0,0,0,.5)";
+    const titleColor = "#ffffff";
+    const titleSize = 14;
+    const content = data.content;
     const infoPopup = new Bol3D.POI.Popup({
-      closeVisible: 'visible',
+      closeVisible: "visible",
       value: `<div style='pointer-events:none;background-color:${bgColor};width:246px;height:auto;outline: 1px ridge rgb(255, 255, 255);border-radius: 1px;'>
                 <div style='display:flex;width:100%;;height:100%;color:${titleColor};font-size:${titleSize}px;font-family: SourceHanSansCN-Regular;font-weight: 100;'>
                   <p style='width:100%;text-indent:2em;margin-top:20px;margin-left:15px;margin-right:15px;margin-bottom:20px;'>${content}</p>
                 </div>
               </div>`,
       center: [-0.5, -1],
-      position: [0, .25, 0],
-      closeSize: 0.8
-    })
-    icon.add(infoPopup)
-    infoPopup.visible = false
+      position: [0, 0.25, 0],
+      closeSize: 0.8,
+    });
+    icon.add(infoPopup);
+    infoPopup.visible = false;
 
     CACHE.enterpriseIcons.push(icon);
 
@@ -134,7 +133,7 @@ function hideEnterpriseIconsInner() {
 function hideEnterpriseIcons() {
   CACHE.enterpriseIcons.forEach((epi) => {
     epi.visible = false;
-    epi.children[epi.children.length - 1].visible = false
+    epi.children[epi.children.length - 1].visible = false;
   });
 }
 
@@ -144,16 +143,16 @@ function showEnterpriseIcons() {
   });
 }
 
-function hideEnterpriseIconPopups(){
+function hideEnterpriseIconPopups() {
   CACHE.enterpriseIcons.forEach((epi) => {
-      epi.children[epi.children.length - 1].visible = false
+    epi.children[epi.children.length - 1].visible = false;
   });
 }
 
 function showEnterpriseIconByName(name) {
   CACHE.enterpriseIcons.forEach((epi) => {
     if (epi.name == name) {
-      epi.children[epi.children.length - 1].visible = true
+      epi.children[epi.children.length - 1].visible = true;
     }
   });
 }
@@ -258,52 +257,56 @@ function cameraAnimation({
  * 产业经济->区域板块
  */
 function loadIndustrialEconomy() {
-  const img = new Image();
-  img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
-  img.onload = () => {
-    for (const d of DATA.industryData) {
-      const { data, position } = d;
-      const icon = new Bol3D.CompositeIconPopup({
-        color: "#ff0000",
-        bgColor: "#211F1F",
-        guideHeight: (2 * data.title3) / DATA.industryBaseHeight,
-        titleHeight: (2 * data.title3) / DATA.industryBaseHeight / 2,
-        fontSize1: 60,
-        fontSize2: 50,
-        fontSize3: 40,
-        title1: data.title1,
-        title2: data.title2,
-        title3: "数量：" + data.title3,
-        fontColor1: "#ffffff",
-        fontColor2: "#ffffff",
-        fontColor3: "#ffffff",
-        strokeColor: "#ffffff",
-        opacity: 0.8,
-        img,
-        titleAnchor: [-0.05, 0.5],
-      });
-      CACHE.container.scene.add(icon);
-      icon.position.copy(position);
-      icon.scale.set(2000, 2000, 2000);
-      icon.renderOrder = 100;
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
+    img.onload = () => {
+      for (const d of DATA.industryData) {
+        const { data, position } = d;
+        const icon = new Bol3D.CompositeIconPopup({
+          color: "#ff0000",
+          bgColor: "#211F1F",
+          guideHeight: (2 * data.title3) / DATA.industryBaseHeight,
+          titleHeight: (2 * data.title3) / DATA.industryBaseHeight / 2,
+          fontSize1: 60,
+          fontSize2: 60,
+          fontSize3: 60,
+          title1: data.title1,
+          title2: data.title2,
+          title3: "数量：" + data.title3,
+          fontColor1: "#ffffff",
+          fontColor2: "#ffffff",
+          fontColor3: "#ffffff",
+          strokeColor: "#ffffff",
+          opacity: 0.8,
+          img,
+          titleAnchor: [-0.05, 0.5],
+        });
+        CACHE.container.scene.add(icon);
+        icon.position.copy(position);
+        icon.scale.set(2000, 2000, 2000);
+        icon.renderOrder = 100;
 
-      icon.children[0].material.uniforms.color.value.set("#00069b");
-      icon.children[0].material.uniforms.mixColor.value.set("#f267af");
-      icon.children[0].material.uniforms.mixColor2.value.set("#000aff");
-      icon.children[0].material.uniforms.threshold.value = 0.5;
+        icon.children[0].material.uniforms.color.value.set("#00069b");
+        icon.children[0].material.uniforms.mixColor.value.set("#f267af");
+        icon.children[0].material.uniforms.mixColor2.value.set("#000aff");
+        icon.children[0].material.uniforms.threshold.value = 0.5;
 
-      icon.children[1].material.uniforms.color.value.set("#8babff");
-      icon.children[2].material.uniforms.color.value.set("#8babff");
+        icon.children[1].material.uniforms.color.value.set("#8babff");
+        icon.children[2].material.uniforms.color.value.set("#8babff");
 
-      CACHE.container.addBloom(icon.children[0]);
-      CACHE.container.addBloom(icon.children[1]);
-      CACHE.container.addBloom(icon.children[2]);
+        CACHE.container.addBloom(icon.children[0]);
+        CACHE.container.addBloom(icon.children[1]);
+        CACHE.container.addBloom(icon.children[2]);
 
-      icon.visible = false;
+        icon.visible = false;
 
-      CACHE.industries.push(icon);
-    }
-  };
+        CACHE.industries.push(icon);
+      }
+
+      resolve();
+    };
+  });
 }
 
 // 能源
@@ -317,11 +320,11 @@ function loadEnergy() {
   // heatmap
   const heatmap = h337.create({
     container: heatmapEle,
-    radius: 30,
+    radius: 15,
     alpha: true,
     blur: 0.85,
   });
-  let len = 1200;
+  let len = 4000;
   const width = 1024;
   const height = 1024;
   const points = [];
@@ -334,7 +337,8 @@ function loadEnergy() {
     max = Math.max(max, val);
     const point = {
       x: Math.floor(Math.random() * width),
-      y: Math.floor((Math.random() * height * 3) / 5 + height / 5),
+      y: Math.floor(Math.random() * height),
+      // y: Math.floor((Math.random() * height * 3) / 5 + height / 5),
       value: val,
     };
     v2.set(point.x, point.y);
@@ -349,7 +353,7 @@ function loadEnergy() {
   const texture = new Bol3D.Texture(heatmap._renderer.canvas);
   texture.encoding = Bol3D.sRGBEncoding;
 
-  const heatMapPlaneGeo = new Bol3D.CircleBufferGeometry(25000, 128);
+  const heatMapPlaneGeo = new Bol3D.CircleBufferGeometry(40000, 128);
   const heatMapPlaneMat = new Bol3D.MeshLambertMaterial({
     transparent: true,
     map: texture,
@@ -364,126 +368,128 @@ function loadEnergy() {
   CACHE.heatmap = hetaMapPlane;
 }
 
-
 /**
  * 路网
  */
 function loadTraffic() {
-  loadByJson();
+  return new Promise((resolve) => {
+    fetch(STATE.roadsjson)
+      .then((value) => {
+        return value.json();
+      })
+      .then((result) => {
+        // console.log("result", result);
 
-  const animate = () => {
-    requestAnimationFrame(animate);
-    CACHE.lines.forEach((l) => {
-      l.material.dashOffset -= (l.userData.speed * l.totalDistance) / 100;
-      l.material.dashOffset %= l.totalDistance;
-    });
-  };
+        let count = 0;
+        result.road.forEach((d) => {
+          count++;
+          let colors = ["#12aa6a", "#9b8f46", "#8e003d"];
+          let speeds = [
+            0.35 + Math.random() * 0.35,
+            0.075 + Math.random() * 0.075,
+            0.035 + Math.random() * 0.035,
+          ];
+          const le = new Bol3D.Primitives.BaseLine({
+            lineWidth: 2,
+            color: "#ed6565",
+            attenuation: 1,
+          });
+          le.setPositions(d);
+          le.position.set(0, 5, 0);
+          le.renderOrder = 100;
+          CACHE.container.scene.add(le);
+          CACHE.container.addBloom(le);
+          CACHE.linesBottom.push(le);
+          le.visible = false;
 
-  animate();
+          count %= 3;
+          let color = colors[count];
+          let speed = speeds[count];
+          const le2 = new Bol3D.Primitives.BaseLine({
+            lineWidth: 3,
+            color,
+            dashOffset: 3,
+            dashSize: 1,
+            gapSize: 1,
+            gapOffset: 1,
+            attenuation: 0,
+          });
+          le2.renderOrder = 100;
+          le2.setPositions(d);
+          le2.position.set(0, 20, 0);
+          le2.userData.speed = speed;
+          CACHE.container.scene.add(le2);
+          CACHE.container.addBloom(le2);
+          CACHE.lines.push(le2);
+          le2.visible = false;
+        });
+      });
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      CACHE.lines.forEach((l) => {
+        l.material.dashOffset -= (l.userData.speed * l.totalDistance) / 100;
+        l.material.dashOffset %= l.totalDistance;
+      });
+    };
+
+    animate();
+
+    resolve();
+  });
 }
 
 /**
  * 教育医疗
  */
 function loadEducation() {
-  let count = 0;
-  const doLoad = (textures) => {
-    DATA.educationPos.forEach((data) => {
-      const icon = new Bol3D.CompositeIconSimple({
-        color: "#ff0000",
-        opacity: 0.5,
-        texture: textures[data.type],
-        anchor: [0.5, -0.25],
-        guideHeight: Math.random() * 2 + 0.5,
-        iconSpeed: Math.random() * 0.5 + 0.025,
+  new Promise((resolve) => {
+    let count = 0;
+    const doLoad = (textures) => {
+      DATA.educationPos.forEach((data) => {
+        const icon = new Bol3D.CompositeIconSimple({
+          color: "#ff0000",
+          opacity: 0.5,
+          texture: textures[data.type],
+          anchor: [0.5, -0.25],
+          guideHeight: Math.random() * 2 + 0.5,
+          iconSpeed: Math.random() * 0.5 + 0.025,
+        });
+        CACHE.container.scene.add(icon);
+        CACHE.container.addBloom(icon.children[0]);
+        icon.startIconAnimation();
+        icon.position.copy(data.position);
+        icon.renderOrder = 100;
+        icon.scale.set(500, 500, 500);
+
+        icon.visible = false;
+        CACHE.education.push(icon);
       });
-      CACHE.container.scene.add(icon);
-      CACHE.container.addBloom(icon.children[0]);
-      icon.startIconAnimation();
-      icon.position.copy(data.position);
-      icon.renderOrder = 100;
-      icon.scale.set(500, 500, 500);
 
-      icon.visible = false;
-      CACHE.education.push(icon);
-    });
-  };
+      resolve();
+    };
 
-  const textures = {};
-  CACHE.container.texLoader.load(
-    STATE.DEV_ENV + "/assets/png/icons/school2.png",
-    (tex) => {
-      count++;
-      tex.encoding = Bol3D.sRGBEncoding;
-      textures["education"] = tex;
-      if (count == 2) doLoad(textures);
-    }
-  );
-
-  CACHE.container.texLoader.load(
-    STATE.DEV_ENV + "/assets/png/icons/hospital2.png",
-    (tex) => {
-      count++;
-      tex.encoding = Bol3D.sRGBEncoding;
-      textures["medical"] = tex;
-      if (count == 2) doLoad(textures);
-    }
-  );
-}
-
-// 道路
-function loadByJson() {
-  fetch(STATE.roadsjson)
-    .then((value) => {
-      return value.json();
-    })
-    .then((result) => {
-      // console.log("result", result);
-
-      let count = 0;
-      result.road.forEach((d) => {
+    const textures = {};
+    CACHE.container.texLoader.load(
+      STATE.DEV_ENV + "/assets/png/icons/school2.png",
+      (tex) => {
         count++;
-        let colors = ["#12aa6a", "#9b8f46", "#8e003d"];
-        let speeds = [
-          0.35 + Math.random() * 0.35,
-          0.075 + Math.random() * 0.075,
-          0.035 + Math.random() * 0.035,
-        ];
-        const le = new Bol3D.Primitives.BaseLine({
-          lineWidth: 2,
-          color: "#ed6565",
-          attenuation: 1,
-        });
-        le.setPositions(d);
-        le.position.set(0, 5, 0);
-        le.renderOrder = 100;
-        CACHE.container.scene.add(le);
-        CACHE.container.addBloom(le);
-        CACHE.linesBottom.push(le);
-        le.visible = false;
+        tex.encoding = Bol3D.sRGBEncoding;
+        textures["education"] = tex;
+        if (count == 2) doLoad(textures);
+      }
+    );
 
-        count %= 3;
-        let color = colors[count];
-        let speed = speeds[count];
-        const le2 = new Bol3D.Primitives.BaseLine({
-          lineWidth: 3,
-          color,
-          dashOffset: 3,
-          dashSize: 1,
-          gapSize: 1,
-          gapOffset: 1,
-          attenuation: 0,
-        });
-        le2.renderOrder = 100;
-        le2.setPositions(d);
-        le2.position.set(0, 20, 0);
-        le2.userData.speed = speed;
-        CACHE.container.scene.add(le2);
-        CACHE.container.addBloom(le2);
-        CACHE.lines.push(le2);
-        le2.visible = false;
-      });
-    });
+    CACHE.container.texLoader.load(
+      STATE.DEV_ENV + "/assets/png/icons/hospital2.png",
+      (tex) => {
+        count++;
+        tex.encoding = Bol3D.sRGBEncoding;
+        textures["medical"] = tex;
+        if (count == 2) doLoad(textures);
+      }
+    );
+  });
 }
 
 // 3圈
@@ -571,7 +577,7 @@ function hideAll() {
   hideEnterpriseIconsInner();
   hideThreeCircles();
   hideThreeFlows();
-  hideMirror()
+  hideMirror();
 }
 
 function showThreeCircles() {
@@ -602,19 +608,19 @@ function showThreeFlowsByType(type) {
   });
 }
 
-function hideThreeFlowsByType(type){
+function hideThreeFlowsByType(type) {
   const flows = CACHE.threeFlows[type];
   flows.forEach((f) => {
     f.visible = false;
   });
 }
 
-function showThreeFlowsByName(name){
-  for(let i in CACHE.threeFlows){
-    const flows = CACHE.threeFlows[i]
-    flows.forEach( f => {
-      if(f.userData.path.includes(name)) f.visible = true
-    })
+function showThreeFlowsByName(name) {
+  for (let i in CACHE.threeFlows) {
+    const flows = CACHE.threeFlows[i];
+    flows.forEach((f) => {
+      if (f.userData.path.includes(name)) f.visible = true;
+    });
   }
 }
 
@@ -705,30 +711,27 @@ function hideAreaModels() {
 }
 
 function beforeShowEnvironments() {
-  CACHE.seperateModels.forEach((d) => {
-    CACHE.container.removeBloom(d);
-    d.scale.y = 0
-    const data = d.userData.environment;
-    d.material.color.set(data.color);
-    d.material.envMapIntensity = data.envMapIntensity;
-    d.material.roughness = data.roughness;
-    d.material.metalness = data.metalness;
-  });
+  CACHE.mergedMeshes["green"].material = CACHE.mergedMaterials["green"];
+  CACHE.mergedMeshes["yellow"].material = CACHE.mergedMaterials["yellow"];
 }
 
 function showEnvironments() {
-  CACHE.seperateModels.forEach((d) => {
-    d.visible = true;
-
-    new Bol3D.TWEEN.Tween(d.scale)
-      .to(
-        {
-          y: 1.9,
-        },
-        800
-      )
-      .start();
-  });
+  new Bol3D.TWEEN.Tween(CACHE.mergedMeshes["green"].scale)
+    .to(
+      {
+        y: 6,
+      },
+      800
+    )
+    .start();
+  new Bol3D.TWEEN.Tween(CACHE.mergedMeshes["yellow"].scale)
+    .to(
+      {
+        y: 6,
+      },
+      800
+    )
+    .start();
 }
 
 function hideEnvironments() {
@@ -737,19 +740,11 @@ function hideEnvironments() {
   });
 }
 
-
 function beforeShowEducations() {
-  CACHE.educationModels.forEach((m) => {
-    CACHE.container.addBloom(m);
-    m.visible = true;
-    const data = m.userData.education
-      ? m.userData.education
-      : m.userData.medical;
-    m.material.color.set(data.color);
-    m.material.envMapIntensity = data.envMapIntensity;
-    m.material.roughness = data.roughness;
-    m.material.metalness = data.metalness;
-  });
+  CACHE.mergedMeshes["education"].material = CACHE.mergedMaterials["education"];
+  CACHE.mergedMeshes["medical"].material = CACHE.mergedMaterials["medical"];
+  CACHE.container.addBloom(CACHE.mergedMeshes["education"]);
+  CACHE.container.addBloom(CACHE.mergedMeshes["medical"]);
 }
 
 function showEducations() {
@@ -772,12 +767,28 @@ function showModels() {
   CACHE.models.forEach((model) => {
     model.visible = true;
   });
+  for (const i in CACHE.mergedMeshes) {
+    const mesh = CACHE.mergedMeshes[i];
+    if (mesh) {
+      mesh.visible = true;
+      mesh.material = CACHE.mergedMaterials["other"];
+    }
+  }
 }
 
 function hideModels() {
   CACHE.models.forEach((model) => {
     model.visible = false;
   });
+
+  for (const i in CACHE.mergedMeshes) {
+    const mesh = CACHE.mergedMeshes[i];
+    if (mesh) {
+      mesh.visible = false;
+      mesh.scale.y = 3.8;
+      CACHE.container.removeBloom(mesh);
+    }
+  }
 }
 
 function loadEarth(cb) {
@@ -987,8 +998,6 @@ function lglt2xyz(lng, lat, radius) {
   return result;
 }
 
-
-
 export const API = {
   loadEnterPrises,
   findEnterpriseInnerIconByName,
@@ -1029,7 +1038,6 @@ export const API = {
   hideEnterpriseIconsInner,
   showIcons,
   hideIcons,
-  loadByJson,
   showModels,
   hideModels,
   loadEarth,

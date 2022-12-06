@@ -46,6 +46,34 @@ const threeFlows = {
   money: []  //资金
 } // 3流
 
+
+// merged geos
+const mergedGeos = {
+  'education': [],
+  'medical': [],
+  'yellow': [],
+  'green': [],
+  'other': []
+}
+
+// merged meshes
+const mergedMeshes = {
+  'education': null,
+  'medical': null,
+  'yellow': null,
+  'green': null,
+  'other': null
+}
+
+// merged materials
+const mergedMaterials = {
+  'education': null,
+  'medical': null,
+  'yellow': null,
+  'green': null,
+  'other': null
+}
+
 export const CACHE = {
   container,
   industries,
@@ -81,4 +109,7 @@ export const CACHE = {
   enterpriseIconsInner,
   threeCircles,
   threeFlows,
+  mergedGeos,
+  mergedMeshes,
+  mergedMaterials
 };

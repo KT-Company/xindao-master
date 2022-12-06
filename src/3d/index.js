@@ -14,7 +14,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     viewState: "orbit",
     bloomEnabled: true,
     bloom: {
-      bloomStrength: 0.75,
+      bloomStrength: 1.25,
       bloomRadius: 0.45,
       threshold: 0.015,
     },
@@ -28,12 +28,12 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     cameras: {
       orbitCamera: {
         position: [
-          STATE.earthState.position.x,
-          STATE.earthState.position.y,
-          STATE.earthState.position.z,
+          STATE.initialState.position.x,
+          STATE.initialState.position.y,
+          STATE.initialState.position.z,
         ],
         near: 0.1,
-        far: 1000000,
+        far: 100000,
         fov: 60,
       },
     },
@@ -42,20 +42,21 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         autoRotate: false,
         autoRotateSpeed: 1,
         target: [
-          STATE.earthState.target.x,
-          STATE.earthState.target.y,
-          STATE.earthState.target.z,
+          STATE.initialState.target.x,
+          STATE.initialState.target.y,
+          STATE.initialState.target.z,
         ],
+        // maxDistance: STATE.CAMERA_BOUNDS,
         maxDistance: 1000000,
-        // maxPolarAngle: Math.PI * 0.44,
-        // minPolarAngle: Math.PI * 0.05,
+        maxPolarAngle: Math.PI * 0.49,
+        minPolarAngle: Math.PI * 0.01,
         enableDamping: true,
         dampingFactor: 0.05,
       },
     },
     // bounds: {
-    //   radius: 48000,
-    //   center: [0, 0, 0]
+    //   radius: STATE.CAMERA_BOUNDS,
+    //   center: [0, 0, 0],
     // },
     lights: {
       directionLights: [
@@ -84,10 +85,12 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       },
     },
     modelUrls: [
-      "/assets/models/BeiJing/beijing-1.glb",
-      "/assets/models/BeiJing/beijing-2.glb",
-      "/assets/models/BeiJing/beijing-3.glb",
-      "/assets/models/BeiJing/beijing-4.glb",
+      "/assets/models/BeiJing/Aqu-1.glb",
+      "/assets/models/BeiJing/Bqu.glb",
+      "/assets/models/BeiJing/Cqu.glb",
+      "/assets/models/BeiJing/Dqu.glb",
+      "/assets/models/BeiJing/Equ.glb",
+      "/assets/models/BeiJing/Fqu.glb",
       "/assets/models/BeiJing/fuwugongsi.glb",
       "/assets/models/BeiJing/gongyingqiye.glb",
       "/assets/models/BeiJing/guanweihui.glb",
@@ -106,8 +109,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       "/assets/models/NeiBu/zhizaojituanbangongshi.glb",
       "/assets/models/NeiBu/zonghefuwulou.glb",
       "/assets/models/NeiBu/wuliubangongshi.glb",
-      // *** seperate ***
-      "/assets/models/seperate/peilou.glb",
+      
     ],
     hdrUrls: ["/assets/hdr/st_peters_square_night_1k.hdr"],
     enableShadow: false,
@@ -129,59 +131,124 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       type: 5,
     },
     onProgress: (model) => {
-      if (model.name.includes("beijing")) {
+      if (STATE.baseModelNames.includes(model.name)) {
         model.scale.set(2, 3.8, 2);
+        if (model.name == "Aqu-1") {
+          let count = 0;
+          model.traverse((gchild) => {
+            if (gchild.isMesh) {
+              count++;
+
+              const geoClone = gchild.geometry.clone().toNonIndexed();
+
+              const updatedPos = geoClone.getAttribute("position").array;
+              for (let i = 0; i < updatedPos.length; i += 3) {
+                updatedPos[i] =
+                  updatedPos[i] +
+                  gchild.position.x +
+                  gchild.parent.position.x +
+                  gchild.parent.parent.position.x +
+                  model.position.x;
+                updatedPos[i + 1] =
+                  updatedPos[i + 1] +
+                  gchild.position.y +
+                  gchild.parent.position.y +
+                  gchild.parent.parent.position.y +
+                  model.position.y;
+                updatedPos[i + 2] =
+                  updatedPos[i + 2] +
+                  gchild.position.z +
+                  gchild.parent.position.z +
+                  gchild.parent.parent.position.z +
+                  model.position.z;
+              }
+
+              const v3 = new Bol3D.Vector3();
+              gchild.getWorldPosition(v3);
+              if (count % 60 == 0) {
+                CACHE.mergedGeos["medical"].push(geoClone);
+                DATA.educationPos.push({
+                  position: v3,
+                  type: 'medical',
+                });
+              } else if (count % 30 == 0) {
+                CACHE.mergedGeos["education"].push(geoClone);
+                DATA.educationPos.push({
+                  position: v3,
+                  type: 'education',
+                });
+              } else if (count % 2 == 0) {
+                CACHE.mergedGeos["green"].push(geoClone);
+              } else {
+                CACHE.mergedGeos["yellow"].push(geoClone);
+              }
+            }
+          });
+        } else {
+          let count = 0;
+          model.traverse((gchild) => {
+            if (gchild.isMesh) {
+              count++;
+              const geoClone = gchild.geometry.clone().toNonIndexed();
+
+              const updatedPos = geoClone.getAttribute("position").array;
+              for (let i = 0; i < updatedPos.length; i += 3) {
+                updatedPos[i] =
+                  updatedPos[i] +
+                  gchild.position.x +
+                  gchild.parent.position.x +
+                  model.position.x;
+                updatedPos[i + 1] =
+                  updatedPos[i + 1] +
+                  gchild.position.y +
+                  gchild.parent.position.y +
+                  model.position.y;
+                updatedPos[i + 2] =
+                  updatedPos[i + 2] +
+                  gchild.position.z +
+                  gchild.parent.position.z +
+                  model.position.z;
+              }
+
+              // CACHE.mergedGeos['other'].push(geoClone)
+
+              if (count % 2 == 0) {
+                CACHE.mergedGeos["green"].push(geoClone);
+              } else {
+                CACHE.mergedGeos["yellow"].push(geoClone);
+              }
+            }
+          });
+        }
+
+        CACHE.container.scene.remove(model);
         model.traverse((m) => {
           if (m.isMesh) {
-            // m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
-            //   color: '#0000ff',
-            //   emissive: '#00ffff',
-            //   minHeight: -142,
-            //   maxHeight: -27
-            // })
-            // CACHE.container.addBloom(m)
-
-            m.material =
-              new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
-                color: "#1a2199",
-                emissive: "#ff004b",
-                minHeight: -142,
-                maxHeight: -82,
-                threshold: 0,
-                mixColor: "#512c2c",
-              });
-
-            // todo
-            // m.material.envMap = CACHE.container.envMap
+            m.geometry.dispose();
+            m.material.dispose();
           }
         });
-        CACHE.cities.push(model);
-        CACHE.models.push(model);
+        model = null;
+
+        // CACHE.cities.push(model);
+        // CACHE.models.push(model);
       } else if (STATE.modelExclude.includes(model.name)) {
         model.scale.set(2, 3.8, 2);
         model.children.forEach((m) => {
           if (m.isMesh) {
-            // m.material =
-            //   new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
-            //     color: "#1a2199",
-            //     emissive: "#ff004b",
-            //     minHeight: -142,
-            //     maxHeight: -82,
-            //     threshold: 0,
-            //     mixColor: "#512c2c",
-            //   });
-
-            m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial({
-              color: '#405887',
-              emissiveBase: '#969696',
-              minHeightBase: -142,
-              maxHeightBase: -125,
-              mixColorBase: '#01010a',
-              thresholdBase: 0,
-              minHeightStripe: -183,
-              maxHeightStripe: -90,
-              emissiveStripe: '#555555'
-            })
+            m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial(
+              {
+                color: "#405887",
+                emissiveBase: "#969696",
+                minHeightBase: -142,
+                maxHeightBase: -125,
+                mixColorBase: "#01010a",
+                thresholdBase: 0,
+                minHeightStripe: -183,
+                maxHeightStripe: -90,
+                emissiveStripe: "#555555",
+              }
+            );
             // CACHE.container.addBloom(m)
             // todo
             // m.material.envMap = CACHE.container.envMap
@@ -191,75 +258,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         CACHE.models.push(model);
 
         // model.visible = false
-      } else if(model.name == 'peilou'){
-        model.scale.set(2, 3.8, 2);
-        let count = 0;
-        model.children.forEach((child , index) => {
-          if (child.type == "Object3D") {
-            child.children.forEach((gchild) => {
-              count++;
-
-              // education/medical data
-              if (count % 2 == 0 && index == 1) {
-                const v3 = new Bol3D.Vector3();
-                gchild.getWorldPosition(v3);
-
-                const type = Math.random() > 0.5 ? "education" : "medical";
-                DATA.educationPos.push({
-                  position: v3,
-                  type,
-                });
-
-                gchild.material.color.set(
-                  type == "education" ? "#00617f" : "#156d00"
-                );
-                gchild.material.roughness = 1;
-                gchild.material.matalness = 1;
-                gchild.material.envMapIntensity = 4.7;
-
-                gchild.userData[type] = {
-                  roughness: 1,
-                  metalness: 1,
-                  envMapIntensity: 4.7,
-                  color: type == "education" ? "#00617f" : "#156d00",
-                };
-                CACHE.educationModels.push(gchild);
-              }
-              gchild.scale.set(1, 1.9, 1);
-              if (gchild.geometry.boundingSphere.radius > 50) {
-                gchild.material.color.set("#3f3c00");
-                gchild.material.roughness = 0.8;
-                gchild.material.matalness = 0.4;
-                gchild.material.envMapIntensity = 4.7;
-
-                gchild.userData.environment = {
-                  color: "#3f3c00",
-                  roughness: 0.8,
-                  metalness: 0.4,
-                  envMapIntensity: 4.7,
-                };
-              } else {
-                gchild.material.color.set("#003800");
-                gchild.material.roughness = 0.8;
-                gchild.material.matalness = 0.4;
-                gchild.material.envMapIntensity = 4.7;
-
-                gchild.userData.environment = {
-                  color: "#003800",
-                  roughness: 0.8,
-                  metalness: 0.4,
-                  envMapIntensity: 4.7,
-                };
-              }
-
-              CACHE.seperateModels.push(gchild);
-              // gchild.visible = false;
-            });
-          } else {
-            child.visible = false;
-          }
-        });
-      }else {
+      } else {
         model.scale.set(100, 100, 100);
         if (STATE.enterprisesNames.includes(model.name)) {
           CACHE.innerEnterprises.push(model);
@@ -273,6 +272,102 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       window.container = evt;
       window.position = evt.orbitControls.object;
       evt.clickObjects = [];
+
+      console.log("CACHE.mergeGeos", CACHE.mergedGeos);
+
+      // *** merge geo start***
+      CACHE.mergedMaterials = {
+        'education': new Bol3D.MeshStandardMaterial({
+          roughness: 1,
+          metalness: 1,
+          envMapIntensity: 4.7,
+          color: "#00617f",
+          envMap: CACHE.container.envMap,
+        }),
+        'medical': new Bol3D.MeshStandardMaterial({
+          roughness: 1,
+          metalness: 1,
+          envMapIntensity: 4.7,
+          color: "#ff0000",
+          envMap: CACHE.container.envMap,
+        }),
+        'yellow': new Bol3D.MeshStandardMaterial({
+          color: "#3f3c00",
+          roughness: 0.8,
+          metalness: 0.4,
+          envMapIntensity: 4.7,
+          envMap: CACHE.container.envMap,
+        }),
+        'green': new Bol3D.MeshStandardMaterial({
+          color: "#003800",
+          roughness: 0.8,
+          metalness: 0.4,
+          envMapIntensity: 4.7,
+          envMap: CACHE.container.envMap,
+        }),
+        'other': new Bol3D.PrimitiveMaterial.BaseBuildingGradientMaterial({
+          color: "#1a2199",
+          emissive: "#ff004b",
+          minHeight: -142,
+          maxHeight: -82,
+          threshold: -155,
+          mixColor: "#512c2c",
+        })
+      }
+
+      for (const key in CACHE.mergedGeos) {
+        const geos = CACHE.mergedGeos[key];
+        if (geos.length == 0) continue;
+        const mainGeo = new Bol3D.BufferGeometry();
+
+        let posLen = 0;
+        let normLen = 0;
+        let sumPosCursor = 0;
+        let sumNormCursor = 0;
+
+        for (let i = 0; i < geos.length; i++) {
+          posLen += geos[i].getAttribute("position").array.length;
+          normLen += geos[i].getAttribute("normal").array.length;
+        }
+
+        let sumPosArr = new Float32Array(posLen);
+        let sumNormArr = new Float32Array(normLen);
+
+        for (let i = 0; i < geos.length; i++) {
+          let posAttArr = geos[i].getAttribute("position").array;
+          for (let j = 0; j < posAttArr.length; j++) {
+            sumPosArr[j + sumPosCursor] = posAttArr[j];
+          }
+          sumPosCursor += posAttArr.length;
+
+          let numAttArr = geos[i].getAttribute("normal").array;
+          for (let j = 0; j < numAttArr.length; j++) {
+            sumNormArr[j + sumNormCursor] = numAttArr[j];
+          }
+          sumNormCursor += numAttArr.length;
+        }
+
+        mainGeo.setAttribute(
+          "position",
+          new Bol3D.BufferAttribute(sumPosArr, 3)
+        );
+        mainGeo.setAttribute(
+          "normal",
+          new Bol3D.BufferAttribute(sumNormArr, 3)
+        );
+
+        const mergeMesh = new Bol3D.Mesh(
+          mainGeo,
+          CACHE.mergedMaterials['other']
+        );
+
+        CACHE.container.scene.add(mergeMesh);
+        mergeMesh.scale.set(2, 3.8, 2);
+
+        CACHE.mergedMeshes[key] = mergeMesh
+      }
+
+      // *** merge geo end***
 
       CACHE.cities2.forEach((c) => {
         c.children.forEach((d) => {
@@ -289,45 +384,72 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
       // console.log(evt.sceneModels , evt.clickObjects);
 
+      const promiseAll = [];
+
       // ************** init icons start **************
       API.loadEnterPrises(); // 企业标签
       API.loadEnterPrisesInnerIcon(); // 企业内部标签
       // ************** init icons end **************
 
-      // 5大板块
-      API.loadIndustrialEconomy();
-      API.loadTraffic();
-      API.loadEducation();
-      API.loadEnergy();
-
       // 3圈3流
       API.loadThreeCircles();
       API.loadThreeFlows();
 
-      // 地球模块
-      API.loadEarth(() => {
-        API.hideFloor();
-        API.hideMirror()
-        API.hideSkyBox();
-        // earth load finish
-        API.cameraAnimation({
-          duration: 0,
-          cameraState: STATE.earthState,
-          callback: () => {
-            API.earthRotateAnimation();
-            API.startEarthLineAnimation();
+      // 5大板块
+      API.loadEnergy();
+      promiseAll.push(API.loadIndustrialEconomy());
+      promiseAll.push(API.loadTraffic());
+      promiseAll.push(API.loadEducation());
 
-            if (CACHE.container.loadingBar)
-              CACHE.container.loadingBar.style.visibility = "hidden";
+      Promise.all(promiseAll).then(() => {
+        if (CACHE.container.loadingBar)
+          CACHE.container.loadingBar.style.visibility = "hidden";
+        API.hideAll();
+        API.showModels();
+        API.showRoutes();
+        API.showFloor();
+        API.showMirror();
 
-            API.hideAll();
-          },
-        });
+        let animationId = -1;
+        CACHE.container.orbitControls.enabled = false
+        const rotateAnimation = () => {
+          animationId = requestAnimationFrame(rotateAnimation);
+
+          let angle = CACHE.container.orbitControls.getAzimuthalAngle();
+          angle -= 0.015;
+          const offset = new Bol3D.Vector3().subVectors(
+            CACHE.container.orbitCamera.position,
+            CACHE.container.orbitControls.target
+          );
+          const spherical = new Bol3D.Spherical().setFromVector3(offset);
+          spherical.theta = angle;
+          offset.setFromSpherical(spherical);
+          const newPOS = new Bol3D.Vector3();
+          newPOS.copy(CACHE.container.orbitControls.target).add(offset);
+
+          CACHE.container.orbitCamera.position.copy(newPOS);
+
+          if (spherical.theta <= - .9 * Math.PI) {
+            cancelAnimationFrame(animationId);
+
+            API.cameraAnimation({
+              cameraState: STATE.industrialState,
+              callback: () => {
+                store.commit("changeLevel", 1);
+                router.push("/IndustrialEconomy");
+
+                API.showIndustrialEconomy();
+              },
+            });
+          }
+        };
+
+        rotateAnimation();
       });
 
-      API.hideAll();
-      API.showModels();
-      API.showRoutes();
+      // API.hideAll();
+      // API.showModels();
+      // API.showRoutes();
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
@@ -347,7 +469,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // mirror
       const mirrorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
       const groundMirror = new Bol3D.Reflector(mirrorGeo, {
-        clipBias: -.005,
+        clipBias: -0.005,
         textureWidth: window.innerWidth * window.devicePixelRatio,
         textureHeight: window.innerHeight * window.devicePixelRatio,
         color: 0x777777,
@@ -359,303 +481,36 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
       // ********************** gui start **********************
       // const gui = new dat.GUI();
-      // // scenes
-      // const scenesFolder = gui.addFolder("场景");
-      // // floor
-      // const defaults = {
-      //   vertical: 24000,
-      //   shapeColor: "#ffffff",
-      //   shapeExtrude: "#ffffff",
-      //   lineBottom: "#ffffff",
-      //   line: "#ffffff",
-      //   floorOpacity: 1,
-      //   floorColor: "#101119",
-      //   buildingColor: "#ffffff",
-      //   fogColor: "#111472",
-      //   skySize: 2,
-      //   minHeight: -155,
-      //   maxHeight: -36,
-      //   city1Color: "#0000ff",
-      //   city1StripeColor: "#00ffff",
-      //   city1MixColor: "#ff0000",
+      // ****************** base models start ******************
+      // const baseModelsFolder = gui.addFolder("基础模型");
+      // const baseModelsOpts = {
+      //   color: "#1a2199",
+      //   emissive: "#ff004b",
+      //   minHeight: -142,
+      //   maxHeight: -82,
+      //   threshold: 0,
+      //   mixColor: "#512c2c",
       // };
-
-      // scenesFolder
-      //   .add(defaults, "vertical")
-      //   .name("水平起始")
-      //   .onChange((val) => {
-      //     CACHE.industries.forEach((c) => {
-      //       c.material.uniforms.vertical.value = val;
-      //     });
-      //   });
-
-      // scenesFolder.addColor(defaults, "shapeColor").onChange((val) => {
-      //   CACHE.industries.forEach((c, index) => {
-      //     c.material.uniforms.color.value.set(val);
-      //   });
+      // baseModelsFolder.addColor(baseModelsOpts, "color").onChange((val) => {
+      //   mergeMesh.material.uniforms.color.value.set(val);
+      // });
+      // baseModelsFolder.addColor(baseModelsOpts, "emissive").onChange((val) => {
+      //   mergeMesh.material.uniforms.emissive.value.set(val);
+      // });
+      // baseModelsFolder.addColor(baseModelsOpts, "mixColor").onChange((val) => {
+      //   mergeMesh.material.uniforms.mixColor.value.set(val);
+      // });
+      // baseModelsFolder.add(baseModelsOpts, "minHeight").onChange((val) => {
+      //   mergeMesh.material.uniforms.minHeight.value = val;
+      // });
+      // baseModelsFolder.add(baseModelsOpts, "maxHeight").onChange((val) => {
+      //   mergeMesh.material.uniforms.maxHeight.value = val;
+      // });
+      // baseModelsFolder.add(baseModelsOpts, "threshold").onChange((val) => {
+      //   mergeMesh.material.uniforms.threshold.value = val;
       // });
 
-      // scenesFolder.addColor(defaults, "shapeExtrude").onChange((val) => {
-      //   CACHE.industries.forEach((c) => {
-      //     c.material.uniforms.gradient.value.set(val);
-      //   });
-      // });
-
-      // scenesFolder
-      //   .addColor(defaults, "city1Color")
-      //   .onChange((val) => {
-      //     // CACHE.cities.forEach((d) => {
-      //     //   if (d.isMesh) {
-      //     //     d.material.uniforms.color.value.set(val);
-      //     //   }
-      //     // });
-      //     CACHE.cities2.forEach((d) => {
-      //       if (d.isMesh) {
-      //         d.material.uniforms.color.value.set(val);
-      //       }
-      //     });
-      //   })
-      //   .name("color");
-
-      // scenesFolder
-      //   .addColor(defaults, "city1StripeColor")
-      //   .onChange((val) => {
-      //     // CACHE.cities.forEach((d) => {
-      //     //   if (d.isMesh) {
-      //     //     d.material.uniforms.emissive.value.set(val);
-      //     //   }
-      //     // });
-      //     CACHE.cities2.forEach((d) => {
-      //       if (d.isMesh) {
-      //         d.material.uniforms.emissive.value.set(val);
-      //       }
-      //     });
-      //   })
-      //   .name("emissive");
-
-      // scenesFolder
-      //   .addColor(defaults, "city1MixColor")
-      //   .onChange((val) => {
-      //     // CACHE.cities.forEach((d) => {
-      //     //   if (d.isMesh) {
-      //     //     d.material.uniforms.mixColor.value.set(val);
-      //     //   }
-      //     // });
-      //     CACHE.cities2.forEach((d) => {
-      //       if (d.isMesh) {
-      //         d.material.uniforms.mixColor.value.set(val);
-      //       }
-      //     });
-      //   })
-      //   .name("mixColor");
-
-      // scenesFolder
-      //   .add(defaults, "maxHeight")
-      //   .name("maxHeight")
-      //   .step(1)
-      //   .onChange((val) => {
-      //     // CACHE.cities.forEach((d) => {
-      //     //   if (d.isMesh) {
-      //     //     d.material.uniforms.maxHeight.value = val;
-      //     //   }
-      //     // });
-      //     CACHE.cities2.forEach((d) => {
-      //       if (d.isMesh) {
-      //         d.material.uniforms.maxHeight.value = val;
-      //       }
-      //     });
-      //   });
-      // scenesFolder
-      //   .add(defaults, "minHeight")
-      //   .name("minHeight")
-      //   .step(1)
-      //   .onChange((val) => {
-      //     // CACHE.cities.forEach((d) => {
-      //     //   if (d.isMesh) {
-      //     //     d.material.uniforms.minHeight.value = val;
-      //     //   }
-      //     // });
-      //     CACHE.cities2.forEach((d) => {
-      //       if (d.isMesh) {
-      //         d.material.uniforms.minHeight.value = val;
-      //       }
-      //     });
-      //   });
-
-      // // scenesFolder.add(floor.material, 'opacity', 0, 1).step(0.001).name('地板透明度')
-      // // // toneMapping
-      // scenesFolder
-      //   .add(evt.renderer, "toneMappingExposure", 0, 10)
-      //   .step(0.001)
-      //   .name("exposure");
-      // scenesFolder
-      //   .add(evt.ambientLight, "intensity")
-      //   .step(0.001)
-      //   .min(0)
-      //   .name("环境光强度");
-      // scenesFolder
-      //   .add(evt.directionLights[0], "intensity")
-      //   .step(0.001)
-      //   .min(0)
-      //   .name("平行光1强度");
-      // scenesFolder.add(evt.directionLights[0].position, "x").name("平行光1X");
-      // scenesFolder.add(evt.directionLights[0].position, "y").name("平行光1Y");
-      // scenesFolder.add(evt.directionLights[0].position, "z").name("平行光1Z");
-      // // scenesFolder.add(evt.directionLights[1], 'intensity').step(0.001).min(0).name('平行光2强度')
-      // // scenesFolder.add(evt.directionLights[1].position, 'x').name('平行光2X')
-      // // scenesFolder.add(evt.directionLights[1].position, 'y').name('平行光2Y')
-      // // scenesFolder.add(evt.directionLights[1].position, 'z').name('平行光2Z')
-      // scenesFolder
-      //   .addColor(defaults, "fogColor")
-      //   .name("雾颜色")
-      //   .onChange((val) => {
-      //     CACHE.container.scene.fog.color.set(val);
-      //   });
-      // scenesFolder
-      //   .addColor(defaults, "floorColor")
-      //   .name("地板颜色")
-      //   .onChange((val) => {
-      //     floorMat.color.set(val);
-      //   });
-      // scenesFolder
-      //   .add(defaults, "floorOpacity")
-      //   .step(0.001)
-      //   .min(0)
-      //   .name("地板透明度")
-      //   .onChange((val) => {
-      //     floorMat.opacity = val;
-      //   });
-      // scenesFolder
-      //   .add(evt.scene.fog, "density")
-      //   .step(0.000001)
-      //   .min(0)
-      //   .name("雾强度");
-      // scenesFolder
-      //   .add(defaults, "skySize")
-      //   .step(0.5)
-      //   .min(0)
-      //   .name("天空盒大小")
-      //   .onChange((val) => {
-      //     evt.sky.scale.set(val, val, val);
-      //   });
-
-      // scenesFolder
-      //   .addColor(defaults, "line")
-      //   .name("line")
-      //   .onChange((val) => {
-      //     CACHE.lines.forEach(l => {
-      //       l.material.color.set(val)
-      //     })
-
-      //     // CACHE.earthLines.forEach((l) => {
-      //     //   l.material.color.set(val);
-      //     // });
-      //   });
-      // scenesFolder
-      //   .addColor(defaults, "lineBottom")
-      //   .name("lineBottom")
-      //   .onChange((val) => {
-      //     CACHE.linesBottom.forEach(l => {
-      //       l.material.color.set(val)
-      //     })
-
-      //     // CACHE.earthLinesBottom.forEach((l) => {
-      //     //   l.material.color.set(val);
-      //     // });
-      //   });
-
-      // const earthG = {
-      //   rotation: { x: 0, y: 0, z: 0 },
-      //   roughness: 1,
-      //   metalness: 1,
-      //   envMapIntensity: 1.5,
-      //   color1: "#ff0000",
-      //   color2: "#ff0000",
-      //   color3: "#ff0000",
-      // };
-      // scenesFolder
-      //   .add(earthG.rotation, "y")
-      //   .step(0.1)
-      //   .name("Y")
-      //   .onChange((val) => {
-      //     CACHE.earthGroup.rotation.y = (val * Math.PI) / 180;
-      //   });
-
-      // scenesFolder
-      //   .add(earthG, "roughness")
-      //   .step(0.01)
-      //   .onChange((val) => {
-      //     CACHE.earthGroup.children[0].material.roughness = val;
-      //   });
-
-      // scenesFolder
-      //   .add(earthG, "metalness")
-      //   .step(0.01)
-      //   .onChange((val) => {
-      //     CACHE.earthGroup.children[0].material.metalness = val;
-      //   });
-
-      // scenesFolder
-      //   .add(earthG, "envMapIntensity")
-      //   .step(0.01)
-      //   .onChange((val) => {
-      //     CACHE.earthGroup.children[0].material.envMapIntensity = val;
-      //   });
-
-      // scenesFolder.addColor(earthG, "color1").onChange((val) => {
-      //   CACHE.earthVics.forEach((ev) => {
-      //     ev.material.color.set(val);
-      //   });
-      // });
-      // // scenesFolder.addColor(earthG, "color2").onChange((val) => {
-      // //   CACHE.earthTitles.forEach((ev) => {
-      // //     ev.update({
-      // //       bgColor: val
-      // //     })
-      // //   });
-      // // });
-      // scenesFolder.addColor(earthG, "color3").onChange((val) => {
-      //   CACHE.earthCircles.forEach((ev) => {
-      //     ev.material.uniforms.color.value.set(val);
-      //   });
-      // });
-
-      // // ****************** indurstries start ******************
-      // const industriesOpts = {
-      //   circleColor: "#ff0000",
-      //   cubeColor: "#ff0000",
-      //   cubeMix: "#ff0000",
-      //   cubeMix2: "#ff0000",
-      //   cubeThreshold: 2,
-      // };
-      // scenesFolder.addColor(industriesOpts, "circleColor").onChange((val) => {
-      //   CACHE.industries.forEach((ev) => {
-      //     ev.children[1].material.uniforms.color.value.set(val);
-      //     ev.children[2].material.uniforms.color.value.set(val);
-      //   });
-      // });
-      // scenesFolder.addColor(industriesOpts, "cubeColor").onChange((val) => {
-      //   CACHE.industries.forEach((ev) => {
-      //     ev.children[0].material.uniforms.color.value.set(val);
-      //   });
-      // });
-      // scenesFolder.addColor(industriesOpts, "cubeMix").onChange((val) => {
-      //   CACHE.industries.forEach((ev) => {
-      //     ev.children[0].material.uniforms.mixColor.value.set(val);
-      //   });
-      // });
-      // scenesFolder.addColor(industriesOpts, "cubeMix2").onChange((val) => {
-      //   CACHE.industries.forEach((ev) => {
-      //     ev.children[0].material.uniforms.mixColor2.value.set(val);
-      //   });
-      // });
-      // scenesFolder.add(industriesOpts, "cubeThreshold").onChange((val) => {
-      //   CACHE.industries.forEach((ev) => {
-      //     ev.children[0].material.uniforms.threshold.value = val;
-      //   });
-      // });
-
-      // // ****************** indurstries end ******************
+      // ****************** base models end ******************
 
       // // ****************** seperate start ******************
       // const seperate = {
@@ -725,14 +580,14 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // models
       // const areaModels = {
       //   color: '#606089',
-      //         emissiveBase: '#282828',
-      //         minHeightBase: -122,
-      //         maxHeightBase: -112,
-      //         mixColorBase: '#545575',
-      //         thresholdBase: 0,
-      //         minHeightStripe: -183,
-      //         maxHeightStripe: -90,
-      //         emissiveStripe: '#555555'
+      // emissiveBase: '#282828',
+      // minHeightBase: -122,
+      // maxHeightBase: -112,
+      // mixColorBase: '#545575',
+      // thresholdBase: 0,
+      // minHeightStripe: -183,
+      // maxHeightStripe: -90,
+      // emissiveStripe: '#555555'
       // }
       // const areasModelFolder = gui.addFolder('区域模型')
       // areasModelFolder.addColor(areaModels, 'color').onChange((val) => {
@@ -871,8 +726,15 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             obj.parent.children[obj.parent.children.length - 1].visible = true;
             store.commit("changeLevel", 3);
             store.commit("setMenuBid", null);
-            if(STATE.enterpriseInnerMap[obj.parent.userData.type])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.parent.userData.type].id)
-            store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.parent.userData.type].id);
+            if (STATE.enterpriseInnerMap[obj.parent.userData.type])
+              store.commit(
+                "setPickId",
+                STATE.enterpriseInnerMap[obj.parent.userData.type].id
+              );
+            store.commit(
+              "setMenuAid",
+              STATE.enterpriseInnerMap[obj.parent.userData.type].id
+            );
           },
         });
       }
@@ -880,34 +742,52 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
     ) {
       if (store.state.LEVEL == 2) {
-          store.commit("setMenuBid", null);
-          API.hideEnterpriseIcons();
-          API.hideThreeFlows();
-          API.hideThreeCircles();
-          API.cameraAnimation({
-            cameraState: STATE.enterpriseStates[obj.userData.name],
-            callback: () => {
-              CACHE.enterpriseIcons.forEach((d) => {
-                if (d.userData.type == obj.userData.name) d.children[d.children.length - 1].visible = true;
-              });
-              store.commit("changeLevel", 3);
-              store.commit("setMenuBid", null);
-              if(STATE.enterpriseInnerMap[obj.userData.name])store.commit('setPickId' , STATE.enterpriseInnerMap[obj.userData.name].id)
-              store.commit("setMenuAid", STATE.enterpriseInnerMap[obj.userData.name].id);
-            },
-          });
-      }else if(store.state.LEVEL == 3){
-        if(Object.keys(STATE.enterpriseInnerMap).includes(obj.userData.name)){
+        store.commit("setMenuBid", null);
+        API.hideEnterpriseIcons();
+        API.hideThreeFlows();
+        API.hideThreeCircles();
+        API.cameraAnimation({
+          cameraState: STATE.enterpriseStates[obj.userData.name],
+          callback: () => {
+            CACHE.enterpriseIcons.forEach((d) => {
+              if (d.userData.type == obj.userData.name)
+                d.children[d.children.length - 1].visible = true;
+            });
+            store.commit("changeLevel", 3);
+            store.commit("setMenuBid", null);
+            if (STATE.enterpriseInnerMap[obj.userData.name])
+              store.commit(
+                "setPickId",
+                STATE.enterpriseInnerMap[obj.userData.name].id
+              );
+            store.commit(
+              "setMenuAid",
+              STATE.enterpriseInnerMap[obj.userData.name].id
+            );
+          },
+        });
+      } else if (store.state.LEVEL == 3) {
+        if (Object.keys(STATE.enterpriseInnerMap).includes(obj.userData.name)) {
           // 整体布局
-          API.hideAll()
-          API.showEnterpriseByName(STATE.enterpriseInnerMap[obj.userData.name].name)
-          if(STATE.enterpriseInnerMap[obj.userData.name].hasInnerIcon)API.showEnterpriseIconInnerByType(STATE.enterpriseInnerMap[obj.userData.name].name)
-          API.showMirror()
+          API.hideAll();
+          API.showEnterpriseByName(
+            STATE.enterpriseInnerMap[obj.userData.name].name
+          );
+          if (STATE.enterpriseInnerMap[obj.userData.name].hasInnerIcon)
+            API.showEnterpriseIconInnerByType(
+              STATE.enterpriseInnerMap[obj.userData.name].name
+            );
+          API.showMirror();
           API.cameraAnimation({
             cameraState: STATE.enterpriseInnerStates[obj.userData.name],
           });
           store.commit("setMenuBid", null);
-          store.commit("setMenuBid", `${STATE.enterpriseInnerMap[obj.userData.name].id}-${STATE.enterpriseInnerMap[obj.userData.name].cid}`);
+          store.commit(
+            "setMenuBid",
+            `${STATE.enterpriseInnerMap[obj.userData.name].id}-${
+              STATE.enterpriseInnerMap[obj.userData.name].cid
+            }`
+          );
           store.commit("changeLevel", 4);
           router.push(STATE.enterpriseInnerMap[obj.userData.name].path);
         }
@@ -935,67 +815,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     if (e.objects.length == 0) return;
 
     const obj = e.objects[0].object;
-    if (obj.userData.name == "智能制造" && obj.visible) {
-      API.showModels();
-      API.showIcons();
-      // console.log('下钻')
-      API.cameraAnimation({
-        cameraState: STATE.earthState,
-        callback: () => {
-          API.cameraAnimation({
-            cameraState: STATE.earthState3,
-            callback: () => {
-              API.hideEarth();
-              API.showFloor();
-              API.showSkyBox();
-              API.showRoutes();
-              API.showMirror()
-              API.cameraAnimation({
-                delayTime: 200,
-                duration: 1600,
-                cameraState: STATE.earthState4,
-                callback: () => {
-                  API.cameraAnimation({
-                    delayTime: 200,
-                    duration: 1600,
-                    cameraState: STATE.earthState5,
-                    callback: () => {
-                      API.cameraAnimation({
-                        cameraState: STATE.earthState6,
-                        callback: () => {
-                          API.cameraAnimation({
-                            delayTime: 200,
-                            duration: 2000,
-                            cameraState: STATE.industrialState,
-                            callback: () => {
-                              store.commit("changeLevel", 1);
-                              router.push("/IndustrialEconomy");
-
-                              CACHE.container.orbitControls.maxDistance =  STATE.CAMERA_BOUNDS;
-                              CACHE.container.orbitControls.minPolarAngle =  Math.PI * 0.01;
-                              CACHE.container.orbitControls.maxPolarAngle =  Math.PI * 0.49;
-                              CACHE.container.orbitCamera.far = 100000;
-                              CACHE.container.bounds.radius = STATE.CAMERA_BOUNDS;
-                              CACHE.container.bounds.center.set(0, 0, 0);
-
-                              API.showIndustrialEconomy();
-                            },
-                          });
-                        }
-                      })
-                    }
-                  
-                  });
-                },
-              });
-            },
-          });
-        },
-      });
-    } else if (
-      STATE.enterpriseIconNames.includes(obj.name) &&
-      obj.parent.visible
-    ) {
+    if (STATE.enterpriseIconNames.includes(obj.name) && obj.parent.visible) {
       if (store.state.LEVEL == 2 && obj.name != "管委会") {
         store.commit("setMenuBid", null);
         API.showEnterpriseIcons();

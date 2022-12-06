@@ -12,7 +12,12 @@ const handleBMenuBMap = {
     API.showMirror()
     API.showRoutes();
     API.showModels();
-    API.showIndustrialEconomy();
+    API.cameraAnimation({
+      cameraState: STATE.trafficState,
+      callback: () => {
+        API.showIndustrialEconomy();
+      },
+    });
   },
   "1-2": () => {
     // 能源碳排放
@@ -20,7 +25,12 @@ const handleBMenuBMap = {
     API.showMirror()
     API.showRoutes();
     API.showModels();
-    API.showEnergy();
+    API.cameraAnimation({
+      cameraState: STATE.energyState,
+      callback: () => {
+        API.showEnergy();
+      },
+    });
   },
   "1-3": () => {
     // 交通出行
@@ -28,7 +38,12 @@ const handleBMenuBMap = {
     API.showMirror()
     API.showRoutes();
     API.showModels();
-    API.showTraffics();
+    API.cameraAnimation({
+      cameraState: STATE.trafficState,
+      callback: () => {
+        API.showTraffics();
+      },
+    });
   },
   "1-4": () => {
     // 环境人口
@@ -37,7 +52,12 @@ const handleBMenuBMap = {
     API.showModels();
     API.beforeShowEnvironments();
     API.hideAreaModels();
-    API.showEnvironments();
+    API.cameraAnimation({
+      cameraState: STATE.environmentState,
+      callback: () => {
+        API.showEnvironments();
+      },
+    });
   },
   "1-5": () => {
     // 教育医疗
@@ -45,7 +65,12 @@ const handleBMenuBMap = {
     API.showRoutes();
     API.showModels();
     API.beforeShowEducations();
-    API.showEducations();
+    API.cameraAnimation({
+      cameraState: STATE.educationState,
+      callback: () => {
+        API.showEducations();
+      },
+    });
   },
   // ******* 社会层 end *******
   // ******* 区域层 start *******
