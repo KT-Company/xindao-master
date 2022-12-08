@@ -119,9 +119,9 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     },
 
     gammaEnabled: false,
-    stats: true,
+    stats: false,
     loadingBar: {
-      show: false,
+      show: true,
       type: 5,
     },
     onProgress: (model) => {
@@ -159,13 +159,13 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
               const v3 = new Bol3D.Vector3();
               gchild.getWorldPosition(v3);
-              if (count % 60 == 0) {
+              if (count % 100 == 0) {
                 CACHE.mergedGeos["medical"].push(geoClone);
                 DATA.educationPos.push({
                   position: v3,
                   type: 'medical',
                 });
-              } else if (count % 30 == 0) {
+              } else if (count % 50 == 0) {
                 CACHE.mergedGeos["education"].push(geoClone);
                 DATA.educationPos.push({
                   position: v3,
@@ -407,55 +407,55 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       promiseAll.push(API.loadTraffic());
       promiseAll.push(API.loadEducation());
 
-      // Promise.all(promiseAll).then(() => {
-      //   if (CACHE.container.loadingBar)
-      //     CACHE.container.loadingBar.style.visibility = "hidden";
-      //   API.hideAll();
-      //   API.showModels();
-      //   API.showRoutes();
-      //   API.showFloor();
-      //   API.showMirror();
+      Promise.all(promiseAll).then(() => {
+        if (CACHE.container.loadingBar)
+          CACHE.container.loadingBar.style.visibility = "hidden";
+        API.hideAll();
+        API.showModels();
+        API.showRoutes();
+        API.showFloor();
+        API.showMirror();
 
-      //   let animationId = -1;
-      //   CACHE.container.orbitControls.enabled = false
-      //   const rotateAnimation = () => {
-      //     animationId = requestAnimationFrame(rotateAnimation);
+        let animationId = -1;
+        CACHE.container.orbitControls.enabled = false
+        const rotateAnimation = () => {
+          animationId = requestAnimationFrame(rotateAnimation);
 
-      //     let angle = CACHE.container.orbitControls.getAzimuthalAngle();
-      //     angle -= 0.015;
-      //     const offset = new Bol3D.Vector3().subVectors(
-      //       CACHE.container.orbitCamera.position,
-      //       CACHE.container.orbitControls.target
-      //     );
-      //     const spherical = new Bol3D.Spherical().setFromVector3(offset);
-      //     spherical.theta = angle;
-      //     offset.setFromSpherical(spherical);
-      //     const newPOS = new Bol3D.Vector3();
-      //     newPOS.copy(CACHE.container.orbitControls.target).add(offset);
+          let angle = CACHE.container.orbitControls.getAzimuthalAngle();
+          angle -= 0.015;
+          const offset = new Bol3D.Vector3().subVectors(
+            CACHE.container.orbitCamera.position,
+            CACHE.container.orbitControls.target
+          );
+          const spherical = new Bol3D.Spherical().setFromVector3(offset);
+          spherical.theta = angle;
+          offset.setFromSpherical(spherical);
+          const newPOS = new Bol3D.Vector3();
+          newPOS.copy(CACHE.container.orbitControls.target).add(offset);
 
-      //     CACHE.container.orbitCamera.position.copy(newPOS);
+          CACHE.container.orbitCamera.position.copy(newPOS);
 
-      //     if (spherical.theta <= - .9 * Math.PI) {
-      //       cancelAnimationFrame(animationId);
+          if (spherical.theta <= - .9 * Math.PI) {
+            cancelAnimationFrame(animationId);
 
-      //       API.cameraAnimation({
-      //         cameraState: STATE.industrialState,
-      //         callback: () => {
-      //           store.commit("changeLevel", 1);
-      //           router.push("/IndustrialEconomy");
+            API.cameraAnimation({
+              cameraState: STATE.industrialState,
+              callback: () => {
+                store.commit("changeLevel", 1);
+                router.push("/IndustrialEconomy");
 
-      //           API.showIndustrialEconomy();
-      //         },
-      //       });
-      //     }
-      //   };
+                API.showIndustrialEconomy();
+              },
+            });
+          }
+        };
 
-      //   rotateAnimation();
-      // });
+        rotateAnimation();
+      });
 
-      API.hideAll();
-      API.showModels();
-      API.showRoutes();
+      // API.hideAll();
+      // API.showModels();
+      // API.showRoutes();
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);

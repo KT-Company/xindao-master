@@ -19,7 +19,7 @@ function menuInteraction(item, leve, son) {
       API.showMirror()
       API.cameraAnimation({
         cameraState: STATE.industrialState,
-        callback: () => {
+        callback: () => { 
           API.showIndustrialEconomy();
         },
       });

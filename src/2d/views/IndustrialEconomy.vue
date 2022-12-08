@@ -6,12 +6,26 @@ import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
 import { setZhuChart } from "@/2d/viewCharts/Area";
 import { CACHE } from "@/3d/CACHE";
+import { API } from "@/3d/API";
+import { DATA } from "@/3d/DATA";
 const store = useStore();
 
 // 企业总量点击事件
 const handleCompany = (item, index) => {
+
+  const {name, key} = DATA.industryDataMap[index]
   CACHE.industries.forEach((d) => {
-    d.setTitle1(item.name);
+
+    let num = API.findIndustryData({
+      areaname: d.name,
+      time: store.state.year,
+      key
+    })
+
+    d.setTitle1(name);
+    if(num) {
+      d.setTitle3("数量：" + num);
+    }
   });
 
   pickIndex.value = index;

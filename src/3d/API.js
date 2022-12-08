@@ -2,6 +2,7 @@ import { DATA } from "./DATA.js";
 import { CACHE } from "./CACHE.js";
 import { STATE } from "./STATE.js";
 import store from "@/2d/store";
+import {  getqyjycx } from "@/2d/api";
 
 let Bol3D = window.Bol3D;
 let h337 = window.h337;
@@ -274,60 +275,160 @@ function cameraAnimation({
   return t1;
 }
 
+
+
 /**
  * 产业经济->区域板块
  */
+
+// 通过分类名称查询key
+function getIndustryTypeByName(name){
+  let key = null
+  DATA.industryDataMap.forEach( d => {
+    if(d.name == name) key = d.key
+  })
+  return key
+}
+
+// 通过区域名字，时间，key 查询数量（结果
+function findIndustryData({areaname, time, key}){
+  if(!DATA.industryDataHttp) return null
+
+  let result = null
+
+  DATA.industryDataHttp.forEach( d => {
+    if(d.year == time && d.qy == areaname){
+      result = d[key]
+    }
+  })
+
+  return result
+}
+
+
 function loadIndustrialEconomy() {
   return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = 'Anonymous'
-    img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
-    img.onload = () => {
-      for (const d of DATA.industryData) {
-        const { data, position } = d;
-        const icon = new Bol3D.CompositeIconPopup({
-          color: "#ff0000",
-          bgColor: "#211F1F",
-          guideHeight: (2 * data.title3) / DATA.industryBaseHeight,
-          titleHeight: (2 * data.title3) / DATA.industryBaseHeight / 2,
-          fontSize1: 60,
-          fontSize2: 60,
-          fontSize3: 60,
-          title1: data.title1,
-          title2: data.title2,
-          title3: "数量：" + data.title3,
-          fontColor1: "#ffffff",
-          fontColor2: "#ffffff",
-          fontColor3: "#ffffff",
-          strokeColor: "#ffffff",
-          opacity: 0.8,
-          img,
-          titleAnchor: [-0.05, 0.5],
-        });
-        CACHE.container.scene.add(icon);
-        icon.position.copy(position);
-        icon.scale.set(2000, 2000, 2000);
-        icon.renderOrder = 100;
 
-        icon.children[0].material.uniforms.color.value.set("#00069b");
-        icon.children[0].material.uniforms.mixColor.value.set("#f267af");
-        icon.children[0].material.uniforms.mixColor2.value.set("#000aff");
-        icon.children[0].material.uniforms.threshold.value = 0.5;
+    getqyjycx().then( (result) => {
+      const {code , formInfoList}  = result.data
+      if(code == 200){
+        DATA.industryDataHttp = formInfoList
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'
+        img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
+        img.onload = () => {
+          for (const d of DATA.industryData) {
+            const { data, position } = d;
 
-        icon.children[1].material.uniforms.color.value.set("#8babff");
-        icon.children[2].material.uniforms.color.value.set("#8babff");
+            let num = findIndustryData({
+              areaname: data.title2,
+              time: store.state.year,
+              key: 'glzlcs'
+            })
 
-        CACHE.container.addBloom(icon.children[0]);
-        CACHE.container.addBloom(icon.children[1]);
-        CACHE.container.addBloom(icon.children[2]);
+            const icon = new Bol3D.CompositeIconPopup({
+              color: "#ff0000",
+              bgColor: "#211F1F",
+              guideHeight: 4000 / DATA.industryBaseHeight,
+              titleHeight: 4000 / DATA.industryBaseHeight / 2,
+              fontSize1: 60,
+              fontSize2: 60,
+              fontSize3: 60,
+              title1: data.title1,
+              title2: data.title2,
+              title3: "数量：" + num,
+              fontColor1: "#ffffff",
+              fontColor2: "#ffffff",
+              fontColor3: "#ffffff",
+              strokeColor: "#ffffff",
+              opacity: 0.8,
+              img,
+              titleAnchor: [-0.05, 0.5],
+            });
+            CACHE.container.scene.add(icon);
+            icon.position.copy(position);
+            icon.scale.set(2000, 2000, 2000);
+            icon.renderOrder = 100;
+            icon.name = data.title2
 
-        icon.visible = false;
+            icon.children[0].material.uniforms.color.value.set("#00069b");
+            icon.children[0].material.uniforms.mixColor.value.set("#f267af");
+            icon.children[0].material.uniforms.mixColor2.value.set("#000aff");
+            icon.children[0].material.uniforms.threshold.value = 0.5;
 
-        CACHE.industries.push(icon);
-      }
+            icon.children[1].material.uniforms.color.value.set("#8babff");
+            icon.children[2].material.uniforms.color.value.set("#8babff");
 
-      resolve();
-    };
+            CACHE.container.addBloom(icon.children[0]);
+            CACHE.container.addBloom(icon.children[1]);
+            CACHE.container.addBloom(icon.children[2]);
+
+            icon.visible = false;
+
+            CACHE.industries.push(icon);
+          }
+
+          resolve();
+        };
+      } 
+    
+
+
+    }).catch( () => {
+      const img = new Image();
+        img.crossOrigin = 'Anonymous'
+        img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
+        img.onload = () => {
+          for (const d of DATA.industryData) {
+            const { data, position } = d;
+            const icon = new Bol3D.CompositeIconPopup({
+              color: "#ff0000",
+              bgColor: "#211F1F",
+              guideHeight: 4000 / DATA.industryBaseHeight,
+              titleHeight: 4000 / DATA.industryBaseHeight / 2,
+              fontSize1: 60,
+              fontSize2: 60,
+              fontSize3: 60,
+              title1: data.title1,
+              title2: data.title2,
+              title3: "数量：" + data.title3,
+              fontColor1: "#ffffff",
+              fontColor2: "#ffffff",
+              fontColor3: "#ffffff",
+              strokeColor: "#ffffff",
+              opacity: 0.8,
+              img,
+              titleAnchor: [-0.05, 0.5],
+            });
+            CACHE.container.scene.add(icon);
+            icon.position.copy(position);
+            icon.scale.set(2000, 2000, 2000);
+            icon.renderOrder = 100;
+            icon.name = data.title2
+
+            icon.children[0].material.uniforms.color.value.set("#00069b");
+            icon.children[0].material.uniforms.mixColor.value.set("#f267af");
+            icon.children[0].material.uniforms.mixColor2.value.set("#000aff");
+            icon.children[0].material.uniforms.threshold.value = 0.5;
+
+            icon.children[1].material.uniforms.color.value.set("#8babff");
+            icon.children[2].material.uniforms.color.value.set("#8babff");
+
+            CACHE.container.addBloom(icon.children[0]);
+            CACHE.container.addBloom(icon.children[1]);
+            CACHE.container.addBloom(icon.children[2]);
+
+            icon.visible = false;
+
+            CACHE.industries.push(icon);
+          }
+
+          resolve();
+        }
+    })
+
+
+    
   });
 }
 
@@ -686,6 +787,16 @@ function hideEnergy() {
 
 function showIndustrialEconomy() {
   CACHE.industries.forEach((idstry) => {
+    let num = API.findIndustryData({
+      areaname: idstry.name,
+      time: store.state.year,
+      key: 'glzlcs'
+    })
+
+    idstry.setTitle1('(国家级)高新技术企业')
+    if(num) idstry.setTitle3('数量：' + num)
+
+    
     idstry.visible = true;
 
     idstry.show();
@@ -1077,4 +1188,6 @@ export const API = {
   showMirror,
   hideMirror,
   showEnterpriseIconInnerByType,
+  getIndustryTypeByName,
+  findIndustryData
 };

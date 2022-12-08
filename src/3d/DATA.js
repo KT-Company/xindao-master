@@ -2,13 +2,23 @@ let Bol3D = window.Bol3D
 
 
 // ICONS 产业经济
-const industryBaseHeight = 5000
+const industryBaseHeight = 1500
+const industryDataHttp = []
+const industryDataMap = [
+  { name: "(国家级)高新技术企业"  , key : 'glzlcs' },
+  { name: "(国家级)科技部科技型中小企业" , key : 'gsglzlc'},
+  { name: "(国家级)技术创新示范企业" , key: 'csgdjtzlc'},
+  { name: "(国家级)专精特新“小巨人”企业" , key : 'wlysqyzs'},
+  { name: "(市级)专精特新“小巨人”中小企业" , key : 'wlyszl'},
+  { name: "(市级)专精特新“小巨人”企业" , key : 'hyl'},
+]
+
 const industryData = [
   {
     name: '海景区',
     position: new Bol3D.Vector3(-19425.43533103114, 0.1, -15968.667815998684),
     data: {
-      title1: '(国家级)高新技术产业',
+      title1: '(国家级)高新技术企业',
       title2: '海景区',
       title3: '5000'
     }
@@ -17,7 +27,7 @@ const industryData = [
     name: '崇武区',
     position: new Bol3D.Vector3(14999.590085793356, 0.1, -24570.312039456356),
     data: {
-      title1: '(国家级)高新技术产业',
+      title1: '(国家级)高新技术企业',
       title2: '崇武区',
       title3: '8000'
     }
@@ -26,7 +36,7 @@ const industryData = [
     name: '延平区',
     position: new Bol3D.Vector3(30660.107029163068, 0.1, -932.139094563925),
     data: {
-      title1: '(国家级)高新技术产业',
+      title1: '(国家级)高新技术企业',
       title2: '延平区',
       title3: '7000'
     }
@@ -35,7 +45,7 @@ const industryData = [
     name: '丰阳区',
     position: new Bol3D.Vector3(-23998.7867404583, 0.1, 21093.928057913305),
     data: {
-      title1: '(国家级)高新技术产业',
+      title1: '(国家级)高新技术企业',
       title2: '丰阳区',
       title3: '7000'
     }
@@ -44,7 +54,7 @@ const industryData = [
     name: '兴通区',
     position: new Bol3D.Vector3(8384.14138935829, 0.1, 5726.746226325336),
     data: {
-      title1: '(国家级)高新技术产业',
+      title1: '(国家级)高新技术企业',
       title2: '兴通区',
       title3: '7500'
     }
@@ -53,7 +63,7 @@ const industryData = [
     name: '平云区',
     position: new Bol3D.Vector3(30753.86698923057, 0.1, 25198.43153192119),
     data: {
-      title1: '(国家级)高新技术产业',
+      title1: '(国家级)高新技术企业',
       title2: '平云区',
       title3: '8000'
     }
@@ -216,6 +226,8 @@ const educationPos = []
 export const DATA = {
   industryBaseHeight,
   industryData,
+  industryDataHttp,
+  industryDataMap,
   energyIconsData,
   earthIcons,
   educationPos
