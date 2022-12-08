@@ -1,20 +1,18 @@
 <!-- 产业经济 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { getcyjj } from "@/2d/api";
+import { getcyjj, getqyjycx, postParam, getParam } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
 import { setZhuChart } from "@/2d/viewCharts/Area";
-import {CACHE} from '@/3d/CACHE'
+import { CACHE } from "@/3d/CACHE";
 const store = useStore();
 
 // 企业总量点击事件
 const handleCompany = (item, index) => {
-
-
-  CACHE.industries.forEach( d => {
-    d.setTitle1(item.name)
-  })
+  CACHE.industries.forEach((d) => {
+    d.setTitle1(item.name);
+  });
 
   pickIndex.value = index;
 };
@@ -121,6 +119,18 @@ onMounted(() => {
       legend: true,
     });
   });
+
+  postParam().then((res) => {
+    console.log("postParam: ", res);
+  });
+
+  getParam().then((res) => {
+    console.log("getParam: ", res);
+  });
+
+  getqyjycx().then((res)=>{
+    console.log('getqyjycx: ', res);
+  })
 });
 </script>
 
@@ -129,7 +139,10 @@ onMounted(() => {
     <Bar>
       <div class="b-title">经济总量</div>
       <ul class="b-content content1">
-        <li v-for="(item, i) in jjzlData" :key="i">
+        <li
+          v-for="(item, i) in jjzlData"
+          :key="i"
+        >
           <span class="big-val">{{ item.val }}</span>
           <span class="t1-name hui">{{ item.name }}</span>
         </li>
@@ -189,12 +202,10 @@ onMounted(() => {
       <div class="b-content">
         <ul class="shcdk-list">
           <li>
-            <span class="hui">各项存款余额(亿)</span
-            ><span>{{ cyzb.data.gxckye }}</span>
+            <span class="hui">各项存款余额(亿)</span><span>{{ cyzb.data.gxckye }}</span>
           </li>
           <li>
-            <span class="hui">各项贷款余额(亿)</span
-            ><span>{{ cyzb.data.gxdkye }}</span>
+            <span class="hui">各项贷款余额(亿)</span><span>{{ cyzb.data.gxdkye }}</span>
           </li>
         </ul>
         <div class="shcdk-chart">
@@ -209,38 +220,31 @@ onMounted(() => {
       <div class="b-content content3">
         <ul class="c3-list1">
           <li>
-            <span class="hui">税收收入(亿)</span
-            ><span>{{ cyzb.data.sssr }}</span>
+            <span class="hui">税收收入(亿)</span><span>{{ cyzb.data.sssr }}</span>
           </li>
           <li>
-            <span class="hui">增值税收入(亿)</span
-            ><span>{{ cyzb.data.zzssr }}</span>
+            <span class="hui">增值税收入(亿)</span><span>{{ cyzb.data.zzssr }}</span>
           </li>
           <li>
-            <span class="hui">企业所得税收入(亿)</span
-            ><span>{{ cyzb.data.qysdssr }}</span>
+            <span class="hui">企业所得税收入(亿)</span><span>{{ cyzb.data.qysdssr }}</span>
           </li>
           <li>
-            <span class="hui">个人所得税收入(亿)</span
-            ><span>{{ cyzb.data.grsdssr }}</span>
+            <span class="hui">个人所得税收入(亿)</span><span>{{ cyzb.data.grsdssr }}</span>
           </li>
         </ul>
 
         <ul>
           <li>
-            <span class="hui">地方政府债券(亿)</span
-            ><span>{{ cyzb.data.dfzfzq }}</span>
+            <span class="hui">地方政府债券(亿)</span><span>{{ cyzb.data.dfzfzq }}</span>
           </li>
           <li>
-            <span class="hui">地方政府债务(亿)</span
-            ><span>{{ cyzb.data.dfzfzw }}</span>
+            <span class="hui">地方政府债务(亿)</span><span>{{ cyzb.data.dfzfzw }}</span>
           </li>
         </ul>
 
         <ul>
           <li>
-            <span class="hui">一般公共预算支出(亿)</span
-            ><span>{{ cyzb.data.ybggyszc }}</span>
+            <span class="hui">一般公共预算支出(亿)</span><span>{{ cyzb.data.ybggyszc }}</span>
           </li>
         </ul>
       </div>
@@ -318,7 +322,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: .8% 0;
+  padding: 0.8% 0;
   li {
     background: rgba(255, 255, 255, 0.1);
     // border: 1px solid rgba(255, 255, 255, 0.2);

@@ -72,6 +72,15 @@ export function getjtcx() {
     })
 }
 
+
+// 企业总量详情
+export function getqyjycx() {
+    return request({
+        url: `${url}qyjycx`,
+        method: 'get',
+    })
+}
+
 // 环境人口
 export function gethjrk() {
     store.state.globalYear = window.publicParams.year
@@ -135,6 +144,7 @@ export function getqyqyxx() {
         method: 'get',
     })
 }
+
 
 // 人力资源
 export function getrlzy() {
@@ -219,6 +229,45 @@ export function getData10() {
     return request({
         url: `${url}bmzbyfqs_b`,
         method: 'get',
+    })
+}
+
+
+
+export function getParam() {
+    return request({
+        url: `https://dedu.seentao.com/api/xverse/paramsmapping/convert?platformSerkey: 
+        Seentao@12345
+        pageCode: 
+        xbizerp_databoard_manage
+        systemKey: 
+        xbizerp-1.0
+        userName: 
+        18612107916
+        paramValue: 
+        {
+        "userId":"13085827083014144",
+        "userName":"18612107916",
+        "userType":"PLATFORM",
+        "userToken":"7f84fcf2880901fc01aa84e16379520f",
+        "orgId":"13066758269702144",
+        "orgType":"SCHOOL",
+        "memberId":"13085827099787264",
+        "memberType":"STUDENT",
+        "schoolId":"13066758269702144",
+        "enterpriseCode":"GE002",
+        "classId":"85662867958267939",
+        "teachClassStepId":"85662876444917791",
+        "memberSourceDeptCodes":"110101",
+        "realName":"谢华志","caseVersionId":"85662731031543860","caseCode":"SZZHSJ_2","memberSourcePostCodes":"11010103","teamId":"85662882041167889","virtualDate":"2023-01-25"}`,
+        method: 'get',
+    })
+}
+
+export function postParam(data) {
+    return request({
+        url: `https://dedu.seentao.com/api/vbseTeach/vbse.teachClass.steps.get?userId=74791556441702461&userName=18612107916&userType=PLATFORM&userToken=75bfc69012f9cacb5179436c60ad319b&orgId=13066758269702144&orgType=SCHOOL&memberId=81180384836976670&memberType=STUDENT&schoolId=13066758269702144&teachClassId=85662867958267939&teachClassStepId=85662876444917791`,
+        method: 'post',
     })
 }
 
