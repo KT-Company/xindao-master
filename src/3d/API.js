@@ -15,6 +15,21 @@ function getEnterprise() {
 
 // ******************************* 二维方法结束 *******************************
 
+// 选择企业标签
+function selectEnterpriseInnerIcon(type, name){
+  CACHE.enterpriseIconsInner[type].forEach((eIcon) => {
+    if(eIcon.userData.name == name){
+      eIcon.update({
+        bgColor: '#ff0000'
+      })
+    }else{
+      eIcon.update({
+        bgColor: '#5c5c5c'
+      })
+    }
+  });
+}
+
 // 根据名字找企业内部标签
 function findEnterpriseInnerIconByName(data, name) {
   let result;
@@ -46,6 +61,9 @@ function loadEnterPrisesInnerIcon() {
 
       CACHE.container.clickObjects.push(bsTitle);
       bsTitle.userData.type = "enterpriseIconInner";
+      bsTitle.userData.name = data.name
+      bsTitle.userData.enterprise = i
+      bsTitle.userData.id = data.id
     }
   }
 }
@@ -85,7 +103,7 @@ function loadEnterPrises() {
                 </div>
               </div>`,
       center: [-0.5, -1],
-      position: [0, 0.25, 0],
+      position: [data.popupPosition.x, data.popupPosition.y, data.popupPosition.z],
       closeSize: 0.8,
     });
     icon.add(infoPopup);
@@ -118,6 +136,9 @@ function showIcons() {
 function showEnterpriseIconInnerByType(type) {
   CACHE.enterpriseIconsInner[type].forEach((eIcon) => {
     eIcon.visible = true;
+    eIcon.update({
+      bgColor: '#ff0000'
+    })
   });
 }
 
@@ -259,6 +280,7 @@ function cameraAnimation({
 function loadIndustrialEconomy() {
   return new Promise((resolve) => {
     const img = new Image();
+    img.crossOrigin = 'Anonymous'
     img.src = STATE.DEV_ENV + "/assets/png/icons/icon1.png";
     img.onload = () => {
       for (const d of DATA.industryData) {
@@ -411,7 +433,6 @@ function loadTraffic() {
             dashOffset: 3,
             dashSize: 1,
             gapSize: 1,
-            gapOffset: 1,
             attenuation: 0,
           });
           le2.renderOrder = 100;
@@ -535,7 +556,6 @@ function loadThreeFlows() {
       dashOffset: 3,
       dashSize: 1,
       gapSize: 1,
-      gapOffset: 1,
     });
     CACHE.container.scene.add(baseFlyLine);
     baseFlyLine.userData.speed = 0.5;
@@ -863,7 +883,6 @@ function loadEarth(cb) {
               dashOffset: 3,
               dashSize: 1,
               gapSize: 1,
-              gapOffset: 1,
             });
             boundrayLine.setPositions(positions);
             boundrayLine.userData.speed = Math.random() + 0.15;
@@ -1001,6 +1020,7 @@ function lglt2xyz(lng, lat, radius) {
 export const API = {
   loadEnterPrises,
   findEnterpriseInnerIconByName,
+  selectEnterpriseInnerIcon,
   loadEnterPrisesInnerIcon,
   loadIndustrialEconomy,
   loadEnergy,

@@ -14,7 +14,7 @@ const store = createStore({
             year: window.publicParams.year, // 全局年份
             year2: window.publicParams.year2, // 全局年份
             szxs: window.publicParams.szxs, // 全局省/直辖市
-            LEVEL: 0, // 3维层级： 0地球1社会层2区域层3企业层4内部层
+            LEVEL: 1, // 3维层级： 0地球1社会层2区域层3企业层4内部层
             enterpriseData: [],  // 企业总量
             data1: {},    // 看板数据1 
             data2: {},    // 看板数据2 

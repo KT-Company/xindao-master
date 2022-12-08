@@ -82273,6 +82273,120 @@ void main() {
 	    }
 	}
 
+	var filterVertexShader = `
+varying vec2 vUv;
+
+void main() {
+
+	vUv = uv;
+
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+}
+
+`;
+
+	var filterFragmentShader = `
+uniform sampler2D tDiffuse;
+varying vec2 vUv;
+
+uniform float hue;
+uniform float saturation;
+uniform float vibrance;
+uniform float brightness;
+uniform float contrast;
+
+#define LUMA vec3(0.2125, 0.7154, 0.0721)
+
+vec3 hueAdjustment(vec3 rgb, float adjustment) {
+    const mat3 RGBtoYIQ = mat3(0.299, 0.587, 0.114, 0.595716, -0.274453, -0.321263, 0.211456, -0.522591, 0.311135);
+    const mat3 YIQtoRGB = mat3(1.0, 0.9563, 0.6210, 1.0, -0.2721, -0.6474, 1.0, -1.107, 1.7046);
+
+    vec3 yiq = RGBtoYIQ * rgb;
+
+    float _hue = atan(yiq.z, yiq.y) + adjustment;
+    float chroma = sqrt(yiq.z * yiq.z + yiq.y * yiq.y);
+
+    return YIQtoRGB * vec3(yiq.x, chroma * cos(_hue), chroma * sin(_hue));
+}
+
+float luminanceAdjustment( vec3 rgb ) {return dot( rgb, LUMA );}
+
+vec3 saturationAdjustment(vec3 rgb, float adjustment) {
+    vec3 intensity = vec3( luminanceAdjustment( rgb ) );
+    return mix( intensity, rgb, adjustment );
+}
+
+vec3 vibranceAdjustment(vec3 rgb, float adjustment) {
+    float average = (rgb.r + rgb.g + rgb.b) / 3.0;
+
+    float mx = max(rgb.r, max(rgb.g, rgb.b));
+    float amt = (mx - average) * (-3.0 * adjustment);
+
+    return mix(rgb.rgb, vec3(mx), amt);
+}
+
+void main() {
+    vec4 inputColor = texture2D( tDiffuse, vUv );
+
+    vec3 outputRGB = hueAdjustment(inputColor.rgb, hue);
+    outputRGB = saturationAdjustment(outputRGB, saturation);
+    outputRGB = vibranceAdjustment(outputRGB, vibrance);
+
+    outputRGB = vec3(outputRGB.r * contrast + brightness,outputRGB.g * contrast + brightness,outputRGB.b * contrast + brightness);
+
+    gl_FragColor = vec4(outputRGB, inputColor.a);
+}
+`;
+
+	class FilterPass extends Pass {
+	    fsQuad;
+	    filterMaterial;
+	    opts;
+	    hue;
+	    saturation;
+	    vibrance;
+	    brightness;
+	    contrast;
+	    constructor(opts) {
+	        super();
+	        this.opts = Object.assign({
+	            hue: 0,
+	            saturation: 1,
+	            vibrance: 0,
+	            brightness: 0,
+	            contrast: 1
+	        }, opts);
+	        this.hue = this.opts.hue !== undefined ? this.opts.hue : 0;
+	        this.saturation = this.opts.saturation !== undefined ? this.opts.saturation : 1;
+	        this.vibrance = this.opts.vibrance !== undefined ? this.opts.vibrance : 0;
+	        this.brightness = this.opts.brightness !== undefined ? this.opts.brightness : 0;
+	        this.contrast = this.opts.contrast !== undefined ? this.opts.contrast : 1;
+	        this.fsQuad = new FullScreenQuad();
+	        this.filterMaterial = new ShaderMaterial({
+	            uniforms: {
+	                tDiffuse: { value: null },
+	                hue: { value: this.hue },
+	                saturation: { value: this.saturation },
+	                vibrance: { value: this.vibrance },
+	                brightness: { value: this.brightness },
+	                contrast: { value: this.contrast }
+	            },
+	            vertexShader: filterVertexShader,
+	            fragmentShader: filterFragmentShader
+	        });
+	    }
+	    render(renderer, writeBuffer, readBuffer, deltaTime, maskActive) {
+	        this.filterMaterial.uniforms.tDiffuse.value = readBuffer.texture;
+	        renderer.setRenderTarget(writeBuffer);
+	        // TODO: Avoid using autoClear properties, see https://github.com/mrdoob/three.js/pull/15571#issuecomment-465669600
+	        if (this.clear)
+	            renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
+	        this.fsQuad.material = this.filterMaterial;
+	        this.fsQuad.render(renderer);
+	    }
+	}
+
 	const SKY_RENDER_ORDER = 1;
 	const MODEL_RENDER_ORDER = 2;
 	const ICON_RENDER_ORDER = 101;
@@ -84514,6 +84628,80 @@ void main() {
 	// 绘制canvas（文字） （类型2）
 	const drawTextCanvas2 = ({ text, fontColor, bgColor, strokeColor, horizontal = 50, vertical = 4, fontSize = 100 }) => {
 	    const canvas = document.createElement('canvas');
+	    const ctx = canvas.getContext('2d'); //上下文，绘图环境
+	    ctx.font = 'Bold ' + fontSize + 'px Microsoft YaHei';
+	    const rgbaStroke = ColorRGBA.parse(strokeColor);
+	    const w = ctx.measureText(text).width + 200;
+	    let width = 512;
+	    let height = 128;
+	    for (let i = 9; i < 13; i++) {
+	        // 4096
+	        if (Math.pow(2, i) > w) {
+	            width = Math.pow(2, i);
+	            break;
+	        }
+	    }
+	    canvas.width = width;
+	    canvas.height = height;
+	    canvas.style.width = width / 2 + 'px';
+	    canvas.style.height = height / 2 + 'px';
+	    // clear bg
+	    ctx.clearRect(0, 0, width, height);
+	    // bg
+	    ctx.fillStyle = bgColor;
+	    const radius = 64 - vertical;
+	    ctx.beginPath();
+	    //从右下角顺时针绘制，弧度从0到1/2PI
+	    ctx.arc(width - horizontal - radius, height - radius - vertical, radius, 0, Math.PI / 2);
+	    //矩形下边线
+	    ctx.lineTo(radius + horizontal, height - vertical);
+	    //左下角圆弧，弧度从1/2PI到PI
+	    ctx.arc(radius + horizontal, height - radius - vertical, radius, Math.PI / 2, Math.PI);
+	    //矩形左边线
+	    ctx.lineTo(horizontal, radius);
+	    //左上角圆弧，弧度从PI到3/2PI
+	    ctx.arc(radius + horizontal, radius + vertical, radius, Math.PI, (Math.PI * 3) / 2);
+	    //上边线
+	    ctx.lineTo(width - radius - horizontal, vertical);
+	    //右上角圆弧
+	    ctx.arc(width - radius - horizontal, radius + vertical, radius, (Math.PI * 3) / 2, Math.PI * 2);
+	    //右边线
+	    ctx.lineTo(width - horizontal, height - radius);
+	    ctx.closePath();
+	    ctx.fill();
+	    // stroke
+	    ctx.lineWidth = 2; //若是给定了值就用给定的值否则给予默认值2
+	    ctx.strokeStyle = `rgba(255,255,255,.1)`;
+	    ctx.stroke();
+	    // stroke2
+	    ctx.beginPath();
+	    ctx.moveTo(25, height / 2);
+	    ctx.lineTo(100, height / 2);
+	    const grd1 = ctx.createLinearGradient(25, height / 2, 100, height / 2);
+	    grd1.addColorStop(0, `rgba(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255},1)`);
+	    grd1.addColorStop(1, `rgba(66,66,66,.1)`);
+	    ctx.strokeStyle = grd1;
+	    ctx.lineWidth = 8;
+	    ctx.stroke();
+	    // stroke3
+	    ctx.beginPath();
+	    ctx.moveTo(width - 25, height / 2);
+	    ctx.lineTo(width - 100, height / 2);
+	    const grd2 = ctx.createLinearGradient(width - 25, height / 2, width - 100, height / 2);
+	    grd2.addColorStop(0, `rgba(${rgbaStroke.r * 255},${rgbaStroke.g * 255},${rgbaStroke.b * 255},1)`);
+	    grd2.addColorStop(1, `rgba(66,66,66,.1)`);
+	    ctx.strokeStyle = grd2;
+	    ctx.lineWidth = 8;
+	    ctx.stroke();
+	    // text
+	    ctx.font = 'Bold ' + fontSize + 'px Microsoft YaHei';
+	    ctx.textBaseline = 'top';
+	    ctx.fillStyle = fontColor;
+	    ctx.fillText(text, (width - ctx.measureText(text).width) / 2, (1.2 * (height - fontSize)) / 2);
+	    return { canvas, height, width };
+	};
+	// 更新canvas（文字） （类型2）
+	const updateTextCanvas2 = ({ canvas, text, fontColor, bgColor, strokeColor, horizontal = 50, vertical = 4, fontSize = 100 }) => {
 	    const ctx = canvas.getContext('2d'); //上下文，绘图环境
 	    ctx.font = 'Bold ' + fontSize + 'px Microsoft YaHei';
 	    const rgbaStroke = ColorRGBA.parse(strokeColor);
@@ -87530,9435 +87718,6 @@ void main() {
 
 	}
 
-	class NodeUniform {
-
-		constructor( params = {} ) {
-
-			this.name = params.name;
-			this.type = params.type;
-			this.node = params.node;
-			this.needsUpdate = params.needsUpdate;
-
-		}
-
-		get value() {
-
-			return this.node.value;
-
-		}
-
-		set value( val ) {
-
-			this.node.value = val;
-
-		}
-
-	}
-
-	const NodeUtils = {
-
-		elements: [ 'x', 'y', 'z', 'w' ],
-
-		addShortcuts: function () {
-
-			function applyShortcut( proxy, property, subProperty ) {
-
-				if ( subProperty ) {
-
-					return {
-
-						get: function () {
-
-							return this[ proxy ][ property ][ subProperty ];
-
-						},
-
-						set: function ( val ) {
-
-							this[ proxy ][ property ][ subProperty ] = val;
-
-						}
-
-					};
-
-				} else {
-
-					return {
-
-						get: function () {
-
-							return this[ proxy ][ property ];
-
-						},
-
-						set: function ( val ) {
-
-							this[ proxy ][ property ] = val;
-
-						}
-
-					};
-
-				}
-
-			}
-
-			return function addShortcuts( proto, proxy, list ) {
-
-				const shortcuts = {};
-
-				for ( let i = 0; i < list.length; ++ i ) {
-
-					const data = list[ i ].split( '.' ),
-						property = data[ 0 ],
-						subProperty = data[ 1 ];
-
-					shortcuts[ property ] = applyShortcut( proxy, property, subProperty );
-
-				}
-
-				Object.defineProperties( proto, shortcuts );
-
-			};
-
-		}()
-
-	};
-
-	const NodeLib = {
-
-		nodes: {},
-		keywords: {},
-
-		add: function ( node ) {
-
-			this.nodes[ node.name ] = node;
-
-		},
-
-		addKeyword: function ( name, callback, cache ) {
-
-			cache = cache !== undefined ? cache : true;
-
-			this.keywords[ name ] = { callback: callback, cache: cache };
-
-		},
-
-		remove: function ( node ) {
-
-			delete this.nodes[ node.name ];
-
-		},
-
-		removeKeyword: function ( name ) {
-
-			delete this.keywords[ name ];
-
-		},
-
-		get: function ( name ) {
-
-			return this.nodes[ name ];
-
-		},
-
-		getKeyword: function ( name, builder ) {
-
-			return this.keywords[ name ].callback.call( this, builder );
-
-		},
-
-		getKeywordData: function ( name ) {
-
-			return this.keywords[ name ];
-
-		},
-
-		contains: function ( name ) {
-
-			return this.nodes[ name ] !== undefined;
-
-		},
-
-		containsKeyword: function ( name ) {
-
-			return this.keywords[ name ] !== undefined;
-
-		}
-
-	};
-
-	class Node$1 {
-
-		constructor( type ) {
-
-			this.uuid = MathUtils.generateUUID();
-
-			this.name = '';
-
-			this.type = type;
-
-			this.userData = {};
-
-		}
-
-		analyze( builder, settings = {} ) {
-
-			builder.analyzing = true;
-
-			this.build( builder.addFlow( settings.slot, settings.cache, settings.context ), 'v4' );
-
-			builder.clearVertexNodeCode();
-			builder.clearFragmentNodeCode();
-
-			builder.removeFlow();
-
-			builder.analyzing = false;
-
-		}
-
-		analyzeAndFlow( builder, output, settings = {} ) {
-
-			this.analyze( builder, settings );
-
-			return this.flow( builder, output, settings );
-
-		}
-
-		flow( builder, output, settings = {} ) {
-
-			builder.addFlow( settings.slot, settings.cache, settings.context );
-
-			const flow = {};
-			flow.result = this.build( builder, output );
-			flow.code = builder.clearNodeCode();
-			flow.extra = builder.context.extra;
-
-			builder.removeFlow();
-
-			return flow;
-
-		}
-
-		build( builder, output, uuid ) {
-
-			output = output || this.getType( builder, output );
-
-			const data = builder.getNodeData( uuid || this );
-
-			if ( builder.analyzing ) {
-
-				this.appendDepsNode( builder, data, output );
-
-			}
-
-			if ( builder.nodes.indexOf( this ) === - 1 ) {
-
-				builder.nodes.push( this );
-
-			}
-
-			if ( this.updateFrame !== undefined && builder.updaters.indexOf( this ) === - 1 ) {
-
-				builder.updaters.push( this );
-
-			}
-
-			return this.generate( builder, output, uuid );
-
-		}
-
-		generate( /* builder, output, uuid, type, ns */ ) {
-
-			// This method needs to be implemented in subclasses
-
-		}
-
-		getHash() {
-
-			let hash = '{';
-			let prop, obj;
-
-			for ( prop in this ) {
-
-				obj = this[ prop ];
-
-				if ( obj instanceof Node$1 ) {
-
-					hash += '"' + prop + '":' + obj.getHash() + ',';
-
-				}
-
-			}
-
-			if ( this.hashProperties ) {
-
-				for ( let i = 0; i < this.hashProperties.length; i ++ ) {
-
-					prop = this.hashProperties[ i ];
-					obj = this[ prop ];
-
-					hash += '"' + prop + '":"' + String( obj ) + '",';
-
-				}
-
-			}
-
-			hash += '"id":"' + this.uuid + '"}';
-
-			return hash;
-
-		}
-
-		appendDepsNode( builder, data, output ) {
-
-			data.deps = ( data.deps || 0 ) + 1;
-
-			const outputLen = builder.getTypeLength( output );
-
-			if ( outputLen > ( data.outputMax || 0 ) || this.getType( builder, output ) ) {
-
-				data.outputMax = outputLen;
-				data.output = output;
-
-			}
-
-		}
-
-		setName( name ) {
-
-			this.name = name;
-
-			return this;
-
-		}
-
-		getName( /* builder */ ) {
-
-			return this.name;
-
-		}
-
-		getType( builder, output ) {
-
-			return output === 'sampler2D' || output === 'samplerCube' ? output : this.type;
-
-		}
-
-		getJSONNode( meta ) {
-
-			const isRootObject = ( meta === undefined || typeof meta === 'string' );
-
-			if ( ! isRootObject && meta.nodes[ this.uuid ] !== undefined ) {
-
-				return meta.nodes[ this.uuid ];
-
-			}
-
-		}
-
-		copy( source ) {
-
-			if ( source.name !== undefined ) this.name = source.name;
-
-			if ( source.userData !== undefined ) this.userData = JSON.parse( JSON.stringify( source.userData ) );
-
-			return this;
-
-		}
-
-		createJSONNode( meta ) {
-
-			const isRootObject = ( meta === undefined || typeof meta === 'string' );
-
-			const data = {};
-
-			if ( typeof this.nodeType !== 'string' ) throw new Error( 'Node does not allow serialization.' );
-
-			data.uuid = this.uuid;
-			data.nodeType = this.nodeType;
-
-			if ( this.name !== '' ) data.name = this.name;
-
-			if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
-
-			if ( ! isRootObject ) {
-
-				meta.nodes[ this.uuid ] = data;
-
-			}
-
-			return data;
-
-		}
-
-		toJSON( meta ) {
-
-			return this.getJSONNode( meta ) || this.createJSONNode( meta );
-
-		}
-
-	}
-
-	Node$1.prototype.isNode = true;
-	Node$1.prototype.hashProperties = undefined;
-
-	class TempNode extends Node$1 {
-
-		constructor( type, params = {} ) {
-
-			super( type );
-
-			this.shared = params.shared !== undefined ? params.shared : true;
-			this.unique = params.unique !== undefined ? params.unique : false;
-
-		}
-
-		build( builder, output, uuid, ns ) {
-
-			output = output || this.getType( builder );
-
-			if ( this.getShared( builder, output ) ) {
-
-				const isUnique = this.getUnique( builder, output );
-
-				if ( isUnique && this.constructor.uuid === undefined ) {
-
-					this.constructor.uuid = MathUtils.generateUUID();
-
-				}
-
-				uuid = builder.getUuid( uuid || this.getUuid(), ! isUnique );
-
-				const data = builder.getNodeData( uuid ),
-					type = data.output || this.getType( builder );
-
-				if ( builder.analyzing ) {
-
-					if ( ( data.deps || 0 ) > 0 || this.getLabel() ) {
-
-						this.appendDepsNode( builder, data, output );
-
-						return this.generate( builder, output, uuid );
-
-					}
-
-					return super.build( builder, output, uuid );
-
-				} else if ( isUnique ) {
-
-					data.name = data.name || super.build( builder, output, uuid );
-
-					return data.name;
-
-				} else if ( ! this.getLabel() && ( ! this.getShared( builder, type ) || ( builder.context.ignoreCache || data.deps === 1 ) ) ) {
-
-					return super.build( builder, output, uuid );
-
-				}
-
-				uuid = this.getUuid( false );
-
-				let name = this.getTemp( builder, uuid );
-
-				if ( name ) {
-
-					return builder.format( name, type, output );
-
-				} else {
-
-					name = TempNode.prototype.generate.call( this, builder, output, uuid, data.output, ns );
-
-					const code = this.generate( builder, type, uuid );
-
-					builder.addNodeCode( name + ' = ' + code + ';' );
-
-					return builder.format( name, type, output );
-
-				}
-
-			}
-
-			return super.build( builder, output, uuid );
-
-		}
-
-		getShared( builder, output ) {
-
-			return output !== 'sampler2D' && output !== 'samplerCube' && this.shared;
-
-		}
-
-		getUnique( /* builder, output */ ) {
-
-			return this.unique;
-
-		}
-
-		setLabel( name ) {
-
-			this.label = name;
-
-			return this;
-
-		}
-
-		getLabel( /* builder */ ) {
-
-			return this.label;
-
-		}
-
-		getUuid( unique ) {
-
-			let uuid = unique || unique == undefined ? this.constructor.uuid || this.uuid : this.uuid;
-
-			if ( typeof this.scope === 'string' ) uuid = this.scope + '-' + uuid;
-
-			return uuid;
-
-		}
-
-		getTemp( builder, uuid ) {
-
-			uuid = uuid || this.uuid;
-
-			const tempVar = builder.getVars()[ uuid ];
-
-			return tempVar ? tempVar.name : undefined;
-
-		}
-
-		generate( builder, output, uuid, type, ns ) {
-
-			if ( ! this.getShared( builder, output ) ) console.error( 'THREE.TempNode is not shared!' );
-
-			uuid = uuid || this.uuid;
-
-			return builder.getTempVar( uuid, type || this.getType( builder ), ns, this.getLabel() ).name;
-
-		}
-
-	}
-
-	const declarationRegexp$2 = /^\s*([a-z_0-9]+)\s+([a-z_0-9]+)\s*\(([\s\S]*?)\)/i,
-		propertiesRegexp$1 = /[a-z_0-9]+/ig;
-
-	class FunctionNode extends TempNode {
-
-		constructor( src, includes, extensions, keywords, type ) {
-
-			super( type );
-
-			this.isMethod = type === undefined;
-			this.isInterface = false;
-
-			this.parse( src, includes, extensions, keywords );
-
-		}
-
-		getShared( /* builder, output */ ) {
-
-			return ! this.isMethod;
-
-		}
-
-		getType( builder ) {
-
-			return builder.getTypeByFormat( this.type );
-
-		}
-
-		getInputByName( name ) {
-
-			let i = this.inputs.length;
-
-			while ( i -- ) {
-
-				if ( this.inputs[ i ].name === name ) {
-
-					return this.inputs[ i ];
-
-				}
-
-			}
-
-		}
-
-		getIncludeByName( name ) {
-
-			let i = this.includes.length;
-
-			while ( i -- ) {
-
-				if ( this.includes[ i ].name === name ) {
-
-					return this.includes[ i ];
-
-				}
-
-			}
-
-		}
-
-		generate( builder, output ) {
-
-			let match, offset = 0, src = this.src;
-
-			for ( let i = 0; i < this.includes.length; i ++ ) {
-
-				builder.include( this.includes[ i ], this );
-
-			}
-
-			for ( const ext in this.extensions ) {
-
-				builder.extensions[ ext ] = true;
-
-			}
-
-			const matches = [];
-
-			while ( match = propertiesRegexp$1.exec( this.src ) ) matches.push( match );
-
-			for ( let i = 0; i < matches.length; i ++ ) {
-
-				const match = matches[ i ];
-
-				const prop = match[ 0 ],
-					isGlobal = this.isMethod ? ! this.getInputByName( prop ) : true;
-
-				let reference = prop;
-
-				if ( this.keywords[ prop ] || ( this.useKeywords && isGlobal && NodeLib.containsKeyword( prop ) ) ) {
-
-					let node = this.keywords[ prop ];
-
-					if ( ! node ) {
-
-						const keyword = NodeLib.getKeywordData( prop );
-
-						if ( keyword.cache ) node = builder.keywords[ prop ];
-
-						node = node || NodeLib.getKeyword( prop, builder );
-
-						if ( keyword.cache ) builder.keywords[ prop ] = node;
-
-					}
-
-					reference = node.build( builder );
-
-				}
-
-				if ( prop !== reference ) {
-
-					src = src.substring( 0, match.index + offset ) + reference + src.substring( match.index + prop.length + offset );
-
-					offset += reference.length - prop.length;
-
-				}
-
-				if ( this.getIncludeByName( reference ) === undefined && NodeLib.contains( reference ) ) {
-
-					builder.include( NodeLib.get( reference ) );
-
-				}
-
-			}
-
-			if ( output === 'source' ) {
-
-				return src;
-
-			} else if ( this.isMethod ) {
-
-				if ( ! this.isInterface ) {
-
-					builder.include( this, false, src );
-
-				}
-
-				return this.name;
-
-			} else {
-
-				return builder.format( '( ' + src + ' )', this.getType( builder ), output );
-
-			}
-
-		}
-
-		parse( src, includes, extensions, keywords ) {
-
-			this.src = src || '';
-
-			this.includes = includes || [];
-			this.extensions = extensions || {};
-			this.keywords = keywords || {};
-
-			if ( this.isMethod ) {
-
-				const match = this.src.match( declarationRegexp$2 );
-
-				this.inputs = [];
-
-				if ( match && match.length == 4 ) {
-
-					this.type = match[ 1 ];
-					this.name = match[ 2 ];
-
-					const inputs = match[ 3 ].match( propertiesRegexp$1 );
-
-					if ( inputs ) {
-
-						let i = 0;
-
-						while ( i < inputs.length ) {
-
-							let qualifier = inputs[ i ++ ];
-							let type;
-
-							if ( qualifier === 'in' || qualifier === 'out' || qualifier === 'inout' ) {
-
-								type = inputs[ i ++ ];
-
-							} else {
-
-								type = qualifier;
-								qualifier = '';
-
-							}
-
-							const name = inputs[ i ++ ];
-
-							this.inputs.push( {
-								name: name,
-								type: type,
-								qualifier: qualifier
-							} );
-
-						}
-
-					}
-
-					this.isInterface = this.src.indexOf( '{' ) === - 1;
-
-				} else {
-
-					this.type = '';
-					this.name = '';
-
-				}
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.isMethod = source.isMethod;
-			this.useKeywords = source.useKeywords;
-
-			this.parse( source.src, source.includes, source.extensions, source.keywords );
-
-			if ( source.type !== undefined ) this.type = source.type;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.src = this.src;
-				data.isMethod = this.isMethod;
-				data.useKeywords = this.useKeywords;
-
-				if ( ! this.isMethod ) data.type = this.type;
-
-				data.extensions = JSON.parse( JSON.stringify( this.extensions ) );
-				data.keywords = {};
-
-				for ( const keyword in this.keywords ) {
-
-					data.keywords[ keyword ] = this.keywords[ keyword ].toJSON( meta ).uuid;
-
-				}
-
-				if ( this.includes.length ) {
-
-					data.includes = [];
-
-					for ( let i = 0; i < this.includes.length; i ++ ) {
-
-						data.includes.push( this.includes[ i ].toJSON( meta ).uuid );
-
-					}
-
-				}
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	FunctionNode.prototype.nodeType = 'Function';
-	FunctionNode.prototype.useKeywords = true;
-
-	const declarationRegexp$1 = /^([a-z_0-9]+)\s([a-z_0-9]+)\s?\=?\s?(.*?)(\;|$)/i;
-
-	class ConstNode extends TempNode {
-
-		constructor( src, useDefine ) {
-
-			super();
-
-			this.parse( src || ConstNode.PI, useDefine );
-
-		}
-
-		getType( builder ) {
-
-			return builder.getTypeByFormat( this.type );
-
-		}
-
-		parse( src, useDefine ) {
-
-			this.src = src || '';
-
-			let name, type, value = '';
-
-			const match = this.src.match( declarationRegexp$1 );
-
-			this.useDefine = useDefine || this.src.charAt( 0 ) === '#';
-
-			if ( match && match.length > 1 ) {
-
-				type = match[ 1 ];
-				name = match[ 2 ];
-				value = match[ 3 ];
-
-			} else {
-
-				name = this.src;
-				type = 'f';
-
-			}
-
-			this.name = name;
-			this.type = type;
-			this.value = value;
-
-		}
-
-		build( builder, output ) {
-
-			if ( output === 'source' ) {
-
-				if ( this.value ) {
-
-					if ( this.useDefine ) {
-
-						return '#define ' + this.name + ' ' + this.value;
-
-					}
-
-					return 'const ' + this.type + ' ' + this.name + ' = ' + this.value + ';';
-
-				} else if ( this.useDefine ) {
-
-					return this.src;
-
-				}
-
-			} else {
-
-				builder.include( this );
-
-				return builder.format( this.name, this.getType( builder ), output );
-
-			}
-
-		}
-
-		generate( builder, output ) {
-
-			return builder.format( this.name, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.parse( source.src, source.useDefine );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.src = this.src;
-
-				if ( data.useDefine === true ) data.useDefine = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ConstNode.prototype.nodeType = 'Const';
-
-	ConstNode.PI = 'PI';
-	ConstNode.PI2 = 'PI2';
-	ConstNode.RECIPROCAL_PI = 'RECIPROCAL_PI';
-	ConstNode.RECIPROCAL_PI2 = 'RECIPROCAL_PI2';
-	ConstNode.LOG2 = 'LOG2';
-	ConstNode.EPSILON = 'EPSILON';
-
-	const declarationRegexp = /^struct\s*([a-z_0-9]+)\s*{\s*((.|\n)*?)}/img,
-		propertiesRegexp = /\s*(\w*?)\s*(\w*?)(\=|\;)/img;
-
-	class StructNode extends TempNode {
-
-		constructor( src ) {
-
-			super();
-
-			this.parse( src );
-
-		}
-
-		getType( builder ) {
-
-			return builder.getTypeByFormat( this.name );
-
-		}
-
-		getInputByName( name ) {
-
-			let i = this.inputs.length;
-
-			while ( i -- ) {
-
-				if ( this.inputs[ i ].name === name ) {
-
-					return this.inputs[ i ];
-
-				}
-
-			}
-
-		}
-
-		generate( builder, output ) {
-
-			if ( output === 'source' ) {
-
-				return this.src + ';';
-
-			} else {
-
-				return builder.format( '( ' + this.src + ' )', this.getType( builder ), output );
-
-			}
-
-		}
-
-		parse( src = '' ) {
-
-			this.src = src;
-
-			this.inputs = [];
-
-			const declaration = declarationRegexp.exec( this.src );
-
-			if ( declaration ) {
-
-				const properties = declaration[ 2 ];
-				let match;
-
-				while ( match = propertiesRegexp.exec( properties ) ) {
-
-					this.inputs.push( {
-						type: match[ 1 ],
-						name: match[ 2 ]
-					} );
-
-				}
-
-				this.name = declaration[ 1 ];
-
-			} else {
-
-				this.name = '';
-
-			}
-
-			this.type = this.name;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.src = this.src;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	StructNode.prototype.nodeType = 'Struct';
-
-	class InputNode extends TempNode {
-
-		constructor( type, params ) {
-
-			params = params || {};
-			params.shared = params.shared !== undefined ? params.shared : false;
-
-			super( type, params );
-
-			this.readonly = false;
-
-		}
-
-		setReadonly( value ) {
-
-			this.readonly = value;
-
-			this.hashProperties = this.readonly ? [ 'value' ] : undefined;
-
-			return this;
-
-		}
-
-		getReadonly( /* builder */ ) {
-
-			return this.readonly;
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			if ( source.readonly !== undefined ) this.readonly = source.readonly;
-
-			return this;
-
-		}
-
-		createJSONNode( meta ) {
-
-			const data = super.createJSONNode( meta );
-
-			if ( this.readonly === true ) data.readonly = this.readonly;
-
-			return data;
-
-		}
-
-		generate( builder, output, uuid, type, ns, needsUpdate ) {
-
-			uuid = builder.getUuid( uuid || this.getUuid() );
-			type = type || this.getType( builder );
-
-			const data = builder.getNodeData( uuid ),
-				readonly = this.getReadonly( builder ) && this.generateReadonly !== undefined;
-
-			if ( readonly ) {
-
-				return this.generateReadonly( builder, output, uuid, type, ns, needsUpdate );
-
-			} else {
-
-				if ( builder.isShader( 'vertex' ) ) {
-
-					if ( ! data.vertex ) {
-
-						data.vertex = builder.createVertexUniform( type, this, ns, needsUpdate, this.getLabel() );
-
-					}
-
-					return builder.format( data.vertex.name, type, output );
-
-				} else {
-
-					if ( ! data.fragment ) {
-
-						data.fragment = builder.createFragmentUniform( type, this, ns, needsUpdate, this.getLabel() );
-
-					}
-
-					return builder.format( data.fragment.name, type, output );
-
-				}
-
-			}
-
-		}
-
-	}
-
-	class Vector2Node extends InputNode {
-
-		constructor( x, y ) {
-
-			super( 'v2' );
-
-			this.value = x instanceof Vector2 ? x : new Vector2( x, y );
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate*/ ) {
-
-			return builder.format( 'vec2( ' + this.x + ', ' + this.y + ' )', type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value.copy( source );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.x = this.x;
-				data.y = this.y;
-
-				if ( this.readonly === true ) data.readonly = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Vector2Node.prototype.nodeType = 'Vector2';
-
-	NodeUtils.addShortcuts( Vector2Node.prototype, 'value', [ 'x', 'y' ] );
-
-	class Vector3Node extends InputNode {
-
-		constructor( x, y, z ) {
-
-			super( 'v3' );
-
-			this.value = x instanceof Vector3 ? x : new Vector3( x, y, z );
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate*/ ) {
-
-			return builder.format( 'vec3( ' + this.x + ', ' + this.y + ', ' + this.z + ' )', type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value.copy( source );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.x = this.x;
-				data.y = this.y;
-				data.z = this.z;
-
-				if ( this.readonly === true ) data.readonly = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Vector3Node.prototype.nodeType = 'Vector3';
-
-	NodeUtils.addShortcuts( Vector3Node.prototype, 'value', [ 'x', 'y', 'z' ] );
-
-	class Vector4Node extends InputNode {
-
-		constructor( x, y, z, w ) {
-
-			super( 'v4' );
-
-			this.value = x instanceof Vector4 ? x : new Vector4( x, y, z, w );
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate*/ ) {
-
-			return builder.format( 'vec4( ' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ' )', type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value.copy( source );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.x = this.x;
-				data.y = this.y;
-				data.z = this.z;
-				data.w = this.w;
-
-				if ( this.readonly === true ) data.readonly = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Vector4Node.prototype.nodeType = 'Vector4';
-
-	NodeUtils.addShortcuts( Vector4Node.prototype, 'value', [ 'x', 'y', 'z', 'w' ] );
-
-	class UVNode extends TempNode {
-
-		constructor( index ) {
-
-			super( 'v2', { shared: false } );
-
-			this.index = index || 0;
-
-		}
-
-		generate( builder, output ) {
-
-			builder.requires.uv[ this.index ] = true;
-
-			const uvIndex = this.index > 0 ? this.index + 1 : '';
-			const result = builder.isShader( 'vertex' ) ? 'uv' + uvIndex : 'vUv' + uvIndex;
-
-			return builder.format( result, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.index = source.index;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.index = this.index;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	UVNode.prototype.nodeType = 'UV';
-
-	NodeLib.addKeyword( 'uv', function () {
-
-		return new UVNode();
-
-	} );
-
-	NodeLib.addKeyword( 'uv2', function () {
-
-		return new UVNode( 1 );
-
-	} );
-
-	class FloatNode extends InputNode {
-
-		constructor( value ) {
-
-			super( 'f' );
-
-			this.value = value || 0;
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
-
-			return builder.format( this.value + ( this.value % 1 ? '' : '.0' ), type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value;
-
-				if ( this.readonly === true ) data.readonly = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	FloatNode.prototype.nodeType = 'Float';
-
-	class ExpressionNode extends FunctionNode {
-
-		constructor( src, type, keywords, extensions, includes ) {
-
-			super( src, includes, extensions, keywords, type );
-
-		}
-
-	}
-
-	ExpressionNode.prototype.nodeType = 'Expression';
-
-	class ColorSpaceNode extends TempNode {
-
-		constructor( input, method ) {
-
-			super( 'v4' );
-
-			this.input = input;
-
-			this.method = method || ColorSpaceNode.LINEAR_TO_LINEAR;
-
-		}
-
-		generate( builder, output ) {
-
-			const input = this.input.build( builder, 'v4' );
-			const outputType = this.getType( builder );
-
-			const methodNode = ColorSpaceNode.Nodes[ this.method ];
-			const method = builder.include( methodNode );
-
-			if ( method === ColorSpaceNode.LINEAR_TO_LINEAR ) {
-
-				return builder.format( input, outputType, output );
-
-			} else {
-
-				if ( methodNode.inputs.length === 2 ) {
-
-					const factor = this.factor.build( builder, 'f' );
-
-					return builder.format( method + '( ' + input + ', ' + factor + ' )', outputType, output );
-
-				} else {
-
-					return builder.format( method + '( ' + input + ' )', outputType, output );
-
-				}
-
-			}
-
-		}
-
-		fromEncoding( encoding ) {
-
-			const components = ColorSpaceNode.getEncodingComponents( encoding );
-
-			this.method = 'LinearTo' + components[ 0 ];
-			this.factor = components[ 1 ];
-
-		}
-
-		fromDecoding( encoding ) {
-
-			const components = ColorSpaceNode.getEncodingComponents( encoding );
-
-			this.method = components[ 0 ] + 'ToLinear';
-			this.factor = components[ 1 ];
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.input = source.input;
-			this.method = source.method;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.input = this.input.toJSON( meta ).uuid;
-				data.method = this.method;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ColorSpaceNode.Nodes = ( function () {
-
-		// For a discussion of what this is, please read this: http://lousodrome.net/blog/light/2013/05/26/gamma-correct-and-hdr-rendering-in-a-32-bits-buffer/
-
-		const LinearToLinear = new FunctionNode( /* glsl */`
-		vec4 LinearToLinear( in vec4 value ) {
-
-			return value;
-
-		}`
-		);
-
-		const GammaToLinear = new FunctionNode( /* glsl */`
-		vec4 GammaToLinear( in vec4 value, in float gammaFactor ) {
-
-			return vec4( pow( value.xyz, vec3( gammaFactor ) ), value.w );
-
-		}`
-		);
-
-		const LinearToGamma = new FunctionNode( /* glsl */`
-		vec4 LinearToGamma( in vec4 value, in float gammaFactor ) {
-
-			return vec4( pow( value.xyz, vec3( 1.0 / gammaFactor ) ), value.w );
-
-		}`
-		);
-
-		const sRGBToLinear = new FunctionNode( /* glsl */`
-		vec4 sRGBToLinear( in vec4 value ) {
-
-			return vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.w );
-
-		}`
-		);
-
-		const LinearTosRGB = new FunctionNode( /* glsl */`
-		vec4 LinearTosRGB( in vec4 value ) {
-
-			return vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.w );
-
-		}`
-		);
-
-		const RGBEToLinear = new FunctionNode( /* glsl */`
-		vec4 RGBEToLinear( in vec4 value ) {
-
-			return vec4( value.rgb * exp2( value.a * 255.0 - 128.0 ), 1.0 );
-
-		}`
-		);
-
-		const LinearToRGBE = new FunctionNode( /* glsl */`
-		vec4 LinearToRGBE( in vec4 value ) {
-
-			float maxComponent = max( max( value.r, value.g ), value.b );
-			float fExp = clamp( ceil( log2( maxComponent ) ), -128.0, 127.0 );
-			return vec4( value.rgb / exp2( fExp ), ( fExp + 128.0 ) / 255.0 );
-
-		}`
-		);
-
-		// reference: http://iwasbeingirony.blogspot.ca/2010/06/difference-between-rgbm-and-rgbd.html
-
-		const RGBMToLinear = new FunctionNode( /* glsl */`
-		vec3 RGBMToLinear( in vec4 value, in float maxRange ) {
-
-			return vec4( value.xyz * value.w * maxRange, 1.0 );
-
-		}`
-		);
-
-		const LinearToRGBM = new FunctionNode( /* glsl */`
-		vec3 LinearToRGBM( in vec4 value, in float maxRange ) {
-
-			float maxRGB = max( value.x, max( value.g, value.b ) );
-			float M      = clamp( maxRGB / maxRange, 0.0, 1.0 );
-			M            = ceil( M * 255.0 ) / 255.0;
-			return vec4( value.rgb / ( M * maxRange ), M );
-
-		}`
-		);
-
-		// reference: http://iwasbeingirony.blogspot.ca/2010/06/difference-between-rgbm-and-rgbd.html
-
-		const RGBDToLinear = new FunctionNode( /* glsl */`
-		vec3 RGBDToLinear( in vec4 value, in float maxRange ) {
-
-			return vec4( value.rgb * ( ( maxRange / 255.0 ) / value.a ), 1.0 );
-
-		}`
-		);
-
-
-		const LinearToRGBD = new FunctionNode( /* glsl */`
-		vec3 LinearToRGBD( in vec4 value, in float maxRange ) {
-
-			float maxRGB = max( value.x, max( value.g, value.b ) );
-			float D      = max( maxRange / maxRGB, 1.0 );
-			D            = clamp( floor( D ) / 255.0, 0.0, 1.0 );
-			return vec4( value.rgb * ( D * ( 255.0 / maxRange ) ), D );
-
-		}`
-		);
-
-		// LogLuv reference: http://graphicrants.blogspot.ca/2009/04/rgbm-color-encoding.html
-
-		// M matrix, for encoding
-
-		const cLogLuvM = new ConstNode( 'const mat3 cLogLuvM = mat3( 0.2209, 0.3390, 0.4184, 0.1138, 0.6780, 0.7319, 0.0102, 0.1130, 0.2969 );' );
-
-		const LinearToLogLuv = new FunctionNode( /* glsl */`
-		vec4 LinearToLogLuv( in vec4 value ) {
-
-			vec3 Xp_Y_XYZp = cLogLuvM * value.rgb;
-			Xp_Y_XYZp = max(Xp_Y_XYZp, vec3(1e-6, 1e-6, 1e-6));
-			vec4 vResult;
-			vResult.xy = Xp_Y_XYZp.xy / Xp_Y_XYZp.z;
-			float Le = 2.0 * log2(Xp_Y_XYZp.y) + 127.0;
-			vResult.w = fract(Le);
-			vResult.z = (Le - (floor(vResult.w*255.0))/255.0)/255.0;
-			return vResult;
-
-		}`
-		, [ cLogLuvM ] );
-
-		// Inverse M matrix, for decoding
-
-		const cLogLuvInverseM = new ConstNode( 'const mat3 cLogLuvInverseM = mat3( 6.0014, -2.7008, -1.7996, -1.3320, 3.1029, -5.7721, 0.3008, -1.0882, 5.6268 );' );
-
-		const LogLuvToLinear = new FunctionNode( /* glsl */`
-		vec4 LogLuvToLinear( in vec4 value ) {
-
-			float Le = value.z * 255.0 + value.w;
-			vec3 Xp_Y_XYZp;
-			Xp_Y_XYZp.y = exp2((Le - 127.0) / 2.0);
-			Xp_Y_XYZp.z = Xp_Y_XYZp.y / value.y;
-			Xp_Y_XYZp.x = value.x * Xp_Y_XYZp.z;
-			vec3 vRGB = cLogLuvInverseM * Xp_Y_XYZp.rgb;
-			return vec4( max(vRGB, 0.0), 1.0 );
-
-		}`
-		, [ cLogLuvInverseM ] );
-
-		return {
-			LinearToLinear: LinearToLinear,
-			GammaToLinear: GammaToLinear,
-			LinearToGamma: LinearToGamma,
-			sRGBToLinear: sRGBToLinear,
-			LinearTosRGB: LinearTosRGB,
-			RGBEToLinear: RGBEToLinear,
-			LinearToRGBE: LinearToRGBE,
-			RGBMToLinear: RGBMToLinear,
-			LinearToRGBM: LinearToRGBM,
-			RGBDToLinear: RGBDToLinear,
-			LinearToRGBD: LinearToRGBD,
-			cLogLuvM: cLogLuvM,
-			LinearToLogLuv: LinearToLogLuv,
-			cLogLuvInverseM: cLogLuvInverseM,
-			LogLuvToLinear: LogLuvToLinear
-		};
-
-	} )();
-
-	ColorSpaceNode.LINEAR_TO_LINEAR = 'LinearToLinear';
-
-	ColorSpaceNode.GAMMA_TO_LINEAR = 'GammaToLinear';
-	ColorSpaceNode.LINEAR_TO_GAMMA = 'LinearToGamma';
-
-	ColorSpaceNode.SRGB_TO_LINEAR = 'sRGBToLinear';
-	ColorSpaceNode.LINEAR_TO_SRGB = 'LinearTosRGB';
-
-	ColorSpaceNode.RGBE_TO_LINEAR = 'RGBEToLinear';
-	ColorSpaceNode.LINEAR_TO_RGBE = 'LinearToRGBE';
-
-	ColorSpaceNode.RGBM_TO_LINEAR = 'RGBMToLinear';
-	ColorSpaceNode.LINEAR_TO_RGBM = 'LinearToRGBM';
-
-	ColorSpaceNode.RGBD_TO_LINEAR = 'RGBDToLinear';
-	ColorSpaceNode.LINEAR_TO_RGBD = 'LinearToRGBD';
-
-	ColorSpaceNode.LINEAR_TO_LOG_LUV = 'LinearToLogLuv';
-	ColorSpaceNode.LOG_LUV_TO_LINEAR = 'LogLuvToLinear';
-
-	ColorSpaceNode.getEncodingComponents = function ( encoding ) {
-
-		switch ( encoding ) {
-
-			case LinearEncoding:
-				return [ 'Linear' ];
-			case sRGBEncoding:
-				return [ 'sRGB' ];
-			case RGBEEncoding:
-				return [ 'RGBE' ];
-			case RGBM7Encoding:
-				return [ 'RGBM', new FloatNode( 7.0 ).setReadonly( true ) ];
-			case RGBM16Encoding:
-				return [ 'RGBM', new FloatNode( 16.0 ).setReadonly( true ) ];
-			case RGBDEncoding:
-				return [ 'RGBD', new FloatNode( 256.0 ).setReadonly( true ) ];
-			case GammaEncoding:
-				return [ 'Gamma', new ExpressionNode( 'float( GAMMA_FACTOR )', 'f' ) ];
-
-		}
-
-	};
-
-	ColorSpaceNode.prototype.nodeType = 'ColorSpace';
-	ColorSpaceNode.prototype.hashProperties = [ 'method' ];
-
-	class TextureNode extends InputNode {
-
-		constructor( value, uv, bias, project ) {
-
-			super( 'v4', { shared: true } );
-
-			this.value = value;
-			this.uv = uv || new UVNode();
-			this.bias = bias;
-			this.project = project !== undefined ? project : false;
-
-		}
-
-		getTexture( builder, output ) {
-
-			return super.generate( builder, output, this.value.uuid, 't' );
-
-		}
-
-		generate( builder, output ) {
-
-			if ( output === 'sampler2D' ) {
-
-				return this.getTexture( builder, output );
-
-			}
-
-			const tex = this.getTexture( builder, output ),
-				uv = this.uv.build( builder, this.project ? 'v4' : 'v2' );
-
-			let bias = this.bias ? this.bias.build( builder, 'f' ) : undefined;
-
-			if ( bias === undefined && builder.context.bias ) {
-
-				bias = builder.context.bias.setTexture( this ).build( builder, 'f' );
-
-			}
-
-			let method, code;
-
-			if ( this.project ) method = 'texture2DProj';
-			else method = bias ? 'tex2DBias' : 'tex2D';
-
-			if ( bias ) code = method + '( ' + tex + ', ' + uv + ', ' + bias + ' )';
-			else code = method + '( ' + tex + ', ' + uv + ' )';
-
-			// add a custom context for fix incompatibility with the core
-			// include ColorSpace function only for vertex shader (in fragment shader color space functions is added automatically by core)
-			// this should be removed in the future
-			// context.include is used to include or not functions if used FunctionNode
-			// context.ignoreCache =: not create temp variables nodeT0..9 to optimize the code
-			const context = { include: builder.isShader( 'vertex' ), ignoreCache: true };
-			const outputType = this.getType( builder );
-
-			builder.addContext( context );
-
-			this.colorSpace = this.colorSpace || new ColorSpaceNode( new ExpressionNode( '', outputType ) );
-			this.colorSpace.fromDecoding( builder.getTextureEncodingFromMap( this.value ) );
-			this.colorSpace.input.parse( code );
-
-			code = this.colorSpace.build( builder, outputType );
-
-			// end custom context
-
-			builder.removeContext();
-
-			return builder.format( code, outputType, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			if ( source.value ) this.value = source.value;
-
-			this.uv = source.uv;
-
-			if ( source.bias ) this.bias = source.bias;
-			if ( source.project !== undefined ) this.project = source.project;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				if ( this.value ) data.value = this.value.uuid;
-
-				data.uv = this.uv.toJSON( meta ).uuid;
-				data.project = this.project;
-
-				if ( this.bias ) data.bias = this.bias.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	TextureNode.prototype.nodeType = 'Texture';
-
-	class PositionNode extends TempNode {
-
-		constructor( scope ) {
-
-			super( 'v3' );
-
-			this.scope = scope || PositionNode.LOCAL;
-
-		}
-
-		getType( ) {
-
-			switch ( this.scope ) {
-
-				case PositionNode.PROJECTION:
-
-					return 'v4';
-
-			}
-
-			return this.type;
-
-		}
-
-		getShared( /* builder */ ) {
-
-			switch ( this.scope ) {
-
-				case PositionNode.LOCAL:
-				case PositionNode.WORLD:
-
-					return false;
-
-			}
-
-			return true;
-
-		}
-
-		generate( builder, output ) {
-
-			let result;
-
-			switch ( this.scope ) {
-
-				case PositionNode.LOCAL:
-
-					if ( builder.isShader( 'vertex' ) ) {
-
-						result = 'transformed';
-
-					} else {
-
-						builder.requires.position = true;
-
-						result = 'vPosition';
-
-					}
-
-					break;
-
-				case PositionNode.WORLD:
-
-					if ( builder.isShader( 'vertex' ) ) {
-
-						return '( modelMatrix * vec4( transformed, 1.0 ) ).xyz';
-
-					} else {
-
-						builder.requires.worldPosition = true;
-
-						result = 'vWPosition';
-
-					}
-
-					break;
-
-				case PositionNode.VIEW:
-
-					result = builder.isShader( 'vertex' ) ? '-mvPosition.xyz' : 'vViewPosition';
-
-					break;
-
-				case PositionNode.PROJECTION:
-
-					result = builder.isShader( 'vertex' ) ? '( projectionMatrix * modelViewMatrix * vec4( position, 1.0 ) )' : 'vec4( 0.0 )';
-
-					break;
-
-			}
-
-			return builder.format( result, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.scope = source.scope;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.scope = this.scope;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	PositionNode.LOCAL = 'local';
-	PositionNode.WORLD = 'world';
-	PositionNode.VIEW = 'view';
-	PositionNode.PROJECTION = 'projection';
-
-	PositionNode.prototype.nodeType = 'Position';
-
-	NodeLib.addKeyword( 'position', function () {
-
-		return new PositionNode();
-
-	} );
-
-	NodeLib.addKeyword( 'worldPosition', function () {
-
-		return new PositionNode( PositionNode.WORLD );
-
-	} );
-
-	NodeLib.addKeyword( 'viewPosition', function () {
-
-		return new PositionNode( PositionNode.VIEW );
-
-	} );
-
-	class NormalNode extends TempNode {
-
-		constructor( scope ) {
-
-			super( 'v3' );
-
-			this.scope = scope || NormalNode.VIEW;
-
-		}
-
-		getShared() {
-
-			// if shared is false, TempNode will not create temp variable (for optimization)
-
-			return this.scope === NormalNode.WORLD;
-
-		}
-
-		build( builder, output, uuid, ns ) {
-
-			const contextNormal = builder.context[ this.scope + 'Normal' ];
-
-			if ( contextNormal ) {
-
-				return contextNormal.build( builder, output, uuid, ns );
-
-			}
-
-			return super.build( builder, output, uuid );
-
-		}
-
-		generate( builder, output ) {
-
-			let result;
-
-			switch ( this.scope ) {
-
-				case NormalNode.VIEW:
-
-					if ( builder.isShader( 'vertex' ) ) result = 'transformedNormal';
-					else result = 'geometryNormal';
-
-					break;
-
-				case NormalNode.LOCAL:
-
-					if ( builder.isShader( 'vertex' ) ) {
-
-						result = 'objectNormal';
-
-					} else {
-
-						builder.requires.normal = true;
-
-						result = 'vObjectNormal';
-
-					}
-
-					break;
-
-				case NormalNode.WORLD:
-
-					if ( builder.isShader( 'vertex' ) ) {
-
-						result = 'inverseTransformDirection( transformedNormal, viewMatrix ).xyz';
-
-					} else {
-
-						builder.requires.worldNormal = true;
-
-						result = 'vWNormal';
-
-					}
-
-					break;
-
-			}
-
-			return builder.format( result, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.scope = source.scope;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.scope = this.scope;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	NormalNode.LOCAL = 'local';
-	NormalNode.WORLD = 'world';
-	NormalNode.VIEW = 'view';
-
-	NormalNode.prototype.nodeType = 'Normal';
-
-	NodeLib.addKeyword( 'viewNormal', function () {
-
-		return new NormalNode( NormalNode.VIEW );
-
-	} );
-
-	NodeLib.addKeyword( 'localNormal', function () {
-
-		return new NormalNode( NormalNode.NORMAL );
-
-	} );
-
-	NodeLib.addKeyword( 'worldNormal', function () {
-
-		return new NormalNode( NormalNode.WORLD );
-
-	} );
-
-	class ReflectNode extends TempNode {
-
-		constructor( scope ) {
-
-			super( 'v3' );
-
-			this.scope = scope || ReflectNode.CUBE;
-
-		}
-
-		getUnique( builder ) {
-
-			return ! builder.context.viewNormal;
-
-		}
-
-		getType( /* builder */ ) {
-
-			switch ( this.scope ) {
-
-				case ReflectNode.SPHERE:
-
-					return 'v2';
-
-			}
-
-			return this.type;
-
-		}
-
-		generate( builder, output ) {
-
-			const isUnique = this.getUnique( builder );
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				let result, code, reflectVec;
-
-				switch ( this.scope ) {
-
-					case ReflectNode.VECTOR:
-
-						const viewNormalNode = new NormalNode( NormalNode.VIEW );
-						const roughnessNode = builder.context.roughness;
-
-						const viewNormal = viewNormalNode.build( builder, 'v3' );
-						const viewPosition = new PositionNode( PositionNode.VIEW ).build( builder, 'v3' );
-						const roughness = roughnessNode ? roughnessNode.build( builder, 'f' ) : undefined;
-
-						let method = `reflect( -normalize( ${viewPosition} ), ${viewNormal} )`;
-
-						if ( roughness ) {
-
-							// Mixing the reflection with the normal is more accurate and keeps rough objects from gathering light from behind their tangent plane.
-							method = `normalize( mix( ${method}, ${viewNormal}, ${roughness} * ${roughness} ) )`;
-
-						}
-
-						code = `inverseTransformDirection( ${method}, viewMatrix )`;
-
-						if ( isUnique ) {
-
-							builder.addNodeCode( `vec3 reflectVec = ${code};` );
-
-							result = 'reflectVec';
-
-						} else {
-
-							result = code;
-
-						}
-
-						break;
-
-					case ReflectNode.CUBE:
-
-						reflectVec = new ReflectNode( ReflectNode.VECTOR ).build( builder, 'v3' );
-
-						code = 'vec3( -' + reflectVec + '.x, ' + reflectVec + '.yz )';
-
-						if ( isUnique ) {
-
-							builder.addNodeCode( `vec3 reflectCubeVec = ${code};` );
-
-							result = 'reflectCubeVec';
-
-						} else {
-
-							result = code;
-
-						}
-
-						break;
-
-					case ReflectNode.SPHERE:
-
-						reflectVec = new ReflectNode( ReflectNode.VECTOR ).build( builder, 'v3' );
-
-						code = 'normalize( ( viewMatrix * vec4( ' + reflectVec + ', 0.0 ) ).xyz + vec3( 0.0, 0.0, 1.0 ) ).xy * 0.5 + 0.5';
-
-						if ( isUnique ) {
-
-							builder.addNodeCode( `vec2 reflectSphereVec = ${code};` );
-
-							result = 'reflectSphereVec';
-
-						} else {
-
-							result = code;
-
-						}
-
-						break;
-
-				}
-
-				return builder.format( result, this.getType( builder ), output );
-
-			} else {
-
-				console.warn( 'THREE.ReflectNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( 'vec3( 0.0 )', this.type, output );
-
-			}
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.scope = this.scope;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ReflectNode.CUBE = 'cube';
-	ReflectNode.SPHERE = 'sphere';
-	ReflectNode.VECTOR = 'vector';
-
-	ReflectNode.prototype.nodeType = 'Reflect';
-
-	class CubeTextureNode extends InputNode {
-
-		constructor( value, uv, bias ) {
-
-			super( 'v4', { shared: true } );
-
-			this.value = value;
-			this.uv = uv || new ReflectNode();
-			this.bias = bias;
-
-		}
-
-		getTexture( builder, output ) {
-
-			return super.generate( builder, output, this.value.uuid, 'tc' );
-
-		}
-
-		generate( builder, output ) {
-
-			if ( output === 'samplerCube' ) {
-
-				return this.getTexture( builder, output );
-
-			}
-
-			const cubetex = this.getTexture( builder, output );
-			const uv = this.uv.build( builder, 'v3' );
-			let bias = this.bias ? this.bias.build( builder, 'f' ) : undefined;
-
-			if ( bias === undefined && builder.context.bias ) {
-
-				bias = builder.context.bias.setTexture( this ).build( builder, 'f' );
-
-			}
-
-			let code;
-
-			if ( bias ) code = 'texCubeBias( ' + cubetex + ', ' + uv + ', ' + bias + ' )';
-			else code = 'texCube( ' + cubetex + ', ' + uv + ' )';
-
-			// add a custom context for fix incompatibility with the core
-			// include ColorSpace function only for vertex shader (in fragment shader color space functions is added automatically by core)
-			// this should be removed in the future
-			// context.include =: is used to include or not functions if used FunctionNode
-			// context.ignoreCache =: not create variables temp nodeT0..9 to optimize the code
-			const context = { include: builder.isShader( 'vertex' ), ignoreCache: true };
-			const outputType = this.getType( builder );
-
-			builder.addContext( context );
-
-			this.colorSpace = this.colorSpace || new ColorSpaceNode( new ExpressionNode( '', outputType ) );
-			this.colorSpace.fromDecoding( builder.getTextureEncodingFromMap( this.value ) );
-			this.colorSpace.input.parse( code );
-
-			code = this.colorSpace.build( builder, outputType );
-
-			// end custom context
-
-			builder.removeContext();
-
-			return builder.format( code, outputType, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			if ( source.value ) this.value = source.value;
-
-			this.uv = source.uv;
-
-			if ( source.bias ) this.bias = source.bias;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.uuid;
-				data.uv = this.uv.toJSON( meta ).uuid;
-
-				if ( this.bias ) data.bias = this.bias.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	CubeTextureNode.prototype.nodeType = 'CubeTexture';
-
-	class FunctionCallNode extends TempNode {
-
-		constructor( func, inputs ) {
-
-			super();
-
-			this.setFunction( func, inputs );
-
-		}
-
-		setFunction( func, inputs = [] ) {
-
-			this.value = func;
-			this.inputs = inputs;
-
-		}
-
-		getFunction() {
-
-			return this.value;
-
-		}
-
-		getType( builder ) {
-
-			return this.value.getType( builder );
-
-		}
-
-		generate( builder, output ) {
-
-			const type = this.getType( builder ),
-				func = this.value;
-
-			let code = func.build( builder, output ) + '( ';
-			const params = [];
-
-			for ( let i = 0; i < func.inputs.length; i ++ ) {
-
-				const inpt = func.inputs[ i ],
-					param = this.inputs[ i ] || this.inputs[ inpt.name ];
-
-				params.push( param.build( builder, builder.getTypeByFormat( inpt.type ) ) );
-
-			}
-
-			code += params.join( ', ' ) + ' )';
-
-			return builder.format( code, type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			for ( const prop in source.inputs ) {
-
-				this.inputs[ prop ] = source.inputs[ prop ];
-
-			}
-
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				const func = this.value;
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-
-				if ( func.inputs.length ) {
-
-					data.inputs = {};
-
-					for ( let i = 0; i < func.inputs.length; i ++ ) {
-
-						const inpt = func.inputs[ i ],
-							node = this.inputs[ i ] || this.inputs[ inpt.name ];
-
-						data.inputs[ inpt.name ] = node.toJSON( meta ).uuid;
-
-					}
-
-				}
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	FunctionCallNode.prototype.nodeType = 'FunctionCall';
-
-	class OperatorNode extends TempNode {
-
-		constructor( a, b, op ) {
-
-			super();
-
-			this.a = a;
-			this.b = b;
-			this.op = op;
-
-		}
-
-		getType( builder ) {
-
-			const a = this.a.getType( builder ),
-				b = this.b.getType( builder );
-
-			if ( builder.isTypeMatrix( a ) ) {
-
-				return 'v4';
-
-			} else if ( builder.getTypeLength( b ) > builder.getTypeLength( a ) ) {
-
-				// use the greater length vector
-
-				return b;
-
-			}
-
-			return a;
-
-		}
-
-		generate( builder, output ) {
-
-			const type = this.getType( builder );
-
-			const a = this.a.build( builder, type ),
-				b = this.b.build( builder, type );
-
-			return builder.format( '( ' + a + ' ' + this.op + ' ' + b + ' )', type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.a = source.a;
-			this.b = source.b;
-			this.op = source.op;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.a = this.a.toJSON( meta ).uuid;
-				data.b = this.b.toJSON( meta ).uuid;
-				data.op = this.op;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	OperatorNode.ADD = '+';
-	OperatorNode.SUB = '-';
-	OperatorNode.MUL = '*';
-	OperatorNode.DIV = '/';
-
-	OperatorNode.prototype.nodeType = 'Operator';
-
-	class MathNode extends TempNode {
-
-		constructor( a, bOrMethod, cOrMethod, method ) {
-
-			super();
-
-			this.a = a;
-			typeof bOrMethod !== 'string' ? this.b = bOrMethod : method = bOrMethod;
-			typeof cOrMethod !== 'string' ? this.c = cOrMethod : method = cOrMethod;
-
-			this.method = method;
-
-		}
-
-		getNumInputs( /*builder*/ ) {
-
-			switch ( this.method ) {
-
-				case MathNode.MIX:
-				case MathNode.CLAMP:
-				case MathNode.REFRACT:
-				case MathNode.SMOOTHSTEP:
-				case MathNode.FACEFORWARD:
-
-					return 3;
-
-				case MathNode.MIN:
-				case MathNode.MAX:
-				case MathNode.MOD:
-				case MathNode.STEP:
-				case MathNode.REFLECT:
-				case MathNode.DISTANCE:
-				case MathNode.DOT:
-				case MathNode.CROSS:
-				case MathNode.POW:
-
-					return 2;
-
-				default:
-
-					return 1;
-
-			}
-
-		}
-
-		getInputType( builder ) {
-
-			const a = builder.getTypeLength( this.a.getType( builder ) );
-			const b = this.b ? builder.getTypeLength( this.b.getType( builder ) ) : 0;
-			const c = this.c ? builder.getTypeLength( this.c.getType( builder ) ) : 0;
-
-			if ( a > b && a > c ) {
-
-				return this.a.getType( builder );
-
-			} else if ( b > c ) {
-
-				return this.b.getType( builder );
-
-			}
-
-			return this.c.getType( builder );
-
-		}
-
-		getType( builder ) {
-
-			switch ( this.method ) {
-
-				case MathNode.LENGTH:
-				case MathNode.DISTANCE:
-				case MathNode.DOT:
-
-					return 'f';
-
-				case MathNode.CROSS:
-
-					return 'v3';
-
-			}
-
-			return this.getInputType( builder );
-
-		}
-
-		generate( builder, output ) {
-
-			let a, b, c;
-			const al = this.a ? builder.getTypeLength( this.a.getType( builder ) ) : 0,
-				bl = this.b ? builder.getTypeLength( this.b.getType( builder ) ) : 0,
-				cl = this.c ? builder.getTypeLength( this.c.getType( builder ) ) : 0,
-				inputType = this.getInputType( builder ),
-				nodeType = this.getType( builder );
-
-			switch ( this.method ) {
-
-				// 1 input
-
-				case MathNode.NEGATE:
-
-					return builder.format( '( -' + this.a.build( builder, inputType ) + ' )', inputType, output );
-
-				case MathNode.INVERT:
-
-					return builder.format( '( 1.0 - ' + this.a.build( builder, inputType ) + ' )', inputType, output );
-
-					// 2 inputs
-
-				case MathNode.CROSS:
-
-					a = this.a.build( builder, 'v3' );
-					b = this.b.build( builder, 'v3' );
-
-					break;
-
-				case MathNode.STEP:
-
-					a = this.a.build( builder, al === 1 ? 'f' : inputType );
-					b = this.b.build( builder, inputType );
-
-					break;
-
-				case MathNode.MIN:
-				case MathNode.MAX:
-				case MathNode.MOD:
-
-					a = this.a.build( builder, inputType );
-					b = this.b.build( builder, bl === 1 ? 'f' : inputType );
-
-					break;
-
-					// 3 inputs
-
-				case MathNode.REFRACT:
-
-					a = this.a.build( builder, inputType );
-					b = this.b.build( builder, inputType );
-					c = this.c.build( builder, 'f' );
-
-					break;
-
-				case MathNode.MIX:
-
-					a = this.a.build( builder, inputType );
-					b = this.b.build( builder, inputType );
-					c = this.c.build( builder, cl === 1 ? 'f' : inputType );
-
-					break;
-
-					// default
-
-				default:
-
-					a = this.a.build( builder, inputType );
-					if ( this.b ) b = this.b.build( builder, inputType );
-					if ( this.c ) c = this.c.build( builder, inputType );
-
-					break;
-
-			}
-
-			// build function call
-
-			const params = [];
-			params.push( a );
-			if ( b ) params.push( b );
-			if ( c ) params.push( c );
-
-			const numInputs = this.getNumInputs( builder );
-
-			if ( params.length !== numInputs ) {
-
-				throw Error( `Arguments not match used in "${this.method}". Require ${numInputs}, currently ${params.length}.` );
-
-			}
-
-			return builder.format( this.method + '( ' + params.join( ', ' ) + ' )', nodeType, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.a = source.a;
-			this.b = source.b;
-			this.c = source.c;
-			this.method = source.method;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.a = this.a.toJSON( meta ).uuid;
-				if ( this.b ) data.b = this.b.toJSON( meta ).uuid;
-				if ( this.c ) data.c = this.c.toJSON( meta ).uuid;
-
-				data.method = this.method;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	// 1 input
-
-	MathNode.RAD = 'radians';
-	MathNode.DEG = 'degrees';
-	MathNode.EXP = 'exp';
-	MathNode.EXP2 = 'exp2';
-	MathNode.LOG = 'log';
-	MathNode.LOG2 = 'log2';
-	MathNode.SQRT = 'sqrt';
-	MathNode.INV_SQRT = 'inversesqrt';
-	MathNode.FLOOR = 'floor';
-	MathNode.CEIL = 'ceil';
-	MathNode.NORMALIZE = 'normalize';
-	MathNode.FRACT = 'fract';
-	MathNode.SATURATE = 'saturate';
-	MathNode.SIN = 'sin';
-	MathNode.COS = 'cos';
-	MathNode.TAN = 'tan';
-	MathNode.ASIN = 'asin';
-	MathNode.ACOS = 'acos';
-	MathNode.ARCTAN = 'atan';
-	MathNode.ABS = 'abs';
-	MathNode.SIGN = 'sign';
-	MathNode.LENGTH = 'length';
-	MathNode.NEGATE = 'negate';
-	MathNode.INVERT = 'invert';
-
-	// 2 inputs
-
-	MathNode.MIN = 'min';
-	MathNode.MAX = 'max';
-	MathNode.MOD = 'mod';
-	MathNode.STEP = 'step';
-	MathNode.REFLECT = 'reflect';
-	MathNode.DISTANCE = 'distance';
-	MathNode.DOT = 'dot';
-	MathNode.CROSS = 'cross';
-	MathNode.POW = 'pow';
-
-	// 3 inputs
-
-	MathNode.MIX = 'mix';
-	MathNode.CLAMP = 'clamp';
-	MathNode.REFRACT = 'refract';
-	MathNode.SMOOTHSTEP = 'smoothstep';
-	MathNode.FACEFORWARD = 'faceforward';
-
-	MathNode.prototype.nodeType = 'Math';
-	MathNode.prototype.hashProperties = [ 'method' ];
-
-	class TextureCubeUVNode extends TempNode {
-
-		constructor( value, uv, bias ) {
-
-			super( 'v4' );
-
-			this.value = value,
-			this.uv = uv;
-			this.bias = bias;
-
-		}
-
-		bilinearCubeUV( builder, texture, uv, mipInt ) {
-
-			const bilinearCubeUV = new FunctionCallNode( TextureCubeUVNode.Nodes.bilinearCubeUV, [ texture, uv, mipInt ] );
-
-			this.colorSpaceTL = this.colorSpaceTL || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
-			this.colorSpaceTL.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
-			this.colorSpaceTL.input.parse( bilinearCubeUV.build( builder ) + '.tl' );
-
-			this.colorSpaceTR = this.colorSpaceTR || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
-			this.colorSpaceTR.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
-			this.colorSpaceTR.input.parse( bilinearCubeUV.build( builder ) + '.tr' );
-
-			this.colorSpaceBL = this.colorSpaceBL || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
-			this.colorSpaceBL.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
-			this.colorSpaceBL.input.parse( bilinearCubeUV.build( builder ) + '.bl' );
-
-			this.colorSpaceBR = this.colorSpaceBR || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
-			this.colorSpaceBR.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
-			this.colorSpaceBR.input.parse( bilinearCubeUV.build( builder ) + '.br' );
-
-			// add a custom context for fix incompatibility with the core
-			// include ColorSpace function only for vertex shader (in fragment shader color space functions is added automatically by core)
-			// this should be removed in the future
-			// context.include =: is used to include or not functions if used FunctionNode
-			// context.ignoreCache =: not create temp variables nodeT0..9 to optimize the code
-			const context = { include: builder.isShader( 'vertex' ), ignoreCache: true };
-
-			builder.addContext( context );
-
-			this.colorSpaceTLExp = new ExpressionNode( this.colorSpaceTL.build( builder, 'v4' ), 'v4' );
-			this.colorSpaceTRExp = new ExpressionNode( this.colorSpaceTR.build( builder, 'v4' ), 'v4' );
-			this.colorSpaceBLExp = new ExpressionNode( this.colorSpaceBL.build( builder, 'v4' ), 'v4' );
-			this.colorSpaceBRExp = new ExpressionNode( this.colorSpaceBR.build( builder, 'v4' ), 'v4' );
-
-			// end custom context
-
-			builder.removeContext();
-
-			// --
-
-			const output = new ExpressionNode( 'mix( mix( cubeUV_TL, cubeUV_TR, cubeUV.f.x ), mix( cubeUV_BL, cubeUV_BR, cubeUV.f.x ), cubeUV.f.y )', 'v4' );
-			output.keywords[ 'cubeUV_TL' ] = this.colorSpaceTLExp;
-			output.keywords[ 'cubeUV_TR' ] = this.colorSpaceTRExp;
-			output.keywords[ 'cubeUV_BL' ] = this.colorSpaceBLExp;
-			output.keywords[ 'cubeUV_BR' ] = this.colorSpaceBRExp;
-			output.keywords[ 'cubeUV' ] = bilinearCubeUV;
-
-			return output;
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				const uv = this.uv;
-				const bias = this.bias || builder.context.roughness;
-
-				const mipV = new FunctionCallNode( TextureCubeUVNode.Nodes.roughnessToMip, [ bias ] );
-				const mip = new MathNode( mipV, TextureCubeUVNode.Nodes.m0, TextureCubeUVNode.Nodes.cubeUV_maxMipLevel, MathNode.CLAMP );
-				const mipInt	= new MathNode( mip, MathNode.FLOOR );
-				const mipF	= new MathNode( mip, MathNode.FRACT );
-
-				const color0 = this.bilinearCubeUV( builder, this.value, uv, mipInt );
-				const color1 = this.bilinearCubeUV( builder, this.value, uv, new OperatorNode(
-					mipInt,
-					new FloatNode( 1 ).setReadonly( true ),
-					OperatorNode.ADD
-				) );
-
-				const color1Mix = new MathNode( color0, color1, mipF, MathNode.MIX );
-
-				/*
-				// TODO: Optimize this in the future
-				let cond = new CondNode(
-					mipF,
-					new FloatNode( 0 ).setReadonly( true ),
-					CondNode.EQUAL,
-					color0, // if
-					color1Mix	// else
-				);
-				*/
-
-				return builder.format( color1Mix.build( builder ), 'v4', output );
-
-			} else {
-
-				console.warn( 'THREE.TextureCubeUVNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( 'vec4( 0.0 )', this.getType( builder ), output );
-
-			}
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-				data.uv = this.uv.toJSON( meta ).uuid;
-				data.bias = this.bias.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	TextureCubeUVNode.Nodes = ( function () {
-
-		const TextureCubeUVData = new StructNode(
-			`struct TextureCubeUVData {
-			vec4 tl;
-			vec4 tr;
-			vec4 br;
-			vec4 bl;
-			vec2 f;
-		}` );
-
-		const cubeUV_maxMipLevel = new ConstNode( 'float cubeUV_maxMipLevel 8.0', true );
-		const cubeUV_minMipLevel = new ConstNode( 'float cubeUV_minMipLevel 4.0', true );
-		const cubeUV_maxTileSize = new ConstNode( 'float cubeUV_maxTileSize 256.0', true );
-		const cubeUV_minTileSize = new ConstNode( 'float cubeUV_minTileSize 16.0', true );
-
-		// These shader functions convert between the UV coordinates of a single face of
-		// a cubemap, the 0-5 integer index of a cube face, and the direction vector for
-		// sampling a textureCube (not generally normalized).
-
-		const getFace = new FunctionNode(
-			`float getFace(vec3 direction) {
-				vec3 absDirection = abs(direction);
-				float face = -1.0;
-				if (absDirection.x > absDirection.z) {
-					if (absDirection.x > absDirection.y)
-						face = direction.x > 0.0 ? 0.0 : 3.0;
-					else
-						face = direction.y > 0.0 ? 1.0 : 4.0;
-				} else {
-					if (absDirection.z > absDirection.y)
-						face = direction.z > 0.0 ? 2.0 : 5.0;
-					else
-						face = direction.y > 0.0 ? 1.0 : 4.0;
-				}
-				return face;
-		}` );
-		getFace.useKeywords = false;
-
-		const getUV = new FunctionNode(
-			`vec2 getUV(vec3 direction, float face) {
-				vec2 uv;
-				if (face == 0.0) {
-					uv = vec2(direction.z, direction.y) / abs(direction.x); // pos x
-				} else if (face == 1.0) {
-					uv = vec2(-direction.x, -direction.z) / abs(direction.y); // pos y
-				} else if (face == 2.0) {
-					uv = vec2(-direction.x, direction.y) / abs(direction.z); // pos z
-				} else if (face == 3.0) {
-					uv = vec2(-direction.z, direction.y) / abs(direction.x); // neg x
-				} else if (face == 4.0) {
-					uv = vec2(-direction.x, direction.z) / abs(direction.y); // neg y
-				} else {
-					uv = vec2(direction.x, direction.y) / abs(direction.z); // neg z
-				}
-				return 0.5 * (uv + 1.0);
-		}` );
-		getUV.useKeywords = false;
-
-		const bilinearCubeUV = new FunctionNode(
-			`TextureCubeUVData bilinearCubeUV(sampler2D envMap, vec3 direction, float mipInt) {
-
-			float face = getFace(direction);
-			float filterInt = max(cubeUV_minMipLevel - mipInt, 0.0);
-			mipInt = max(mipInt, cubeUV_minMipLevel);
-			float faceSize = exp2(mipInt);
-
-			float texelSize = 1.0 / (3.0 * cubeUV_maxTileSize);
-
-			vec2 uv = getUV(direction, face) * (faceSize - 1.0);
-			vec2 f = fract(uv);
-			uv += 0.5 - f;
-			if (face > 2.0) {
-				uv.y += faceSize;
-				face -= 3.0;
-			}
-			uv.x += face * faceSize;
-			if(mipInt < cubeUV_maxMipLevel){
-				uv.y += 2.0 * cubeUV_maxTileSize;
-			}
-			uv.y += filterInt * 2.0 * cubeUV_minTileSize;
-			uv.x += 3.0 * max(0.0, cubeUV_maxTileSize - 2.0 * faceSize);
-			uv *= texelSize;
-
-			vec4 tl = texture2D(envMap, uv);
-			uv.x += texelSize;
-			vec4 tr = texture2D(envMap, uv);
-			uv.y += texelSize;
-			vec4 br = texture2D(envMap, uv);
-			uv.x -= texelSize;
-			vec4 bl = texture2D(envMap, uv);
-
-			return TextureCubeUVData( tl, tr, br, bl, f );
-		}`, [ TextureCubeUVData, getFace, getUV, cubeUV_maxMipLevel, cubeUV_minMipLevel, cubeUV_maxTileSize, cubeUV_minTileSize ] );
-		bilinearCubeUV.useKeywords = false;
-
-		// These defines must match with PMREMGenerator
-
-		const r0 = new ConstNode( 'float r0 1.0', true );
-		const v0 = new ConstNode( 'float v0 0.339', true );
-		const m0 = new ConstNode( 'float m0 -2.0', true );
-		const r1 = new ConstNode( 'float r1 0.8', true );
-		const v1 = new ConstNode( 'float v1 0.276', true );
-		const m1 = new ConstNode( 'float m1 -1.0', true );
-		const r4 = new ConstNode( 'float r4 0.4', true );
-		const v4 = new ConstNode( 'float v4 0.046', true );
-		const m4 = new ConstNode( 'float m4 2.0', true );
-		const r5 = new ConstNode( 'float r5 0.305', true );
-		const v5 = new ConstNode( 'float v5 0.016', true );
-		const m5 = new ConstNode( 'float m5 3.0', true );
-		const r6 = new ConstNode( 'float r6 0.21', true );
-		const v6 = new ConstNode( 'float v6 0.0038', true );
-		const m6 = new ConstNode( 'float m6 4.0', true );
-
-		const defines = [ r0, v0, m0, r1, v1, m1, r4, v4, m4, r5, v5, m5, r6, v6, m6 ];
-
-		const roughnessToMip = new FunctionNode(
-			`float roughnessToMip(float roughness) {
-			float mip = 0.0;
-			if (roughness >= r1) {
-				mip = (r0 - roughness) * (m1 - m0) / (r0 - r1) + m0;
-			} else if (roughness >= r4) {
-				mip = (r1 - roughness) * (m4 - m1) / (r1 - r4) + m1;
-			} else if (roughness >= r5) {
-				mip = (r4 - roughness) * (m5 - m4) / (r4 - r5) + m4;
-			} else if (roughness >= r6) {
-				mip = (r5 - roughness) * (m6 - m5) / (r5 - r6) + m5;
-			} else {
-				mip = -2.0 * log2(1.16 * roughness);// 1.16 = 1.79^0.25
-			}
-			return mip;
-		}`, defines );
-
-		return {
-			bilinearCubeUV: bilinearCubeUV,
-			roughnessToMip: roughnessToMip,
-			m0: m0,
-			cubeUV_maxMipLevel: cubeUV_maxMipLevel
-		};
-
-	} )();
-
-	TextureCubeUVNode.prototype.nodeType = 'TextureCubeUV';
-
-	class TextureCubeNode extends TempNode {
-
-		constructor( value, uv, bias ) {
-
-			super( 'v4' );
-
-			this.value = value;
-
-			this.radianceNode = new TextureCubeUVNode(
-				this.value,
-				uv || new ReflectNode( ReflectNode.VECTOR ),
-				// bias should be replaced in builder.context in build process
-				bias
-			);
-
-			this.irradianceNode = new TextureCubeUVNode(
-				this.value,
-				new NormalNode( NormalNode.WORLD ),
-				new FloatNode( 1 ).setReadonly( true )
-			);
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				builder.require( 'irradiance' );
-
-				if ( builder.context.bias ) {
-
-					builder.context.bias.setTexture( this.value );
-
-				}
-
-				const scopeNode = builder.slot === 'irradiance' ? this.irradianceNode : this.radianceNode;
-
-				return scopeNode.build( builder, output );
-
-			} else {
-
-				console.warn( 'THREE.TextureCubeNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( 'vec4( 0.0 )', this.getType( builder ), output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	TextureCubeNode.prototype.nodeType = 'TextureCube';
-
-	const elements = NodeUtils.elements,
-		constructors = [ 'float', 'vec2', 'vec3', 'vec4' ],
-		convertFormatToType = {
-			float: 'f',
-			vec2: 'v2',
-			vec3: 'v3',
-			vec4: 'v4',
-			mat4: 'v4',
-			int: 'i',
-			bool: 'b'
-		},
-		convertTypeToFormat = {
-			t: 'sampler2D',
-			tc: 'samplerCube',
-			b: 'bool',
-			i: 'int',
-			f: 'float',
-			c: 'vec3',
-			v2: 'vec2',
-			v3: 'vec3',
-			v4: 'vec4',
-			m3: 'mat3',
-			m4: 'mat4'
-		};
-
-	class NodeBuilder {
-
-		constructor() {
-
-			this.slots = [];
-			this.caches = [];
-			this.contexts = [];
-
-			this.keywords = {};
-
-			this.nodeData = {};
-
-			this.requires = {
-				uv: [],
-				color: [],
-				lights: false,
-				fog: false,
-				transparent: false,
-				irradiance: false
-			};
-
-			this.includes = {
-				consts: [],
-				functions: [],
-				structs: []
-			};
-
-			this.attributes = {};
-
-			this.prefixCode = /* glsl */`
-			#ifdef TEXTURE_LOD_EXT
-
-				#define texCube(a, b) textureCube(a, b)
-				#define texCubeBias(a, b, c) textureCubeLodEXT(a, b, c)
-
-				#define tex2D(a, b) texture2D(a, b)
-				#define tex2DBias(a, b, c) texture2DLodEXT(a, b, c)
-
-			#else
-
-				#define texCube(a, b) textureCube(a, b)
-				#define texCubeBias(a, b, c) textureCube(a, b, c)
-
-				#define tex2D(a, b) texture2D(a, b)
-				#define tex2DBias(a, b, c) texture2D(a, b, c)
-
-			#endif
-
-			#include <packing>
-			#include <common>`;
-
-			this.parsCode = {
-				vertex: '',
-				fragment: ''
-			};
-
-			this.code = {
-				vertex: '',
-				fragment: ''
-			};
-
-			this.nodeCode = {
-				vertex: '',
-				fragment: ''
-			};
-
-			this.resultCode = {
-				vertex: '',
-				fragment: ''
-			};
-
-			this.finalCode = {
-				vertex: '',
-				fragment: ''
-			};
-
-			this.inputs = {
-				uniforms: {
-					list: [],
-					vertex: [],
-					fragment: []
-				},
-				vars: {
-					varying: [],
-					vertex: [],
-					fragment: []
-				}
-			};
-
-			// send to material
-
-			this.defines = {};
-
-			this.uniforms = {};
-
-			this.extensions = {};
-
-			this.updaters = [];
-
-			this.nodes = [];
-
-			// --
-
-			this.analyzing = false;
-
-		}
-
-		build( vertex, fragment ) {
-
-			this.buildShader( 'vertex', vertex );
-			this.buildShader( 'fragment', fragment );
-
-			for ( let i = 0; i < this.requires.uv.length; i ++ ) {
-
-				if ( this.requires.uv[ i ] ) {
-
-					const uvIndex = i > 0 ? i + 1 : '';
-
-					this.addVaryCode( 'varying vec2 vUv' + uvIndex + ';' );
-
-					if ( i > 0 ) {
-
-						this.addVertexParsCode( 'attribute vec2 uv' + uvIndex + ';' );
-
-					}
-
-					this.addVertexFinalCode( 'vUv' + uvIndex + ' = uv' + uvIndex + ';' );
-
-				}
-
-			}
-
-			if ( this.requires.color[ 0 ] ) {
-
-				this.addVaryCode( 'varying vec4 vColor;' );
-				this.addVertexParsCode( 'attribute vec4 color;' );
-
-				this.addVertexFinalCode( 'vColor = color;' );
-
-			}
-
-			if ( this.requires.color[ 1 ] ) {
-
-				this.addVaryCode( 'varying vec4 vColor2;' );
-				this.addVertexParsCode( 'attribute vec4 color2;' );
-
-				this.addVertexFinalCode( 'vColor2 = color2;' );
-
-			}
-
-			if ( this.requires.position ) {
-
-				this.addVaryCode( 'varying vec3 vPosition;' );
-
-				this.addVertexFinalCode( 'vPosition = transformed;' );
-
-			}
-
-			if ( this.requires.worldPosition ) {
-
-				this.addVaryCode( 'varying vec3 vWPosition;' );
-
-				this.addVertexFinalCode( 'vWPosition = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;' );
-
-			}
-
-			if ( this.requires.normal ) {
-
-				this.addVaryCode( 'varying vec3 vObjectNormal;' );
-
-				this.addVertexFinalCode( 'vObjectNormal = normal;' );
-
-			}
-
-			if ( this.requires.worldNormal ) {
-
-				this.addVaryCode( 'varying vec3 vWNormal;' );
-
-				this.addVertexFinalCode( 'vWNormal = inverseTransformDirection( transformedNormal, viewMatrix ).xyz;' );
-
-			}
-
-			return this;
-
-		}
-
-		buildShader( shader, node ) {
-
-			this.resultCode[ shader ] = node.build( this.setShader( shader ), 'v4' );
-
-		}
-
-		setMaterial( material, renderer ) {
-
-			this.material = material;
-			this.renderer = renderer;
-
-			this.requires.lights = material.lights;
-			this.requires.fog = material.fog;
-
-			this.mergeDefines( material.defines );
-
-			return this;
-
-		}
-
-		addFlow( slot, cache, context ) {
-
-			return this.addSlot( slot ).addCache( cache ).addContext( context );
-
-		}
-
-		removeFlow() {
-
-			return this.removeSlot().removeCache().removeContext();
-
-		}
-
-		addCache( name ) {
-
-			this.cache = name || '';
-			this.caches.push( this.cache );
-
-			return this;
-
-		}
-
-		removeCache() {
-
-			this.caches.pop();
-			this.cache = this.caches[ this.caches.length - 1 ] || '';
-
-			return this;
-
-		}
-
-		addContext( context ) {
-
-			this.context = Object.assign( {}, this.context, context );
-			this.context.extra = this.context.extra || {};
-
-			this.contexts.push( this.context );
-
-			return this;
-
-		}
-
-		removeContext() {
-
-			this.contexts.pop();
-			this.context = this.contexts[ this.contexts.length - 1 ] || {};
-
-			return this;
-
-		}
-
-		addSlot( name = '' ) {
-
-			this.slot = name;
-			this.slots.push( this.slot );
-
-			return this;
-
-		}
-
-		removeSlot() {
-
-			this.slots.pop();
-			this.slot = this.slots[ this.slots.length - 1 ] || '';
-
-			return this;
-
-		}
-
-		addVertexCode( code ) {
-
-			this.addCode( code, 'vertex' );
-
-		}
-
-		addFragmentCode( code ) {
-
-			this.addCode( code, 'fragment' );
-
-		}
-
-		addCode( code, shader ) {
-
-			this.code[ shader || this.shader ] += code + '\n';
-
-		}
-
-		addVertexNodeCode( code ) {
-
-			this.addNodeCode( code, 'vertex' );
-
-		}
-
-		addFragmentNodeCode( code ) {
-
-			this.addNodeCode( code, 'fragment' );
-
-		}
-
-		addNodeCode( code, shader ) {
-
-			this.nodeCode[ shader || this.shader ] += code + '\n';
-
-		}
-
-		clearNodeCode( shader ) {
-
-			shader = shader || this.shader;
-
-			const code = this.nodeCode[ shader ];
-
-			this.nodeCode[ shader ] = '';
-
-			return code;
-
-		}
-
-		clearVertexNodeCode( ) {
-
-			return this.clearNodeCode( 'vertex' );
-
-		}
-
-		clearFragmentNodeCode( ) {
-
-			return this.clearNodeCode( 'fragment' );
-
-		}
-
-		addVertexFinalCode( code ) {
-
-			this.addFinalCode( code, 'vertex' );
-
-		}
-
-		addFragmentFinalCode( code ) {
-
-			this.addFinalCode( code, 'fragment' );
-
-		}
-
-		addFinalCode( code, shader ) {
-
-			this.finalCode[ shader || this.shader ] += code + '\n';
-
-		}
-
-		addVertexParsCode( code ) {
-
-			this.addParsCode( code, 'vertex' );
-
-		}
-
-		addFragmentParsCode( code ) {
-
-			this.addParsCode( code, 'fragment' );
-
-		}
-
-		addParsCode( code, shader ) {
-
-			this.parsCode[ shader || this.shader ] += code + '\n';
-
-		}
-
-		addVaryCode( code ) {
-
-			this.addVertexParsCode( code );
-			this.addFragmentParsCode( code );
-
-		}
-
-		isCache( name ) {
-
-			return this.caches.indexOf( name ) !== - 1;
-
-		}
-
-		isSlot( name ) {
-
-			return this.slots.indexOf( name ) !== - 1;
-
-		}
-
-		define( name, value ) {
-
-			this.defines[ name ] = value === undefined ? 1 : value;
-
-		}
-
-		require( name ) {
-
-			this.requires[ name ] = true;
-
-		}
-
-		isDefined( name ) {
-
-			return this.defines[ name ] !== undefined;
-
-		}
-
-		getVar( uuid, type, ns, shader = 'varying', prefix = 'V', label = '' ) {
-
-			const vars = this.getVars( shader );
-			let data = vars[ uuid ];
-
-			if ( ! data ) {
-
-				const index = vars.length,
-					name = ns ? ns : 'node' + prefix + index + ( label ? '_' + label : '' );
-
-				data = { name: name, type: type };
-
-				vars.push( data );
-				vars[ uuid ] = data;
-
-			}
-
-			return data;
-
-		}
-
-		getTempVar( uuid, type, ns, label ) {
-
-			return this.getVar( uuid, type, ns, this.shader, 'T', label );
-
-		}
-
-		getAttribute( name, type ) {
-
-			if ( ! this.attributes[ name ] ) {
-
-				const varying = this.getVar( name, type );
-
-				this.addVertexParsCode( 'attribute ' + type + ' ' + name + ';' );
-				this.addVertexFinalCode( varying.name + ' = ' + name + ';' );
-
-				this.attributes[ name ] = { varying: varying, name: name, type: type };
-
-			}
-
-			return this.attributes[ name ];
-
-		}
-
-		getCode( shader ) {
-
-			return [
-				this.prefixCode,
-				this.parsCode[ shader ],
-				this.getVarListCode( this.getVars( 'varying' ), 'varying' ),
-				this.getVarListCode( this.inputs.uniforms[ shader ], 'uniform' ),
-				this.getIncludesCode( 'consts', shader ),
-				this.getIncludesCode( 'structs', shader ),
-				this.getIncludesCode( 'functions', shader ),
-				'void main() {',
-				this.getVarListCode( this.getVars( shader ) ),
-				this.code[ shader ],
-				this.resultCode[ shader ],
-				this.finalCode[ shader ],
-				'}'
-			].join( '\n' );
-
-		}
-
-		getVarListCode( vars, prefix = '' ) {
-
-			let code = '';
-
-			for ( let i = 0, l = vars.length; i < l; ++ i ) {
-
-				const nVar = vars[ i ],
-					type = nVar.type,
-					name = nVar.name;
-
-				const formatType = this.getFormatByType( type );
-
-				if ( formatType === undefined ) {
-
-					throw new Error( 'Node pars ' + formatType + ' not found.' );
-
-				}
-
-				code += prefix + ' ' + formatType + ' ' + name + ';\n';
-
-			}
-
-			return code;
-
-		}
-
-		getVars( shader ) {
-
-			return this.inputs.vars[ shader || this.shader ];
-
-		}
-
-		getNodeData( node ) {
-
-			const uuid = node.isNode ? node.uuid : node;
-
-			return this.nodeData[ uuid ] = this.nodeData[ uuid ] || {};
-
-		}
-
-		createUniform( shader, type, node, ns, needsUpdate, label ) {
-
-			const uniforms = this.inputs.uniforms,
-				index = uniforms.list.length;
-
-			const uniform = new NodeUniform( {
-				type: type,
-				name: ns ? ns : 'nodeU' + index + ( label ? '_' + label : '' ),
-				node: node,
-				needsUpdate: needsUpdate
-			} );
-
-			uniforms.list.push( uniform );
-
-			uniforms[ shader ].push( uniform );
-			uniforms[ shader ][ uniform.name ] = uniform;
-
-			this.uniforms[ uniform.name ] = uniform;
-
-			return uniform;
-
-		}
-
-		createVertexUniform( type, node, ns, needsUpdate, label ) {
-
-			return this.createUniform( 'vertex', type, node, ns, needsUpdate, label );
-
-		}
-
-		createFragmentUniform( type, node, ns, needsUpdate, label ) {
-
-			return this.createUniform( 'fragment', type, node, ns, needsUpdate, label );
-
-		}
-
-		include( node, parent, source ) {
-
-			let includesStruct;
-
-			node = typeof node === 'string' ? NodeLib.get( node ) : node;
-
-			if ( this.context.include === false ) {
-
-				return node.name;
-
-			}
-
-
-			if ( node instanceof FunctionNode ) {
-
-				includesStruct = this.includes.functions;
-
-			} else if ( node instanceof ConstNode ) {
-
-				includesStruct = this.includes.consts;
-
-			} else if ( node instanceof StructNode ) {
-
-				includesStruct = this.includes.structs;
-
-			}
-
-			const includes = includesStruct[ this.shader ] = includesStruct[ this.shader ] || [];
-
-			if ( node ) {
-
-				let included = includes[ node.name ];
-
-				if ( ! included ) {
-
-					included = includes[ node.name ] = {
-						node: node,
-						deps: []
-					};
-
-					includes.push( included );
-
-					included.src = node.build( this, 'source' );
-
-				}
-
-				if ( node instanceof FunctionNode && parent && includes[ parent.name ] && includes[ parent.name ].deps.indexOf( node ) == - 1 ) {
-
-					includes[ parent.name ].deps.push( node );
-
-					if ( node.includes && node.includes.length ) {
-
-						let i = 0;
-
-						do {
-
-							this.include( node.includes[ i ++ ], parent );
-
-						} while ( i < node.includes.length );
-
-					}
-
-				}
-
-				if ( source ) {
-
-					included.src = source;
-
-				}
-
-				return node.name;
-
-			} else {
-
-				throw new Error( 'Include not found.' );
-
-			}
-
-		}
-
-		colorToVectorProperties( color ) {
-
-			return color.replace( 'r', 'x' ).replace( 'g', 'y' ).replace( 'b', 'z' ).replace( 'a', 'w' );
-
-		}
-
-		colorToVector( color ) {
-
-			return color.replace( /c/g, 'v3' );
-
-		}
-
-		getIncludes( type, shader ) {
-
-			return this.includes[ type ][ shader || this.shader ];
-
-		}
-
-		getIncludesCode( type, shader ) {
-
-			let includes = this.getIncludes( type, shader );
-
-			if ( ! includes ) return '';
-
-			let code = '';
-
-			includes = includes.sort( sortByPosition );
-
-			for ( let i = 0; i < includes.length; i ++ ) {
-
-				if ( includes[ i ].src ) code += includes[ i ].src + '\n';
-
-			}
-
-			return code;
-
-		}
-
-		getConstructorFromLength( len ) {
-
-			return constructors[ len - 1 ];
-
-		}
-
-		isTypeMatrix( format ) {
-
-			return /^m/.test( format );
-
-		}
-
-		getTypeLength( type ) {
-
-			if ( type === 'f' ) return 1;
-
-			return parseInt( this.colorToVector( type ).substr( 1 ) );
-
-		}
-
-		getTypeFromLength( len ) {
-
-			if ( len === 1 ) return 'f';
-
-			return 'v' + len;
-
-		}
-
-		findNode() {
-
-			for ( let i = 0; i < arguments.length; i ++ ) {
-
-				const nodeCandidate = arguments[ i ];
-
-				if ( nodeCandidate !== undefined && nodeCandidate.isNode ) {
-
-					return nodeCandidate;
-
-				}
-
-			}
-
-		}
-
-		resolve() {
-
-			for ( let i = 0; i < arguments.length; i ++ ) {
-
-				const nodeCandidate = arguments[ i ];
-
-				if ( nodeCandidate !== undefined ) {
-
-					if ( nodeCandidate.isNode ) {
-
-						return nodeCandidate;
-
-					} else if ( nodeCandidate.isTexture ) {
-
-						switch ( nodeCandidate.mapping ) {
-
-							case CubeReflectionMapping:
-							case CubeRefractionMapping:
-
-								return new CubeTextureNode( nodeCandidate );
-
-							case CubeUVReflectionMapping:
-							case CubeUVRefractionMapping:
-
-								return new TextureCubeNode( new TextureNode( nodeCandidate ) );
-
-							default:
-
-								return new TextureNode( nodeCandidate );
-
-						}
-
-					} else if ( nodeCandidate.isVector2 ) {
-
-						return new Vector2Node( nodeCandidate );
-
-					} else if ( nodeCandidate.isVector3 ) {
-
-						return new Vector3Node( nodeCandidate );
-
-					} else if ( nodeCandidate.isVector4 ) {
-
-						return new Vector4Node( nodeCandidate );
-
-					}
-
-				}
-
-			}
-
-		}
-
-		format( code, from, to ) {
-
-			const typeToType = this.colorToVector( to + ' <- ' + from );
-
-			switch ( typeToType ) {
-
-				case 'f <- v2' : return code + '.x';
-				case 'f <- v3' : return code + '.x';
-				case 'f <- v4' : return code + '.x';
-				case 'f <- i' :
-				case 'f <- b' :	return 'float( ' + code + ' )';
-
-				case 'v2 <- f' : return 'vec2( ' + code + ' )';
-				case 'v2 <- v3': return code + '.xy';
-				case 'v2 <- v4': return code + '.xy';
-				case 'v2 <- i' :
-				case 'v2 <- b' : return 'vec2( float( ' + code + ' ) )';
-
-				case 'v3 <- f' : return 'vec3( ' + code + ' )';
-				case 'v3 <- v2': return 'vec3( ' + code + ', 0.0 )';
-				case 'v3 <- v4': return code + '.xyz';
-				case 'v3 <- i' :
-				case 'v3 <- b' : return 'vec2( float( ' + code + ' ) )';
-
-				case 'v4 <- f' : return 'vec4( ' + code + ' )';
-				case 'v4 <- v2': return 'vec4( ' + code + ', 0.0, 1.0 )';
-				case 'v4 <- v3': return 'vec4( ' + code + ', 1.0 )';
-				case 'v4 <- i' :
-				case 'v4 <- b' : return 'vec4( float( ' + code + ' ) )';
-
-				case 'i <- f' :
-				case 'i <- b' : return 'int( ' + code + ' )';
-				case 'i <- v2' : return 'int( ' + code + '.x )';
-				case 'i <- v3' : return 'int( ' + code + '.x )';
-				case 'i <- v4' : return 'int( ' + code + '.x )';
-
-				case 'b <- f' : return '( ' + code + ' != 0.0 )';
-				case 'b <- v2' : return '( ' + code + ' != vec2( 0.0 ) )';
-				case 'b <- v3' : return '( ' + code + ' != vec3( 0.0 ) )';
-				case 'b <- v4' : return '( ' + code + ' != vec4( 0.0 ) )';
-				case 'b <- i' : return '( ' + code + ' != 0 )';
-
-			}
-
-			return code;
-
-		}
-
-		getTypeByFormat( format ) {
-
-			return convertFormatToType[ format ] || format;
-
-		}
-
-		getFormatByType( type ) {
-
-			return convertTypeToFormat[ type ] || type;
-
-		}
-
-		getUuid( uuid, useCache ) {
-
-			useCache = useCache !== undefined ? useCache : true;
-
-			if ( useCache && this.cache ) uuid = this.cache + '-' + uuid;
-
-			return uuid;
-
-		}
-
-		getElementByIndex( index ) {
-
-			return elements[ index ];
-
-		}
-
-		getIndexByElement( elm ) {
-
-			return elements.indexOf( elm );
-
-		}
-
-		isShader( shader ) {
-
-			return this.shader === shader;
-
-		}
-
-		setShader( shader ) {
-
-			this.shader = shader;
-
-			return this;
-
-		}
-
-		mergeDefines( defines ) {
-
-			for ( const name in defines ) {
-
-				this.defines[ name ] = defines[ name ];
-
-			}
-
-			return this.defines;
-
-		}
-
-		mergeUniform( uniforms ) {
-
-			for ( const name in uniforms ) {
-
-				this.uniforms[ name ] = uniforms[ name ];
-
-			}
-
-			return this.uniforms;
-
-		}
-
-		getTextureEncodingFromMap( map ) {
-
-			let encoding;
-
-			if ( ! map ) {
-
-				encoding = LinearEncoding;
-
-			} else if ( map.isTexture ) {
-
-				encoding = map.encoding;
-
-			} else if ( map.isWebGLRenderTarget ) {
-
-				console.warn( 'THREE.WebGLPrograms.getTextureEncodingFromMap: don\'t use render targets as textures. Use their .texture property instead.' );
-				encoding = map.texture.encoding;
-
-			}
-
-			if ( encoding === LinearEncoding && this.context.gamma ) {
-
-				encoding = GammaEncoding;
-
-			}
-
-			return encoding;
-
-		}
-
-	}
-
-	function sortByPosition( a, b ) {
-
-		return a.deps.length - b.deps.length;
-
-	}
-
-	class ColorNode extends InputNode {
-
-		constructor( color, g, b ) {
-
-			super( 'c' );
-
-			this.value = color instanceof Color ? color : new Color( color || 0, g, b );
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
-
-			return builder.format( 'vec3( ' + this.r + ', ' + this.g + ', ' + this.b + ' )', type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value.copy( source );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			var data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.r = this.r;
-				data.g = this.g;
-				data.b = this.b;
-
-				if ( this.readonly === true ) data.readonly = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ColorNode.prototype.nodeType = 'Color';
-
-	NodeUtils.addShortcuts( ColorNode.prototype, 'value', [ 'r', 'g', 'b' ] );
-
-	class RawNode extends Node$1 {
-
-		constructor( value ) {
-
-			super( 'v4' );
-
-			this.value = value;
-
-		}
-
-		generate( builder ) {
-
-			const data = this.value.analyzeAndFlow( builder, this.type );
-			let code = data.code + '\n';
-
-			if ( builder.isShader( 'vertex' ) ) {
-
-				code += 'gl_Position = ' + data.result + ';';
-
-			} else {
-
-				code += 'gl_FragColor = ' + data.result + ';';
-
-			}
-
-			return code;
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	RawNode.prototype.nodeType = 'Raw';
-
-	class NodeMaterial extends ShaderMaterial {
-
-		constructor( vertex, fragment ) {
-
-			super();
-
-			this.vertex = vertex || new RawNode( new PositionNode( PositionNode.PROJECTION ) );
-			this.fragment = fragment || new RawNode( new ColorNode( 0xFF0000 ) );
-
-			this.updaters = [];
-
-			this.type = 'NodeMaterial';
-
-		}
-
-		get properties() {
-
-			return this.fragment.properties;
-
-		}
-
-		get needsUpdate() {
-
-			return this.needsCompile;
-
-		}
-
-		set needsUpdate( value ) {
-
-			if ( value === true ) this.version ++;
-			this.needsCompile = value;
-
-		}
-
-		onBeforeCompile( shader, renderer ) {
-
-			this.build( { renderer: renderer } );
-
-			shader.defines = this.defines;
-			shader.uniforms = this.uniforms;
-			shader.vertexShader = this.vertexShader;
-			shader.fragmentShader = this.fragmentShader;
-
-			shader.extensionDerivatives = ( this.extensions.derivatives === true );
-			shader.extensionFragDepth = ( this.extensions.fragDepth === true );
-			shader.extensionDrawBuffers = ( this.extensions.drawBuffers === true );
-			shader.extensionShaderTextureLOD = ( this.extensions.shaderTextureLOD === true );
-
-		}
-
-		customProgramCacheKey() {
-
-			const hash = this.getHash();
-
-			return hash;
-
-		}
-
-		getHash() {
-
-			let hash = '{';
-
-			hash += '"vertex":' + this.vertex.getHash() + ',';
-			hash += '"fragment":' + this.fragment.getHash();
-
-			hash += '}';
-
-			return hash;
-
-		}
-
-		updateFrame( frame ) {
-
-			for ( let i = 0; i < this.updaters.length; ++ i ) {
-
-				frame.updateNode( this.updaters[ i ] );
-
-			}
-
-		}
-
-		build( params = {} ) {
-
-			const builder = params.builder || new NodeBuilder();
-
-			builder.setMaterial( this, params.renderer );
-			builder.build( this.vertex, this.fragment );
-
-			this.vertexShader = builder.getCode( 'vertex' );
-			this.fragmentShader = builder.getCode( 'fragment' );
-
-			this.defines = builder.defines;
-			this.uniforms = builder.uniforms;
-			this.extensions = builder.extensions;
-			this.updaters = builder.updaters;
-
-			this.fog = builder.requires.fog;
-			this.lights = builder.requires.lights;
-
-			this.transparent = builder.requires.transparent || this.blending > NormalBlending;
-
-			return this;
-
-		}
-
-		copy( source ) {
-
-			const uuid = this.uuid;
-
-			for ( const name in source ) {
-
-				this[ name ] = source[ name ];
-
-			}
-
-			this.uuid = uuid;
-
-			if ( source.userData !== undefined ) {
-
-				this.userData = JSON.parse( JSON.stringify( source.userData ) );
-
-			}
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			const isRootObject = ( meta === undefined || typeof meta === 'string' );
-
-			if ( isRootObject ) {
-
-				meta = {
-					nodes: {}
-				};
-
-			}
-
-			if ( meta && ! meta.materials ) meta.materials = {};
-
-			if ( ! meta.materials[ this.uuid ] ) {
-
-				const data = {};
-
-				data.uuid = this.uuid;
-				data.type = this.type;
-
-				meta.materials[ data.uuid ] = data;
-
-				if ( this.name !== '' ) data.name = this.name;
-
-				if ( this.size !== undefined ) data.size = this.size;
-				if ( this.sizeAttenuation !== undefined ) data.sizeAttenuation = this.sizeAttenuation;
-
-				if ( this.blending !== NormalBlending ) data.blending = this.blending;
-				if ( this.flatShading === true ) data.flatShading = this.flatShading;
-				if ( this.side !== FrontSide ) data.side = this.side;
-				if ( this.vertexColors !== NoColors ) data.vertexColors = this.vertexColors;
-
-				if ( this.depthFunc !== LessEqualDepth ) data.depthFunc = this.depthFunc;
-				if ( this.depthTest === false ) data.depthTest = this.depthTest;
-				if ( this.depthWrite === false ) data.depthWrite = this.depthWrite;
-
-				if ( this.linewidth !== 1 ) data.linewidth = this.linewidth;
-				if ( this.dashSize !== undefined ) data.dashSize = this.dashSize;
-				if ( this.gapSize !== undefined ) data.gapSize = this.gapSize;
-				if ( this.scale !== undefined ) data.scale = this.scale;
-
-				if ( this.dithering === true ) data.dithering = true;
-
-				if ( this.wireframe === true ) data.wireframe = this.wireframe;
-				if ( this.wireframeLinewidth > 1 ) data.wireframeLinewidth = this.wireframeLinewidth;
-				if ( this.wireframeLinecap !== 'round' ) data.wireframeLinecap = this.wireframeLinecap;
-				if ( this.wireframeLinejoin !== 'round' ) data.wireframeLinejoin = this.wireframeLinejoin;
-
-				if ( this.alphaTest > 0 ) data.alphaTest = this.alphaTest;
-				if ( this.premultipliedAlpha === true ) data.premultipliedAlpha = this.premultipliedAlpha;
-
-				if ( this.visible === false ) data.visible = false;
-				if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
-
-				data.fog = this.fog;
-				data.lights = this.lights;
-
-				data.vertex = this.vertex.toJSON( meta ).uuid;
-				data.fragment = this.fragment.toJSON( meta ).uuid;
-
-			}
-
-			meta.material = this.uuid;
-
-			return meta;
-
-		}
-
-	}
-
-	NodeMaterial.prototype.isNodeMaterial = true;
-
-	class ScreenNode extends TextureNode {
-
-		constructor( uv ) {
-
-			super( undefined, uv );
-
-		}
-
-		getUnique() {
-
-			return true;
-
-		}
-
-		getTexture( builder, output ) {
-
-			return InputNode.prototype.generate.call( this, builder, output, this.getUuid(), 't', 'renderTexture' );
-
-		}
-
-	}
-
-	ScreenNode.prototype.nodeType = 'Screen';
-
-	class NodePass extends ShaderPass {
-
-		constructor() {
-
-			super();
-
-			this.name = '';
-			this.uuid = MathUtils.generateUUID();
-
-			this.userData = {};
-
-			this.textureID = 'renderTexture';
-
-			this.input = new ScreenNode();
-
-			this.material = new NodeMaterial();
-
-			this.needsUpdate = true;
-
-		}
-
-		render() {
-
-			if ( this.needsUpdate ) {
-
-				this.material.dispose();
-
-				this.material.fragment.value = this.input;
-
-				this.needsUpdate = false;
-
-			}
-
-			this.uniforms = this.material.uniforms;
-
-			super.render( ...arguments );
-
-		}
-
-		copy( source ) {
-
-			this.input = source.input;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			var isRootObject = ( meta === undefined || typeof meta === 'string' );
-
-			if ( isRootObject ) {
-
-				meta = {
-					nodes: {}
-				};
-
-			}
-
-			if ( meta && ! meta.passes ) meta.passes = {};
-
-			if ( ! meta.passes[ this.uuid ] ) {
-
-				var data = {};
-
-				data.uuid = this.uuid;
-				data.type = 'NodePass';
-
-				meta.passes[ this.uuid ] = data;
-
-				if ( this.name !== '' ) data.name = this.name;
-
-				if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
-
-				data.input = this.input.toJSON( meta ).uuid;
-
-			}
-
-			meta.pass = this.uuid;
-
-			return meta;
-
-		}
-
-	}
-
-	class VarNode extends Node$1 {
-
-		constructor( type, value ) {
-
-			super( type );
-
-			this.value = value;
-
-		}
-
-		getType( builder ) {
-
-			return builder.getTypeByFormat( this.type );
-
-		}
-
-		generate( builder, output ) {
-
-			const varying = builder.getVar( this.uuid, this.type );
-
-			if ( this.value && builder.isShader( 'vertex' ) ) {
-
-				builder.addNodeCode( varying.name + ' = ' + this.value.build( builder, this.getType( builder ) ) + ';' );
-
-			}
-
-			return builder.format( varying.name, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.type = source.type;
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.type = this.type;
-
-				if ( this.value ) data.value = this.value.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	VarNode.prototype.nodeType = 'Var';
-
-	class AttributeNode extends Node$1 {
-
-		constructor( name, type ) {
-
-			super( type );
-
-			this.name = name;
-
-		}
-
-		getAttributeType( builder ) {
-
-			return typeof this.type === 'number' ? builder.getConstructorFromLength( this.type ) : this.type;
-
-		}
-
-		getType( builder ) {
-
-			const type = this.getAttributeType( builder );
-
-			return builder.getTypeByFormat( type );
-
-		}
-
-		generate( builder, output ) {
-
-			const type = this.getAttributeType( builder );
-
-			const attribute = builder.getAttribute( this.name, type ),
-				name = builder.isShader( 'vertex' ) ? this.name : attribute.varying.name;
-
-			return builder.format( name, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.type = source.type;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.type = this.type;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	AttributeNode.prototype.nodeType = 'Attribute';
-
-	class NodeFrame {
-
-		constructor( time ) {
-
-			this.time = time !== undefined ? time : 0;
-
-			this.id = 0;
-
-		}
-
-		update( delta ) {
-
-			++ this.id;
-
-			this.time += delta;
-			this.delta = delta;
-
-			return this;
-
-		}
-
-		setRenderer( renderer ) {
-
-			this.renderer = renderer;
-
-			return this;
-
-		}
-
-		setRenderTexture( renderTexture ) {
-
-			this.renderTexture = renderTexture;
-
-			return this;
-
-		}
-
-		updateNode( node ) {
-
-			if ( node.frameId === this.id ) return this;
-
-			node.updateFrame( this );
-
-			node.frameId = this.id;
-
-			return this;
-
-		}
-
-	}
-
-	class BoolNode extends InputNode {
-
-		constructor( value ) {
-
-			super( 'b' );
-
-			this.value = Boolean( value );
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
-
-			return builder.format( this.value, type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value;
-
-				if ( this.readonly === true ) data.readonly = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	BoolNode.prototype.nodeType = 'Bool';
-
-	class IntNode extends InputNode {
-
-		constructor( value ) {
-
-			super( 'i' );
-
-			this.value = Math.floor( value || 0 );
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
-
-			return builder.format( this.value, type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value;
-
-				if ( this.readonly === true ) data.readonly = true;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	IntNode.prototype.nodeType = 'Int';
-
-	class Matrix3Node extends InputNode {
-
-		constructor( matrix ) {
-
-			super( 'm3' );
-
-			this.value = matrix || new Matrix3();
-
-		}
-
-		get elements() {
-
-			return this.value.elements;
-
-		}
-
-		set elements( val ) {
-
-			this.value.elements = val;
-
-		}
-
-		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
-
-			return builder.format( 'mat3( ' + this.value.elements.join( ', ' ) + ' )', type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value.fromArray( source.elements );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.elements = this.value.elements.concat();
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Matrix3Node.prototype.nodeType = 'Matrix3';
-
-	class Matrix4Node extends InputNode {
-
-		constructor( matrix ) {
-
-			super( 'm4' );
-
-			this.value = matrix || new Matrix4();
-
-		}
-
-		get elements() {
-
-			return this.value.elements;
-
-		}
-
-		set elements( val ) {
-
-			this.value.elements = val;
-
-		}
-
-		generateReadonly( builder, output, uuid, type /*, ns, needsUpdate */ ) {
-
-			return builder.format( 'mat4( ' + this.value.elements.join( ', ' ) + ' )', type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.scope.value.fromArray( source.elements );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.elements = this.value.elements.concat();
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Matrix4Node.prototype.nodeType = 'Matrix4';
-
-	class ReflectorNode extends TempNode {
-
-		constructor( mirror ) {
-
-			super( 'v4' );
-
-			if ( mirror ) this.setMirror( mirror );
-
-		}
-
-		setMirror( mirror ) {
-
-			this.mirror = mirror;
-
-			this.textureMatrix = new Matrix4Node( this.mirror.material.uniforms.textureMatrix.value );
-
-			this.localPosition = new PositionNode( PositionNode.LOCAL );
-
-			this.uv = new OperatorNode( this.textureMatrix, this.localPosition, OperatorNode.MUL );
-			this.uvResult = new OperatorNode( null, this.uv, OperatorNode.ADD );
-
-			this.texture = new TextureNode( this.mirror.material.uniforms.tDiffuse.value, this.uv, null, true );
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				this.uvResult.a = this.offset;
-				this.texture.uv = this.offset ? this.uvResult : this.uv;
-
-				if ( output === 'sampler2D' ) {
-
-					return this.texture.build( builder, output );
-
-				}
-
-				return builder.format( this.texture.build( builder, this.type ), this.type, output );
-
-			} else {
-
-				console.warn( 'THREE.ReflectorNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( 'vec4( 0.0 )', this.type, output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			InputNode.prototype.copy.call( this, source );
-
-			this.scope.mirror = source.mirror;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.mirror = this.mirror.uuid;
-
-				if ( this.offset ) data.offset = this.offset.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ReflectorNode.prototype.nodeType = 'Reflector';
-
-	class PropertyNode extends InputNode {
-
-		constructor( object, property, type ) {
-
-			super( type );
-
-			this.object = object;
-			this.property = property;
-
-		}
-
-		get value() {
-
-			return this.object[ this.property ];
-
-		}
-
-		set value( val ) {
-
-			this.object[ this.property ] = val;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value;
-				data.property = this.property;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	PropertyNode.prototype.nodeType = 'Property';
-
-	class RTTNode extends TextureNode {
-
-		constructor( width, height, input, options = {} ) {
-
-			const renderTarget = new WebGLRenderTarget( width, height, options );
-
-			super( renderTarget.texture );
-
-			this.input = input;
-
-			this.clear = options.clear !== undefined ? options.clear : true;
-
-			this.renderTarget = renderTarget;
-
-			this.material = new NodeMaterial();
-
-			this.camera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-			this.scene = new Scene();
-
-			this.quad = new Mesh( new PlaneGeometry( 2, 2 ), this.material );
-			this.quad.frustumCulled = false; // Avoid getting clipped
-			this.scene.add( this.quad );
-
-			this.render = true;
-
-
-		}
-
-		build( builder, output, uuid ) {
-
-			const rttBuilder = new NodeBuilder();
-			rttBuilder.nodes = builder.nodes;
-			rttBuilder.updaters = builder.updaters;
-
-			this.material.fragment.value = this.input;
-			this.material.build( { builder: rttBuilder } );
-
-			return super.build( builder, output, uuid );
-
-		}
-
-		updateFramesaveTo( frame ) {
-
-			this.saveTo.render = false;
-
-			if ( this.saveTo !== this.saveToCurrent ) {
-
-				if ( this.saveToMaterial ) this.saveToMaterial.dispose();
-
-				const material = new NodeMaterial();
-				material.fragment.value = this;
-				material.build();
-
-				const scene = new Scene();
-
-				const quad = new Mesh( new PlaneGeometry( 2, 2 ), material );
-				quad.frustumCulled = false; // Avoid getting clipped
-				scene.add( quad );
-
-				this.saveToScene = scene;
-				this.saveToMaterial = material;
-
-			}
-
-			this.saveToCurrent = this.saveTo;
-
-			frame.renderer.setRenderTarget( this.saveTo.renderTarget );
-			if ( this.saveTo.clear ) frame.renderer.clear();
-			frame.renderer.render( this.saveToScene, this.camera );
-
-		}
-
-		updateFrame( frame ) {
-
-			if ( frame.renderer ) {
-
-				// from the second frame
-
-				if ( this.saveTo && this.saveTo.render === false ) {
-
-					this.updateFramesaveTo( frame );
-
-				}
-
-				if ( this.render ) {
-
-					if ( this.material.uniforms.renderTexture ) {
-
-						this.material.uniforms.renderTexture.value = frame.renderTexture;
-
-					}
-
-					frame.renderer.setRenderTarget( this.renderTarget );
-					if ( this.clear ) frame.renderer.clear();
-					frame.renderer.render( this.scene, this.camera );
-
-				}
-
-				// first frame
-
-				if ( this.saveTo && this.saveTo.render === true ) {
-
-					this.updateFramesaveTo( frame );
-
-				}
-
-			} else {
-
-				console.warn( 'RTTNode need a renderer in NodeFrame' );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.saveTo = source.saveTo;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = super.toJSON( meta );
-
-				if ( this.saveTo ) data.saveTo = this.saveTo.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	RTTNode.prototype.nodeType = 'RTT';
-
-	var vertexDict = [ 'color', 'color2' ],
-		fragmentDict = [ 'vColor', 'vColor2' ];
-
-	class ColorsNode extends TempNode {
-
-		constructor( index ) {
-
-			super( 'v4', { shared: false } );
-
-			this.index = index || 0;
-
-		}
-
-		generate( builder, output ) {
-
-			builder.requires.color[ this.index ] = true;
-
-			const result = builder.isShader( 'vertex' ) ? vertexDict[ this.index ] : fragmentDict[ this.index ];
-
-			return builder.format( result, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.index = source.index;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.index = this.index;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ColorsNode.prototype.nodeType = 'Colors';
-
-	class CameraNode extends TempNode {
-
-		constructor( scope, camera ) {
-
-			super( 'v3' );
-
-			this.setScope( scope || CameraNode.POSITION );
-			this.setCamera( camera );
-
-		}
-
-		setCamera( camera ) {
-
-			this.camera = camera;
-			this.updateFrame = camera !== undefined ? this.onUpdateFrame : undefined;
-
-		}
-
-		setScope( scope ) {
-
-			switch ( this.scope ) {
-
-				case CameraNode.DEPTH:
-
-					delete this.near;
-					delete this.far;
-
-					break;
-
-			}
-
-			this.scope = scope;
-
-			switch ( scope ) {
-
-				case CameraNode.DEPTH:
-
-					const camera = this.camera;
-
-					this.near = new FloatNode( camera ? camera.near : 1 );
-					this.far = new FloatNode( camera ? camera.far : 1200 );
-
-					break;
-
-			}
-
-		}
-
-		getType( /* builder */ ) {
-
-			switch ( this.scope ) {
-
-				case CameraNode.DEPTH:
-
-					return 'f';
-
-			}
-
-			return this.type;
-
-		}
-
-		getUnique( /* builder */ ) {
-
-			switch ( this.scope ) {
-
-				case CameraNode.DEPTH:
-				case CameraNode.TO_VERTEX:
-
-					return true;
-
-			}
-
-			return false;
-
-		}
-
-		getShared( /* builder */ ) {
-
-			switch ( this.scope ) {
-
-				case CameraNode.POSITION:
-
-					return false;
-
-			}
-
-			return true;
-
-		}
-
-		generate( builder, output ) {
-
-			let result;
-
-			switch ( this.scope ) {
-
-				case CameraNode.POSITION:
-
-					result = 'cameraPosition';
-
-					break;
-
-				case CameraNode.DEPTH:
-
-					const depthColor = builder.include( CameraNode.Nodes.depthColor );
-
-					result = depthColor + '( ' + this.near.build( builder, 'f' ) + ', ' + this.far.build( builder, 'f' ) + ' )';
-
-					break;
-
-				case CameraNode.TO_VERTEX:
-
-					result = 'normalize( ' + new PositionNode( PositionNode.WORLD ).build( builder, 'v3' ) + ' - cameraPosition )';
-
-					break;
-
-			}
-
-			return builder.format( result, this.getType( builder ), output );
-
-		}
-
-		onUpdateFrame( /* frame */ ) {
-
-			switch ( this.scope ) {
-
-				case CameraNode.DEPTH:
-
-					const camera = this.camera;
-
-					this.near.value = camera.near;
-					this.far.value = camera.far;
-
-					break;
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.setScope( source.scope );
-
-			if ( source.camera ) {
-
-				this.setCamera( source.camera );
-
-			}
-
-			switch ( source.scope ) {
-
-				case CameraNode.DEPTH:
-
-					this.near.number = source.near;
-					this.far.number = source.far;
-
-					break;
-
-			}
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.scope = this.scope;
-
-				if ( this.camera ) data.camera = this.camera.uuid;
-
-				switch ( this.scope ) {
-
-					case CameraNode.DEPTH:
-
-						data.near = this.near.value;
-						data.far = this.far.value;
-
-						break;
-
-				}
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	CameraNode.Nodes = ( function () {
-
-		const depthColor = new FunctionNode( /* glsl */`
-		float depthColor( float mNear, float mFar ) {
-
-			#ifdef USE_LOGDEPTHBUF_EXT
-
-				float depth = gl_FragDepthEXT / gl_FragCoord.w;
-
-			#else
-
-				float depth = gl_FragCoord.z / gl_FragCoord.w;
-
-			#endif
-
-			return 1.0 - smoothstep( mNear, mFar, depth );
-
-		}`
-		 );
-
-		return {
-			depthColor: depthColor
-		};
-
-	} )();
-
-	CameraNode.POSITION = 'position';
-	CameraNode.DEPTH = 'depth';
-	CameraNode.TO_VERTEX = 'toVertex';
-
-	CameraNode.prototype.nodeType = 'Camera';
-
-	class LightNode extends TempNode {
-
-		constructor( scope ) {
-
-			super( 'v3', { shared: false } );
-
-			this.scope = scope || LightNode.TOTAL;
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isCache( 'light' ) ) {
-
-				return builder.format( 'reflectedLight.directDiffuse', this.type, output );
-
-			} else {
-
-				console.warn( 'THREE.LightNode is only compatible in "light" channel.' );
-
-				return builder.format( 'vec3( 0.0 )', this.type, output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.scope = source.scope;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			var data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.scope = this.scope;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	LightNode.TOTAL = 'total';
-	LightNode.prototype.nodeType = 'Light';
-
-	class ResolutionNode extends Vector2Node {
-
-		constructor() {
-
-			super();
-
-			this.size = new Vector2();
-
-		}
-
-		updateFrame( frame ) {
-
-			if ( frame.renderer ) {
-
-				frame.renderer.getSize( this.size );
-
-				const pixelRatio = frame.renderer.getPixelRatio();
-
-				this.x = this.size.width * pixelRatio;
-				this.y = this.size.height * pixelRatio;
-
-			} else {
-
-				console.warn( 'ResolutionNode need a renderer in NodeFrame' );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.renderer = source.renderer;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.renderer = this.renderer.uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ResolutionNode.prototype.nodeType = 'Resolution';
-
-	class ScreenUVNode extends TempNode {
-
-		constructor( resolution ) {
-
-			super( 'v2' );
-
-			this.resolution = resolution || new ResolutionNode();
-
-		}
-
-		generate( builder, output ) {
-
-			let result;
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				result = '( gl_FragCoord.xy / ' + this.resolution.build( builder, 'v2' ) + ')';
-
-			} else {
-
-				console.warn( 'THREE.ScreenUVNode is not compatible with ' + builder.shader + ' shader.' );
-
-				result = 'vec2( 0.0 )';
-
-			}
-
-			return builder.format( result, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.resolution = source.resolution;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.resolution = this.resolution.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ScreenUVNode.prototype.nodeType = 'ScreenUV';
-
-	class CondNode extends TempNode {
-
-		constructor( a, b, op, ifNode, elseNode ) {
-
-			super();
-
-			this.a = a;
-			this.b = b;
-
-			this.op = op;
-
-			this.ifNode = ifNode;
-			this.elseNode = elseNode;
-
-		}
-
-		getType( builder ) {
-
-			if ( this.ifNode ) {
-
-				const ifType = this.ifNode.getType( builder );
-				const elseType = this.elseNode.getType( builder );
-
-				if ( builder.getTypeLength( elseType ) > builder.getTypeLength( ifType ) ) {
-
-					return elseType;
-
-				}
-
-				return ifType;
-
-			}
-
-			return 'b';
-
-		}
-
-		getCondType( builder ) {
-
-			if ( builder.getTypeLength( this.b.getType( builder ) ) > builder.getTypeLength( this.a.getType( builder ) ) ) {
-
-				return this.b.getType( builder );
-
-			}
-
-			return this.a.getType( builder );
-
-		}
-
-		generate( builder, output ) {
-
-			const type = this.getType( builder ),
-				condType = this.getCondType( builder ),
-				a = this.a.build( builder, condType ),
-				b = this.b.build( builder, condType );
-
-			let code;
-
-			if ( this.ifNode ) {
-
-				const ifCode = this.ifNode.build( builder, type ),
-					elseCode = this.elseNode.build( builder, type );
-
-				code = '( ' + [ a, this.op, b, '?', ifCode, ':', elseCode ].join( ' ' ) + ' )';
-
-			} else {
-
-				code = '( ' + a + ' ' + this.op + ' ' + b + ' )';
-
-			}
-
-			return builder.format( code, this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.a = source.a;
-			this.b = source.b;
-
-			this.op = source.op;
-
-			this.ifNode = source.ifNode;
-			this.elseNode = source.elseNode;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.a = this.a.toJSON( meta ).uuid;
-				data.b = this.b.toJSON( meta ).uuid;
-
-				data.op = this.op;
-
-				if ( data.ifNode ) data.ifNode = this.ifNode.toJSON( meta ).uuid;
-				if ( data.elseNode ) data.elseNode = this.elseNode.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	CondNode.EQUAL = '==';
-	CondNode.NOT_EQUAL = '!=';
-	CondNode.GREATER = '>';
-	CondNode.GREATER_EQUAL = '>=';
-	CondNode.LESS = '<';
-	CondNode.LESS_EQUAL = '<=';
-	CondNode.AND = '&&';
-	CondNode.OR = '||';
-
-	CondNode.prototype.nodeType = 'Cond';
-
-	const NOISE_COMMON_SRC = `
-vec3 mod289( vec3 x ) {
-
-	return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0;
-
-}
-
-vec4 mod289( vec4 x ) {
-
-	return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0;
-
-}
-
-vec4 permute( vec4 x ) {
-
-	return mod289( ( ( x * 34.0 ) + 1.0 ) * x );
-
-}
-
-vec4 taylorInvSqrt( vec4 r ) {
-
-	return 1.79284291400159 - 0.85373472095314 * r;
-
-}
-
-vec2 fade( vec2 t ) {
-
-	return t * t * t * ( t * ( t * 6.0 - 15.0 ) + 10.0 );
-
-}
-
-vec3 fade( vec3 t ) {
-
-	return t * t * t * ( t * ( t * 6.0 - 15.0 ) + 10.0 );
-
-}
-`.trim();
-
-	const NOISE2D_SRC = `
-float noise2d( vec2 P, float amplitude, float pivot ) {
-
-	vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
-	vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
-	Pi = mod289(Pi); // To avoid truncation effects in permutation
-	vec4 ix = Pi.xzxz;
-	vec4 iy = Pi.yyww;
-	vec4 fx = Pf.xzxz;
-	vec4 fy = Pf.yyww;
-
-	vec4 i = permute(permute(ix) + iy);
-
-	vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
-	vec4 gy = abs(gx) - 0.5 ;
-	vec4 tx = floor(gx + 0.5);
-	gx = gx - tx;
-
-	vec2 g00 = vec2(gx.x,gy.x);
-	vec2 g10 = vec2(gx.y,gy.y);
-	vec2 g01 = vec2(gx.z,gy.z);
-	vec2 g11 = vec2(gx.w,gy.w);
-
-	vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
-	g00 *= norm.x;
-	g01 *= norm.y;
-	g10 *= norm.z;
-	g11 *= norm.w;
-
-	float n00 = dot(g00, vec2(fx.x, fy.x));
-	float n10 = dot(g10, vec2(fx.y, fy.y));
-	float n01 = dot(g01, vec2(fx.z, fy.z));
-	float n11 = dot(g11, vec2(fx.w, fy.w));
-
-	vec2 fade_xy = fade(Pf.xy);
-	vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
-	float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
-	return 2.3 * n_xy * amplitude + pivot;
-
-}
-`.trim();
-
-	class Noise2DNode extends TempNode {
-
-		constructor( uv = new UVNode(), amplitude = new FloatNode( 1.0 ), pivot = new FloatNode( 0.0 ) ) {
-
-			super( 'f' );
-
-			this.uv = uv;
-			this.amplitude = amplitude;
-			this.pivot = pivot;
-
-		}
-
-		generate( builder, output ) {
-
-			const noise2d = new FunctionCallNode( Noise2DNode.Nodes.noise2d, [ this.uv, this.amplitude, this.pivot ] );
-			return builder.format( noise2d.generate( builder, output ), this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.uv = source.uv;
-			this.amplitude = source.amplitude;
-			this.pivot = source.pivot;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.uv = this.uv.toJSON( meta ).uuid;
-				data.amplitude = this.amplitude.toJSON( meta ).uuid;
-				data.pivot = this.pivot.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Noise2DNode.prototype.nodeType = 'Noise2D';
-
-	Noise2DNode.Nodes = ( function () {
-
-		const noiseCommon = new FunctionNode( NOISE_COMMON_SRC );
-		const noise2d = new FunctionNode( NOISE2D_SRC );
-
-		noise2d.includes = [ noiseCommon ];
-
-		return { noiseCommon, noise2d };
-
-	} )();
-
-	const NOISE3D_SRC = `
-float noise3d( vec3 P, float amplitude, float pivot ) {
-
-	vec3 Pi0 = floor(P); // Integer part for indexing
-	vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
-	Pi0 = mod289(Pi0);
-	Pi1 = mod289(Pi1);
-	vec3 Pf0 = fract(P); // Fractional part for interpolation
-	vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
-	vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
-	vec4 iy = vec4(Pi0.yy, Pi1.yy);
-	vec4 iz0 = Pi0.zzzz;
-	vec4 iz1 = Pi1.zzzz;
-
-	vec4 ixy = permute(permute(ix) + iy);
-	vec4 ixy0 = permute(ixy + iz0);
-	vec4 ixy1 = permute(ixy + iz1);
-
-	vec4 gx0 = ixy0 * (1.0 / 7.0);
-	vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
-	gx0 = fract(gx0);
-	vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
-	vec4 sz0 = step(gz0, vec4(0.0));
-	gx0 -= sz0 * (step(0.0, gx0) - 0.5);
-	gy0 -= sz0 * (step(0.0, gy0) - 0.5);
-
-	vec4 gx1 = ixy1 * (1.0 / 7.0);
-	vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
-	gx1 = fract(gx1);
-	vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
-	vec4 sz1 = step(gz1, vec4(0.0));
-	gx1 -= sz1 * (step(0.0, gx1) - 0.5);
-	gy1 -= sz1 * (step(0.0, gy1) - 0.5);
-
-	vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
-	vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
-	vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
-	vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
-	vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
-	vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
-	vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
-	vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
-
-	vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
-	g000 *= norm0.x;
-	g010 *= norm0.y;
-	g100 *= norm0.z;
-	g110 *= norm0.w;
-	vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
-	g001 *= norm1.x;
-	g011 *= norm1.y;
-	g101 *= norm1.z;
-	g111 *= norm1.w;
-
-	float n000 = dot(g000, Pf0);
-	float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
-	float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
-	float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
-	float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
-	float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
-	float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
-	float n111 = dot(g111, Pf1);
-
-	vec3 fade_xyz = fade(Pf0);
-	vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
-	vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
-	float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
-	return 2.2 * n_xyz * amplitude + pivot;
-
-}
-`.trim();
-
-	class Noise3DNode extends TempNode {
-
-		constructor( position = new PositionNode(), amplitude = new FloatNode( 1.0 ), pivot = new FloatNode( 0.0 ) ) {
-
-			super( 'f' );
-
-			this.position = position;
-			this.amplitude = amplitude;
-			this.pivot = pivot;
-
-		}
-
-		generate( builder, output ) {
-
-			const noise3d = new FunctionCallNode( Noise3DNode.Nodes.noise3d, [ this.position, this.amplitude, this.pivot ] );
-			return builder.format( noise3d.generate( builder, output ), this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.position = source.position;
-			this.amplitude = source.amplitude;
-			this.pivot = source.pivot;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.position = this.position.toJSON( meta ).uuid;
-				data.amplitude = this.amplitude.toJSON( meta ).uuid;
-				data.pivot = this.pivot.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Noise3DNode.prototype.nodeType = 'Noise3D';
-
-	Noise3DNode.Nodes = ( function () {
-
-		const noise3d = new FunctionNode( NOISE3D_SRC );
-
-		noise3d.includes = [ Noise2DNode.Nodes.noiseCommon ];
-
-		return { noise3d };
-
-	} )();
-
-	class CheckerNode extends TempNode {
-
-		constructor( uv ) {
-
-			super( 'f' );
-
-			this.uv = uv || new UVNode();
-
-		}
-
-		generate( builder, output ) {
-
-			const snoise = builder.include( CheckerNode.Nodes.checker );
-
-			return builder.format( snoise + '( ' + this.uv.build( builder, 'v2' ) + ' )', this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.uv = source.uv;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.uv = this.uv.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	CheckerNode.Nodes = ( function () {
-
-		// https://github.com/mattdesl/glsl-checker/blob/master/index.glsl
-
-		const checker = new FunctionNode( /* glsl */`
-		float checker( vec2 uv ) {
-
-			float cx = floor( uv.x );
-			float cy = floor( uv.y );
-			float result = mod( cx + cy, 2.0 );
-
-			return sign( result );
-
-		}`
-		);
-
-		return {
-			checker: checker
-		};
-
-	} )();
-
-	CheckerNode.prototype.nodeType = 'Noise';
-
-	const FRACTAL3D_SRC = `
-float fractal3d( vec3 p, float amplitude, int octaves, float lacunarity, float diminish ) {
-
-	float result = 0.0;
-
-	for (int i = 0;  i < octaves; ++i) {
-
-		result += noise3d(p, amplitude, 0.0);
-		amplitude *= diminish;
-		p *= lacunarity;
-
-	}
-
-	return result;
-
-}
-`.trim();
-
-	/** Fractional Brownian motion. */
-	class Fractal3DNode extends TempNode {
-
-		constructor( position = new PositionNode(), amplitude = new FloatNode( 1.0 ), octaves = 3.0, lacunarity = 2.0, diminish = 0.5 ) {
-
-			super( 'f' );
-
-			this.position = position;
-			this.amplitude = amplitude;
-			this.octaves = new IntNode( octaves ).setReadonly( true );
-			this.lacunarity = new FloatNode( lacunarity ).setReadonly( true );
-			this.diminish = new FloatNode( diminish ).setReadonly( true );
-
-		}
-
-		generate( builder, output ) {
-
-			const fractal3d = new FunctionCallNode( Fractal3DNode.Nodes.fractal3d, [
-
-				this.position,
-				this.amplitude,
-				this.octaves,
-				this.lacunarity,
-				this.diminish,
-
-			] );
-
-			return builder.format( fractal3d.generate( builder, output ), this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.position = source.position;
-			this.amplitude = source.amplitude;
-			this.octaves = source.octaves;
-			this.lacunarity = source.lacunarity;
-			this.diminish = source.diminish;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.position = this.position.toJSON( meta ).uuid;
-				data.amplitude = this.amplitude.toJSON( meta ).uuid;
-				data.octaves = this.octaves.toJSON( meta ).uuid;
-				data.lacunarity = this.lacunarity.toJSON( meta ).uuid;
-				data.diminish = this.diminish.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	Fractal3DNode.prototype.nodeType = 'Fractal3D';
-
-	Fractal3DNode.Nodes = ( function () {
-
-		const fractal3d = new FunctionNode( FRACTAL3D_SRC );
-
-		fractal3d.includes = [ Noise3DNode.Nodes.noise3d ];
-
-		return { fractal3d };
-
-	} )();
-
-	class NormalMapNode extends TempNode {
-
-		constructor( value, scale ) {
-
-			super( 'v3' );
-
-			this.value = value;
-			this.scale = scale || new Vector2Node( 1, 1 );
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				const perturbNormal2Arb = builder.include( NormalMapNode.Nodes.perturbNormal2Arb );
-
-				this.normal = this.normal || new NormalNode();
-				this.position = this.position || new PositionNode( PositionNode.VIEW );
-				this.uv = this.uv || new UVNode();
-
-				let scale = this.scale.build( builder, 'v2' );
-
-				if ( builder.material.side === BackSide ) {
-
-					scale = '-' + scale;
-
-				}
-
-				return builder.format( perturbNormal2Arb + '( -' + this.position.build( builder, 'v3' ) + ', ' +
-					this.normal.build( builder, 'v3' ) + ', ' +
-					this.value.build( builder, 'v3' ) + ', ' +
-					this.uv.build( builder, 'v2' ) + ', ' +
-					scale + ' )', this.getType( builder ), output );
-
-			} else {
-
-				console.warn( 'THREE.NormalMapNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( 'vec3( 0.0 )', this.getType( builder ), output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-			this.scale = source.scale;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-				data.scale = this.scale.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	NormalMapNode.Nodes = ( function () {
-
-		const perturbNormal2Arb = new FunctionNode(
-
-			// Per-Pixel Tangent Space Normal Mapping
-			// http://hacksoflife.blogspot.ch/2009/11/per-pixel-tangent-space-normal-mapping.html
-
-			`vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm, vec3 map, vec2 vUv, vec2 normalScale ) {
-
-		// Workaround for Adreno 3XX dFd*( vec3 ) bug. See #9988
-
-		vec3 q0 = vec3( dFdx( eye_pos.x ), dFdx( eye_pos.y ), dFdx( eye_pos.z ) );
-		vec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );
-		vec2 st0 = dFdx( vUv.st );
-		vec2 st1 = dFdy( vUv.st );
-
-		float scale = sign( st1.t * st0.s - st0.t * st1.s ); // we do not care about the magnitude
-
-		vec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );
-		vec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );
-		vec3 N = normalize( surf_norm );
-
-		vec3 mapN = map * 2.0 - 1.0;
-
-		mapN.xy *= normalScale;
-
-		#ifdef DOUBLE_SIDED
-
-			// Workaround for Adreno GPUs gl_FrontFacing bug. See #15850 and #10331
-
-			if ( dot( cross( S, T ), N ) < 0.0 ) mapN.xy *= - 1.0;
-
-		#else
-
-			mapN.xy *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );
-
-		#endif
-
-		mat3 tsn = mat3( S, T, N );
-		return normalize( tsn * mapN );
-
-	}`, null, { derivatives: true } );
-
-		return {
-			perturbNormal2Arb: perturbNormal2Arb
-		};
-
-	} )();
-
-	NormalMapNode.prototype.nodeType = 'NormalMap';
-
-	class BumpMapNode extends TempNode {
-
-		constructor( value, scale ) {
-
-			super( 'v3' );
-
-			this.value = value;
-			this.scale = scale || new FloatNode( 1 );
-
-			this.toNormalMap = false;
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				if ( this.toNormalMap ) {
-
-					const bumpToNormal = builder.include( BumpMapNode.Nodes.bumpToNormal );
-
-					return builder.format( bumpToNormal + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' +
-						this.value.uv.build( builder, 'v2' ) + ', ' +
-						this.scale.build( builder, 'f' ) + ' )', this.getType( builder ), output );
-
-				} else {
-
-					const derivativeHeight = builder.include( BumpMapNode.Nodes.dHdxy_fwd ),
-						perturbNormalArb = builder.include( BumpMapNode.Nodes.perturbNormalArb );
-
-					this.normal = this.normal || new NormalNode();
-					this.position = this.position || new PositionNode( PositionNode.VIEW );
-
-					const derivativeHeightCode = derivativeHeight + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' +
-						this.value.uv.build( builder, 'v2' ) + ', ' +
-						this.scale.build( builder, 'f' ) + ' )';
-
-					return builder.format( perturbNormalArb + '( -' + this.position.build( builder, 'v3' ) + ', ' +
-						this.normal.build( builder, 'v3' ) + ', ' +
-						derivativeHeightCode + ' )', this.getType( builder ), output );
-
-				}
-
-			} else {
-
-				console.warn( 'THREE.BumpMapNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( 'vec3( 0.0 )', this.getType( builder ), output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-			this.scale = source.scale;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-				data.scale = this.scale.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	BumpMapNode.Nodes = ( function () {
-
-		// Bump Mapping Unparametrized Surfaces on the GPU by Morten S. Mikkelsen
-		// http://api.unrealengine.com/attachments/Engine/Rendering/LightingAndShadows/BumpMappingWithoutTangentSpace/mm_sfgrad_bump.pdf
-
-		// Evaluate the derivative of the height w.r.t. screen-space using forward differencing (listing 2)
-
-		const dHdxy_fwd = new FunctionNode( /* glsl */`
-
-		vec2 dHdxy_fwd( sampler2D bumpMap, vec2 vUv, float bumpScale ) {
-
-			vec2 dSTdx = dFdx( vUv );
-			vec2 dSTdy = dFdy( vUv );
-
-			float Hll = bumpScale * texture2D( bumpMap, vUv ).x;
-			float dBx = bumpScale * texture2D( bumpMap, vUv + dSTdx ).x - Hll;
-			float dBy = bumpScale * texture2D( bumpMap, vUv + dSTdy ).x - Hll;
-
-			return vec2( dBx, dBy );
-
-		}`
-
-		, null, { derivatives: true } );
-
-		const perturbNormalArb = new FunctionNode( /* glsl */`
-
-		vec3 perturbNormalArb( vec3 surf_pos, vec3 surf_norm, vec2 dHdxy ) {
-
-			vec3 vSigmaX = vec3( dFdx( surf_pos.x ), dFdx( surf_pos.y ), dFdx( surf_pos.z ) );
-			vec3 vSigmaY = vec3( dFdy( surf_pos.x ), dFdy( surf_pos.y ), dFdy( surf_pos.z ) );
-			vec3 vN = surf_norm; // normalized
-
-			vec3 R1 = cross( vSigmaY, vN );
-			vec3 R2 = cross( vN, vSigmaX );
-
-			float fDet = dot( vSigmaX, R1 );
-
-			fDet *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );
-
-			vec3 vGrad = sign( fDet ) * ( dHdxy.x * R1 + dHdxy.y * R2 );
-
-			return normalize( abs( fDet ) * surf_norm - vGrad );
-
-		}`
-
-		, [ dHdxy_fwd ], { derivatives: true } );
-
-		const bumpToNormal = new FunctionNode( /* glsl */`
-		vec3 bumpToNormal( sampler2D bumpMap, vec2 uv, float scale ) {
-
-			vec2 dSTdx = dFdx( uv );
-			vec2 dSTdy = dFdy( uv );
-
-			float Hll = texture2D( bumpMap, uv ).x;
-			float dBx = texture2D( bumpMap, uv + dSTdx ).x - Hll;
-			float dBy = texture2D( bumpMap, uv + dSTdy ).x - Hll;
-
-			return vec3( .5 - ( dBx * scale ), .5 - ( dBy * scale ), 1.0 );
-
-		}`
-		, null, { derivatives: true } );
-
-		return {
-			dHdxy_fwd: dHdxy_fwd,
-			perturbNormalArb: perturbNormalArb,
-			bumpToNormal: bumpToNormal
-		};
-
-	} )();
-
-	BumpMapNode.prototype.nodeType = 'BumpMap';
-	BumpMapNode.prototype.hashProperties = [ 'toNormalMap' ];
-
-	class BypassNode extends Node$1 {
-
-		constructor( code, value ) {
-
-			super();
-
-			this.code = code;
-			this.value = value;
-
-		}
-
-		getType( builder ) {
-
-			if ( this.value ) {
-
-				return this.value.getType( builder );
-
-			} else if ( builder.isShader( 'fragment' ) ) {
-
-				return 'f';
-
-			}
-
-			return 'void';
-
-		}
-
-		generate( builder, output ) {
-
-			const code = this.code.build( builder, output ) + ';';
-
-			builder.addNodeCode( code );
-
-			if ( builder.isShader( 'vertex' ) ) {
-
-				if ( this.value ) {
-
-					return this.value.build( builder, output );
-
-				}
-
-			} else {
-
-				return this.value ? this.value.build( builder, output ) : builder.format( '0.0', 'f', output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.code = source.code;
-			this.value = source.value;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.code = this.code.toJSON( meta ).uuid;
-
-				if ( this.value ) data.value = this.value.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	BypassNode.prototype.nodeType = 'Bypass';
-
-	const inputs = NodeUtils.elements;
-
-	class JoinNode extends TempNode {
-
-		constructor( x, y, z, w ) {
-
-			super( 'f' );
-
-			this.x = x;
-			this.y = y;
-			this.z = z;
-			this.w = w;
-
-		}
-
-		getNumElements() {
-
-			let i = inputs.length;
-
-			while ( i -- ) {
-
-				if ( this[ inputs[ i ] ] !== undefined ) {
-
-					++ i;
-
-					break;
-
-				}
-
-			}
-
-			return Math.max( i, 2 );
-
-		}
-
-		getType( builder ) {
-
-			return builder.getTypeFromLength( this.getNumElements() );
-
-		}
-
-		generate( builder, output ) {
-
-			const type = this.getType( builder ),
-				length = this.getNumElements(),
-				outputs = [];
-
-			for ( let i = 0; i < length; i ++ ) {
-
-				const elm = this[ inputs[ i ] ];
-
-				outputs.push( elm ? elm.build( builder, 'f' ) : '0.0' );
-
-			}
-
-			const code = ( length > 1 ? builder.getConstructorFromLength( length ) : '' ) + '( ' + outputs.join( ', ' ) + ' )';
-
-			return builder.format( code, type, output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			for ( const prop in source.inputs ) {
-
-				this[ prop ] = source.inputs[ prop ];
-
-			}
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.inputs = {};
-
-				const length = this.getNumElements();
-
-				for ( let i = 0; i < length; i ++ ) {
-
-					const elm = this[ inputs[ i ] ];
-
-					if ( elm ) {
-
-						data.inputs[ inputs[ i ] ] = elm.toJSON( meta ).uuid;
-
-					}
-
-				}
-
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	JoinNode.prototype.nodeType = 'Join';
-
-	class SwitchNode extends Node$1 {
-
-		constructor( node, components ) {
-
-			super();
-
-			this.node = node;
-			this.components = components || 'x';
-
-		}
-
-		getType( builder ) {
-
-			return builder.getTypeFromLength( this.components.length );
-
-		}
-
-		generate( builder, output ) {
-
-			const type = this.node.getType( builder ),
-				inputLength = builder.getTypeLength( type ) - 1;
-
-			let node = this.node.build( builder, type );
-
-			if ( inputLength > 0 ) {
-
-				// get max length
-
-				let outputLength = 0;
-				const components = builder.colorToVectorProperties( this.components );
-
-				let i;
-				const len = components.length;
-
-				for ( i = 0; i < len; i ++ ) {
-
-					outputLength = Math.max( outputLength, builder.getIndexByElement( components.charAt( i ) ) );
-
-				}
-
-				if ( outputLength > inputLength ) outputLength = inputLength;
-
-				// split
-
-				node += '.';
-
-				for ( i = 0; i < len; i ++ ) {
-
-					let idx = builder.getIndexByElement( components.charAt( i ) );
-
-					if ( idx > outputLength ) idx = outputLength;
-
-					node += builder.getElementByIndex( idx );
-
-				}
-
-				return builder.format( node, this.getType( builder ), output );
-
-			} else {
-
-				// join
-
-				return builder.format( node, type, output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.node = source.node;
-			this.components = source.components;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.node = this.node.toJSON( meta ).uuid;
-				data.components = this.components;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	SwitchNode.prototype.nodeType = 'Switch';
-
-	const REMAP_SRC = `
-float remap( float value, float inLow, float inHigh, float outLow, float outHigh ) {
-
-	float x = ( value - inLow ) / ( inHigh - inLow );
-	return outLow + ( outHigh - outLow ) * x;
-
-}
-
-vec2 remap( vec2 value, vec2 inLow, vec2 inHigh, vec2 outLow, vec2 outHigh ) {
-
-	return vec2(
-		remap( value.x, inLow.x, inHigh.x, outLow.x, outHigh.x ),
-		remap( value.y, inLow.y, inHigh.y, outLow.y, outHigh.y )
-	);
-
-}
-
-vec2 remap( vec2 value, float inLow, float inHigh, float outLow, float outHigh ) {
-
-	return vec2(
-		remap( value.x, inLow, inHigh, outLow, outHigh ),
-		remap( value.y, inLow, inHigh, outLow, outHigh )
-	);
-
-}
-
-vec3 remap( vec3 value, vec3 inLow, vec3 inHigh, vec3 outLow, vec3 outHigh ) {
-
-	return vec3(
-		remap( value.x, inLow.x, inHigh.x, outLow.x, outHigh.x ),
-		remap( value.y, inLow.y, inHigh.y, outLow.y, outHigh.y ),
-		remap( value.z, inLow.z, inHigh.z, outLow.z, outHigh.z )
-	);
-
-}
-
-vec3 remap( vec3 value, float inLow, float inHigh, float outLow, float outHigh ) {
-
-	return vec3(
-		remap( value.x, inLow, inHigh, outLow, outHigh ),
-		remap( value.y, inLow, inHigh, outLow, outHigh ),
-		remap( value.z, inLow, inHigh, outLow, outHigh )
-	);
-
-}
-
-vec4 remap( vec4 value, vec4 inLow, vec4 inHigh, vec4 outLow, vec4 outHigh ) {
-
-	return vec4(
-		remap( value.x, inLow.x, inHigh.x, outLow.x, outHigh.x ),
-		remap( value.y, inLow.y, inHigh.y, outLow.y, outHigh.y ),
-		remap( value.z, inLow.z, inHigh.z, outLow.z, outHigh.z ),
-		remap( value.w, inLow.w, inHigh.w, outLow.w, outHigh.w )
-	);
-
-}
-
-vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh ) {
-
-	return vec4(
-		remap( value.x, inLow, inHigh, outLow, outHigh ),
-		remap( value.y, inLow, inHigh, outLow, outHigh ),
-		remap( value.z, inLow, inHigh, outLow, outHigh ),
-		remap( value.w, inLow, inHigh, outLow, outHigh )
-	);
-
-}
-`.trim();
-
-	class RemapNode extends TempNode {
-
-		constructor( value, inLow, inHigh, outLow, outHigh ) {
-
-			super( 'f' );
-
-			this.value = value;
-			this.inLow = inLow;
-			this.inHigh = inHigh;
-			this.outLow = outLow;
-			this.outHigh = outHigh;
-
-		}
-
-		generate( builder, output ) {
-
-			const remap = builder.include( RemapNode.Nodes.remap );
-
-			return builder.format( remap + '( ' + [
-
-				this.value.build( builder ),
-				this.inLow.build( builder ),
-				this.inHigh.build( builder ),
-				this.outLow.build( builder ),
-				this.outHigh.build( builder ),
-
-			].join( ', ' ) + ' )', this.getType( builder ), output );
-
-		}
-
-		getType( builder ) {
-
-			return this.value.getType( builder );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-			this.inLow = source.inLow;
-			this.inHigh = source.inHigh;
-			this.outLow = source.outLow;
-			this.outHigh = source.outHigh;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-				data.inLow = this.inLow.toJSON( meta ).uuid;
-				data.inHigh = this.inHigh.toJSON( meta ).uuid;
-				data.outLow = this.outLow.toJSON( meta ).uuid;
-				data.outHigh = this.outHigh.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	RemapNode.prototype.nodeType = 'Remap';
-
-	RemapNode.Nodes = ( function () {
-
-		return {
-
-			remap: new FunctionNode( REMAP_SRC )
-
-		};
-
-	} )();
-
-	class TimerNode extends FloatNode {
-
-		constructor( scale, scope, timeScale ) {
-
-			super();
-
-			this.scale = scale !== undefined ? scale : 1;
-			this.scope = scope || TimerNode.GLOBAL;
-
-			this.timeScale = timeScale !== undefined ? timeScale : scale !== undefined;
-
-		}
-
-		getReadonly() {
-
-			// never use TimerNode as readonly but aways as "uniform"
-
-			return false;
-
-		}
-
-		getUnique() {
-
-			// share TimerNode "uniform" input if is used on more time with others TimerNode
-
-			return this.timeScale && ( this.scope === TimerNode.GLOBAL || this.scope === TimerNode.DELTA );
-
-		}
-
-		updateFrame( frame ) {
-
-			const scale = this.timeScale ? this.scale : 1;
-
-			switch ( this.scope ) {
-
-				case TimerNode.LOCAL:
-
-					this.value += frame.delta * scale;
-
-					break;
-
-				case TimerNode.DELTA:
-
-					this.value = frame.delta * scale;
-
-					break;
-
-				default:
-
-					this.value = frame.time * scale;
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.scope = source.scope;
-			this.scale = source.scale;
-
-			this.timeScale = source.timeScale;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			const data = super.toJSON( meta );
-
-			data.scope = this.scope;
-			data.scale = this.scale;
-
-			data.timeScale = this.timeScale;
-
-			return data;
-
-		}
-
-	}
-
-	TimerNode.GLOBAL = 'global';
-	TimerNode.LOCAL = 'local';
-	TimerNode.DELTA = 'delta';
-
-	TimerNode.prototype.nodeType = 'Timer';
-
-	NodeLib.addKeyword( 'time', function () {
-
-		return new TimerNode();
-
-	} );
-
-	class VelocityNode extends Vector3Node {
-
-		constructor( target, params ) {
-
-			super();
-
-			this.params = {};
-
-			this.velocity = new Vector3();
-
-			this.setTarget( target );
-			this.setParams( params );
-
-		}
-
-		getReadonly( /*builder*/ ) {
-
-			return false;
-
-		}
-
-		setParams( params ) {
-
-			switch ( this.params.type ) {
-
-				case 'elastic':
-
-					delete this.moment;
-
-					delete this.speed;
-					delete this.springVelocity;
-
-					delete this.lastVelocity;
-
-					break;
-
-			}
-
-			this.params = params || {};
-
-			switch ( this.params.type ) {
-
-				case 'elastic':
-
-					this.moment = new Vector3();
-
-					this.speed = new Vector3();
-					this.springVelocity = new Vector3();
-
-					this.lastVelocity = new Vector3();
-
-					break;
-
-			}
-
-		}
-
-		setTarget( target ) {
-
-			if ( this.target ) {
-
-				delete this.position;
-				delete this.oldPosition;
-
-			}
-
-			this.target = target;
-
-			if ( target ) {
-
-				this.position = target.getWorldPosition( this.position || new Vector3() );
-				this.oldPosition = this.position.clone();
-
-			}
-
-		}
-
-		updateFrameVelocity( /*frame*/ ) {
-
-			if ( this.target ) {
-
-				this.position = this.target.getWorldPosition( this.position || new Vector3() );
-				this.velocity.subVectors( this.position, this.oldPosition );
-				this.oldPosition.copy( this.position );
-
-			}
-
-		}
-
-		updateFrame( frame ) {
-
-			this.updateFrameVelocity( frame );
-
-			switch ( this.params.type ) {
-
-				case 'elastic':
-
-					// convert to real scale: 0 at 1 values
-					const deltaFps = frame.delta * ( this.params.fps || 60 );
-
-					const spring = Math.pow( this.params.spring, deltaFps ),
-						damping = Math.pow( this.params.damping, deltaFps );
-
-					// fix relative frame-rate
-					this.velocity.multiplyScalar( Math.exp( - this.params.damping * deltaFps ) );
-
-					// elastic
-					this.velocity.add( this.springVelocity );
-					this.velocity.add( this.speed.multiplyScalar( damping ).multiplyScalar( 1 - spring ) );
-
-					// speed
-					this.speed.subVectors( this.velocity, this.lastVelocity );
-
-					// spring velocity
-					this.springVelocity.add( this.speed );
-					this.springVelocity.multiplyScalar( spring );
-
-					// moment
-					this.moment.add( this.springVelocity );
-
-					// damping
-					this.moment.multiplyScalar( damping );
-
-					this.lastVelocity.copy( this.velocity );
-					this.value.copy( this.moment );
-
-					break;
-
-				default:
-
-					this.value.copy( this.velocity );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			if ( source.target ) this.setTarget( source.target );
-
-			this.setParams( source.params );
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			const data = super.toJSON( meta );
-
-			if ( this.target ) data.target = this.target.uuid;
-
-			// clone params
-			data.params = JSON.parse( JSON.stringify( this.params ) );
-
-			return data;
-
-		}
-
-	}
-
-	VelocityNode.prototype.nodeType = 'Velocity';
-
-	class UVTransformNode extends ExpressionNode {
-
-		constructor( uv, position ) {
-
-			super( '( uvTransform * vec3( uvNode, 1 ) ).xy', 'vec2' );
-
-			this.uv = uv || new UVNode();
-			this.position = position || new Matrix3Node();
-
-		}
-
-		generate( builder, output ) {
-
-			this.keywords[ 'uvNode' ] = this.uv;
-			this.keywords[ 'uvTransform' ] = this.position;
-
-			return super.generate( builder, output );
-
-		}
-
-		setUvTransform( tx, ty, sx, sy, rotation, cx, cy ) {
-
-			cx = cx !== undefined ? cx : .5;
-			cy = cy !== undefined ? cy : .5;
-
-			this.position.value.setUvTransform( tx, ty, sx, sy, rotation, cx, cy );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.uv = source.uv;
-			this.position = source.position;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			var data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.uv = this.uv.toJSON( meta ).uuid;
-				data.position = this.position.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	UVTransformNode.prototype.nodeType = 'UVTransform';
-
-	class MaxMIPLevelNode extends FloatNode {
-
-		constructor( texture ) {
-
-			super();
-
-			this.texture = texture;
-
-			this.maxMIPLevel = 0;
-
-		}
-
-		get value() {
-
-			if ( this.maxMIPLevel === 0 ) {
-
-				var image = this.texture.value.image;
-
-				if ( Array.isArray( image ) ) image = image[ 0 ];
-
-				this.maxMIPLevel = image !== undefined ? Math.log( Math.max( image.width, image.height ) ) * Math.LOG2E : 0;
-
-			}
-
-			return this.maxMIPLevel;
-
-		}
-
-		set value( val ) {
-
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.texture = this.texture.uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	MaxMIPLevelNode.prototype.nodeType = 'MaxMIPLevel';
-
-	class SpecularMIPLevelNode extends TempNode {
-
-		constructor( roughness, texture ) {
-
-			super( 'f' );
-
-			this.roughness = roughness;
-			this.texture = texture;
-
-			this.maxMIPLevel = undefined;
-
-		}
-
-		setTexture( texture ) {
-
-			this.texture = texture;
-
-			return this;
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				this.maxMIPLevel = this.maxMIPLevel || new MaxMIPLevelNode();
-				this.maxMIPLevel.texture = this.texture;
-
-				const getSpecularMIPLevel = builder.include( SpecularMIPLevelNode.Nodes.getSpecularMIPLevel );
-
-				return builder.format( getSpecularMIPLevel + '( ' + this.roughness.build( builder, 'f' ) + ', ' + this.maxMIPLevel.build( builder, 'f' ) + ' )', this.type, output );
-
-			} else {
-
-				console.warn( 'THREE.SpecularMIPLevelNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( '0.0', this.type, output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.texture = source.texture;
-			this.roughness = source.roughness;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.texture = this.texture;
-				data.roughness = this.roughness;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	SpecularMIPLevelNode.Nodes = ( function () {
-
-		// taken from here: http://casual-effects.blogspot.ca/2011/08/plausible-environment-lighting-in-two.html
-
-		const getSpecularMIPLevel = new FunctionNode( /* glsl */`
-
-		float getSpecularMIPLevel( const in float roughness, const in float maxMIPLevelScalar ) {
-
-			float sigma = PI * roughness * roughness / ( 1.0 + roughness );
-			float desiredMIPLevel = maxMIPLevelScalar + log2( sigma );
-
-			return clamp( desiredMIPLevel, 0.0, maxMIPLevelScalar );
-
-		}`
-		);
-
-		return {
-			getSpecularMIPLevel: getSpecularMIPLevel
-		};
-
-	} )();
-
-	SpecularMIPLevelNode.prototype.nodeType = 'SpecularMIPLevel';
-
-	class SubSlotNode extends TempNode {
-
-		constructor( slots ) {
-
-			super();
-
-			this.slots = slots || {};
-
-		}
-
-		getType( builder, output ) {
-
-			return output;
-
-		}
-
-		generate( builder, output ) {
-
-			if ( this.slots[ builder.slot ] ) {
-
-				return this.slots[ builder.slot ].build( builder, output );
-
-			}
-
-			return builder.format( '0.0', 'f', output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			for ( const prop in source.slots ) {
-
-				this.slots[ prop ] = source.slots[ prop ];
-
-			}
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.slots = {};
-
-				for ( const prop in this.slots ) {
-
-					const slot = this.slots[ prop ];
-
-					if ( slot ) {
-
-						data.slots[ prop ] = slot.toJSON( meta ).uuid;
-
-					}
-
-				}
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	SubSlotNode.prototype.nodeType = 'SubSlot';
-
-	class BlurNode extends TempNode {
-
-		constructor( value, uv, radius, size ) {
-
-			super( 'v4' );
-
-			this.value = value;
-			this.uv = uv || new UVNode();
-			this.radius = radius || new Vector2Node( 1, 1 );
-
-			this.size = size;
-
-			this.blurX = true;
-			this.blurY = true;
-
-			this.horizontal = new FloatNode( 1 / 64 );
-			this.vertical = new FloatNode( 1 / 64 );
-
-		}
-
-		updateFrame( /* frame */ ) {
-
-			if ( this.size ) {
-
-				this.horizontal.value = this.radius.x / this.size.x;
-				this.vertical.value = this.radius.y / this.size.y;
-
-			} else if ( this.value.value && this.value.value.image ) {
-
-				const image = this.value.value.image;
-
-				this.horizontal.value = this.radius.x / image.width;
-				this.vertical.value = this.radius.y / image.height;
-
-			}
-
-		}
-
-		generate( builder, output ) {
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				const blurCode = [];
-				let code;
-
-				const blurX = builder.include( BlurNode.Nodes.blurX ),
-					blurY = builder.include( BlurNode.Nodes.blurY );
-
-				if ( this.blurX ) {
-
-					blurCode.push( blurX + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' + this.uv.build( builder, 'v2' ) + ', ' + this.horizontal.build( builder, 'f' ) + ' )' );
-
-				}
-
-				if ( this.blurY ) {
-
-					blurCode.push( blurY + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' + this.uv.build( builder, 'v2' ) + ', ' + this.vertical.build( builder, 'f' ) + ' )' );
-
-				}
-
-				if ( blurCode.length == 2 ) code = '( ' + blurCode.join( ' + ' ) + ' / 2.0 )';
-				else if ( blurCode.length ) code = '( ' + blurCode[ 0 ] + ' )';
-				else code = 'vec4( 0.0 )';
-
-				return builder.format( code, this.getType( builder ), output );
-
-			} else {
-
-				console.warn( 'THREE.BlurNode is not compatible with ' + builder.shader + ' shader.' );
-
-				return builder.format( 'vec4( 0.0 )', this.getType( builder ), output );
-
-			}
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.value = source.value;
-			this.uv = source.uv;
-			this.radius = source.radius;
-
-			if ( source.size !== undefined ) this.size = new Vector2( source.size.x, source.size.y );
-
-			this.blurX = source.blurX;
-			this.blurY = source.blurY;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.value = this.value.toJSON( meta ).uuid;
-				data.uv = this.uv.toJSON( meta ).uuid;
-				data.radius = this.radius.toJSON( meta ).uuid;
-
-				if ( this.size ) data.size = { x: this.size.x, y: this.size.y };
-
-				data.blurX = this.blurX;
-				data.blurY = this.blurY;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	BlurNode.Nodes = ( function () {
-
-		const blurX = new FunctionNode( /* glsl */`
-		vec4 blurX( sampler2D tex, vec2 uv, float s ) {
-			vec4 sum = vec4( 0.0 );
-			sum += texture2D( tex, vec2( uv.x - 4.0 * s, uv.y ) ) * 0.051;
-			sum += texture2D( tex, vec2( uv.x - 3.0 * s, uv.y ) ) * 0.0918;
-			sum += texture2D( tex, vec2( uv.x - 2.0 * s, uv.y ) ) * 0.12245;
-			sum += texture2D( tex, vec2( uv.x - 1.0 * s, uv.y ) ) * 0.1531;
-			sum += texture2D( tex, vec2( uv.x, uv.y ) ) * 0.1633;
-			sum += texture2D( tex, vec2( uv.x + 1.0 * s, uv.y ) ) * 0.1531;
-			sum += texture2D( tex, vec2( uv.x + 2.0 * s, uv.y ) ) * 0.12245;
-			sum += texture2D( tex, vec2( uv.x + 3.0 * s, uv.y ) ) * 0.0918;
-			sum += texture2D( tex, vec2( uv.x + 4.0 * s, uv.y ) ) * 0.051;
-			return sum * .667;
-		}`
-		);
-
-		const blurY = new FunctionNode( /* glsl */`
-		vec4 blurY( sampler2D tex, vec2 uv, float s ) {
-			vec4 sum = vec4( 0.0 );
-			sum += texture2D( tex, vec2( uv.x, uv.y - 4.0 * s ) ) * 0.051;
-			sum += texture2D( tex, vec2( uv.x, uv.y - 3.0 * s ) ) * 0.0918;
-			sum += texture2D( tex, vec2( uv.x, uv.y - 2.0 * s ) ) * 0.12245;
-			sum += texture2D( tex, vec2( uv.x, uv.y - 1.0 * s ) ) * 0.1531;
-			sum += texture2D( tex, vec2( uv.x, uv.y ) ) * 0.1633;
-			sum += texture2D( tex, vec2( uv.x, uv.y + 1.0 * s ) ) * 0.1531;
-			sum += texture2D( tex, vec2( uv.x, uv.y + 2.0 * s ) ) * 0.12245;
-			sum += texture2D( tex, vec2( uv.x, uv.y + 3.0 * s ) ) * 0.0918;
-			sum += texture2D( tex, vec2( uv.x, uv.y + 4.0 * s ) ) * 0.051;
-			return sum * .667;
-		}`
-		 );
-
-		return {
-			blurX: blurX,
-			blurY: blurY
-		};
-
-	} )();
-
-	BlurNode.prototype.nodeType = 'Blur';
-	BlurNode.prototype.hashProperties = [ 'blurX', 'blurY' ];
-
-	class LuminanceNode extends TempNode {
-
-		constructor( rgb ) {
-
-			super( 'f' );
-
-			this.rgb = rgb;
-
-		}
-
-		generate( builder, output ) {
-
-			const luminance = builder.include( LuminanceNode.Nodes.luminance );
-
-			return builder.format( luminance + '( ' + this.rgb.build( builder, 'v3' ) + ' )', this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.rgb = source.rgb;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.rgb = this.rgb.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	LuminanceNode.Nodes = ( function () {
-
-		const LUMA = new ConstNode( 'vec3 LUMA vec3( 0.2125, 0.7154, 0.0721 )' );
-
-		// Algorithm from Chapter 10 of Graphics Shaders
-
-		const luminance = new FunctionNode( /* glsl */`
-
-		float luminance( vec3 rgb ) {
-
-			return dot( rgb, LUMA );
-
-		}`
-		, [ LUMA ] );
-
-		return {
-			LUMA: LUMA,
-			luminance: luminance
-		};
-
-	} )();
-
-	LuminanceNode.prototype.nodeType = 'Luminance';
-
-	class ColorAdjustmentNode extends TempNode {
-
-		constructor( rgb, adjustment, method ) {
-
-			super( 'v3' );
-
-			this.rgb = rgb;
-			this.adjustment = adjustment;
-
-			this.method = method || ColorAdjustmentNode.SATURATION;
-
-		}
-
-		generate( builder, output ) {
-
-			const rgb = this.rgb.build( builder, 'v3' ),
-				adjustment = this.adjustment.build( builder, 'f' );
-
-			switch ( this.method ) {
-
-				case ColorAdjustmentNode.BRIGHTNESS:
-
-					return builder.format( '( ' + rgb + ' + ' + adjustment + ' )', this.getType( builder ), output );
-
-				case ColorAdjustmentNode.CONTRAST:
-
-					return builder.format( '( ' + rgb + ' * ' + adjustment + ' )', this.getType( builder ), output );
-
-			}
-
-			const method = builder.include( ColorAdjustmentNode.Nodes[ this.method ] );
-
-			return builder.format( method + '( ' + rgb + ', ' + adjustment + ' )', this.getType( builder ), output );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.rgb = source.rgb;
-			this.adjustment = source.adjustment;
-			this.method = source.method;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.rgb = this.rgb.toJSON( meta ).uuid;
-				data.adjustment = this.adjustment.toJSON( meta ).uuid;
-				data.method = this.method;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	ColorAdjustmentNode.Nodes = ( function () {
-
-		const hue = new FunctionNode( /* glsl */`
-		vec3 hue(vec3 rgb, float adjustment) {
-
-			const mat3 RGBtoYIQ = mat3(0.299, 0.587, 0.114, 0.595716, -0.274453, -0.321263, 0.211456, -0.522591, 0.311135);
-			const mat3 YIQtoRGB = mat3(1.0, 0.9563, 0.6210, 1.0, -0.2721, -0.6474, 1.0, -1.107, 1.7046);
-
-			vec3 yiq = RGBtoYIQ * rgb;
-
-			float hue = atan(yiq.z, yiq.y) + adjustment;
-			float chroma = sqrt(yiq.z * yiq.z + yiq.y * yiq.y);
-
-			return YIQtoRGB * vec3(yiq.x, chroma * cos(hue), chroma * sin(hue));
-
-		}`
-		);
-
-		// Algorithm from Chapter 16 of OpenGL Shading Language
-
-		const saturation = new FunctionNode( /* glsl */`
-		vec3 saturation(vec3 rgb, float adjustment) {
-
-			vec3 intensity = vec3( luminance( rgb ) );
-
-			return mix( intensity, rgb, adjustment );
-
-		}`
-		, [ LuminanceNode.Nodes.luminance ] ); // include LuminanceNode function
-
-		// Shader by Evan Wallace adapted by @lo-th
-
-		const vibrance = new FunctionNode( /* glsl */`
-
-		vec3 vibrance(vec3 rgb, float adjustment) {
-
-			float average = (rgb.r + rgb.g + rgb.b) / 3.0;
-
-			float mx = max(rgb.r, max(rgb.g, rgb.b));
-			float amt = (mx - average) * (-3.0 * adjustment);
-
-			return mix(rgb.rgb, vec3(mx), amt);
-
-		}`
-		);
-
-		return {
-			hue: hue,
-			saturation: saturation,
-			vibrance: vibrance
-		};
-
-	} )();
-
-	ColorAdjustmentNode.SATURATION = 'saturation';
-	ColorAdjustmentNode.HUE = 'hue';
-	ColorAdjustmentNode.VIBRANCE = 'vibrance';
-	ColorAdjustmentNode.BRIGHTNESS = 'brightness';
-	ColorAdjustmentNode.CONTRAST = 'contrast';
-
-	ColorAdjustmentNode.prototype.nodeType = 'ColorAdjustment';
-	ColorAdjustmentNode.prototype.hashProperties = [ 'method' ];
-
-	class BasicNode extends Node$1 {
-
-		constructor() {
-
-			super();
-
-			this.color = new ColorNode( 0xFFFFFF );
-
-		}
-
-		generate( builder ) {
-
-			let code;
-
-			if ( builder.isShader( 'vertex' ) ) {
-
-				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
-
-
-				const output = [
-					'#include <beginnormal_vertex>',
-					'#include <morphnormal_vertex>',
-					'#include <skinnormal_vertex>',
-					'#include <defaultnormal_vertex>'
-				];
-
-				output.push(
-					'#include <begin_vertex>'
-
-				);
-
-				if ( position ) {
-
-					output.push(
-						position.code,
-						position.result ? 'transformed = ' + position.result + ';' : ''
-					);
-
-				}
-
-				output.push(
-					'#include <morphtarget_vertex>',
-					'#include <skinning_vertex>',
-					'#include <project_vertex>',
-					'#include <logdepthbuf_vertex>',
-
-					'#include <worldpos_vertex>',
-					'#include <clipping_planes_vertex>',
-					'#include <fog_vertex>',
-				);
-
-				code = output.join( '\n' );
-
-			} else {
-
-				// Analyze all nodes to reuse generate codes
-				this.color.analyze( builder, { slot: 'color' } );
-
-				if ( this.alpha ) this.alpha.analyze( builder );
-				if ( this.mask ) this.mask.analyze( builder );
-
-				// Build code
-				const color = this.color.flow( builder, 'c', { slot: 'color' } );
-				const alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined;
-				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined;
-
-				builder.requires.transparent = alpha !== undefined;
-
-				const output = [
-					color.code
-				];
-
-				if ( mask ) {
-
-					output.push(
-						mask.code,
-						'if ( ! ' + mask.result + ' ) discard;'
-					);
-
-				}
-
-				if ( alpha ) {
-
-					output.push(
-						alpha.code,
-						'#ifdef ALPHATEST',
-
-						' if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
-
-						'#endif'
-					);
-
-				}
-
-				if ( alpha ) {
-
-					output.push( 'gl_FragColor = vec4(' + color.result + ', ' + alpha.result + ' );' );
-
-				} else {
-
-					output.push( 'gl_FragColor = vec4(' + color.result + ', 1.0 );' );
-
-				}
-
-				code = output.join( '\n' );
-
-			}
-
-			return code;
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			this.color = source.color;
-
-			if ( source.position ) this.position = source.position;
-			if ( source.alpha ) this.alpha = source.alpha;
-			if ( source.mask ) this.mask = source.mask;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				data.color = this.color.toJSON( meta ).uuid;
-
-				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
-				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
-				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	BasicNode.prototype.nodeType = 'Basic';
-
-	class SpriteNode extends Node$1 {
-
-		constructor() {
-
-			super();
-
-			this.color = new ColorNode( 0xEEEEEE );
-			this.spherical = true;
-
-		}
-
-		build( builder ) {
-
-			let output;
-
-			builder.define( 'SPRITE' );
-
-			builder.requires.lights = false;
-			builder.requires.transparent = this.alpha !== undefined;
-
-			if ( builder.isShader( 'vertex' ) ) {
-
-				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
-
-				builder.mergeUniform( UniformsUtils$1.merge( [
-					UniformsLib$1.fog
-				] ) );
-
-				builder.addParsCode( /* glsl */`
-				#include <fog_pars_vertex>
-				#include <logdepthbuf_pars_vertex>
-				#include <clipping_planes_pars_vertex>`
-				);
-
-				output = [
-					'#include <clipping_planes_fragment>',
-					'#include <begin_vertex>'
-				];
-
-				if ( position ) {
-
-					output.push(
-						position.code,
-						position.result ? 'transformed = ' + position.result + ';' : ''
-					);
-
-				}
-
-				output.push(
-					'#include <project_vertex>',
-					'#include <fog_vertex>',
-
-					'mat4 modelViewMtx = modelViewMatrix;',
-					'mat4 modelMtx = modelMatrix;',
-
-					// ignore position from modelMatrix (use vary position)
-					'modelMtx[3][0] = 0.0;',
-					'modelMtx[3][1] = 0.0;',
-					'modelMtx[3][2] = 0.0;'
-				);
-
-				if ( ! this.spherical ) {
-
-					output.push(
-						'modelMtx[1][1] = 1.0;'
-					);
-
-				}
-
-				output.push(
-					// http://www.geeks3d.com/20140807/billboarding-vertex-shader-glsl/
-					// First colunm.
-					'modelViewMtx[0][0] = 1.0;',
-					'modelViewMtx[0][1] = 0.0;',
-					'modelViewMtx[0][2] = 0.0;'
-				);
-
-				if ( this.spherical ) {
-
-					output.push(
-						// Second colunm.
-						'modelViewMtx[1][0] = 0.0;',
-						'modelViewMtx[1][1] = 1.0;',
-						'modelViewMtx[1][2] = 0.0;'
-					);
-
-				}
-
-				output.push(
-					// Thrid colunm.
-					'modelViewMtx[2][0] = 0.0;',
-					'modelViewMtx[2][1] = 0.0;',
-					'modelViewMtx[2][2] = 1.0;',
-
-					'gl_Position = projectionMatrix * modelViewMtx * modelMtx * vec4( transformed, 1.0 );',
-
-					'#include <logdepthbuf_vertex>',
-					'#include <clipping_planes_vertex>',
-					'#include <fog_vertex>'
-				);
-
-			} else {
-
-				builder.addParsCode( /* glsl */`
-				#include <fog_pars_fragment>
-				#include <logdepthbuf_pars_fragment>
-				#include <clipping_planes_pars_fragment>`
-				);
-
-				builder.addCode( /* glsl */`
-				#include <clipping_planes_fragment>
-				#include <logdepthbuf_fragment>`
-				);
-
-				// analyze all nodes to reuse generate codes
-
-				if ( this.mask ) this.mask.analyze( builder );
-
-				if ( this.alpha ) this.alpha.analyze( builder );
-
-				this.color.analyze( builder, { slot: 'color' } );
-
-				// build code
-
-				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined,
-					alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined,
-					color = this.color.flow( builder, 'c', { slot: 'color' } );
-
-				output = [];
-
-				if ( mask ) {
-
-					output.push(
-						mask.code,
-						'if ( ! ' + mask.result + ' ) discard;'
-					);
-
-				}
-
-				if ( alpha ) {
-
-					output.push(
-						alpha.code,
-						'#ifdef ALPHATEST',
-
-						'if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
-
-						'#endif',
-						color.code,
-						'gl_FragColor = vec4( ' + color.result + ', ' + alpha.result + ' );'
-					);
-
-				} else {
-
-					output.push(
-						color.code,
-						'gl_FragColor = vec4( ' + color.result + ', 1.0 );'
-					);
-
-				}
-
-				output.push(
-					'#include <tonemapping_fragment>',
-					'#include <encodings_fragment>',
-					'#include <fog_fragment>'
-				);
-
-			}
-
-			return output.join( '\n' );
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			// vertex
-
-			if ( source.position ) this.position = source.position;
-
-			// fragment
-
-			this.color = source.color;
-
-			if ( source.spherical !== undefined ) this.spherical = source.spherical;
-
-			if ( source.mask ) this.mask = source.mask;
-
-			if ( source.alpha ) this.alpha = source.alpha;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				// vertex
-
-				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
-
-				// fragment
-
-				data.color = this.color.toJSON( meta ).uuid;
-
-				if ( this.spherical === false ) data.spherical = false;
-
-				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
-
-				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	SpriteNode.prototype.nodeType = 'Sprite';
-
-	class PhongNode extends Node$1 {
-
-		constructor() {
-
-			super();
-
-			this.color = new ColorNode( 0xEEEEEE );
-			this.specular = new ColorNode( 0x111111 );
-			this.shininess = new FloatNode( 30 );
-
-		}
-
-		build( builder ) {
-
-			let code;
-
-			builder.define( 'PHONG' );
-
-			builder.requires.lights = true;
-
-			if ( builder.isShader( 'vertex' ) ) {
-
-				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
-
-				builder.mergeUniform( UniformsUtils$1.merge( [
-
-					UniformsLib$1.fog,
-					UniformsLib$1.lights
-
-				] ) );
-
-				builder.addParsCode( /* glsl */`
-				varying vec3 vViewPosition;
-
-				#ifndef FLAT_SHADED
-
-					varying vec3 vNormal;
-
-				#endif
-
-				//"#include <encodings_pars_fragment> // encoding functions
-				#include <fog_pars_vertex>
-				#include <morphtarget_pars_vertex>
-				#include <skinning_pars_vertex>
-				#include <shadowmap_pars_vertex>
-				#include <logdepthbuf_pars_vertex>
-				#include <clipping_planes_pars_vertex>`
-				);
-
-				const output = [
-					'#include <beginnormal_vertex>',
-					'#include <morphnormal_vertex>',
-					'#include <skinbase_vertex>',
-					'#include <skinnormal_vertex>',
-					'#include <defaultnormal_vertex>',
-
-					'#ifndef FLAT_SHADED', // normal computed with derivatives when FLAT_SHADED
-
-					'	vNormal = normalize( transformedNormal );',
-
-					'#endif',
-
-					'#include <begin_vertex>'
-				];
-
-				if ( position ) {
-
-					output.push(
-						position.code,
-						position.result ? 'transformed = ' + position.result + ';' : ''
-					);
-
-				}
-
-				output.push(
-					'	#include <morphtarget_vertex>',
-					'	#include <skinning_vertex>',
-					'	#include <project_vertex>',
-					'	#include <fog_vertex>',
-					'	#include <logdepthbuf_vertex>',
-					'	#include <clipping_planes_vertex>',
-
-					'	vViewPosition = - mvPosition.xyz;',
-
-					'	#include <worldpos_vertex>',
-					'	#include <shadowmap_vertex>',
-					'	#include <fog_vertex>'
-				);
-
-				code = output.join( '\n' );
-
-			} else {
-
-				// analyze all nodes to reuse generate codes
-
-				if ( this.mask ) this.mask.analyze( builder );
-
-				this.color.analyze( builder, { slot: 'color' } );
-				this.specular.analyze( builder );
-				this.shininess.analyze( builder );
-
-				if ( this.alpha ) this.alpha.analyze( builder );
-
-				if ( this.normal ) this.normal.analyze( builder );
-
-				if ( this.light ) this.light.analyze( builder, { cache: 'light' } );
-
-				if ( this.ao ) this.ao.analyze( builder );
-				if ( this.ambient ) this.ambient.analyze( builder );
-				if ( this.shadow ) this.shadow.analyze( builder );
-				if ( this.emissive ) this.emissive.analyze( builder, { slot: 'emissive' } );
-
-				if ( this.environment ) this.environment.analyze( builder, { slot: 'environment' } );
-				if ( this.environmentAlpha && this.environment ) this.environmentAlpha.analyze( builder );
-
-				// build code
-
-				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined;
-
-				const color = this.color.flow( builder, 'c', { slot: 'color' } );
-				const specular = this.specular.flow( builder, 'c' );
-				const shininess = this.shininess.flow( builder, 'f' );
-
-				const alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined;
-
-				const normal = this.normal ? this.normal.flow( builder, 'v3' ) : undefined;
-
-				const light = this.light ? this.light.flow( builder, 'v3', { cache: 'light' } ) : undefined;
-
-				const ao = this.ao ? this.ao.flow( builder, 'f' ) : undefined;
-				const ambient = this.ambient ? this.ambient.flow( builder, 'c' ) : undefined;
-				const shadow = this.shadow ? this.shadow.flow( builder, 'c' ) : undefined;
-				const emissive = this.emissive ? this.emissive.flow( builder, 'c', { slot: 'emissive' } ) : undefined;
-
-				const environment = this.environment ? this.environment.flow( builder, 'c', { slot: 'environment' } ) : undefined;
-				const environmentAlpha = this.environmentAlpha && this.environment ? this.environmentAlpha.flow( builder, 'f' ) : undefined;
-
-				builder.requires.transparent = alpha !== undefined;
-
-				builder.addParsCode( /* glsl */`
-				#include <fog_pars_fragment>
-				#include <bsdfs>
-				#include <lights_pars_begin>
-				#include <lights_phong_pars_fragment>
-				#include <shadowmap_pars_fragment>
-				#include <logdepthbuf_pars_fragment>`
-				);
-
-				const output = [
-					// prevent undeclared normal
-					'#include <normal_fragment_begin>',
-
-					// prevent undeclared material
-					'	BlinnPhongMaterial material;'
-				];
-
-				if ( mask ) {
-
-					output.push(
-						mask.code,
-						'if ( ! ' + mask.result + ' ) discard;'
-					);
-
-				}
-
-				output.push(
-					color.code,
-					'	vec3 diffuseColor = ' + color.result + ';',
-					'	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );',
-
-					'#include <logdepthbuf_fragment>',
-
-					specular.code,
-					'	vec3 specular = ' + specular.result + ';',
-
-					shininess.code,
-					'	float shininess = max( 0.0001, ' + shininess.result + ' );',
-
-					'	float specularStrength = 1.0;' // Ignored in MaterialNode ( replace to specular )
-				);
-
-				if ( alpha ) {
-
-					output.push(
-						alpha.code,
-						'#ifdef ALPHATEST',
-
-						'if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
-
-						'#endif'
-					);
-
-				}
-
-				if ( normal ) {
-
-					output.push(
-						normal.code,
-						'normal = ' + normal.result + ';'
-					);
-
-				}
-
-				// optimization for now
-
-				output.push( 'material.diffuseColor = ' + ( light ? 'vec3( 1.0 )' : 'diffuseColor' ) + ';' );
-
-				output.push(
-					// accumulation
-					'material.specularColor = specular;',
-					'material.specularShininess = shininess;',
-					'material.specularStrength = specularStrength;',
-
-					'#include <lights_fragment_begin>',
-					'#include <lights_fragment_end>'
-				);
-
-				if ( light ) {
-
-					output.push(
-						light.code,
-						'reflectedLight.directDiffuse = ' + light.result + ';'
-					);
-
-					// apply color
-
-					output.push(
-						'reflectedLight.directDiffuse *= diffuseColor;',
-						'reflectedLight.indirectDiffuse *= diffuseColor;'
-					);
-
-				}
-
-				if ( ao ) {
-
-					output.push(
-						ao.code,
-						'reflectedLight.indirectDiffuse *= ' + ao.result + ';'
-					);
-
-				}
-
-				if ( ambient ) {
-
-					output.push(
-						ambient.code,
-						'reflectedLight.indirectDiffuse += ' + ambient.result + ';'
-					);
-
-				}
-
-				if ( shadow ) {
-
-					output.push(
-						shadow.code,
-						'reflectedLight.directDiffuse *= ' + shadow.result + ';',
-						'reflectedLight.directSpecular *= ' + shadow.result + ';'
-					);
-
-				}
-
-				if ( emissive ) {
-
-					output.push(
-						emissive.code,
-						'reflectedLight.directDiffuse += ' + emissive.result + ';'
-					);
-
-				}
-
-				output.push( 'vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular;' );
-
-				if ( environment ) {
-
-					output.push( environment.code );
-
-					if ( environmentAlpha ) {
-
-						output.push(
-							environmentAlpha.code,
-							'outgoingLight = mix( outgoingLight, ' + environment.result + ', ' + environmentAlpha.result + ' );'
-						);
-
-					} else {
-
-						output.push( 'outgoingLight = ' + environment.result + ';' );
-
-					}
-
-				}
-				/*
-				switch( builder.material.combine ) {
-
-					case ENVMAP_BLENDING_MULTIPLY:
-
-						//output.push( "vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular;" );
-						//outgoingLight = mix( outgoingLight, outgoingLight * envColor.xyz, specularStrength * reflectivity );
-
-						break;
-
-
-				}
-			*/
-
-				if ( alpha ) {
-
-					output.push( 'gl_FragColor = vec4( outgoingLight, ' + alpha.result + ' );' );
-
-				} else {
-
-					output.push( 'gl_FragColor = vec4( outgoingLight, 1.0 );' );
-
-				}
-
-				output.push(
-					'#include <tonemapping_fragment>',
-					'#include <encodings_fragment>',
-					'#include <fog_fragment>',
-					'#include <premultiplied_alpha_fragment>'
-				);
-
-				code = output.join( '\n' );
-
-			}
-
-			return code;
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			// vertex
-
-			if ( source.position ) this.position = source.position;
-
-			// fragment
-
-			this.color = source.color;
-			this.specular = source.specular;
-			this.shininess = source.shininess;
-
-			if ( source.mask ) this.mask = source.mask;
-
-			if ( source.alpha ) this.alpha = source.alpha;
-
-			if ( source.normal ) this.normal = source.normal;
-
-			if ( source.light ) this.light = source.light;
-			if ( source.shadow ) this.shadow = source.shadow;
-
-			if ( source.ao ) this.ao = source.ao;
-
-			if ( source.emissive ) this.emissive = source.emissive;
-			if ( source.ambient ) this.ambient = source.ambient;
-
-			if ( source.environment ) this.environment = source.environment;
-			if ( source.environmentAlpha ) this.environmentAlpha = source.environmentAlpha;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				// vertex
-
-				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
-
-				// fragment
-
-				data.color = this.color.toJSON( meta ).uuid;
-				data.specular = this.specular.toJSON( meta ).uuid;
-				data.shininess = this.shininess.toJSON( meta ).uuid;
-
-				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
-
-				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
-
-				if ( this.normal ) data.normal = this.normal.toJSON( meta ).uuid;
-
-				if ( this.light ) data.light = this.light.toJSON( meta ).uuid;
-
-				if ( this.ao ) data.ao = this.ao.toJSON( meta ).uuid;
-				if ( this.ambient ) data.ambient = this.ambient.toJSON( meta ).uuid;
-				if ( this.shadow ) data.shadow = this.shadow.toJSON( meta ).uuid;
-				if ( this.emissive ) data.emissive = this.emissive.toJSON( meta ).uuid;
-
-				if ( this.environment ) data.environment = this.environment.toJSON( meta ).uuid;
-				if ( this.environmentAlpha ) data.environmentAlpha = this.environmentAlpha.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	PhongNode.prototype.nodeType = 'Phong';
-
-	class StandardNode extends Node$1 {
-
-		constructor() {
-
-			super();
-
-			this.color = new ColorNode( 0xFFFFFF );
-			this.roughness = new FloatNode( 1 );
-			this.metalness = new FloatNode( 0 );
-
-		}
-
-		build( builder ) {
-
-			let code;
-
-			builder.define( 'STANDARD' );
-
-			const useClearcoat = this.clearcoat || this.clearcoatRoughness || this.clearCoatNormal;
-
-			if ( useClearcoat ) {
-
-				builder.define( 'CLEARCOAT' );
-
-			}
-
-			builder.requires.lights = true;
-
-			builder.extensions.derivatives = true;
-			builder.extensions.shaderTextureLOD = true;
-
-			if ( builder.isShader( 'vertex' ) ) {
-
-				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
-
-				builder.mergeUniform( UniformsUtils$1.merge( [
-
-					UniformsLib$1.fog,
-					UniformsLib$1.lights
-
-				] ) );
-
-				if ( UniformsLib$1.LTC_1 ) {
-
-					// add ltc data textures to material uniforms
-
-					builder.uniforms.ltc_1 = { value: undefined };
-					builder.uniforms.ltc_2 = { value: undefined };
-
-				}
-
-				builder.addParsCode( /* glsl */`
-				varying vec3 vViewPosition;
-
-				#ifndef FLAT_SHADED
-
-					varying vec3 vNormal;
-
-				#endif
-
-				//"#include <encodings_pars_fragment> // encoding functions
-				#include <fog_pars_vertex>
-				#include <morphtarget_pars_vertex>
-				#include <skinning_pars_vertex>
-				#include <shadowmap_pars_vertex>
-				#include <logdepthbuf_pars_vertex>
-				#include <clipping_planes_pars_vertex>`
-
-				);
-
-				const output = [
-					'#include <beginnormal_vertex>',
-					'#include <morphnormal_vertex>',
-					'#include <skinbase_vertex>',
-					'#include <skinnormal_vertex>',
-					'#include <defaultnormal_vertex>',
-
-					'#ifndef FLAT_SHADED', // Normal computed with derivatives when FLAT_SHADED
-
-					'	vNormal = normalize( transformedNormal );',
-
-					'#endif',
-
-					'#include <begin_vertex>'
-				];
-
-				if ( position ) {
-
-					output.push(
-						position.code,
-						position.result ? 'transformed = ' + position.result + ';' : ''
-					);
-
-				}
-
-				output.push(
-					'#include <morphtarget_vertex>',
-					'#include <skinning_vertex>',
-					'#include <project_vertex>',
-					'#include <fog_vertex>',
-					'#include <logdepthbuf_vertex>',
-					'#include <clipping_planes_vertex>',
-
-					'	vViewPosition = - mvPosition.xyz;',
-
-					'#include <worldpos_vertex>',
-					'#include <shadowmap_vertex>'
-				);
-
-				code = output.join( '\n' );
-
-			} else {
-
-				const specularRoughnessNode = new ExpressionNode( 'material.specularRoughness', 'f' );
-				const clearcoatRoughnessNode = new ExpressionNode( 'material.clearcoatRoughness', 'f' );
-
-				const contextEnvironment = {
-					roughness: specularRoughnessNode,
-					bias: new SpecularMIPLevelNode( specularRoughnessNode ),
-					viewNormal: new ExpressionNode( 'normal', 'v3' ),
-					worldNormal: new ExpressionNode( 'inverseTransformDirection( geometry.normal, viewMatrix )', 'v3' ),
-					gamma: true
-				};
-
-				const contextGammaOnly = {
-					gamma: true
-				};
-
-				const contextClearcoatEnvironment = {
-					roughness: clearcoatRoughnessNode,
-					bias: new SpecularMIPLevelNode( clearcoatRoughnessNode ),
-					viewNormal: new ExpressionNode( 'clearcoatNormal', 'v3' ),
-					worldNormal: new ExpressionNode( 'inverseTransformDirection( geometry.clearcoatNormal, viewMatrix )', 'v3' ),
-					gamma: true
-				};
-
-				// analyze all nodes to reuse generate codes
-
-				if ( this.mask ) this.mask.analyze( builder );
-
-				this.color.analyze( builder, { slot: 'color', context: contextGammaOnly } );
-				this.roughness.analyze( builder );
-				this.metalness.analyze( builder );
-
-				if ( this.alpha ) this.alpha.analyze( builder );
-
-				if ( this.normal ) this.normal.analyze( builder );
-
-				if ( this.clearcoat ) this.clearcoat.analyze( builder );
-				if ( this.clearcoatRoughness ) this.clearcoatRoughness.analyze( builder );
-				if ( this.clearcoatNormal ) this.clearcoatNormal.analyze( builder );
-
-				if ( this.reflectivity ) this.reflectivity.analyze( builder );
-
-				if ( this.light ) this.light.analyze( builder, { cache: 'light' } );
-
-				if ( this.ao ) this.ao.analyze( builder );
-				if ( this.ambient ) this.ambient.analyze( builder );
-				if ( this.shadow ) this.shadow.analyze( builder );
-				if ( this.emissive ) this.emissive.analyze( builder, { slot: 'emissive' } );
-
-				if ( this.environment ) {
-
-					// isolate environment from others inputs ( see TextureNode, CubeTextureNode )
-					// environment.analyze will detect if there is a need of calculate irradiance
-
-					this.environment.analyze( builder, { cache: 'radiance', context: contextEnvironment, slot: 'radiance' } );
-
-					if ( builder.requires.irradiance ) {
-
-						this.environment.analyze( builder, { cache: 'irradiance', context: contextEnvironment, slot: 'irradiance' } );
-
-					}
-
-				}
-
-				if ( this.sheen ) this.sheen.analyze( builder );
-
-				// build code
-
-				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined;
-
-				const color = this.color.flow( builder, 'c', { slot: 'color', context: contextGammaOnly } );
-				const roughness = this.roughness.flow( builder, 'f' );
-				const metalness = this.metalness.flow( builder, 'f' );
-
-				const alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined;
-
-				const normal = this.normal ? this.normal.flow( builder, 'v3' ) : undefined;
-
-				const clearcoat = this.clearcoat ? this.clearcoat.flow( builder, 'f' ) : undefined;
-				const clearcoatRoughness = this.clearcoatRoughness ? this.clearcoatRoughness.flow( builder, 'f' ) : undefined;
-				const clearcoatNormal = this.clearcoatNormal ? this.clearcoatNormal.flow( builder, 'v3' ) : undefined;
-
-				const reflectivity = this.reflectivity ? this.reflectivity.flow( builder, 'f' ) : undefined;
-
-				const light = this.light ? this.light.flow( builder, 'v3', { cache: 'light' } ) : undefined;
-
-				const ao = this.ao ? this.ao.flow( builder, 'f' ) : undefined;
-				const ambient = this.ambient ? this.ambient.flow( builder, 'c' ) : undefined;
-				const shadow = this.shadow ? this.shadow.flow( builder, 'c' ) : undefined;
-				const emissive = this.emissive ? this.emissive.flow( builder, 'c', { slot: 'emissive' } ) : undefined;
-
-				let environment;
-
-				if ( this.environment ) {
-
-					environment = {
-						radiance: this.environment.flow( builder, 'c', { cache: 'radiance', context: contextEnvironment, slot: 'radiance' } )
-					};
-
-					if ( builder.requires.irradiance ) {
-
-						environment.irradiance = this.environment.flow( builder, 'c', { cache: 'irradiance', context: contextEnvironment, slot: 'irradiance' } );
-
-					}
-
-				}
-
-				const clearcoatEnv = useClearcoat && environment ? this.environment.flow( builder, 'c', { cache: 'clearcoat', context: contextClearcoatEnvironment, slot: 'environment' } ) : undefined;
-
-				const sheen = this.sheen ? this.sheen.flow( builder, 'c' ) : undefined;
-
-				builder.requires.transparent = alpha !== undefined;
-
-				builder.addParsCode( /* glsl */`
-				varying vec3 vViewPosition;
-
-				#ifndef FLAT_SHADED
-
-					varying vec3 vNormal;
-
-				#endif
-
-				#include <dithering_pars_fragment>
-				#include <fog_pars_fragment>
-				#include <bsdfs>
-				#include <lights_pars_begin>
-				#include <lights_physical_pars_fragment>
-				#include <shadowmap_pars_fragment>
-				#include <logdepthbuf_pars_fragment>`
-				);
-
-				const output = [
-					'#include <clipping_planes_fragment>',
-
-					// add before: prevent undeclared normal
-					'	#include <normal_fragment_begin>',
-					'	#include <clearcoat_normal_fragment_begin>',
-
-					// add before: prevent undeclared material
-					'	PhysicalMaterial material;',
-					'	material.diffuseColor = vec3( 1.0 );'
-				];
-
-				if ( mask ) {
-
-					output.push(
-						mask.code,
-						'if ( ! ' + mask.result + ' ) discard;'
-					);
-
-				}
-
-				output.push(
-					color.code,
-					'	vec3 diffuseColor = ' + color.result + ';',
-					'	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );',
-
-					'#include <logdepthbuf_fragment>',
-
-					roughness.code,
-					'	float roughnessFactor = ' + roughness.result + ';',
-
-					metalness.code,
-					'	float metalnessFactor = ' + metalness.result + ';'
-				);
-
-				if ( alpha ) {
-
-					output.push(
-						alpha.code,
-						'#ifdef ALPHATEST',
-
-						'	if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
-
-						'#endif'
-					);
-
-				}
-
-				if ( normal ) {
-
-					output.push(
-						normal.code,
-						'normal = ' + normal.result + ';'
-					);
-
-				}
-
-				if ( clearcoatNormal ) {
-
-					output.push(
-						clearcoatNormal.code,
-						'clearcoatNormal = ' + clearcoatNormal.result + ';'
-					);
-
-				}
-
-				// anti-aliasing code by @elalish
-
-				output.push(
-					'vec3 dxy = max( abs( dFdx( geometryNormal ) ), abs( dFdy( geometryNormal ) ) );',
-					'float geometryRoughness = max( max( dxy.x, dxy.y ), dxy.z );',
-				);
-
-				// optimization for now
-
-				output.push(
-					'material.diffuseColor = ' + ( light ? 'vec3( 1.0 )' : 'diffuseColor * ( 1.0 - metalnessFactor )' ) + ';',
-
-					'material.specularRoughness = max( roughnessFactor, 0.0525 );',
-					'material.specularRoughness += geometryRoughness;',
-					'material.specularRoughness = min( material.specularRoughness, 1.0 );',
-
-					'material.specularRoughness = clamp( roughnessFactor, 0.04, 1.0 );'
-				);
-
-				if ( clearcoat ) {
-
-					output.push(
-						clearcoat.code,
-						'material.clearcoat = saturate( ' + clearcoat.result + ' );' // Burley clearcoat model
-					);
-
-				} else if ( useClearcoat ) {
-
-					output.push( 'material.clearcoat = 0.0;' );
-
-				}
-
-				if ( clearcoatRoughness ) {
-
-					output.push(
-						clearcoatRoughness.code,
-						'material.clearcoatRoughness = max( ' + clearcoatRoughness.result + ', 0.0525 );',
-						'material.clearcoatRoughness += geometryRoughness;',
-						'material.clearcoatRoughness = min( material.clearcoatRoughness, 1.0 );'
-					);
-
-				} else if ( useClearcoat ) {
-
-					output.push( 'material.clearcoatRoughness = 0.0;' );
-
-				}
-
-				if ( sheen ) {
-
-					output.push( 'material.sheenColor = ' + sheen.result + ';' );
-
-				}
-
-				if ( reflectivity ) {
-
-					output.push(
-						reflectivity.code,
-						'material.specularColor = mix( vec3( MAXIMUM_SPECULAR_COEFFICIENT * pow2( ' + reflectivity.result + ' ) ), diffuseColor, metalnessFactor );'
-					);
-
-				} else {
-
-					output.push(
-						'material.specularColor = mix( vec3( DEFAULT_SPECULAR_COEFFICIENT ), diffuseColor, metalnessFactor );'
-					);
-
-				}
-
-				output.push(
-					'#include <lights_fragment_begin>'
-				);
-
-				if ( light ) {
-
-					output.push(
-						light.code,
-						'reflectedLight.directDiffuse = ' + light.result + ';'
-					);
-
-					// apply color
-
-					output.push(
-						'diffuseColor *= 1.0 - metalnessFactor;',
-
-						'reflectedLight.directDiffuse *= diffuseColor;',
-						'reflectedLight.indirectDiffuse *= diffuseColor;'
-					);
-
-				}
-
-				if ( ao ) {
-
-					output.push(
-						ao.code,
-						'reflectedLight.indirectDiffuse *= ' + ao.result + ';',
-						'float dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );',
-						'reflectedLight.indirectSpecular *= computeSpecularOcclusion( dotNV, ' + ao.result + ', material.specularRoughness );'
-					);
-
-				}
-
-				if ( ambient ) {
-
-					output.push(
-						ambient.code,
-						'reflectedLight.indirectDiffuse += ' + ambient.result + ';'
-					);
-
-				}
-
-				if ( shadow ) {
-
-					output.push(
-						shadow.code,
-						'reflectedLight.directDiffuse *= ' + shadow.result + ';',
-						'reflectedLight.directSpecular *= ' + shadow.result + ';'
-					);
-
-				}
-
-				if ( emissive ) {
-
-					output.push(
-						emissive.code,
-						'reflectedLight.directDiffuse += ' + emissive.result + ';'
-					);
-
-				}
-
-				if ( environment ) {
-
-					output.push( environment.radiance.code );
-
-					if ( builder.requires.irradiance ) {
-
-						output.push( environment.irradiance.code );
-
-					}
-
-					if ( clearcoatEnv ) {
-
-						output.push(
-							clearcoatEnv.code,
-							'clearcoatRadiance += ' + clearcoatEnv.result + ';'
-						);
-
-					}
-
-					output.push( 'radiance += ' + environment.radiance.result + ';' );
-
-					if ( builder.requires.irradiance ) {
-
-						output.push( 'iblIrradiance += PI * ' + environment.irradiance.result + ';' );
-
-					}
-
-				}
-
-				output.push(
-					'#include <lights_fragment_end>'
-				);
-
-				output.push( 'vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular;' );
-
-				if ( alpha ) {
-
-					output.push( 'gl_FragColor = vec4( outgoingLight, ' + alpha.result + ' );' );
-
-				} else {
-
-					output.push( 'gl_FragColor = vec4( outgoingLight, 1.0 );' );
-
-				}
-
-				output.push(
-					'#include <tonemapping_fragment>',
-					'#include <encodings_fragment>',
-					'#include <fog_fragment>',
-					'#include <premultiplied_alpha_fragment>',
-					'#include <dithering_fragment>'
-				);
-
-				code = output.join( '\n' );
-
-			}
-
-			return code;
-
-		}
-
-		copy( source ) {
-
-			super.copy( source );
-
-			// vertex
-
-			if ( source.position ) this.position = source.position;
-
-			// fragment
-
-			this.color = source.color;
-			this.roughness = source.roughness;
-			this.metalness = source.metalness;
-
-			if ( source.mask ) this.mask = source.mask;
-
-			if ( source.alpha ) this.alpha = source.alpha;
-
-			if ( source.normal ) this.normal = source.normal;
-
-			if ( source.clearcoat ) this.clearcoat = source.clearcoat;
-			if ( source.clearcoatRoughness ) this.clearcoatRoughness = source.clearcoatRoughness;
-			if ( source.clearcoatNormal ) this.clearcoatNormal = source.clearcoatNormal;
-
-			if ( source.reflectivity ) this.reflectivity = source.reflectivity;
-
-			if ( source.light ) this.light = source.light;
-			if ( source.shadow ) this.shadow = source.shadow;
-
-			if ( source.ao ) this.ao = source.ao;
-
-			if ( source.emissive ) this.emissive = source.emissive;
-			if ( source.ambient ) this.ambient = source.ambient;
-
-			if ( source.environment ) this.environment = source.environment;
-
-			if ( source.sheen ) this.sheen = source.sheen;
-
-			return this;
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				// vertex
-
-				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
-
-				// fragment
-
-				data.color = this.color.toJSON( meta ).uuid;
-				data.roughness = this.roughness.toJSON( meta ).uuid;
-				data.metalness = this.metalness.toJSON( meta ).uuid;
-
-				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
-
-				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
-
-				if ( this.normal ) data.normal = this.normal.toJSON( meta ).uuid;
-
-				if ( this.clearcoat ) data.clearcoat = this.clearcoat.toJSON( meta ).uuid;
-				if ( this.clearcoatRoughness ) data.clearcoatRoughness = this.clearcoatRoughness.toJSON( meta ).uuid;
-				if ( this.clearcoatNormal ) data.clearcoatNormal = this.clearcoatNormal.toJSON( meta ).uuid;
-
-				if ( this.reflectivity ) data.reflectivity = this.reflectivity.toJSON( meta ).uuid;
-
-				if ( this.light ) data.light = this.light.toJSON( meta ).uuid;
-				if ( this.shadow ) data.shadow = this.shadow.toJSON( meta ).uuid;
-
-				if ( this.ao ) data.ao = this.ao.toJSON( meta ).uuid;
-
-				if ( this.emissive ) data.emissive = this.emissive.toJSON( meta ).uuid;
-				if ( this.ambient ) data.ambient = this.ambient.toJSON( meta ).uuid;
-
-				if ( this.environment ) data.environment = this.environment.toJSON( meta ).uuid;
-
-				if ( this.sheen ) data.sheen = this.sheen.toJSON( meta ).uuid;
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	StandardNode.prototype.nodeType = 'Standard';
-
-	class MeshStandardNode extends StandardNode {
-
-		constructor() {
-
-			super();
-
-			this.properties = {
-				color: new Color( 0xffffff ),
-				roughness: 0.5,
-				metalness: 0.5,
-				normalScale: new Vector2( 1, 1 )
-			};
-
-			this.inputs = {
-				color: new PropertyNode( this.properties, 'color', 'c' ),
-				roughness: new PropertyNode( this.properties, 'roughness', 'f' ),
-				metalness: new PropertyNode( this.properties, 'metalness', 'f' ),
-				normalScale: new PropertyNode( this.properties, 'normalScale', 'v2' )
-			};
-
-		}
-
-		build( builder ) {
-
-			const props = this.properties,
-				inputs = this.inputs;
-
-			if ( builder.isShader( 'fragment' ) ) {
-
-				// slots
-				// * color
-				// * map
-
-				const color = builder.findNode( props.color, inputs.color ),
-					map = builder.resolve( props.map );
-
-				this.color = map ? new OperatorNode( color, map, OperatorNode.MUL ) : color;
-
-				// slots
-				// * roughness
-				// * roughnessMap
-
-				const roughness = builder.findNode( props.roughness, inputs.roughness ),
-					roughnessMap = builder.resolve( props.roughnessMap );
-
-				this.roughness = roughnessMap ? new OperatorNode( roughness, new SwitchNode( roughnessMap, 'g' ), OperatorNode.MUL ) : roughness;
-
-				// slots
-				// * metalness
-				// * metalnessMap
-
-				const metalness = builder.findNode( props.metalness, inputs.metalness ),
-					metalnessMap = builder.resolve( props.metalnessMap );
-
-				this.metalness = metalnessMap ? new OperatorNode( metalness, new SwitchNode( metalnessMap, 'b' ), OperatorNode.MUL ) : metalness;
-
-				// slots
-				// * normalMap
-				// * normalScale
-
-				if ( props.normalMap ) {
-
-					this.normal = new NormalMapNode( builder.resolve( props.normalMap ) );
-					this.normal.scale = builder.findNode( props.normalScale, inputs.normalScale );
-
-				} else {
-
-					this.normal = undefined;
-
-				}
-
-				// slots
-				// * envMap
-
-				this.environment = builder.resolve( props.envMap );
-
-			}
-
-			// build code
-
-			return super.build( builder );
-
-		}
-
-		toJSON( meta ) {
-
-			let data = this.getJSONNode( meta );
-
-			if ( ! data ) {
-
-				data = this.createJSONNode( meta );
-
-				console.warn( '.toJSON not implemented in', this );
-
-			}
-
-			return data;
-
-		}
-
-	}
-
-	MeshStandardNode.prototype.nodeType = 'MeshStandard';
-
-	class BasicNodeMaterial extends NodeMaterial {
-
-		constructor() {
-
-			const node = new BasicNode();
-
-			super( node, node );
-
-			this.type = 'BasicNodeMaterial';
-
-		}
-
-	}
-
-	NodeUtils.addShortcuts( BasicNodeMaterial.prototype, 'fragment', [
-		'color',
-		'alpha',
-		'mask',
-		'position'
-	] );
-
-	class SpriteNodeMaterial extends NodeMaterial {
-
-		constructor() {
-
-			const node = new SpriteNode();
-
-			super( node, node );
-
-			this.type = 'SpriteNodeMaterial';
-
-		}
-
-	}
-
-	NodeUtils.addShortcuts( SpriteNodeMaterial.prototype, 'fragment', [
-		'color',
-		'alpha',
-		'mask',
-		'position',
-		'spherical'
-	] );
-
-	class PhongNodeMaterial extends NodeMaterial {
-
-		constructor() {
-
-			const node = new PhongNode();
-
-			super( node, node );
-
-			this.type = 'PhongNodeMaterial';
-
-		}
-
-	}
-
-	NodeUtils.addShortcuts( PhongNodeMaterial.prototype, 'fragment', [
-		'color',
-		'alpha',
-		'specular',
-		'shininess',
-		'normal',
-		'emissive',
-		'ambient',
-		'light',
-		'shadow',
-		'ao',
-		'environment',
-		'environmentAlpha',
-		'mask',
-		'position'
-	] );
-
-	class StandardNodeMaterial extends NodeMaterial {
-
-		constructor() {
-
-			const node = new StandardNode();
-
-			super( node, node );
-
-			this.type = 'StandardNodeMaterial';
-
-		}
-
-	}
-
-	NodeUtils.addShortcuts( StandardNodeMaterial.prototype, 'fragment', [
-		'color',
-		'alpha',
-		'roughness',
-		'metalness',
-		'reflectivity',
-		'clearcoat',
-		'clearcoatRoughness',
-		'clearcoatNormal',
-		'normal',
-		'emissive',
-		'ambient',
-		'light',
-		'shadow',
-		'ao',
-		'environment',
-		'mask',
-		'position',
-		'sheen'
-	] );
-
-	class MeshStandardNodeMaterial extends NodeMaterial {
-
-		constructor() {
-
-			const node = new MeshStandardNode();
-
-			super( node, node );
-
-			this.type = 'MeshStandardNodeMaterial';
-
-		}
-
-	}
-
-	NodeUtils.addShortcuts( MeshStandardNodeMaterial.prototype, 'properties', [
-		'color',
-		'roughness',
-		'metalness',
-		'map',
-		'normalMap',
-		'normalScale',
-		'metalnessMap',
-		'roughnessMap',
-		'envMap'
-	] );
-
 	class Container {
 	    renderer;
 	    css2dRenderer;
@@ -97026,8 +87785,6 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	    bgColor;
 	    bgType;
 	    layers;
-	    frame;
-	    nodepass;
 	    constructor(attrs) {
 	        this.clickObjects = []; // 点击事件对象
 	        this.children = [];
@@ -97053,7 +87810,6 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	        this.attrs = attrs;
 	        this.initialize(attrs);
 	        this.layers = {};
-	        this.frame = new NodeFrame(1);
 	    }
 	    get viewState() {
 	        return this._viewState;
@@ -97221,7 +87977,6 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	                self.outlinePass.selectedObjects = self.outlineObjects;
 	                self.sceneComposer.render();
 	                const delta = clock.getDelta();
-	                self.frame.update(delta).updateNode(self.nodepass.material);
 	                self.mixers.forEach((mixer) => {
 	                    mixer.update(delta);
 	                });
@@ -97877,30 +88632,20 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	        this.bloomComposer = new EffectComposer(this.renderer, this.msaaTarget);
 	        this.bloomComposer.renderToScreen = false;
 	        this.bloomComposer.addPass(this.renderPass);
-	        // nodePass
-	        const nodePassAtts = {
+	        // *** filter pass start ***
+	        const filterPassAtts = {
 	            hue: 0,
-	            sataturation: 1,
+	            saturation: 1,
 	            vibrance: 0,
 	            brightness: 0,
 	            contrast: 1
 	        };
-	        Object.assign(nodePassAtts, attrs?.nodePass);
-	        this.nodepass = new NodePass();
-	        const screen = new ScreenNode();
-	        const hue = new FloatNode(nodePassAtts.hue);
-	        const sataturation = new FloatNode(nodePassAtts.sataturation);
-	        const vibrance = new FloatNode(nodePassAtts.vibrance);
-	        const brightness = new FloatNode(nodePassAtts.brightness);
-	        const contrast = new FloatNode(nodePassAtts.contrast);
-	        const hueNode = new ColorAdjustmentNode(screen, hue, ColorAdjustmentNode.HUE);
-	        const satNode = new ColorAdjustmentNode(hueNode, sataturation, ColorAdjustmentNode.SATURATION);
-	        const vibranceNode = new ColorAdjustmentNode(satNode, vibrance, ColorAdjustmentNode.VIBRANCE);
-	        const brightnessNode = new ColorAdjustmentNode(vibranceNode, brightness, ColorAdjustmentNode.BRIGHTNESS);
-	        const contrastNode = new ColorAdjustmentNode(brightnessNode, contrast, ColorAdjustmentNode.CONTRAST);
-	        this.nodepass.input = contrastNode;
-	        this.nodepass.enabled = attrs?.nodePassEnabled;
-	        this.sceneComposer.addPass(this.nodepass);
+	        Object.assign(filterPassAtts, attrs?.filter);
+	        this.filterPass = new FilterPass(filterPassAtts);
+	        const filterEnabled = attrs?.filterEnabled !== undefined ? attrs?.filterEnabled : false;
+	        this.filterPass.enabled = filterEnabled;
+	        this.sceneComposer.addPass(this.filterPass);
+	        // *** filter pass end ***
 	        const bgColor = attrs && attrs.background != undefined && attrs.background.type === 'color' ? new Color(attrs.background.value) : new Color();
 	        // *** TAA PASS start ***
 	        // const taaRenderPass = new TAARenderPass(this.scene, currentCamera, bgColor, 1)
@@ -98041,10 +88786,6 @@ vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh )
 	            this.sceneComposer.addPass(this.ssrtPass);
 	        }
 	        // *** test depth peeling end ***
-	        // *** filter pass start ***
-	        // this.filterPass = new FilterPass()
-	        // this.sceneComposer.addPass(this.filterPass)
-	        // *** filter pass end ***
 	        // **** TEST PASS start ******
 	        // const testPass = new ShaderPass(
 	        //   new ShaderMaterial({
@@ -101966,8 +92707,8 @@ void main() {
 	// link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
 	// if one belongs to the outer ring and another to a hole, it merges it into a single ring
 	function splitPolygon(a, b) {
-	    var a2 = new Node(a.i, a.x, a.y),
-	        b2 = new Node(b.i, b.x, b.y),
+	    var a2 = new Node$1(a.i, a.x, a.y),
+	        b2 = new Node$1(b.i, b.x, b.y),
 	        an = a.next,
 	        bp = b.prev;
 
@@ -101988,7 +92729,7 @@ void main() {
 
 	// create a node and optionally link it with previous one (in a circular doubly linked list)
 	function insertNode(i, x, y, last) {
-	    var p = new Node(i, x, y);
+	    var p = new Node$1(i, x, y);
 
 	    if (!last) {
 	        p.prev = p;
@@ -102011,7 +92752,7 @@ void main() {
 	    if (p.nextZ) p.nextZ.prevZ = p.prevZ;
 	}
 
-	function Node(i, x, y) {
+	function Node$1(i, x, y) {
 	    // vertex index in coordinates array
 	    this.i = i;
 
@@ -103240,7 +93981,7 @@ void main(){
 	}
 
 	const drawText$1 = [drawTextCanvas, drawTextCanvas2, drawTextCanvas3, drawTextCanvas4, drawTextCanvas5, drawTextCanvas6];
-	const updateText = [updateTextCanvas];
+	const updateText = [updateTextCanvas, updateTextCanvas2];
 	class BaseTitle extends Sprite {
 	    text;
 	    opts;
@@ -104408,6 +95149,11 @@ void main(){
 	    setSize(size) {
 	        this.baseTitle.update({
 	            size: size
+	        });
+	    }
+	    setBgColor(color) {
+	        this.baseTitle.update({
+	            bgColor: color
 	        });
 	    }
 	}
@@ -108170,6 +98916,9349 @@ void main(){
 	        });
 	    }
 	}
+
+	class Node {
+
+		constructor( type ) {
+
+			this.uuid = MathUtils.generateUUID();
+
+			this.name = '';
+
+			this.type = type;
+
+			this.userData = {};
+
+		}
+
+		analyze( builder, settings = {} ) {
+
+			builder.analyzing = true;
+
+			this.build( builder.addFlow( settings.slot, settings.cache, settings.context ), 'v4' );
+
+			builder.clearVertexNodeCode();
+			builder.clearFragmentNodeCode();
+
+			builder.removeFlow();
+
+			builder.analyzing = false;
+
+		}
+
+		analyzeAndFlow( builder, output, settings = {} ) {
+
+			this.analyze( builder, settings );
+
+			return this.flow( builder, output, settings );
+
+		}
+
+		flow( builder, output, settings = {} ) {
+
+			builder.addFlow( settings.slot, settings.cache, settings.context );
+
+			const flow = {};
+			flow.result = this.build( builder, output );
+			flow.code = builder.clearNodeCode();
+			flow.extra = builder.context.extra;
+
+			builder.removeFlow();
+
+			return flow;
+
+		}
+
+		build( builder, output, uuid ) {
+
+			output = output || this.getType( builder, output );
+
+			const data = builder.getNodeData( uuid || this );
+
+			if ( builder.analyzing ) {
+
+				this.appendDepsNode( builder, data, output );
+
+			}
+
+			if ( builder.nodes.indexOf( this ) === - 1 ) {
+
+				builder.nodes.push( this );
+
+			}
+
+			if ( this.updateFrame !== undefined && builder.updaters.indexOf( this ) === - 1 ) {
+
+				builder.updaters.push( this );
+
+			}
+
+			return this.generate( builder, output, uuid );
+
+		}
+
+		generate( /* builder, output, uuid, type, ns */ ) {
+
+			// This method needs to be implemented in subclasses
+
+		}
+
+		getHash() {
+
+			let hash = '{';
+			let prop, obj;
+
+			for ( prop in this ) {
+
+				obj = this[ prop ];
+
+				if ( obj instanceof Node ) {
+
+					hash += '"' + prop + '":' + obj.getHash() + ',';
+
+				}
+
+			}
+
+			if ( this.hashProperties ) {
+
+				for ( let i = 0; i < this.hashProperties.length; i ++ ) {
+
+					prop = this.hashProperties[ i ];
+					obj = this[ prop ];
+
+					hash += '"' + prop + '":"' + String( obj ) + '",';
+
+				}
+
+			}
+
+			hash += '"id":"' + this.uuid + '"}';
+
+			return hash;
+
+		}
+
+		appendDepsNode( builder, data, output ) {
+
+			data.deps = ( data.deps || 0 ) + 1;
+
+			const outputLen = builder.getTypeLength( output );
+
+			if ( outputLen > ( data.outputMax || 0 ) || this.getType( builder, output ) ) {
+
+				data.outputMax = outputLen;
+				data.output = output;
+
+			}
+
+		}
+
+		setName( name ) {
+
+			this.name = name;
+
+			return this;
+
+		}
+
+		getName( /* builder */ ) {
+
+			return this.name;
+
+		}
+
+		getType( builder, output ) {
+
+			return output === 'sampler2D' || output === 'samplerCube' ? output : this.type;
+
+		}
+
+		getJSONNode( meta ) {
+
+			const isRootObject = ( meta === undefined || typeof meta === 'string' );
+
+			if ( ! isRootObject && meta.nodes[ this.uuid ] !== undefined ) {
+
+				return meta.nodes[ this.uuid ];
+
+			}
+
+		}
+
+		copy( source ) {
+
+			if ( source.name !== undefined ) this.name = source.name;
+
+			if ( source.userData !== undefined ) this.userData = JSON.parse( JSON.stringify( source.userData ) );
+
+			return this;
+
+		}
+
+		createJSONNode( meta ) {
+
+			const isRootObject = ( meta === undefined || typeof meta === 'string' );
+
+			const data = {};
+
+			if ( typeof this.nodeType !== 'string' ) throw new Error( 'Node does not allow serialization.' );
+
+			data.uuid = this.uuid;
+			data.nodeType = this.nodeType;
+
+			if ( this.name !== '' ) data.name = this.name;
+
+			if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
+
+			if ( ! isRootObject ) {
+
+				meta.nodes[ this.uuid ] = data;
+
+			}
+
+			return data;
+
+		}
+
+		toJSON( meta ) {
+
+			return this.getJSONNode( meta ) || this.createJSONNode( meta );
+
+		}
+
+	}
+
+	Node.prototype.isNode = true;
+	Node.prototype.hashProperties = undefined;
+
+	class TempNode extends Node {
+
+		constructor( type, params = {} ) {
+
+			super( type );
+
+			this.shared = params.shared !== undefined ? params.shared : true;
+			this.unique = params.unique !== undefined ? params.unique : false;
+
+		}
+
+		build( builder, output, uuid, ns ) {
+
+			output = output || this.getType( builder );
+
+			if ( this.getShared( builder, output ) ) {
+
+				const isUnique = this.getUnique( builder, output );
+
+				if ( isUnique && this.constructor.uuid === undefined ) {
+
+					this.constructor.uuid = MathUtils.generateUUID();
+
+				}
+
+				uuid = builder.getUuid( uuid || this.getUuid(), ! isUnique );
+
+				const data = builder.getNodeData( uuid ),
+					type = data.output || this.getType( builder );
+
+				if ( builder.analyzing ) {
+
+					if ( ( data.deps || 0 ) > 0 || this.getLabel() ) {
+
+						this.appendDepsNode( builder, data, output );
+
+						return this.generate( builder, output, uuid );
+
+					}
+
+					return super.build( builder, output, uuid );
+
+				} else if ( isUnique ) {
+
+					data.name = data.name || super.build( builder, output, uuid );
+
+					return data.name;
+
+				} else if ( ! this.getLabel() && ( ! this.getShared( builder, type ) || ( builder.context.ignoreCache || data.deps === 1 ) ) ) {
+
+					return super.build( builder, output, uuid );
+
+				}
+
+				uuid = this.getUuid( false );
+
+				let name = this.getTemp( builder, uuid );
+
+				if ( name ) {
+
+					return builder.format( name, type, output );
+
+				} else {
+
+					name = TempNode.prototype.generate.call( this, builder, output, uuid, data.output, ns );
+
+					const code = this.generate( builder, type, uuid );
+
+					builder.addNodeCode( name + ' = ' + code + ';' );
+
+					return builder.format( name, type, output );
+
+				}
+
+			}
+
+			return super.build( builder, output, uuid );
+
+		}
+
+		getShared( builder, output ) {
+
+			return output !== 'sampler2D' && output !== 'samplerCube' && this.shared;
+
+		}
+
+		getUnique( /* builder, output */ ) {
+
+			return this.unique;
+
+		}
+
+		setLabel( name ) {
+
+			this.label = name;
+
+			return this;
+
+		}
+
+		getLabel( /* builder */ ) {
+
+			return this.label;
+
+		}
+
+		getUuid( unique ) {
+
+			let uuid = unique || unique == undefined ? this.constructor.uuid || this.uuid : this.uuid;
+
+			if ( typeof this.scope === 'string' ) uuid = this.scope + '-' + uuid;
+
+			return uuid;
+
+		}
+
+		getTemp( builder, uuid ) {
+
+			uuid = uuid || this.uuid;
+
+			const tempVar = builder.getVars()[ uuid ];
+
+			return tempVar ? tempVar.name : undefined;
+
+		}
+
+		generate( builder, output, uuid, type, ns ) {
+
+			if ( ! this.getShared( builder, output ) ) console.error( 'THREE.TempNode is not shared!' );
+
+			uuid = uuid || this.uuid;
+
+			return builder.getTempVar( uuid, type || this.getType( builder ), ns, this.getLabel() ).name;
+
+		}
+
+	}
+
+	class InputNode extends TempNode {
+
+		constructor( type, params ) {
+
+			params = params || {};
+			params.shared = params.shared !== undefined ? params.shared : false;
+
+			super( type, params );
+
+			this.readonly = false;
+
+		}
+
+		setReadonly( value ) {
+
+			this.readonly = value;
+
+			this.hashProperties = this.readonly ? [ 'value' ] : undefined;
+
+			return this;
+
+		}
+
+		getReadonly( /* builder */ ) {
+
+			return this.readonly;
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			if ( source.readonly !== undefined ) this.readonly = source.readonly;
+
+			return this;
+
+		}
+
+		createJSONNode( meta ) {
+
+			const data = super.createJSONNode( meta );
+
+			if ( this.readonly === true ) data.readonly = this.readonly;
+
+			return data;
+
+		}
+
+		generate( builder, output, uuid, type, ns, needsUpdate ) {
+
+			uuid = builder.getUuid( uuid || this.getUuid() );
+			type = type || this.getType( builder );
+
+			const data = builder.getNodeData( uuid ),
+				readonly = this.getReadonly( builder ) && this.generateReadonly !== undefined;
+
+			if ( readonly ) {
+
+				return this.generateReadonly( builder, output, uuid, type, ns, needsUpdate );
+
+			} else {
+
+				if ( builder.isShader( 'vertex' ) ) {
+
+					if ( ! data.vertex ) {
+
+						data.vertex = builder.createVertexUniform( type, this, ns, needsUpdate, this.getLabel() );
+
+					}
+
+					return builder.format( data.vertex.name, type, output );
+
+				} else {
+
+					if ( ! data.fragment ) {
+
+						data.fragment = builder.createFragmentUniform( type, this, ns, needsUpdate, this.getLabel() );
+
+					}
+
+					return builder.format( data.fragment.name, type, output );
+
+				}
+
+			}
+
+		}
+
+	}
+
+	const declarationRegexp$2 = /^([a-z_0-9]+)\s([a-z_0-9]+)\s?\=?\s?(.*?)(\;|$)/i;
+
+	class ConstNode extends TempNode {
+
+		constructor( src, useDefine ) {
+
+			super();
+
+			this.parse( src || ConstNode.PI, useDefine );
+
+		}
+
+		getType( builder ) {
+
+			return builder.getTypeByFormat( this.type );
+
+		}
+
+		parse( src, useDefine ) {
+
+			this.src = src || '';
+
+			let name, type, value = '';
+
+			const match = this.src.match( declarationRegexp$2 );
+
+			this.useDefine = useDefine || this.src.charAt( 0 ) === '#';
+
+			if ( match && match.length > 1 ) {
+
+				type = match[ 1 ];
+				name = match[ 2 ];
+				value = match[ 3 ];
+
+			} else {
+
+				name = this.src;
+				type = 'f';
+
+			}
+
+			this.name = name;
+			this.type = type;
+			this.value = value;
+
+		}
+
+		build( builder, output ) {
+
+			if ( output === 'source' ) {
+
+				if ( this.value ) {
+
+					if ( this.useDefine ) {
+
+						return '#define ' + this.name + ' ' + this.value;
+
+					}
+
+					return 'const ' + this.type + ' ' + this.name + ' = ' + this.value + ';';
+
+				} else if ( this.useDefine ) {
+
+					return this.src;
+
+				}
+
+			} else {
+
+				builder.include( this );
+
+				return builder.format( this.name, this.getType( builder ), output );
+
+			}
+
+		}
+
+		generate( builder, output ) {
+
+			return builder.format( this.name, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.parse( source.src, source.useDefine );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.src = this.src;
+
+				if ( data.useDefine === true ) data.useDefine = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ConstNode.prototype.nodeType = 'Const';
+
+	ConstNode.PI = 'PI';
+	ConstNode.PI2 = 'PI2';
+	ConstNode.RECIPROCAL_PI = 'RECIPROCAL_PI';
+	ConstNode.RECIPROCAL_PI2 = 'RECIPROCAL_PI2';
+	ConstNode.LOG2 = 'LOG2';
+	ConstNode.EPSILON = 'EPSILON';
+
+	class VarNode extends Node {
+
+		constructor( type, value ) {
+
+			super( type );
+
+			this.value = value;
+
+		}
+
+		getType( builder ) {
+
+			return builder.getTypeByFormat( this.type );
+
+		}
+
+		generate( builder, output ) {
+
+			const varying = builder.getVar( this.uuid, this.type );
+
+			if ( this.value && builder.isShader( 'vertex' ) ) {
+
+				builder.addNodeCode( varying.name + ' = ' + this.value.build( builder, this.getType( builder ) ) + ';' );
+
+			}
+
+			return builder.format( varying.name, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.type = source.type;
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.type = this.type;
+
+				if ( this.value ) data.value = this.value.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	VarNode.prototype.nodeType = 'Var';
+
+	const declarationRegexp$1 = /^struct\s*([a-z_0-9]+)\s*{\s*((.|\n)*?)}/img,
+		propertiesRegexp$1 = /\s*(\w*?)\s*(\w*?)(\=|\;)/img;
+
+	class StructNode extends TempNode {
+
+		constructor( src ) {
+
+			super();
+
+			this.parse( src );
+
+		}
+
+		getType( builder ) {
+
+			return builder.getTypeByFormat( this.name );
+
+		}
+
+		getInputByName( name ) {
+
+			let i = this.inputs.length;
+
+			while ( i -- ) {
+
+				if ( this.inputs[ i ].name === name ) {
+
+					return this.inputs[ i ];
+
+				}
+
+			}
+
+		}
+
+		generate( builder, output ) {
+
+			if ( output === 'source' ) {
+
+				return this.src + ';';
+
+			} else {
+
+				return builder.format( '( ' + this.src + ' )', this.getType( builder ), output );
+
+			}
+
+		}
+
+		parse( src = '' ) {
+
+			this.src = src;
+
+			this.inputs = [];
+
+			const declaration = declarationRegexp$1.exec( this.src );
+
+			if ( declaration ) {
+
+				const properties = declaration[ 2 ];
+				let match;
+
+				while ( match = propertiesRegexp$1.exec( properties ) ) {
+
+					this.inputs.push( {
+						type: match[ 1 ],
+						name: match[ 2 ]
+					} );
+
+				}
+
+				this.name = declaration[ 1 ];
+
+			} else {
+
+				this.name = '';
+
+			}
+
+			this.type = this.name;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.src = this.src;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	StructNode.prototype.nodeType = 'Struct';
+
+	class AttributeNode extends Node {
+
+		constructor( name, type ) {
+
+			super( type );
+
+			this.name = name;
+
+		}
+
+		getAttributeType( builder ) {
+
+			return typeof this.type === 'number' ? builder.getConstructorFromLength( this.type ) : this.type;
+
+		}
+
+		getType( builder ) {
+
+			const type = this.getAttributeType( builder );
+
+			return builder.getTypeByFormat( type );
+
+		}
+
+		generate( builder, output ) {
+
+			const type = this.getAttributeType( builder );
+
+			const attribute = builder.getAttribute( this.name, type ),
+				name = builder.isShader( 'vertex' ) ? this.name : attribute.varying.name;
+
+			return builder.format( name, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.type = source.type;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.type = this.type;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	AttributeNode.prototype.nodeType = 'Attribute';
+
+	const NodeLib = {
+
+		nodes: {},
+		keywords: {},
+
+		add: function ( node ) {
+
+			this.nodes[ node.name ] = node;
+
+		},
+
+		addKeyword: function ( name, callback, cache ) {
+
+			cache = cache !== undefined ? cache : true;
+
+			this.keywords[ name ] = { callback: callback, cache: cache };
+
+		},
+
+		remove: function ( node ) {
+
+			delete this.nodes[ node.name ];
+
+		},
+
+		removeKeyword: function ( name ) {
+
+			delete this.keywords[ name ];
+
+		},
+
+		get: function ( name ) {
+
+			return this.nodes[ name ];
+
+		},
+
+		getKeyword: function ( name, builder ) {
+
+			return this.keywords[ name ].callback.call( this, builder );
+
+		},
+
+		getKeywordData: function ( name ) {
+
+			return this.keywords[ name ];
+
+		},
+
+		contains: function ( name ) {
+
+			return this.nodes[ name ] !== undefined;
+
+		},
+
+		containsKeyword: function ( name ) {
+
+			return this.keywords[ name ] !== undefined;
+
+		}
+
+	};
+
+	const declarationRegexp = /^\s*([a-z_0-9]+)\s+([a-z_0-9]+)\s*\(([\s\S]*?)\)/i,
+		propertiesRegexp = /[a-z_0-9]+/ig;
+
+	class FunctionNode extends TempNode {
+
+		constructor( src, includes, extensions, keywords, type ) {
+
+			super( type );
+
+			this.isMethod = type === undefined;
+			this.isInterface = false;
+
+			this.parse( src, includes, extensions, keywords );
+
+		}
+
+		getShared( /* builder, output */ ) {
+
+			return ! this.isMethod;
+
+		}
+
+		getType( builder ) {
+
+			return builder.getTypeByFormat( this.type );
+
+		}
+
+		getInputByName( name ) {
+
+			let i = this.inputs.length;
+
+			while ( i -- ) {
+
+				if ( this.inputs[ i ].name === name ) {
+
+					return this.inputs[ i ];
+
+				}
+
+			}
+
+		}
+
+		getIncludeByName( name ) {
+
+			let i = this.includes.length;
+
+			while ( i -- ) {
+
+				if ( this.includes[ i ].name === name ) {
+
+					return this.includes[ i ];
+
+				}
+
+			}
+
+		}
+
+		generate( builder, output ) {
+
+			let match, offset = 0, src = this.src;
+
+			for ( let i = 0; i < this.includes.length; i ++ ) {
+
+				builder.include( this.includes[ i ], this );
+
+			}
+
+			for ( const ext in this.extensions ) {
+
+				builder.extensions[ ext ] = true;
+
+			}
+
+			const matches = [];
+
+			while ( match = propertiesRegexp.exec( this.src ) ) matches.push( match );
+
+			for ( let i = 0; i < matches.length; i ++ ) {
+
+				const match = matches[ i ];
+
+				const prop = match[ 0 ],
+					isGlobal = this.isMethod ? ! this.getInputByName( prop ) : true;
+
+				let reference = prop;
+
+				if ( this.keywords[ prop ] || ( this.useKeywords && isGlobal && NodeLib.containsKeyword( prop ) ) ) {
+
+					let node = this.keywords[ prop ];
+
+					if ( ! node ) {
+
+						const keyword = NodeLib.getKeywordData( prop );
+
+						if ( keyword.cache ) node = builder.keywords[ prop ];
+
+						node = node || NodeLib.getKeyword( prop, builder );
+
+						if ( keyword.cache ) builder.keywords[ prop ] = node;
+
+					}
+
+					reference = node.build( builder );
+
+				}
+
+				if ( prop !== reference ) {
+
+					src = src.substring( 0, match.index + offset ) + reference + src.substring( match.index + prop.length + offset );
+
+					offset += reference.length - prop.length;
+
+				}
+
+				if ( this.getIncludeByName( reference ) === undefined && NodeLib.contains( reference ) ) {
+
+					builder.include( NodeLib.get( reference ) );
+
+				}
+
+			}
+
+			if ( output === 'source' ) {
+
+				return src;
+
+			} else if ( this.isMethod ) {
+
+				if ( ! this.isInterface ) {
+
+					builder.include( this, false, src );
+
+				}
+
+				return this.name;
+
+			} else {
+
+				return builder.format( '( ' + src + ' )', this.getType( builder ), output );
+
+			}
+
+		}
+
+		parse( src, includes, extensions, keywords ) {
+
+			this.src = src || '';
+
+			this.includes = includes || [];
+			this.extensions = extensions || {};
+			this.keywords = keywords || {};
+
+			if ( this.isMethod ) {
+
+				const match = this.src.match( declarationRegexp );
+
+				this.inputs = [];
+
+				if ( match && match.length == 4 ) {
+
+					this.type = match[ 1 ];
+					this.name = match[ 2 ];
+
+					const inputs = match[ 3 ].match( propertiesRegexp );
+
+					if ( inputs ) {
+
+						let i = 0;
+
+						while ( i < inputs.length ) {
+
+							let qualifier = inputs[ i ++ ];
+							let type;
+
+							if ( qualifier === 'in' || qualifier === 'out' || qualifier === 'inout' ) {
+
+								type = inputs[ i ++ ];
+
+							} else {
+
+								type = qualifier;
+								qualifier = '';
+
+							}
+
+							const name = inputs[ i ++ ];
+
+							this.inputs.push( {
+								name: name,
+								type: type,
+								qualifier: qualifier
+							} );
+
+						}
+
+					}
+
+					this.isInterface = this.src.indexOf( '{' ) === - 1;
+
+				} else {
+
+					this.type = '';
+					this.name = '';
+
+				}
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.isMethod = source.isMethod;
+			this.useKeywords = source.useKeywords;
+
+			this.parse( source.src, source.includes, source.extensions, source.keywords );
+
+			if ( source.type !== undefined ) this.type = source.type;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.src = this.src;
+				data.isMethod = this.isMethod;
+				data.useKeywords = this.useKeywords;
+
+				if ( ! this.isMethod ) data.type = this.type;
+
+				data.extensions = JSON.parse( JSON.stringify( this.extensions ) );
+				data.keywords = {};
+
+				for ( const keyword in this.keywords ) {
+
+					data.keywords[ keyword ] = this.keywords[ keyword ].toJSON( meta ).uuid;
+
+				}
+
+				if ( this.includes.length ) {
+
+					data.includes = [];
+
+					for ( let i = 0; i < this.includes.length; i ++ ) {
+
+						data.includes.push( this.includes[ i ].toJSON( meta ).uuid );
+
+					}
+
+				}
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	FunctionNode.prototype.nodeType = 'Function';
+	FunctionNode.prototype.useKeywords = true;
+
+	class ExpressionNode extends FunctionNode {
+
+		constructor( src, type, keywords, extensions, includes ) {
+
+			super( src, includes, extensions, keywords, type );
+
+		}
+
+	}
+
+	ExpressionNode.prototype.nodeType = 'Expression';
+
+	class FunctionCallNode extends TempNode {
+
+		constructor( func, inputs ) {
+
+			super();
+
+			this.setFunction( func, inputs );
+
+		}
+
+		setFunction( func, inputs = [] ) {
+
+			this.value = func;
+			this.inputs = inputs;
+
+		}
+
+		getFunction() {
+
+			return this.value;
+
+		}
+
+		getType( builder ) {
+
+			return this.value.getType( builder );
+
+		}
+
+		generate( builder, output ) {
+
+			const type = this.getType( builder ),
+				func = this.value;
+
+			let code = func.build( builder, output ) + '( ';
+			const params = [];
+
+			for ( let i = 0; i < func.inputs.length; i ++ ) {
+
+				const inpt = func.inputs[ i ],
+					param = this.inputs[ i ] || this.inputs[ inpt.name ];
+
+				params.push( param.build( builder, builder.getTypeByFormat( inpt.type ) ) );
+
+			}
+
+			code += params.join( ', ' ) + ' )';
+
+			return builder.format( code, type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			for ( const prop in source.inputs ) {
+
+				this.inputs[ prop ] = source.inputs[ prop ];
+
+			}
+
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				const func = this.value;
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+
+				if ( func.inputs.length ) {
+
+					data.inputs = {};
+
+					for ( let i = 0; i < func.inputs.length; i ++ ) {
+
+						const inpt = func.inputs[ i ],
+							node = this.inputs[ i ] || this.inputs[ inpt.name ];
+
+						data.inputs[ inpt.name ] = node.toJSON( meta ).uuid;
+
+					}
+
+				}
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	FunctionCallNode.prototype.nodeType = 'FunctionCall';
+
+	const NodeUtils = {
+
+		elements: [ 'x', 'y', 'z', 'w' ],
+
+		addShortcuts: function () {
+
+			function applyShortcut( proxy, property, subProperty ) {
+
+				if ( subProperty ) {
+
+					return {
+
+						get: function () {
+
+							return this[ proxy ][ property ][ subProperty ];
+
+						},
+
+						set: function ( val ) {
+
+							this[ proxy ][ property ][ subProperty ] = val;
+
+						}
+
+					};
+
+				} else {
+
+					return {
+
+						get: function () {
+
+							return this[ proxy ][ property ];
+
+						},
+
+						set: function ( val ) {
+
+							this[ proxy ][ property ] = val;
+
+						}
+
+					};
+
+				}
+
+			}
+
+			return function addShortcuts( proto, proxy, list ) {
+
+				const shortcuts = {};
+
+				for ( let i = 0; i < list.length; ++ i ) {
+
+					const data = list[ i ].split( '.' ),
+						property = data[ 0 ],
+						subProperty = data[ 1 ];
+
+					shortcuts[ property ] = applyShortcut( proxy, property, subProperty );
+
+				}
+
+				Object.defineProperties( proto, shortcuts );
+
+			};
+
+		}()
+
+	};
+
+	class NodeFrame {
+
+		constructor( time ) {
+
+			this.time = time !== undefined ? time : 0;
+
+			this.id = 0;
+
+		}
+
+		update( delta ) {
+
+			++ this.id;
+
+			this.time += delta;
+			this.delta = delta;
+
+			return this;
+
+		}
+
+		setRenderer( renderer ) {
+
+			this.renderer = renderer;
+
+			return this;
+
+		}
+
+		setRenderTexture( renderTexture ) {
+
+			this.renderTexture = renderTexture;
+
+			return this;
+
+		}
+
+		updateNode( node ) {
+
+			if ( node.frameId === this.id ) return this;
+
+			node.updateFrame( this );
+
+			node.frameId = this.id;
+
+			return this;
+
+		}
+
+	}
+
+	class NodeUniform {
+
+		constructor( params = {} ) {
+
+			this.name = params.name;
+			this.type = params.type;
+			this.node = params.node;
+			this.needsUpdate = params.needsUpdate;
+
+		}
+
+		get value() {
+
+			return this.node.value;
+
+		}
+
+		set value( val ) {
+
+			this.node.value = val;
+
+		}
+
+	}
+
+	class Vector2Node extends InputNode {
+
+		constructor( x, y ) {
+
+			super( 'v2' );
+
+			this.value = x instanceof Vector2 ? x : new Vector2( x, y );
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate*/ ) {
+
+			return builder.format( 'vec2( ' + this.x + ', ' + this.y + ' )', type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value.copy( source );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.x = this.x;
+				data.y = this.y;
+
+				if ( this.readonly === true ) data.readonly = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Vector2Node.prototype.nodeType = 'Vector2';
+
+	NodeUtils.addShortcuts( Vector2Node.prototype, 'value', [ 'x', 'y' ] );
+
+	class Vector3Node extends InputNode {
+
+		constructor( x, y, z ) {
+
+			super( 'v3' );
+
+			this.value = x instanceof Vector3 ? x : new Vector3( x, y, z );
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate*/ ) {
+
+			return builder.format( 'vec3( ' + this.x + ', ' + this.y + ', ' + this.z + ' )', type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value.copy( source );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.x = this.x;
+				data.y = this.y;
+				data.z = this.z;
+
+				if ( this.readonly === true ) data.readonly = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Vector3Node.prototype.nodeType = 'Vector3';
+
+	NodeUtils.addShortcuts( Vector3Node.prototype, 'value', [ 'x', 'y', 'z' ] );
+
+	class Vector4Node extends InputNode {
+
+		constructor( x, y, z, w ) {
+
+			super( 'v4' );
+
+			this.value = x instanceof Vector4 ? x : new Vector4( x, y, z, w );
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate*/ ) {
+
+			return builder.format( 'vec4( ' + this.x + ', ' + this.y + ', ' + this.z + ', ' + this.w + ' )', type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value.copy( source );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.x = this.x;
+				data.y = this.y;
+				data.z = this.z;
+				data.w = this.w;
+
+				if ( this.readonly === true ) data.readonly = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Vector4Node.prototype.nodeType = 'Vector4';
+
+	NodeUtils.addShortcuts( Vector4Node.prototype, 'value', [ 'x', 'y', 'z', 'w' ] );
+
+	class UVNode extends TempNode {
+
+		constructor( index ) {
+
+			super( 'v2', { shared: false } );
+
+			this.index = index || 0;
+
+		}
+
+		generate( builder, output ) {
+
+			builder.requires.uv[ this.index ] = true;
+
+			const uvIndex = this.index > 0 ? this.index + 1 : '';
+			const result = builder.isShader( 'vertex' ) ? 'uv' + uvIndex : 'vUv' + uvIndex;
+
+			return builder.format( result, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.index = source.index;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.index = this.index;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	UVNode.prototype.nodeType = 'UV';
+
+	NodeLib.addKeyword( 'uv', function () {
+
+		return new UVNode();
+
+	} );
+
+	NodeLib.addKeyword( 'uv2', function () {
+
+		return new UVNode( 1 );
+
+	} );
+
+	class FloatNode extends InputNode {
+
+		constructor( value ) {
+
+			super( 'f' );
+
+			this.value = value || 0;
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
+
+			return builder.format( this.value + ( this.value % 1 ? '' : '.0' ), type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value;
+
+				if ( this.readonly === true ) data.readonly = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	FloatNode.prototype.nodeType = 'Float';
+
+	class ColorSpaceNode extends TempNode {
+
+		constructor( input, method ) {
+
+			super( 'v4' );
+
+			this.input = input;
+
+			this.method = method || ColorSpaceNode.LINEAR_TO_LINEAR;
+
+		}
+
+		generate( builder, output ) {
+
+			const input = this.input.build( builder, 'v4' );
+			const outputType = this.getType( builder );
+
+			const methodNode = ColorSpaceNode.Nodes[ this.method ];
+			const method = builder.include( methodNode );
+
+			if ( method === ColorSpaceNode.LINEAR_TO_LINEAR ) {
+
+				return builder.format( input, outputType, output );
+
+			} else {
+
+				if ( methodNode.inputs.length === 2 ) {
+
+					const factor = this.factor.build( builder, 'f' );
+
+					return builder.format( method + '( ' + input + ', ' + factor + ' )', outputType, output );
+
+				} else {
+
+					return builder.format( method + '( ' + input + ' )', outputType, output );
+
+				}
+
+			}
+
+		}
+
+		fromEncoding( encoding ) {
+
+			const components = ColorSpaceNode.getEncodingComponents( encoding );
+
+			this.method = 'LinearTo' + components[ 0 ];
+			this.factor = components[ 1 ];
+
+		}
+
+		fromDecoding( encoding ) {
+
+			const components = ColorSpaceNode.getEncodingComponents( encoding );
+
+			this.method = components[ 0 ] + 'ToLinear';
+			this.factor = components[ 1 ];
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.input = source.input;
+			this.method = source.method;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.input = this.input.toJSON( meta ).uuid;
+				data.method = this.method;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ColorSpaceNode.Nodes = ( function () {
+
+		// For a discussion of what this is, please read this: http://lousodrome.net/blog/light/2013/05/26/gamma-correct-and-hdr-rendering-in-a-32-bits-buffer/
+
+		const LinearToLinear = new FunctionNode( /* glsl */`
+		vec4 LinearToLinear( in vec4 value ) {
+
+			return value;
+
+		}`
+		);
+
+		const GammaToLinear = new FunctionNode( /* glsl */`
+		vec4 GammaToLinear( in vec4 value, in float gammaFactor ) {
+
+			return vec4( pow( value.xyz, vec3( gammaFactor ) ), value.w );
+
+		}`
+		);
+
+		const LinearToGamma = new FunctionNode( /* glsl */`
+		vec4 LinearToGamma( in vec4 value, in float gammaFactor ) {
+
+			return vec4( pow( value.xyz, vec3( 1.0 / gammaFactor ) ), value.w );
+
+		}`
+		);
+
+		const sRGBToLinear = new FunctionNode( /* glsl */`
+		vec4 sRGBToLinear( in vec4 value ) {
+
+			return vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.w );
+
+		}`
+		);
+
+		const LinearTosRGB = new FunctionNode( /* glsl */`
+		vec4 LinearTosRGB( in vec4 value ) {
+
+			return vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.w );
+
+		}`
+		);
+
+		const RGBEToLinear = new FunctionNode( /* glsl */`
+		vec4 RGBEToLinear( in vec4 value ) {
+
+			return vec4( value.rgb * exp2( value.a * 255.0 - 128.0 ), 1.0 );
+
+		}`
+		);
+
+		const LinearToRGBE = new FunctionNode( /* glsl */`
+		vec4 LinearToRGBE( in vec4 value ) {
+
+			float maxComponent = max( max( value.r, value.g ), value.b );
+			float fExp = clamp( ceil( log2( maxComponent ) ), -128.0, 127.0 );
+			return vec4( value.rgb / exp2( fExp ), ( fExp + 128.0 ) / 255.0 );
+
+		}`
+		);
+
+		// reference: http://iwasbeingirony.blogspot.ca/2010/06/difference-between-rgbm-and-rgbd.html
+
+		const RGBMToLinear = new FunctionNode( /* glsl */`
+		vec3 RGBMToLinear( in vec4 value, in float maxRange ) {
+
+			return vec4( value.xyz * value.w * maxRange, 1.0 );
+
+		}`
+		);
+
+		const LinearToRGBM = new FunctionNode( /* glsl */`
+		vec3 LinearToRGBM( in vec4 value, in float maxRange ) {
+
+			float maxRGB = max( value.x, max( value.g, value.b ) );
+			float M      = clamp( maxRGB / maxRange, 0.0, 1.0 );
+			M            = ceil( M * 255.0 ) / 255.0;
+			return vec4( value.rgb / ( M * maxRange ), M );
+
+		}`
+		);
+
+		// reference: http://iwasbeingirony.blogspot.ca/2010/06/difference-between-rgbm-and-rgbd.html
+
+		const RGBDToLinear = new FunctionNode( /* glsl */`
+		vec3 RGBDToLinear( in vec4 value, in float maxRange ) {
+
+			return vec4( value.rgb * ( ( maxRange / 255.0 ) / value.a ), 1.0 );
+
+		}`
+		);
+
+
+		const LinearToRGBD = new FunctionNode( /* glsl */`
+		vec3 LinearToRGBD( in vec4 value, in float maxRange ) {
+
+			float maxRGB = max( value.x, max( value.g, value.b ) );
+			float D      = max( maxRange / maxRGB, 1.0 );
+			D            = clamp( floor( D ) / 255.0, 0.0, 1.0 );
+			return vec4( value.rgb * ( D * ( 255.0 / maxRange ) ), D );
+
+		}`
+		);
+
+		// LogLuv reference: http://graphicrants.blogspot.ca/2009/04/rgbm-color-encoding.html
+
+		// M matrix, for encoding
+
+		const cLogLuvM = new ConstNode( 'const mat3 cLogLuvM = mat3( 0.2209, 0.3390, 0.4184, 0.1138, 0.6780, 0.7319, 0.0102, 0.1130, 0.2969 );' );
+
+		const LinearToLogLuv = new FunctionNode( /* glsl */`
+		vec4 LinearToLogLuv( in vec4 value ) {
+
+			vec3 Xp_Y_XYZp = cLogLuvM * value.rgb;
+			Xp_Y_XYZp = max(Xp_Y_XYZp, vec3(1e-6, 1e-6, 1e-6));
+			vec4 vResult;
+			vResult.xy = Xp_Y_XYZp.xy / Xp_Y_XYZp.z;
+			float Le = 2.0 * log2(Xp_Y_XYZp.y) + 127.0;
+			vResult.w = fract(Le);
+			vResult.z = (Le - (floor(vResult.w*255.0))/255.0)/255.0;
+			return vResult;
+
+		}`
+		, [ cLogLuvM ] );
+
+		// Inverse M matrix, for decoding
+
+		const cLogLuvInverseM = new ConstNode( 'const mat3 cLogLuvInverseM = mat3( 6.0014, -2.7008, -1.7996, -1.3320, 3.1029, -5.7721, 0.3008, -1.0882, 5.6268 );' );
+
+		const LogLuvToLinear = new FunctionNode( /* glsl */`
+		vec4 LogLuvToLinear( in vec4 value ) {
+
+			float Le = value.z * 255.0 + value.w;
+			vec3 Xp_Y_XYZp;
+			Xp_Y_XYZp.y = exp2((Le - 127.0) / 2.0);
+			Xp_Y_XYZp.z = Xp_Y_XYZp.y / value.y;
+			Xp_Y_XYZp.x = value.x * Xp_Y_XYZp.z;
+			vec3 vRGB = cLogLuvInverseM * Xp_Y_XYZp.rgb;
+			return vec4( max(vRGB, 0.0), 1.0 );
+
+		}`
+		, [ cLogLuvInverseM ] );
+
+		return {
+			LinearToLinear: LinearToLinear,
+			GammaToLinear: GammaToLinear,
+			LinearToGamma: LinearToGamma,
+			sRGBToLinear: sRGBToLinear,
+			LinearTosRGB: LinearTosRGB,
+			RGBEToLinear: RGBEToLinear,
+			LinearToRGBE: LinearToRGBE,
+			RGBMToLinear: RGBMToLinear,
+			LinearToRGBM: LinearToRGBM,
+			RGBDToLinear: RGBDToLinear,
+			LinearToRGBD: LinearToRGBD,
+			cLogLuvM: cLogLuvM,
+			LinearToLogLuv: LinearToLogLuv,
+			cLogLuvInverseM: cLogLuvInverseM,
+			LogLuvToLinear: LogLuvToLinear
+		};
+
+	} )();
+
+	ColorSpaceNode.LINEAR_TO_LINEAR = 'LinearToLinear';
+
+	ColorSpaceNode.GAMMA_TO_LINEAR = 'GammaToLinear';
+	ColorSpaceNode.LINEAR_TO_GAMMA = 'LinearToGamma';
+
+	ColorSpaceNode.SRGB_TO_LINEAR = 'sRGBToLinear';
+	ColorSpaceNode.LINEAR_TO_SRGB = 'LinearTosRGB';
+
+	ColorSpaceNode.RGBE_TO_LINEAR = 'RGBEToLinear';
+	ColorSpaceNode.LINEAR_TO_RGBE = 'LinearToRGBE';
+
+	ColorSpaceNode.RGBM_TO_LINEAR = 'RGBMToLinear';
+	ColorSpaceNode.LINEAR_TO_RGBM = 'LinearToRGBM';
+
+	ColorSpaceNode.RGBD_TO_LINEAR = 'RGBDToLinear';
+	ColorSpaceNode.LINEAR_TO_RGBD = 'LinearToRGBD';
+
+	ColorSpaceNode.LINEAR_TO_LOG_LUV = 'LinearToLogLuv';
+	ColorSpaceNode.LOG_LUV_TO_LINEAR = 'LogLuvToLinear';
+
+	ColorSpaceNode.getEncodingComponents = function ( encoding ) {
+
+		switch ( encoding ) {
+
+			case LinearEncoding:
+				return [ 'Linear' ];
+			case sRGBEncoding:
+				return [ 'sRGB' ];
+			case RGBEEncoding:
+				return [ 'RGBE' ];
+			case RGBM7Encoding:
+				return [ 'RGBM', new FloatNode( 7.0 ).setReadonly( true ) ];
+			case RGBM16Encoding:
+				return [ 'RGBM', new FloatNode( 16.0 ).setReadonly( true ) ];
+			case RGBDEncoding:
+				return [ 'RGBD', new FloatNode( 256.0 ).setReadonly( true ) ];
+			case GammaEncoding:
+				return [ 'Gamma', new ExpressionNode( 'float( GAMMA_FACTOR )', 'f' ) ];
+
+		}
+
+	};
+
+	ColorSpaceNode.prototype.nodeType = 'ColorSpace';
+	ColorSpaceNode.prototype.hashProperties = [ 'method' ];
+
+	class TextureNode extends InputNode {
+
+		constructor( value, uv, bias, project ) {
+
+			super( 'v4', { shared: true } );
+
+			this.value = value;
+			this.uv = uv || new UVNode();
+			this.bias = bias;
+			this.project = project !== undefined ? project : false;
+
+		}
+
+		getTexture( builder, output ) {
+
+			return super.generate( builder, output, this.value.uuid, 't' );
+
+		}
+
+		generate( builder, output ) {
+
+			if ( output === 'sampler2D' ) {
+
+				return this.getTexture( builder, output );
+
+			}
+
+			const tex = this.getTexture( builder, output ),
+				uv = this.uv.build( builder, this.project ? 'v4' : 'v2' );
+
+			let bias = this.bias ? this.bias.build( builder, 'f' ) : undefined;
+
+			if ( bias === undefined && builder.context.bias ) {
+
+				bias = builder.context.bias.setTexture( this ).build( builder, 'f' );
+
+			}
+
+			let method, code;
+
+			if ( this.project ) method = 'texture2DProj';
+			else method = bias ? 'tex2DBias' : 'tex2D';
+
+			if ( bias ) code = method + '( ' + tex + ', ' + uv + ', ' + bias + ' )';
+			else code = method + '( ' + tex + ', ' + uv + ' )';
+
+			// add a custom context for fix incompatibility with the core
+			// include ColorSpace function only for vertex shader (in fragment shader color space functions is added automatically by core)
+			// this should be removed in the future
+			// context.include is used to include or not functions if used FunctionNode
+			// context.ignoreCache =: not create temp variables nodeT0..9 to optimize the code
+			const context = { include: builder.isShader( 'vertex' ), ignoreCache: true };
+			const outputType = this.getType( builder );
+
+			builder.addContext( context );
+
+			this.colorSpace = this.colorSpace || new ColorSpaceNode( new ExpressionNode( '', outputType ) );
+			this.colorSpace.fromDecoding( builder.getTextureEncodingFromMap( this.value ) );
+			this.colorSpace.input.parse( code );
+
+			code = this.colorSpace.build( builder, outputType );
+
+			// end custom context
+
+			builder.removeContext();
+
+			return builder.format( code, outputType, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			if ( source.value ) this.value = source.value;
+
+			this.uv = source.uv;
+
+			if ( source.bias ) this.bias = source.bias;
+			if ( source.project !== undefined ) this.project = source.project;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				if ( this.value ) data.value = this.value.uuid;
+
+				data.uv = this.uv.toJSON( meta ).uuid;
+				data.project = this.project;
+
+				if ( this.bias ) data.bias = this.bias.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	TextureNode.prototype.nodeType = 'Texture';
+
+	class PositionNode extends TempNode {
+
+		constructor( scope ) {
+
+			super( 'v3' );
+
+			this.scope = scope || PositionNode.LOCAL;
+
+		}
+
+		getType( ) {
+
+			switch ( this.scope ) {
+
+				case PositionNode.PROJECTION:
+
+					return 'v4';
+
+			}
+
+			return this.type;
+
+		}
+
+		getShared( /* builder */ ) {
+
+			switch ( this.scope ) {
+
+				case PositionNode.LOCAL:
+				case PositionNode.WORLD:
+
+					return false;
+
+			}
+
+			return true;
+
+		}
+
+		generate( builder, output ) {
+
+			let result;
+
+			switch ( this.scope ) {
+
+				case PositionNode.LOCAL:
+
+					if ( builder.isShader( 'vertex' ) ) {
+
+						result = 'transformed';
+
+					} else {
+
+						builder.requires.position = true;
+
+						result = 'vPosition';
+
+					}
+
+					break;
+
+				case PositionNode.WORLD:
+
+					if ( builder.isShader( 'vertex' ) ) {
+
+						return '( modelMatrix * vec4( transformed, 1.0 ) ).xyz';
+
+					} else {
+
+						builder.requires.worldPosition = true;
+
+						result = 'vWPosition';
+
+					}
+
+					break;
+
+				case PositionNode.VIEW:
+
+					result = builder.isShader( 'vertex' ) ? '-mvPosition.xyz' : 'vViewPosition';
+
+					break;
+
+				case PositionNode.PROJECTION:
+
+					result = builder.isShader( 'vertex' ) ? '( projectionMatrix * modelViewMatrix * vec4( position, 1.0 ) )' : 'vec4( 0.0 )';
+
+					break;
+
+			}
+
+			return builder.format( result, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.scope = source.scope;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.scope = this.scope;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	PositionNode.LOCAL = 'local';
+	PositionNode.WORLD = 'world';
+	PositionNode.VIEW = 'view';
+	PositionNode.PROJECTION = 'projection';
+
+	PositionNode.prototype.nodeType = 'Position';
+
+	NodeLib.addKeyword( 'position', function () {
+
+		return new PositionNode();
+
+	} );
+
+	NodeLib.addKeyword( 'worldPosition', function () {
+
+		return new PositionNode( PositionNode.WORLD );
+
+	} );
+
+	NodeLib.addKeyword( 'viewPosition', function () {
+
+		return new PositionNode( PositionNode.VIEW );
+
+	} );
+
+	class NormalNode extends TempNode {
+
+		constructor( scope ) {
+
+			super( 'v3' );
+
+			this.scope = scope || NormalNode.VIEW;
+
+		}
+
+		getShared() {
+
+			// if shared is false, TempNode will not create temp variable (for optimization)
+
+			return this.scope === NormalNode.WORLD;
+
+		}
+
+		build( builder, output, uuid, ns ) {
+
+			const contextNormal = builder.context[ this.scope + 'Normal' ];
+
+			if ( contextNormal ) {
+
+				return contextNormal.build( builder, output, uuid, ns );
+
+			}
+
+			return super.build( builder, output, uuid );
+
+		}
+
+		generate( builder, output ) {
+
+			let result;
+
+			switch ( this.scope ) {
+
+				case NormalNode.VIEW:
+
+					if ( builder.isShader( 'vertex' ) ) result = 'transformedNormal';
+					else result = 'geometryNormal';
+
+					break;
+
+				case NormalNode.LOCAL:
+
+					if ( builder.isShader( 'vertex' ) ) {
+
+						result = 'objectNormal';
+
+					} else {
+
+						builder.requires.normal = true;
+
+						result = 'vObjectNormal';
+
+					}
+
+					break;
+
+				case NormalNode.WORLD:
+
+					if ( builder.isShader( 'vertex' ) ) {
+
+						result = 'inverseTransformDirection( transformedNormal, viewMatrix ).xyz';
+
+					} else {
+
+						builder.requires.worldNormal = true;
+
+						result = 'vWNormal';
+
+					}
+
+					break;
+
+			}
+
+			return builder.format( result, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.scope = source.scope;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.scope = this.scope;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	NormalNode.LOCAL = 'local';
+	NormalNode.WORLD = 'world';
+	NormalNode.VIEW = 'view';
+
+	NormalNode.prototype.nodeType = 'Normal';
+
+	NodeLib.addKeyword( 'viewNormal', function () {
+
+		return new NormalNode( NormalNode.VIEW );
+
+	} );
+
+	NodeLib.addKeyword( 'localNormal', function () {
+
+		return new NormalNode( NormalNode.NORMAL );
+
+	} );
+
+	NodeLib.addKeyword( 'worldNormal', function () {
+
+		return new NormalNode( NormalNode.WORLD );
+
+	} );
+
+	class ReflectNode extends TempNode {
+
+		constructor( scope ) {
+
+			super( 'v3' );
+
+			this.scope = scope || ReflectNode.CUBE;
+
+		}
+
+		getUnique( builder ) {
+
+			return ! builder.context.viewNormal;
+
+		}
+
+		getType( /* builder */ ) {
+
+			switch ( this.scope ) {
+
+				case ReflectNode.SPHERE:
+
+					return 'v2';
+
+			}
+
+			return this.type;
+
+		}
+
+		generate( builder, output ) {
+
+			const isUnique = this.getUnique( builder );
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				let result, code, reflectVec;
+
+				switch ( this.scope ) {
+
+					case ReflectNode.VECTOR:
+
+						const viewNormalNode = new NormalNode( NormalNode.VIEW );
+						const roughnessNode = builder.context.roughness;
+
+						const viewNormal = viewNormalNode.build( builder, 'v3' );
+						const viewPosition = new PositionNode( PositionNode.VIEW ).build( builder, 'v3' );
+						const roughness = roughnessNode ? roughnessNode.build( builder, 'f' ) : undefined;
+
+						let method = `reflect( -normalize( ${viewPosition} ), ${viewNormal} )`;
+
+						if ( roughness ) {
+
+							// Mixing the reflection with the normal is more accurate and keeps rough objects from gathering light from behind their tangent plane.
+							method = `normalize( mix( ${method}, ${viewNormal}, ${roughness} * ${roughness} ) )`;
+
+						}
+
+						code = `inverseTransformDirection( ${method}, viewMatrix )`;
+
+						if ( isUnique ) {
+
+							builder.addNodeCode( `vec3 reflectVec = ${code};` );
+
+							result = 'reflectVec';
+
+						} else {
+
+							result = code;
+
+						}
+
+						break;
+
+					case ReflectNode.CUBE:
+
+						reflectVec = new ReflectNode( ReflectNode.VECTOR ).build( builder, 'v3' );
+
+						code = 'vec3( -' + reflectVec + '.x, ' + reflectVec + '.yz )';
+
+						if ( isUnique ) {
+
+							builder.addNodeCode( `vec3 reflectCubeVec = ${code};` );
+
+							result = 'reflectCubeVec';
+
+						} else {
+
+							result = code;
+
+						}
+
+						break;
+
+					case ReflectNode.SPHERE:
+
+						reflectVec = new ReflectNode( ReflectNode.VECTOR ).build( builder, 'v3' );
+
+						code = 'normalize( ( viewMatrix * vec4( ' + reflectVec + ', 0.0 ) ).xyz + vec3( 0.0, 0.0, 1.0 ) ).xy * 0.5 + 0.5';
+
+						if ( isUnique ) {
+
+							builder.addNodeCode( `vec2 reflectSphereVec = ${code};` );
+
+							result = 'reflectSphereVec';
+
+						} else {
+
+							result = code;
+
+						}
+
+						break;
+
+				}
+
+				return builder.format( result, this.getType( builder ), output );
+
+			} else {
+
+				console.warn( 'THREE.ReflectNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( 'vec3( 0.0 )', this.type, output );
+
+			}
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.scope = this.scope;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ReflectNode.CUBE = 'cube';
+	ReflectNode.SPHERE = 'sphere';
+	ReflectNode.VECTOR = 'vector';
+
+	ReflectNode.prototype.nodeType = 'Reflect';
+
+	class CubeTextureNode extends InputNode {
+
+		constructor( value, uv, bias ) {
+
+			super( 'v4', { shared: true } );
+
+			this.value = value;
+			this.uv = uv || new ReflectNode();
+			this.bias = bias;
+
+		}
+
+		getTexture( builder, output ) {
+
+			return super.generate( builder, output, this.value.uuid, 'tc' );
+
+		}
+
+		generate( builder, output ) {
+
+			if ( output === 'samplerCube' ) {
+
+				return this.getTexture( builder, output );
+
+			}
+
+			const cubetex = this.getTexture( builder, output );
+			const uv = this.uv.build( builder, 'v3' );
+			let bias = this.bias ? this.bias.build( builder, 'f' ) : undefined;
+
+			if ( bias === undefined && builder.context.bias ) {
+
+				bias = builder.context.bias.setTexture( this ).build( builder, 'f' );
+
+			}
+
+			let code;
+
+			if ( bias ) code = 'texCubeBias( ' + cubetex + ', ' + uv + ', ' + bias + ' )';
+			else code = 'texCube( ' + cubetex + ', ' + uv + ' )';
+
+			// add a custom context for fix incompatibility with the core
+			// include ColorSpace function only for vertex shader (in fragment shader color space functions is added automatically by core)
+			// this should be removed in the future
+			// context.include =: is used to include or not functions if used FunctionNode
+			// context.ignoreCache =: not create variables temp nodeT0..9 to optimize the code
+			const context = { include: builder.isShader( 'vertex' ), ignoreCache: true };
+			const outputType = this.getType( builder );
+
+			builder.addContext( context );
+
+			this.colorSpace = this.colorSpace || new ColorSpaceNode( new ExpressionNode( '', outputType ) );
+			this.colorSpace.fromDecoding( builder.getTextureEncodingFromMap( this.value ) );
+			this.colorSpace.input.parse( code );
+
+			code = this.colorSpace.build( builder, outputType );
+
+			// end custom context
+
+			builder.removeContext();
+
+			return builder.format( code, outputType, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			if ( source.value ) this.value = source.value;
+
+			this.uv = source.uv;
+
+			if ( source.bias ) this.bias = source.bias;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.uuid;
+				data.uv = this.uv.toJSON( meta ).uuid;
+
+				if ( this.bias ) data.bias = this.bias.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	CubeTextureNode.prototype.nodeType = 'CubeTexture';
+
+	class OperatorNode extends TempNode {
+
+		constructor( a, b, op ) {
+
+			super();
+
+			this.a = a;
+			this.b = b;
+			this.op = op;
+
+		}
+
+		getType( builder ) {
+
+			const a = this.a.getType( builder ),
+				b = this.b.getType( builder );
+
+			if ( builder.isTypeMatrix( a ) ) {
+
+				return 'v4';
+
+			} else if ( builder.getTypeLength( b ) > builder.getTypeLength( a ) ) {
+
+				// use the greater length vector
+
+				return b;
+
+			}
+
+			return a;
+
+		}
+
+		generate( builder, output ) {
+
+			const type = this.getType( builder );
+
+			const a = this.a.build( builder, type ),
+				b = this.b.build( builder, type );
+
+			return builder.format( '( ' + a + ' ' + this.op + ' ' + b + ' )', type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.a = source.a;
+			this.b = source.b;
+			this.op = source.op;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.a = this.a.toJSON( meta ).uuid;
+				data.b = this.b.toJSON( meta ).uuid;
+				data.op = this.op;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	OperatorNode.ADD = '+';
+	OperatorNode.SUB = '-';
+	OperatorNode.MUL = '*';
+	OperatorNode.DIV = '/';
+
+	OperatorNode.prototype.nodeType = 'Operator';
+
+	class MathNode extends TempNode {
+
+		constructor( a, bOrMethod, cOrMethod, method ) {
+
+			super();
+
+			this.a = a;
+			typeof bOrMethod !== 'string' ? this.b = bOrMethod : method = bOrMethod;
+			typeof cOrMethod !== 'string' ? this.c = cOrMethod : method = cOrMethod;
+
+			this.method = method;
+
+		}
+
+		getNumInputs( /*builder*/ ) {
+
+			switch ( this.method ) {
+
+				case MathNode.MIX:
+				case MathNode.CLAMP:
+				case MathNode.REFRACT:
+				case MathNode.SMOOTHSTEP:
+				case MathNode.FACEFORWARD:
+
+					return 3;
+
+				case MathNode.MIN:
+				case MathNode.MAX:
+				case MathNode.MOD:
+				case MathNode.STEP:
+				case MathNode.REFLECT:
+				case MathNode.DISTANCE:
+				case MathNode.DOT:
+				case MathNode.CROSS:
+				case MathNode.POW:
+
+					return 2;
+
+				default:
+
+					return 1;
+
+			}
+
+		}
+
+		getInputType( builder ) {
+
+			const a = builder.getTypeLength( this.a.getType( builder ) );
+			const b = this.b ? builder.getTypeLength( this.b.getType( builder ) ) : 0;
+			const c = this.c ? builder.getTypeLength( this.c.getType( builder ) ) : 0;
+
+			if ( a > b && a > c ) {
+
+				return this.a.getType( builder );
+
+			} else if ( b > c ) {
+
+				return this.b.getType( builder );
+
+			}
+
+			return this.c.getType( builder );
+
+		}
+
+		getType( builder ) {
+
+			switch ( this.method ) {
+
+				case MathNode.LENGTH:
+				case MathNode.DISTANCE:
+				case MathNode.DOT:
+
+					return 'f';
+
+				case MathNode.CROSS:
+
+					return 'v3';
+
+			}
+
+			return this.getInputType( builder );
+
+		}
+
+		generate( builder, output ) {
+
+			let a, b, c;
+			const al = this.a ? builder.getTypeLength( this.a.getType( builder ) ) : 0,
+				bl = this.b ? builder.getTypeLength( this.b.getType( builder ) ) : 0,
+				cl = this.c ? builder.getTypeLength( this.c.getType( builder ) ) : 0,
+				inputType = this.getInputType( builder ),
+				nodeType = this.getType( builder );
+
+			switch ( this.method ) {
+
+				// 1 input
+
+				case MathNode.NEGATE:
+
+					return builder.format( '( -' + this.a.build( builder, inputType ) + ' )', inputType, output );
+
+				case MathNode.INVERT:
+
+					return builder.format( '( 1.0 - ' + this.a.build( builder, inputType ) + ' )', inputType, output );
+
+					// 2 inputs
+
+				case MathNode.CROSS:
+
+					a = this.a.build( builder, 'v3' );
+					b = this.b.build( builder, 'v3' );
+
+					break;
+
+				case MathNode.STEP:
+
+					a = this.a.build( builder, al === 1 ? 'f' : inputType );
+					b = this.b.build( builder, inputType );
+
+					break;
+
+				case MathNode.MIN:
+				case MathNode.MAX:
+				case MathNode.MOD:
+
+					a = this.a.build( builder, inputType );
+					b = this.b.build( builder, bl === 1 ? 'f' : inputType );
+
+					break;
+
+					// 3 inputs
+
+				case MathNode.REFRACT:
+
+					a = this.a.build( builder, inputType );
+					b = this.b.build( builder, inputType );
+					c = this.c.build( builder, 'f' );
+
+					break;
+
+				case MathNode.MIX:
+
+					a = this.a.build( builder, inputType );
+					b = this.b.build( builder, inputType );
+					c = this.c.build( builder, cl === 1 ? 'f' : inputType );
+
+					break;
+
+					// default
+
+				default:
+
+					a = this.a.build( builder, inputType );
+					if ( this.b ) b = this.b.build( builder, inputType );
+					if ( this.c ) c = this.c.build( builder, inputType );
+
+					break;
+
+			}
+
+			// build function call
+
+			const params = [];
+			params.push( a );
+			if ( b ) params.push( b );
+			if ( c ) params.push( c );
+
+			const numInputs = this.getNumInputs( builder );
+
+			if ( params.length !== numInputs ) {
+
+				throw Error( `Arguments not match used in "${this.method}". Require ${numInputs}, currently ${params.length}.` );
+
+			}
+
+			return builder.format( this.method + '( ' + params.join( ', ' ) + ' )', nodeType, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.a = source.a;
+			this.b = source.b;
+			this.c = source.c;
+			this.method = source.method;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.a = this.a.toJSON( meta ).uuid;
+				if ( this.b ) data.b = this.b.toJSON( meta ).uuid;
+				if ( this.c ) data.c = this.c.toJSON( meta ).uuid;
+
+				data.method = this.method;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	// 1 input
+
+	MathNode.RAD = 'radians';
+	MathNode.DEG = 'degrees';
+	MathNode.EXP = 'exp';
+	MathNode.EXP2 = 'exp2';
+	MathNode.LOG = 'log';
+	MathNode.LOG2 = 'log2';
+	MathNode.SQRT = 'sqrt';
+	MathNode.INV_SQRT = 'inversesqrt';
+	MathNode.FLOOR = 'floor';
+	MathNode.CEIL = 'ceil';
+	MathNode.NORMALIZE = 'normalize';
+	MathNode.FRACT = 'fract';
+	MathNode.SATURATE = 'saturate';
+	MathNode.SIN = 'sin';
+	MathNode.COS = 'cos';
+	MathNode.TAN = 'tan';
+	MathNode.ASIN = 'asin';
+	MathNode.ACOS = 'acos';
+	MathNode.ARCTAN = 'atan';
+	MathNode.ABS = 'abs';
+	MathNode.SIGN = 'sign';
+	MathNode.LENGTH = 'length';
+	MathNode.NEGATE = 'negate';
+	MathNode.INVERT = 'invert';
+
+	// 2 inputs
+
+	MathNode.MIN = 'min';
+	MathNode.MAX = 'max';
+	MathNode.MOD = 'mod';
+	MathNode.STEP = 'step';
+	MathNode.REFLECT = 'reflect';
+	MathNode.DISTANCE = 'distance';
+	MathNode.DOT = 'dot';
+	MathNode.CROSS = 'cross';
+	MathNode.POW = 'pow';
+
+	// 3 inputs
+
+	MathNode.MIX = 'mix';
+	MathNode.CLAMP = 'clamp';
+	MathNode.REFRACT = 'refract';
+	MathNode.SMOOTHSTEP = 'smoothstep';
+	MathNode.FACEFORWARD = 'faceforward';
+
+	MathNode.prototype.nodeType = 'Math';
+	MathNode.prototype.hashProperties = [ 'method' ];
+
+	class TextureCubeUVNode extends TempNode {
+
+		constructor( value, uv, bias ) {
+
+			super( 'v4' );
+
+			this.value = value,
+			this.uv = uv;
+			this.bias = bias;
+
+		}
+
+		bilinearCubeUV( builder, texture, uv, mipInt ) {
+
+			const bilinearCubeUV = new FunctionCallNode( TextureCubeUVNode.Nodes.bilinearCubeUV, [ texture, uv, mipInt ] );
+
+			this.colorSpaceTL = this.colorSpaceTL || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
+			this.colorSpaceTL.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
+			this.colorSpaceTL.input.parse( bilinearCubeUV.build( builder ) + '.tl' );
+
+			this.colorSpaceTR = this.colorSpaceTR || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
+			this.colorSpaceTR.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
+			this.colorSpaceTR.input.parse( bilinearCubeUV.build( builder ) + '.tr' );
+
+			this.colorSpaceBL = this.colorSpaceBL || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
+			this.colorSpaceBL.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
+			this.colorSpaceBL.input.parse( bilinearCubeUV.build( builder ) + '.bl' );
+
+			this.colorSpaceBR = this.colorSpaceBR || new ColorSpaceNode( new ExpressionNode( '', 'v4' ) );
+			this.colorSpaceBR.fromDecoding( builder.getTextureEncodingFromMap( this.value.value ) );
+			this.colorSpaceBR.input.parse( bilinearCubeUV.build( builder ) + '.br' );
+
+			// add a custom context for fix incompatibility with the core
+			// include ColorSpace function only for vertex shader (in fragment shader color space functions is added automatically by core)
+			// this should be removed in the future
+			// context.include =: is used to include or not functions if used FunctionNode
+			// context.ignoreCache =: not create temp variables nodeT0..9 to optimize the code
+			const context = { include: builder.isShader( 'vertex' ), ignoreCache: true };
+
+			builder.addContext( context );
+
+			this.colorSpaceTLExp = new ExpressionNode( this.colorSpaceTL.build( builder, 'v4' ), 'v4' );
+			this.colorSpaceTRExp = new ExpressionNode( this.colorSpaceTR.build( builder, 'v4' ), 'v4' );
+			this.colorSpaceBLExp = new ExpressionNode( this.colorSpaceBL.build( builder, 'v4' ), 'v4' );
+			this.colorSpaceBRExp = new ExpressionNode( this.colorSpaceBR.build( builder, 'v4' ), 'v4' );
+
+			// end custom context
+
+			builder.removeContext();
+
+			// --
+
+			const output = new ExpressionNode( 'mix( mix( cubeUV_TL, cubeUV_TR, cubeUV.f.x ), mix( cubeUV_BL, cubeUV_BR, cubeUV.f.x ), cubeUV.f.y )', 'v4' );
+			output.keywords[ 'cubeUV_TL' ] = this.colorSpaceTLExp;
+			output.keywords[ 'cubeUV_TR' ] = this.colorSpaceTRExp;
+			output.keywords[ 'cubeUV_BL' ] = this.colorSpaceBLExp;
+			output.keywords[ 'cubeUV_BR' ] = this.colorSpaceBRExp;
+			output.keywords[ 'cubeUV' ] = bilinearCubeUV;
+
+			return output;
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				const uv = this.uv;
+				const bias = this.bias || builder.context.roughness;
+
+				const mipV = new FunctionCallNode( TextureCubeUVNode.Nodes.roughnessToMip, [ bias ] );
+				const mip = new MathNode( mipV, TextureCubeUVNode.Nodes.m0, TextureCubeUVNode.Nodes.cubeUV_maxMipLevel, MathNode.CLAMP );
+				const mipInt	= new MathNode( mip, MathNode.FLOOR );
+				const mipF	= new MathNode( mip, MathNode.FRACT );
+
+				const color0 = this.bilinearCubeUV( builder, this.value, uv, mipInt );
+				const color1 = this.bilinearCubeUV( builder, this.value, uv, new OperatorNode(
+					mipInt,
+					new FloatNode( 1 ).setReadonly( true ),
+					OperatorNode.ADD
+				) );
+
+				const color1Mix = new MathNode( color0, color1, mipF, MathNode.MIX );
+
+				/*
+				// TODO: Optimize this in the future
+				let cond = new CondNode(
+					mipF,
+					new FloatNode( 0 ).setReadonly( true ),
+					CondNode.EQUAL,
+					color0, // if
+					color1Mix	// else
+				);
+				*/
+
+				return builder.format( color1Mix.build( builder ), 'v4', output );
+
+			} else {
+
+				console.warn( 'THREE.TextureCubeUVNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( 'vec4( 0.0 )', this.getType( builder ), output );
+
+			}
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+				data.uv = this.uv.toJSON( meta ).uuid;
+				data.bias = this.bias.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	TextureCubeUVNode.Nodes = ( function () {
+
+		const TextureCubeUVData = new StructNode(
+			`struct TextureCubeUVData {
+			vec4 tl;
+			vec4 tr;
+			vec4 br;
+			vec4 bl;
+			vec2 f;
+		}` );
+
+		const cubeUV_maxMipLevel = new ConstNode( 'float cubeUV_maxMipLevel 8.0', true );
+		const cubeUV_minMipLevel = new ConstNode( 'float cubeUV_minMipLevel 4.0', true );
+		const cubeUV_maxTileSize = new ConstNode( 'float cubeUV_maxTileSize 256.0', true );
+		const cubeUV_minTileSize = new ConstNode( 'float cubeUV_minTileSize 16.0', true );
+
+		// These shader functions convert between the UV coordinates of a single face of
+		// a cubemap, the 0-5 integer index of a cube face, and the direction vector for
+		// sampling a textureCube (not generally normalized).
+
+		const getFace = new FunctionNode(
+			`float getFace(vec3 direction) {
+				vec3 absDirection = abs(direction);
+				float face = -1.0;
+				if (absDirection.x > absDirection.z) {
+					if (absDirection.x > absDirection.y)
+						face = direction.x > 0.0 ? 0.0 : 3.0;
+					else
+						face = direction.y > 0.0 ? 1.0 : 4.0;
+				} else {
+					if (absDirection.z > absDirection.y)
+						face = direction.z > 0.0 ? 2.0 : 5.0;
+					else
+						face = direction.y > 0.0 ? 1.0 : 4.0;
+				}
+				return face;
+		}` );
+		getFace.useKeywords = false;
+
+		const getUV = new FunctionNode(
+			`vec2 getUV(vec3 direction, float face) {
+				vec2 uv;
+				if (face == 0.0) {
+					uv = vec2(direction.z, direction.y) / abs(direction.x); // pos x
+				} else if (face == 1.0) {
+					uv = vec2(-direction.x, -direction.z) / abs(direction.y); // pos y
+				} else if (face == 2.0) {
+					uv = vec2(-direction.x, direction.y) / abs(direction.z); // pos z
+				} else if (face == 3.0) {
+					uv = vec2(-direction.z, direction.y) / abs(direction.x); // neg x
+				} else if (face == 4.0) {
+					uv = vec2(-direction.x, direction.z) / abs(direction.y); // neg y
+				} else {
+					uv = vec2(direction.x, direction.y) / abs(direction.z); // neg z
+				}
+				return 0.5 * (uv + 1.0);
+		}` );
+		getUV.useKeywords = false;
+
+		const bilinearCubeUV = new FunctionNode(
+			`TextureCubeUVData bilinearCubeUV(sampler2D envMap, vec3 direction, float mipInt) {
+
+			float face = getFace(direction);
+			float filterInt = max(cubeUV_minMipLevel - mipInt, 0.0);
+			mipInt = max(mipInt, cubeUV_minMipLevel);
+			float faceSize = exp2(mipInt);
+
+			float texelSize = 1.0 / (3.0 * cubeUV_maxTileSize);
+
+			vec2 uv = getUV(direction, face) * (faceSize - 1.0);
+			vec2 f = fract(uv);
+			uv += 0.5 - f;
+			if (face > 2.0) {
+				uv.y += faceSize;
+				face -= 3.0;
+			}
+			uv.x += face * faceSize;
+			if(mipInt < cubeUV_maxMipLevel){
+				uv.y += 2.0 * cubeUV_maxTileSize;
+			}
+			uv.y += filterInt * 2.0 * cubeUV_minTileSize;
+			uv.x += 3.0 * max(0.0, cubeUV_maxTileSize - 2.0 * faceSize);
+			uv *= texelSize;
+
+			vec4 tl = texture2D(envMap, uv);
+			uv.x += texelSize;
+			vec4 tr = texture2D(envMap, uv);
+			uv.y += texelSize;
+			vec4 br = texture2D(envMap, uv);
+			uv.x -= texelSize;
+			vec4 bl = texture2D(envMap, uv);
+
+			return TextureCubeUVData( tl, tr, br, bl, f );
+		}`, [ TextureCubeUVData, getFace, getUV, cubeUV_maxMipLevel, cubeUV_minMipLevel, cubeUV_maxTileSize, cubeUV_minTileSize ] );
+		bilinearCubeUV.useKeywords = false;
+
+		// These defines must match with PMREMGenerator
+
+		const r0 = new ConstNode( 'float r0 1.0', true );
+		const v0 = new ConstNode( 'float v0 0.339', true );
+		const m0 = new ConstNode( 'float m0 -2.0', true );
+		const r1 = new ConstNode( 'float r1 0.8', true );
+		const v1 = new ConstNode( 'float v1 0.276', true );
+		const m1 = new ConstNode( 'float m1 -1.0', true );
+		const r4 = new ConstNode( 'float r4 0.4', true );
+		const v4 = new ConstNode( 'float v4 0.046', true );
+		const m4 = new ConstNode( 'float m4 2.0', true );
+		const r5 = new ConstNode( 'float r5 0.305', true );
+		const v5 = new ConstNode( 'float v5 0.016', true );
+		const m5 = new ConstNode( 'float m5 3.0', true );
+		const r6 = new ConstNode( 'float r6 0.21', true );
+		const v6 = new ConstNode( 'float v6 0.0038', true );
+		const m6 = new ConstNode( 'float m6 4.0', true );
+
+		const defines = [ r0, v0, m0, r1, v1, m1, r4, v4, m4, r5, v5, m5, r6, v6, m6 ];
+
+		const roughnessToMip = new FunctionNode(
+			`float roughnessToMip(float roughness) {
+			float mip = 0.0;
+			if (roughness >= r1) {
+				mip = (r0 - roughness) * (m1 - m0) / (r0 - r1) + m0;
+			} else if (roughness >= r4) {
+				mip = (r1 - roughness) * (m4 - m1) / (r1 - r4) + m1;
+			} else if (roughness >= r5) {
+				mip = (r4 - roughness) * (m5 - m4) / (r4 - r5) + m4;
+			} else if (roughness >= r6) {
+				mip = (r5 - roughness) * (m6 - m5) / (r5 - r6) + m5;
+			} else {
+				mip = -2.0 * log2(1.16 * roughness);// 1.16 = 1.79^0.25
+			}
+			return mip;
+		}`, defines );
+
+		return {
+			bilinearCubeUV: bilinearCubeUV,
+			roughnessToMip: roughnessToMip,
+			m0: m0,
+			cubeUV_maxMipLevel: cubeUV_maxMipLevel
+		};
+
+	} )();
+
+	TextureCubeUVNode.prototype.nodeType = 'TextureCubeUV';
+
+	class TextureCubeNode extends TempNode {
+
+		constructor( value, uv, bias ) {
+
+			super( 'v4' );
+
+			this.value = value;
+
+			this.radianceNode = new TextureCubeUVNode(
+				this.value,
+				uv || new ReflectNode( ReflectNode.VECTOR ),
+				// bias should be replaced in builder.context in build process
+				bias
+			);
+
+			this.irradianceNode = new TextureCubeUVNode(
+				this.value,
+				new NormalNode( NormalNode.WORLD ),
+				new FloatNode( 1 ).setReadonly( true )
+			);
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				builder.require( 'irradiance' );
+
+				if ( builder.context.bias ) {
+
+					builder.context.bias.setTexture( this.value );
+
+				}
+
+				const scopeNode = builder.slot === 'irradiance' ? this.irradianceNode : this.radianceNode;
+
+				return scopeNode.build( builder, output );
+
+			} else {
+
+				console.warn( 'THREE.TextureCubeNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( 'vec4( 0.0 )', this.getType( builder ), output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	TextureCubeNode.prototype.nodeType = 'TextureCube';
+
+	const elements = NodeUtils.elements,
+		constructors = [ 'float', 'vec2', 'vec3', 'vec4' ],
+		convertFormatToType = {
+			float: 'f',
+			vec2: 'v2',
+			vec3: 'v3',
+			vec4: 'v4',
+			mat4: 'v4',
+			int: 'i',
+			bool: 'b'
+		},
+		convertTypeToFormat = {
+			t: 'sampler2D',
+			tc: 'samplerCube',
+			b: 'bool',
+			i: 'int',
+			f: 'float',
+			c: 'vec3',
+			v2: 'vec2',
+			v3: 'vec3',
+			v4: 'vec4',
+			m3: 'mat3',
+			m4: 'mat4'
+		};
+
+	class NodeBuilder {
+
+		constructor() {
+
+			this.slots = [];
+			this.caches = [];
+			this.contexts = [];
+
+			this.keywords = {};
+
+			this.nodeData = {};
+
+			this.requires = {
+				uv: [],
+				color: [],
+				lights: false,
+				fog: false,
+				transparent: false,
+				irradiance: false
+			};
+
+			this.includes = {
+				consts: [],
+				functions: [],
+				structs: []
+			};
+
+			this.attributes = {};
+
+			this.prefixCode = /* glsl */`
+			#ifdef TEXTURE_LOD_EXT
+
+				#define texCube(a, b) textureCube(a, b)
+				#define texCubeBias(a, b, c) textureCubeLodEXT(a, b, c)
+
+				#define tex2D(a, b) texture2D(a, b)
+				#define tex2DBias(a, b, c) texture2DLodEXT(a, b, c)
+
+			#else
+
+				#define texCube(a, b) textureCube(a, b)
+				#define texCubeBias(a, b, c) textureCube(a, b, c)
+
+				#define tex2D(a, b) texture2D(a, b)
+				#define tex2DBias(a, b, c) texture2D(a, b, c)
+
+			#endif
+
+			#include <packing>
+			#include <common>`;
+
+			this.parsCode = {
+				vertex: '',
+				fragment: ''
+			};
+
+			this.code = {
+				vertex: '',
+				fragment: ''
+			};
+
+			this.nodeCode = {
+				vertex: '',
+				fragment: ''
+			};
+
+			this.resultCode = {
+				vertex: '',
+				fragment: ''
+			};
+
+			this.finalCode = {
+				vertex: '',
+				fragment: ''
+			};
+
+			this.inputs = {
+				uniforms: {
+					list: [],
+					vertex: [],
+					fragment: []
+				},
+				vars: {
+					varying: [],
+					vertex: [],
+					fragment: []
+				}
+			};
+
+			// send to material
+
+			this.defines = {};
+
+			this.uniforms = {};
+
+			this.extensions = {};
+
+			this.updaters = [];
+
+			this.nodes = [];
+
+			// --
+
+			this.analyzing = false;
+
+		}
+
+		build( vertex, fragment ) {
+
+			this.buildShader( 'vertex', vertex );
+			this.buildShader( 'fragment', fragment );
+
+			for ( let i = 0; i < this.requires.uv.length; i ++ ) {
+
+				if ( this.requires.uv[ i ] ) {
+
+					const uvIndex = i > 0 ? i + 1 : '';
+
+					this.addVaryCode( 'varying vec2 vUv' + uvIndex + ';' );
+
+					if ( i > 0 ) {
+
+						this.addVertexParsCode( 'attribute vec2 uv' + uvIndex + ';' );
+
+					}
+
+					this.addVertexFinalCode( 'vUv' + uvIndex + ' = uv' + uvIndex + ';' );
+
+				}
+
+			}
+
+			if ( this.requires.color[ 0 ] ) {
+
+				this.addVaryCode( 'varying vec4 vColor;' );
+				this.addVertexParsCode( 'attribute vec4 color;' );
+
+				this.addVertexFinalCode( 'vColor = color;' );
+
+			}
+
+			if ( this.requires.color[ 1 ] ) {
+
+				this.addVaryCode( 'varying vec4 vColor2;' );
+				this.addVertexParsCode( 'attribute vec4 color2;' );
+
+				this.addVertexFinalCode( 'vColor2 = color2;' );
+
+			}
+
+			if ( this.requires.position ) {
+
+				this.addVaryCode( 'varying vec3 vPosition;' );
+
+				this.addVertexFinalCode( 'vPosition = transformed;' );
+
+			}
+
+			if ( this.requires.worldPosition ) {
+
+				this.addVaryCode( 'varying vec3 vWPosition;' );
+
+				this.addVertexFinalCode( 'vWPosition = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;' );
+
+			}
+
+			if ( this.requires.normal ) {
+
+				this.addVaryCode( 'varying vec3 vObjectNormal;' );
+
+				this.addVertexFinalCode( 'vObjectNormal = normal;' );
+
+			}
+
+			if ( this.requires.worldNormal ) {
+
+				this.addVaryCode( 'varying vec3 vWNormal;' );
+
+				this.addVertexFinalCode( 'vWNormal = inverseTransformDirection( transformedNormal, viewMatrix ).xyz;' );
+
+			}
+
+			return this;
+
+		}
+
+		buildShader( shader, node ) {
+
+			this.resultCode[ shader ] = node.build( this.setShader( shader ), 'v4' );
+
+		}
+
+		setMaterial( material, renderer ) {
+
+			this.material = material;
+			this.renderer = renderer;
+
+			this.requires.lights = material.lights;
+			this.requires.fog = material.fog;
+
+			this.mergeDefines( material.defines );
+
+			return this;
+
+		}
+
+		addFlow( slot, cache, context ) {
+
+			return this.addSlot( slot ).addCache( cache ).addContext( context );
+
+		}
+
+		removeFlow() {
+
+			return this.removeSlot().removeCache().removeContext();
+
+		}
+
+		addCache( name ) {
+
+			this.cache = name || '';
+			this.caches.push( this.cache );
+
+			return this;
+
+		}
+
+		removeCache() {
+
+			this.caches.pop();
+			this.cache = this.caches[ this.caches.length - 1 ] || '';
+
+			return this;
+
+		}
+
+		addContext( context ) {
+
+			this.context = Object.assign( {}, this.context, context );
+			this.context.extra = this.context.extra || {};
+
+			this.contexts.push( this.context );
+
+			return this;
+
+		}
+
+		removeContext() {
+
+			this.contexts.pop();
+			this.context = this.contexts[ this.contexts.length - 1 ] || {};
+
+			return this;
+
+		}
+
+		addSlot( name = '' ) {
+
+			this.slot = name;
+			this.slots.push( this.slot );
+
+			return this;
+
+		}
+
+		removeSlot() {
+
+			this.slots.pop();
+			this.slot = this.slots[ this.slots.length - 1 ] || '';
+
+			return this;
+
+		}
+
+		addVertexCode( code ) {
+
+			this.addCode( code, 'vertex' );
+
+		}
+
+		addFragmentCode( code ) {
+
+			this.addCode( code, 'fragment' );
+
+		}
+
+		addCode( code, shader ) {
+
+			this.code[ shader || this.shader ] += code + '\n';
+
+		}
+
+		addVertexNodeCode( code ) {
+
+			this.addNodeCode( code, 'vertex' );
+
+		}
+
+		addFragmentNodeCode( code ) {
+
+			this.addNodeCode( code, 'fragment' );
+
+		}
+
+		addNodeCode( code, shader ) {
+
+			this.nodeCode[ shader || this.shader ] += code + '\n';
+
+		}
+
+		clearNodeCode( shader ) {
+
+			shader = shader || this.shader;
+
+			const code = this.nodeCode[ shader ];
+
+			this.nodeCode[ shader ] = '';
+
+			return code;
+
+		}
+
+		clearVertexNodeCode( ) {
+
+			return this.clearNodeCode( 'vertex' );
+
+		}
+
+		clearFragmentNodeCode( ) {
+
+			return this.clearNodeCode( 'fragment' );
+
+		}
+
+		addVertexFinalCode( code ) {
+
+			this.addFinalCode( code, 'vertex' );
+
+		}
+
+		addFragmentFinalCode( code ) {
+
+			this.addFinalCode( code, 'fragment' );
+
+		}
+
+		addFinalCode( code, shader ) {
+
+			this.finalCode[ shader || this.shader ] += code + '\n';
+
+		}
+
+		addVertexParsCode( code ) {
+
+			this.addParsCode( code, 'vertex' );
+
+		}
+
+		addFragmentParsCode( code ) {
+
+			this.addParsCode( code, 'fragment' );
+
+		}
+
+		addParsCode( code, shader ) {
+
+			this.parsCode[ shader || this.shader ] += code + '\n';
+
+		}
+
+		addVaryCode( code ) {
+
+			this.addVertexParsCode( code );
+			this.addFragmentParsCode( code );
+
+		}
+
+		isCache( name ) {
+
+			return this.caches.indexOf( name ) !== - 1;
+
+		}
+
+		isSlot( name ) {
+
+			return this.slots.indexOf( name ) !== - 1;
+
+		}
+
+		define( name, value ) {
+
+			this.defines[ name ] = value === undefined ? 1 : value;
+
+		}
+
+		require( name ) {
+
+			this.requires[ name ] = true;
+
+		}
+
+		isDefined( name ) {
+
+			return this.defines[ name ] !== undefined;
+
+		}
+
+		getVar( uuid, type, ns, shader = 'varying', prefix = 'V', label = '' ) {
+
+			const vars = this.getVars( shader );
+			let data = vars[ uuid ];
+
+			if ( ! data ) {
+
+				const index = vars.length,
+					name = ns ? ns : 'node' + prefix + index + ( label ? '_' + label : '' );
+
+				data = { name: name, type: type };
+
+				vars.push( data );
+				vars[ uuid ] = data;
+
+			}
+
+			return data;
+
+		}
+
+		getTempVar( uuid, type, ns, label ) {
+
+			return this.getVar( uuid, type, ns, this.shader, 'T', label );
+
+		}
+
+		getAttribute( name, type ) {
+
+			if ( ! this.attributes[ name ] ) {
+
+				const varying = this.getVar( name, type );
+
+				this.addVertexParsCode( 'attribute ' + type + ' ' + name + ';' );
+				this.addVertexFinalCode( varying.name + ' = ' + name + ';' );
+
+				this.attributes[ name ] = { varying: varying, name: name, type: type };
+
+			}
+
+			return this.attributes[ name ];
+
+		}
+
+		getCode( shader ) {
+
+			return [
+				this.prefixCode,
+				this.parsCode[ shader ],
+				this.getVarListCode( this.getVars( 'varying' ), 'varying' ),
+				this.getVarListCode( this.inputs.uniforms[ shader ], 'uniform' ),
+				this.getIncludesCode( 'consts', shader ),
+				this.getIncludesCode( 'structs', shader ),
+				this.getIncludesCode( 'functions', shader ),
+				'void main() {',
+				this.getVarListCode( this.getVars( shader ) ),
+				this.code[ shader ],
+				this.resultCode[ shader ],
+				this.finalCode[ shader ],
+				'}'
+			].join( '\n' );
+
+		}
+
+		getVarListCode( vars, prefix = '' ) {
+
+			let code = '';
+
+			for ( let i = 0, l = vars.length; i < l; ++ i ) {
+
+				const nVar = vars[ i ],
+					type = nVar.type,
+					name = nVar.name;
+
+				const formatType = this.getFormatByType( type );
+
+				if ( formatType === undefined ) {
+
+					throw new Error( 'Node pars ' + formatType + ' not found.' );
+
+				}
+
+				code += prefix + ' ' + formatType + ' ' + name + ';\n';
+
+			}
+
+			return code;
+
+		}
+
+		getVars( shader ) {
+
+			return this.inputs.vars[ shader || this.shader ];
+
+		}
+
+		getNodeData( node ) {
+
+			const uuid = node.isNode ? node.uuid : node;
+
+			return this.nodeData[ uuid ] = this.nodeData[ uuid ] || {};
+
+		}
+
+		createUniform( shader, type, node, ns, needsUpdate, label ) {
+
+			const uniforms = this.inputs.uniforms,
+				index = uniforms.list.length;
+
+			const uniform = new NodeUniform( {
+				type: type,
+				name: ns ? ns : 'nodeU' + index + ( label ? '_' + label : '' ),
+				node: node,
+				needsUpdate: needsUpdate
+			} );
+
+			uniforms.list.push( uniform );
+
+			uniforms[ shader ].push( uniform );
+			uniforms[ shader ][ uniform.name ] = uniform;
+
+			this.uniforms[ uniform.name ] = uniform;
+
+			return uniform;
+
+		}
+
+		createVertexUniform( type, node, ns, needsUpdate, label ) {
+
+			return this.createUniform( 'vertex', type, node, ns, needsUpdate, label );
+
+		}
+
+		createFragmentUniform( type, node, ns, needsUpdate, label ) {
+
+			return this.createUniform( 'fragment', type, node, ns, needsUpdate, label );
+
+		}
+
+		include( node, parent, source ) {
+
+			let includesStruct;
+
+			node = typeof node === 'string' ? NodeLib.get( node ) : node;
+
+			if ( this.context.include === false ) {
+
+				return node.name;
+
+			}
+
+
+			if ( node instanceof FunctionNode ) {
+
+				includesStruct = this.includes.functions;
+
+			} else if ( node instanceof ConstNode ) {
+
+				includesStruct = this.includes.consts;
+
+			} else if ( node instanceof StructNode ) {
+
+				includesStruct = this.includes.structs;
+
+			}
+
+			const includes = includesStruct[ this.shader ] = includesStruct[ this.shader ] || [];
+
+			if ( node ) {
+
+				let included = includes[ node.name ];
+
+				if ( ! included ) {
+
+					included = includes[ node.name ] = {
+						node: node,
+						deps: []
+					};
+
+					includes.push( included );
+
+					included.src = node.build( this, 'source' );
+
+				}
+
+				if ( node instanceof FunctionNode && parent && includes[ parent.name ] && includes[ parent.name ].deps.indexOf( node ) == - 1 ) {
+
+					includes[ parent.name ].deps.push( node );
+
+					if ( node.includes && node.includes.length ) {
+
+						let i = 0;
+
+						do {
+
+							this.include( node.includes[ i ++ ], parent );
+
+						} while ( i < node.includes.length );
+
+					}
+
+				}
+
+				if ( source ) {
+
+					included.src = source;
+
+				}
+
+				return node.name;
+
+			} else {
+
+				throw new Error( 'Include not found.' );
+
+			}
+
+		}
+
+		colorToVectorProperties( color ) {
+
+			return color.replace( 'r', 'x' ).replace( 'g', 'y' ).replace( 'b', 'z' ).replace( 'a', 'w' );
+
+		}
+
+		colorToVector( color ) {
+
+			return color.replace( /c/g, 'v3' );
+
+		}
+
+		getIncludes( type, shader ) {
+
+			return this.includes[ type ][ shader || this.shader ];
+
+		}
+
+		getIncludesCode( type, shader ) {
+
+			let includes = this.getIncludes( type, shader );
+
+			if ( ! includes ) return '';
+
+			let code = '';
+
+			includes = includes.sort( sortByPosition );
+
+			for ( let i = 0; i < includes.length; i ++ ) {
+
+				if ( includes[ i ].src ) code += includes[ i ].src + '\n';
+
+			}
+
+			return code;
+
+		}
+
+		getConstructorFromLength( len ) {
+
+			return constructors[ len - 1 ];
+
+		}
+
+		isTypeMatrix( format ) {
+
+			return /^m/.test( format );
+
+		}
+
+		getTypeLength( type ) {
+
+			if ( type === 'f' ) return 1;
+
+			return parseInt( this.colorToVector( type ).substr( 1 ) );
+
+		}
+
+		getTypeFromLength( len ) {
+
+			if ( len === 1 ) return 'f';
+
+			return 'v' + len;
+
+		}
+
+		findNode() {
+
+			for ( let i = 0; i < arguments.length; i ++ ) {
+
+				const nodeCandidate = arguments[ i ];
+
+				if ( nodeCandidate !== undefined && nodeCandidate.isNode ) {
+
+					return nodeCandidate;
+
+				}
+
+			}
+
+		}
+
+		resolve() {
+
+			for ( let i = 0; i < arguments.length; i ++ ) {
+
+				const nodeCandidate = arguments[ i ];
+
+				if ( nodeCandidate !== undefined ) {
+
+					if ( nodeCandidate.isNode ) {
+
+						return nodeCandidate;
+
+					} else if ( nodeCandidate.isTexture ) {
+
+						switch ( nodeCandidate.mapping ) {
+
+							case CubeReflectionMapping:
+							case CubeRefractionMapping:
+
+								return new CubeTextureNode( nodeCandidate );
+
+							case CubeUVReflectionMapping:
+							case CubeUVRefractionMapping:
+
+								return new TextureCubeNode( new TextureNode( nodeCandidate ) );
+
+							default:
+
+								return new TextureNode( nodeCandidate );
+
+						}
+
+					} else if ( nodeCandidate.isVector2 ) {
+
+						return new Vector2Node( nodeCandidate );
+
+					} else if ( nodeCandidate.isVector3 ) {
+
+						return new Vector3Node( nodeCandidate );
+
+					} else if ( nodeCandidate.isVector4 ) {
+
+						return new Vector4Node( nodeCandidate );
+
+					}
+
+				}
+
+			}
+
+		}
+
+		format( code, from, to ) {
+
+			const typeToType = this.colorToVector( to + ' <- ' + from );
+
+			switch ( typeToType ) {
+
+				case 'f <- v2' : return code + '.x';
+				case 'f <- v3' : return code + '.x';
+				case 'f <- v4' : return code + '.x';
+				case 'f <- i' :
+				case 'f <- b' :	return 'float( ' + code + ' )';
+
+				case 'v2 <- f' : return 'vec2( ' + code + ' )';
+				case 'v2 <- v3': return code + '.xy';
+				case 'v2 <- v4': return code + '.xy';
+				case 'v2 <- i' :
+				case 'v2 <- b' : return 'vec2( float( ' + code + ' ) )';
+
+				case 'v3 <- f' : return 'vec3( ' + code + ' )';
+				case 'v3 <- v2': return 'vec3( ' + code + ', 0.0 )';
+				case 'v3 <- v4': return code + '.xyz';
+				case 'v3 <- i' :
+				case 'v3 <- b' : return 'vec2( float( ' + code + ' ) )';
+
+				case 'v4 <- f' : return 'vec4( ' + code + ' )';
+				case 'v4 <- v2': return 'vec4( ' + code + ', 0.0, 1.0 )';
+				case 'v4 <- v3': return 'vec4( ' + code + ', 1.0 )';
+				case 'v4 <- i' :
+				case 'v4 <- b' : return 'vec4( float( ' + code + ' ) )';
+
+				case 'i <- f' :
+				case 'i <- b' : return 'int( ' + code + ' )';
+				case 'i <- v2' : return 'int( ' + code + '.x )';
+				case 'i <- v3' : return 'int( ' + code + '.x )';
+				case 'i <- v4' : return 'int( ' + code + '.x )';
+
+				case 'b <- f' : return '( ' + code + ' != 0.0 )';
+				case 'b <- v2' : return '( ' + code + ' != vec2( 0.0 ) )';
+				case 'b <- v3' : return '( ' + code + ' != vec3( 0.0 ) )';
+				case 'b <- v4' : return '( ' + code + ' != vec4( 0.0 ) )';
+				case 'b <- i' : return '( ' + code + ' != 0 )';
+
+			}
+
+			return code;
+
+		}
+
+		getTypeByFormat( format ) {
+
+			return convertFormatToType[ format ] || format;
+
+		}
+
+		getFormatByType( type ) {
+
+			return convertTypeToFormat[ type ] || type;
+
+		}
+
+		getUuid( uuid, useCache ) {
+
+			useCache = useCache !== undefined ? useCache : true;
+
+			if ( useCache && this.cache ) uuid = this.cache + '-' + uuid;
+
+			return uuid;
+
+		}
+
+		getElementByIndex( index ) {
+
+			return elements[ index ];
+
+		}
+
+		getIndexByElement( elm ) {
+
+			return elements.indexOf( elm );
+
+		}
+
+		isShader( shader ) {
+
+			return this.shader === shader;
+
+		}
+
+		setShader( shader ) {
+
+			this.shader = shader;
+
+			return this;
+
+		}
+
+		mergeDefines( defines ) {
+
+			for ( const name in defines ) {
+
+				this.defines[ name ] = defines[ name ];
+
+			}
+
+			return this.defines;
+
+		}
+
+		mergeUniform( uniforms ) {
+
+			for ( const name in uniforms ) {
+
+				this.uniforms[ name ] = uniforms[ name ];
+
+			}
+
+			return this.uniforms;
+
+		}
+
+		getTextureEncodingFromMap( map ) {
+
+			let encoding;
+
+			if ( ! map ) {
+
+				encoding = LinearEncoding;
+
+			} else if ( map.isTexture ) {
+
+				encoding = map.encoding;
+
+			} else if ( map.isWebGLRenderTarget ) {
+
+				console.warn( 'THREE.WebGLPrograms.getTextureEncodingFromMap: don\'t use render targets as textures. Use their .texture property instead.' );
+				encoding = map.texture.encoding;
+
+			}
+
+			if ( encoding === LinearEncoding && this.context.gamma ) {
+
+				encoding = GammaEncoding;
+
+			}
+
+			return encoding;
+
+		}
+
+	}
+
+	function sortByPosition( a, b ) {
+
+		return a.deps.length - b.deps.length;
+
+	}
+
+	class BoolNode extends InputNode {
+
+		constructor( value ) {
+
+			super( 'b' );
+
+			this.value = Boolean( value );
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
+
+			return builder.format( this.value, type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value;
+
+				if ( this.readonly === true ) data.readonly = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	BoolNode.prototype.nodeType = 'Bool';
+
+	class IntNode extends InputNode {
+
+		constructor( value ) {
+
+			super( 'i' );
+
+			this.value = Math.floor( value || 0 );
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
+
+			return builder.format( this.value, type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value;
+
+				if ( this.readonly === true ) data.readonly = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	IntNode.prototype.nodeType = 'Int';
+
+	class ColorNode extends InputNode {
+
+		constructor( color, g, b ) {
+
+			super( 'c' );
+
+			this.value = color instanceof Color ? color : new Color( color || 0, g, b );
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
+
+			return builder.format( 'vec3( ' + this.r + ', ' + this.g + ', ' + this.b + ' )', type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value.copy( source );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			var data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.r = this.r;
+				data.g = this.g;
+				data.b = this.b;
+
+				if ( this.readonly === true ) data.readonly = true;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ColorNode.prototype.nodeType = 'Color';
+
+	NodeUtils.addShortcuts( ColorNode.prototype, 'value', [ 'r', 'g', 'b' ] );
+
+	class Matrix3Node extends InputNode {
+
+		constructor( matrix ) {
+
+			super( 'm3' );
+
+			this.value = matrix || new Matrix3();
+
+		}
+
+		get elements() {
+
+			return this.value.elements;
+
+		}
+
+		set elements( val ) {
+
+			this.value.elements = val;
+
+		}
+
+		generateReadonly( builder, output, uuid, type/*, ns, needsUpdate */ ) {
+
+			return builder.format( 'mat3( ' + this.value.elements.join( ', ' ) + ' )', type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value.fromArray( source.elements );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.elements = this.value.elements.concat();
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Matrix3Node.prototype.nodeType = 'Matrix3';
+
+	class Matrix4Node extends InputNode {
+
+		constructor( matrix ) {
+
+			super( 'm4' );
+
+			this.value = matrix || new Matrix4();
+
+		}
+
+		get elements() {
+
+			return this.value.elements;
+
+		}
+
+		set elements( val ) {
+
+			this.value.elements = val;
+
+		}
+
+		generateReadonly( builder, output, uuid, type /*, ns, needsUpdate */ ) {
+
+			return builder.format( 'mat4( ' + this.value.elements.join( ', ' ) + ' )', type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.scope.value.fromArray( source.elements );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.elements = this.value.elements.concat();
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Matrix4Node.prototype.nodeType = 'Matrix4';
+
+	class ScreenNode extends TextureNode {
+
+		constructor( uv ) {
+
+			super( undefined, uv );
+
+		}
+
+		getUnique() {
+
+			return true;
+
+		}
+
+		getTexture( builder, output ) {
+
+			return InputNode.prototype.generate.call( this, builder, output, this.getUuid(), 't', 'renderTexture' );
+
+		}
+
+	}
+
+	ScreenNode.prototype.nodeType = 'Screen';
+
+	class ReflectorNode extends TempNode {
+
+		constructor( mirror ) {
+
+			super( 'v4' );
+
+			if ( mirror ) this.setMirror( mirror );
+
+		}
+
+		setMirror( mirror ) {
+
+			this.mirror = mirror;
+
+			this.textureMatrix = new Matrix4Node( this.mirror.material.uniforms.textureMatrix.value );
+
+			this.localPosition = new PositionNode( PositionNode.LOCAL );
+
+			this.uv = new OperatorNode( this.textureMatrix, this.localPosition, OperatorNode.MUL );
+			this.uvResult = new OperatorNode( null, this.uv, OperatorNode.ADD );
+
+			this.texture = new TextureNode( this.mirror.material.uniforms.tDiffuse.value, this.uv, null, true );
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				this.uvResult.a = this.offset;
+				this.texture.uv = this.offset ? this.uvResult : this.uv;
+
+				if ( output === 'sampler2D' ) {
+
+					return this.texture.build( builder, output );
+
+				}
+
+				return builder.format( this.texture.build( builder, this.type ), this.type, output );
+
+			} else {
+
+				console.warn( 'THREE.ReflectorNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( 'vec4( 0.0 )', this.type, output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			InputNode.prototype.copy.call( this, source );
+
+			this.scope.mirror = source.mirror;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.mirror = this.mirror.uuid;
+
+				if ( this.offset ) data.offset = this.offset.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ReflectorNode.prototype.nodeType = 'Reflector';
+
+	class PropertyNode extends InputNode {
+
+		constructor( object, property, type ) {
+
+			super( type );
+
+			this.object = object;
+			this.property = property;
+
+		}
+
+		get value() {
+
+			return this.object[ this.property ];
+
+		}
+
+		set value( val ) {
+
+			this.object[ this.property ] = val;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value;
+				data.property = this.property;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	PropertyNode.prototype.nodeType = 'Property';
+
+	class RawNode extends Node {
+
+		constructor( value ) {
+
+			super( 'v4' );
+
+			this.value = value;
+
+		}
+
+		generate( builder ) {
+
+			const data = this.value.analyzeAndFlow( builder, this.type );
+			let code = data.code + '\n';
+
+			if ( builder.isShader( 'vertex' ) ) {
+
+				code += 'gl_Position = ' + data.result + ';';
+
+			} else {
+
+				code += 'gl_FragColor = ' + data.result + ';';
+
+			}
+
+			return code;
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	RawNode.prototype.nodeType = 'Raw';
+
+	class NodeMaterial extends ShaderMaterial {
+
+		constructor( vertex, fragment ) {
+
+			super();
+
+			this.vertex = vertex || new RawNode( new PositionNode( PositionNode.PROJECTION ) );
+			this.fragment = fragment || new RawNode( new ColorNode( 0xFF0000 ) );
+
+			this.updaters = [];
+
+			this.type = 'NodeMaterial';
+
+		}
+
+		get properties() {
+
+			return this.fragment.properties;
+
+		}
+
+		get needsUpdate() {
+
+			return this.needsCompile;
+
+		}
+
+		set needsUpdate( value ) {
+
+			if ( value === true ) this.version ++;
+			this.needsCompile = value;
+
+		}
+
+		onBeforeCompile( shader, renderer ) {
+
+			this.build( { renderer: renderer } );
+
+			shader.defines = this.defines;
+			shader.uniforms = this.uniforms;
+			shader.vertexShader = this.vertexShader;
+			shader.fragmentShader = this.fragmentShader;
+
+			shader.extensionDerivatives = ( this.extensions.derivatives === true );
+			shader.extensionFragDepth = ( this.extensions.fragDepth === true );
+			shader.extensionDrawBuffers = ( this.extensions.drawBuffers === true );
+			shader.extensionShaderTextureLOD = ( this.extensions.shaderTextureLOD === true );
+
+		}
+
+		customProgramCacheKey() {
+
+			const hash = this.getHash();
+
+			return hash;
+
+		}
+
+		getHash() {
+
+			let hash = '{';
+
+			hash += '"vertex":' + this.vertex.getHash() + ',';
+			hash += '"fragment":' + this.fragment.getHash();
+
+			hash += '}';
+
+			return hash;
+
+		}
+
+		updateFrame( frame ) {
+
+			for ( let i = 0; i < this.updaters.length; ++ i ) {
+
+				frame.updateNode( this.updaters[ i ] );
+
+			}
+
+		}
+
+		build( params = {} ) {
+
+			const builder = params.builder || new NodeBuilder();
+
+			builder.setMaterial( this, params.renderer );
+			builder.build( this.vertex, this.fragment );
+
+			this.vertexShader = builder.getCode( 'vertex' );
+			this.fragmentShader = builder.getCode( 'fragment' );
+
+			this.defines = builder.defines;
+			this.uniforms = builder.uniforms;
+			this.extensions = builder.extensions;
+			this.updaters = builder.updaters;
+
+			this.fog = builder.requires.fog;
+			this.lights = builder.requires.lights;
+
+			this.transparent = builder.requires.transparent || this.blending > NormalBlending;
+
+			return this;
+
+		}
+
+		copy( source ) {
+
+			const uuid = this.uuid;
+
+			for ( const name in source ) {
+
+				this[ name ] = source[ name ];
+
+			}
+
+			this.uuid = uuid;
+
+			if ( source.userData !== undefined ) {
+
+				this.userData = JSON.parse( JSON.stringify( source.userData ) );
+
+			}
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			const isRootObject = ( meta === undefined || typeof meta === 'string' );
+
+			if ( isRootObject ) {
+
+				meta = {
+					nodes: {}
+				};
+
+			}
+
+			if ( meta && ! meta.materials ) meta.materials = {};
+
+			if ( ! meta.materials[ this.uuid ] ) {
+
+				const data = {};
+
+				data.uuid = this.uuid;
+				data.type = this.type;
+
+				meta.materials[ data.uuid ] = data;
+
+				if ( this.name !== '' ) data.name = this.name;
+
+				if ( this.size !== undefined ) data.size = this.size;
+				if ( this.sizeAttenuation !== undefined ) data.sizeAttenuation = this.sizeAttenuation;
+
+				if ( this.blending !== NormalBlending ) data.blending = this.blending;
+				if ( this.flatShading === true ) data.flatShading = this.flatShading;
+				if ( this.side !== FrontSide ) data.side = this.side;
+				if ( this.vertexColors !== NoColors ) data.vertexColors = this.vertexColors;
+
+				if ( this.depthFunc !== LessEqualDepth ) data.depthFunc = this.depthFunc;
+				if ( this.depthTest === false ) data.depthTest = this.depthTest;
+				if ( this.depthWrite === false ) data.depthWrite = this.depthWrite;
+
+				if ( this.linewidth !== 1 ) data.linewidth = this.linewidth;
+				if ( this.dashSize !== undefined ) data.dashSize = this.dashSize;
+				if ( this.gapSize !== undefined ) data.gapSize = this.gapSize;
+				if ( this.scale !== undefined ) data.scale = this.scale;
+
+				if ( this.dithering === true ) data.dithering = true;
+
+				if ( this.wireframe === true ) data.wireframe = this.wireframe;
+				if ( this.wireframeLinewidth > 1 ) data.wireframeLinewidth = this.wireframeLinewidth;
+				if ( this.wireframeLinecap !== 'round' ) data.wireframeLinecap = this.wireframeLinecap;
+				if ( this.wireframeLinejoin !== 'round' ) data.wireframeLinejoin = this.wireframeLinejoin;
+
+				if ( this.alphaTest > 0 ) data.alphaTest = this.alphaTest;
+				if ( this.premultipliedAlpha === true ) data.premultipliedAlpha = this.premultipliedAlpha;
+
+				if ( this.visible === false ) data.visible = false;
+				if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
+
+				data.fog = this.fog;
+				data.lights = this.lights;
+
+				data.vertex = this.vertex.toJSON( meta ).uuid;
+				data.fragment = this.fragment.toJSON( meta ).uuid;
+
+			}
+
+			meta.material = this.uuid;
+
+			return meta;
+
+		}
+
+	}
+
+	NodeMaterial.prototype.isNodeMaterial = true;
+
+	class RTTNode extends TextureNode {
+
+		constructor( width, height, input, options = {} ) {
+
+			const renderTarget = new WebGLRenderTarget( width, height, options );
+
+			super( renderTarget.texture );
+
+			this.input = input;
+
+			this.clear = options.clear !== undefined ? options.clear : true;
+
+			this.renderTarget = renderTarget;
+
+			this.material = new NodeMaterial();
+
+			this.camera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+			this.scene = new Scene();
+
+			this.quad = new Mesh( new PlaneGeometry( 2, 2 ), this.material );
+			this.quad.frustumCulled = false; // Avoid getting clipped
+			this.scene.add( this.quad );
+
+			this.render = true;
+
+
+		}
+
+		build( builder, output, uuid ) {
+
+			const rttBuilder = new NodeBuilder();
+			rttBuilder.nodes = builder.nodes;
+			rttBuilder.updaters = builder.updaters;
+
+			this.material.fragment.value = this.input;
+			this.material.build( { builder: rttBuilder } );
+
+			return super.build( builder, output, uuid );
+
+		}
+
+		updateFramesaveTo( frame ) {
+
+			this.saveTo.render = false;
+
+			if ( this.saveTo !== this.saveToCurrent ) {
+
+				if ( this.saveToMaterial ) this.saveToMaterial.dispose();
+
+				const material = new NodeMaterial();
+				material.fragment.value = this;
+				material.build();
+
+				const scene = new Scene();
+
+				const quad = new Mesh( new PlaneGeometry( 2, 2 ), material );
+				quad.frustumCulled = false; // Avoid getting clipped
+				scene.add( quad );
+
+				this.saveToScene = scene;
+				this.saveToMaterial = material;
+
+			}
+
+			this.saveToCurrent = this.saveTo;
+
+			frame.renderer.setRenderTarget( this.saveTo.renderTarget );
+			if ( this.saveTo.clear ) frame.renderer.clear();
+			frame.renderer.render( this.saveToScene, this.camera );
+
+		}
+
+		updateFrame( frame ) {
+
+			if ( frame.renderer ) {
+
+				// from the second frame
+
+				if ( this.saveTo && this.saveTo.render === false ) {
+
+					this.updateFramesaveTo( frame );
+
+				}
+
+				if ( this.render ) {
+
+					if ( this.material.uniforms.renderTexture ) {
+
+						this.material.uniforms.renderTexture.value = frame.renderTexture;
+
+					}
+
+					frame.renderer.setRenderTarget( this.renderTarget );
+					if ( this.clear ) frame.renderer.clear();
+					frame.renderer.render( this.scene, this.camera );
+
+				}
+
+				// first frame
+
+				if ( this.saveTo && this.saveTo.render === true ) {
+
+					this.updateFramesaveTo( frame );
+
+				}
+
+			} else {
+
+				console.warn( 'RTTNode need a renderer in NodeFrame' );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.saveTo = source.saveTo;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = super.toJSON( meta );
+
+				if ( this.saveTo ) data.saveTo = this.saveTo.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	RTTNode.prototype.nodeType = 'RTT';
+
+	var vertexDict = [ 'color', 'color2' ],
+		fragmentDict = [ 'vColor', 'vColor2' ];
+
+	class ColorsNode extends TempNode {
+
+		constructor( index ) {
+
+			super( 'v4', { shared: false } );
+
+			this.index = index || 0;
+
+		}
+
+		generate( builder, output ) {
+
+			builder.requires.color[ this.index ] = true;
+
+			const result = builder.isShader( 'vertex' ) ? vertexDict[ this.index ] : fragmentDict[ this.index ];
+
+			return builder.format( result, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.index = source.index;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.index = this.index;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ColorsNode.prototype.nodeType = 'Colors';
+
+	class CameraNode extends TempNode {
+
+		constructor( scope, camera ) {
+
+			super( 'v3' );
+
+			this.setScope( scope || CameraNode.POSITION );
+			this.setCamera( camera );
+
+		}
+
+		setCamera( camera ) {
+
+			this.camera = camera;
+			this.updateFrame = camera !== undefined ? this.onUpdateFrame : undefined;
+
+		}
+
+		setScope( scope ) {
+
+			switch ( this.scope ) {
+
+				case CameraNode.DEPTH:
+
+					delete this.near;
+					delete this.far;
+
+					break;
+
+			}
+
+			this.scope = scope;
+
+			switch ( scope ) {
+
+				case CameraNode.DEPTH:
+
+					const camera = this.camera;
+
+					this.near = new FloatNode( camera ? camera.near : 1 );
+					this.far = new FloatNode( camera ? camera.far : 1200 );
+
+					break;
+
+			}
+
+		}
+
+		getType( /* builder */ ) {
+
+			switch ( this.scope ) {
+
+				case CameraNode.DEPTH:
+
+					return 'f';
+
+			}
+
+			return this.type;
+
+		}
+
+		getUnique( /* builder */ ) {
+
+			switch ( this.scope ) {
+
+				case CameraNode.DEPTH:
+				case CameraNode.TO_VERTEX:
+
+					return true;
+
+			}
+
+			return false;
+
+		}
+
+		getShared( /* builder */ ) {
+
+			switch ( this.scope ) {
+
+				case CameraNode.POSITION:
+
+					return false;
+
+			}
+
+			return true;
+
+		}
+
+		generate( builder, output ) {
+
+			let result;
+
+			switch ( this.scope ) {
+
+				case CameraNode.POSITION:
+
+					result = 'cameraPosition';
+
+					break;
+
+				case CameraNode.DEPTH:
+
+					const depthColor = builder.include( CameraNode.Nodes.depthColor );
+
+					result = depthColor + '( ' + this.near.build( builder, 'f' ) + ', ' + this.far.build( builder, 'f' ) + ' )';
+
+					break;
+
+				case CameraNode.TO_VERTEX:
+
+					result = 'normalize( ' + new PositionNode( PositionNode.WORLD ).build( builder, 'v3' ) + ' - cameraPosition )';
+
+					break;
+
+			}
+
+			return builder.format( result, this.getType( builder ), output );
+
+		}
+
+		onUpdateFrame( /* frame */ ) {
+
+			switch ( this.scope ) {
+
+				case CameraNode.DEPTH:
+
+					const camera = this.camera;
+
+					this.near.value = camera.near;
+					this.far.value = camera.far;
+
+					break;
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.setScope( source.scope );
+
+			if ( source.camera ) {
+
+				this.setCamera( source.camera );
+
+			}
+
+			switch ( source.scope ) {
+
+				case CameraNode.DEPTH:
+
+					this.near.number = source.near;
+					this.far.number = source.far;
+
+					break;
+
+			}
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.scope = this.scope;
+
+				if ( this.camera ) data.camera = this.camera.uuid;
+
+				switch ( this.scope ) {
+
+					case CameraNode.DEPTH:
+
+						data.near = this.near.value;
+						data.far = this.far.value;
+
+						break;
+
+				}
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	CameraNode.Nodes = ( function () {
+
+		const depthColor = new FunctionNode( /* glsl */`
+		float depthColor( float mNear, float mFar ) {
+
+			#ifdef USE_LOGDEPTHBUF_EXT
+
+				float depth = gl_FragDepthEXT / gl_FragCoord.w;
+
+			#else
+
+				float depth = gl_FragCoord.z / gl_FragCoord.w;
+
+			#endif
+
+			return 1.0 - smoothstep( mNear, mFar, depth );
+
+		}`
+		 );
+
+		return {
+			depthColor: depthColor
+		};
+
+	} )();
+
+	CameraNode.POSITION = 'position';
+	CameraNode.DEPTH = 'depth';
+	CameraNode.TO_VERTEX = 'toVertex';
+
+	CameraNode.prototype.nodeType = 'Camera';
+
+	class LightNode extends TempNode {
+
+		constructor( scope ) {
+
+			super( 'v3', { shared: false } );
+
+			this.scope = scope || LightNode.TOTAL;
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isCache( 'light' ) ) {
+
+				return builder.format( 'reflectedLight.directDiffuse', this.type, output );
+
+			} else {
+
+				console.warn( 'THREE.LightNode is only compatible in "light" channel.' );
+
+				return builder.format( 'vec3( 0.0 )', this.type, output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.scope = source.scope;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			var data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.scope = this.scope;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	LightNode.TOTAL = 'total';
+	LightNode.prototype.nodeType = 'Light';
+
+	class ResolutionNode extends Vector2Node {
+
+		constructor() {
+
+			super();
+
+			this.size = new Vector2();
+
+		}
+
+		updateFrame( frame ) {
+
+			if ( frame.renderer ) {
+
+				frame.renderer.getSize( this.size );
+
+				const pixelRatio = frame.renderer.getPixelRatio();
+
+				this.x = this.size.width * pixelRatio;
+				this.y = this.size.height * pixelRatio;
+
+			} else {
+
+				console.warn( 'ResolutionNode need a renderer in NodeFrame' );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.renderer = source.renderer;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.renderer = this.renderer.uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ResolutionNode.prototype.nodeType = 'Resolution';
+
+	class ScreenUVNode extends TempNode {
+
+		constructor( resolution ) {
+
+			super( 'v2' );
+
+			this.resolution = resolution || new ResolutionNode();
+
+		}
+
+		generate( builder, output ) {
+
+			let result;
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				result = '( gl_FragCoord.xy / ' + this.resolution.build( builder, 'v2' ) + ')';
+
+			} else {
+
+				console.warn( 'THREE.ScreenUVNode is not compatible with ' + builder.shader + ' shader.' );
+
+				result = 'vec2( 0.0 )';
+
+			}
+
+			return builder.format( result, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.resolution = source.resolution;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.resolution = this.resolution.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ScreenUVNode.prototype.nodeType = 'ScreenUV';
+
+	class CondNode extends TempNode {
+
+		constructor( a, b, op, ifNode, elseNode ) {
+
+			super();
+
+			this.a = a;
+			this.b = b;
+
+			this.op = op;
+
+			this.ifNode = ifNode;
+			this.elseNode = elseNode;
+
+		}
+
+		getType( builder ) {
+
+			if ( this.ifNode ) {
+
+				const ifType = this.ifNode.getType( builder );
+				const elseType = this.elseNode.getType( builder );
+
+				if ( builder.getTypeLength( elseType ) > builder.getTypeLength( ifType ) ) {
+
+					return elseType;
+
+				}
+
+				return ifType;
+
+			}
+
+			return 'b';
+
+		}
+
+		getCondType( builder ) {
+
+			if ( builder.getTypeLength( this.b.getType( builder ) ) > builder.getTypeLength( this.a.getType( builder ) ) ) {
+
+				return this.b.getType( builder );
+
+			}
+
+			return this.a.getType( builder );
+
+		}
+
+		generate( builder, output ) {
+
+			const type = this.getType( builder ),
+				condType = this.getCondType( builder ),
+				a = this.a.build( builder, condType ),
+				b = this.b.build( builder, condType );
+
+			let code;
+
+			if ( this.ifNode ) {
+
+				const ifCode = this.ifNode.build( builder, type ),
+					elseCode = this.elseNode.build( builder, type );
+
+				code = '( ' + [ a, this.op, b, '?', ifCode, ':', elseCode ].join( ' ' ) + ' )';
+
+			} else {
+
+				code = '( ' + a + ' ' + this.op + ' ' + b + ' )';
+
+			}
+
+			return builder.format( code, this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.a = source.a;
+			this.b = source.b;
+
+			this.op = source.op;
+
+			this.ifNode = source.ifNode;
+			this.elseNode = source.elseNode;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.a = this.a.toJSON( meta ).uuid;
+				data.b = this.b.toJSON( meta ).uuid;
+
+				data.op = this.op;
+
+				if ( data.ifNode ) data.ifNode = this.ifNode.toJSON( meta ).uuid;
+				if ( data.elseNode ) data.elseNode = this.elseNode.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	CondNode.EQUAL = '==';
+	CondNode.NOT_EQUAL = '!=';
+	CondNode.GREATER = '>';
+	CondNode.GREATER_EQUAL = '>=';
+	CondNode.LESS = '<';
+	CondNode.LESS_EQUAL = '<=';
+	CondNode.AND = '&&';
+	CondNode.OR = '||';
+
+	CondNode.prototype.nodeType = 'Cond';
+
+	const NOISE_COMMON_SRC = `
+vec3 mod289( vec3 x ) {
+
+	return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0;
+
+}
+
+vec4 mod289( vec4 x ) {
+
+	return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0;
+
+}
+
+vec4 permute( vec4 x ) {
+
+	return mod289( ( ( x * 34.0 ) + 1.0 ) * x );
+
+}
+
+vec4 taylorInvSqrt( vec4 r ) {
+
+	return 1.79284291400159 - 0.85373472095314 * r;
+
+}
+
+vec2 fade( vec2 t ) {
+
+	return t * t * t * ( t * ( t * 6.0 - 15.0 ) + 10.0 );
+
+}
+
+vec3 fade( vec3 t ) {
+
+	return t * t * t * ( t * ( t * 6.0 - 15.0 ) + 10.0 );
+
+}
+`.trim();
+
+	const NOISE2D_SRC = `
+float noise2d( vec2 P, float amplitude, float pivot ) {
+
+	vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
+	Pi = mod289(Pi); // To avoid truncation effects in permutation
+	vec4 ix = Pi.xzxz;
+	vec4 iy = Pi.yyww;
+	vec4 fx = Pf.xzxz;
+	vec4 fy = Pf.yyww;
+
+	vec4 i = permute(permute(ix) + iy);
+
+	vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
+	vec4 gy = abs(gx) - 0.5 ;
+	vec4 tx = floor(gx + 0.5);
+	gx = gx - tx;
+
+	vec2 g00 = vec2(gx.x,gy.x);
+	vec2 g10 = vec2(gx.y,gy.y);
+	vec2 g01 = vec2(gx.z,gy.z);
+	vec2 g11 = vec2(gx.w,gy.w);
+
+	vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
+	g00 *= norm.x;
+	g01 *= norm.y;
+	g10 *= norm.z;
+	g11 *= norm.w;
+
+	float n00 = dot(g00, vec2(fx.x, fy.x));
+	float n10 = dot(g10, vec2(fx.y, fy.y));
+	float n01 = dot(g01, vec2(fx.z, fy.z));
+	float n11 = dot(g11, vec2(fx.w, fy.w));
+
+	vec2 fade_xy = fade(Pf.xy);
+	vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
+	float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
+	return 2.3 * n_xy * amplitude + pivot;
+
+}
+`.trim();
+
+	class Noise2DNode extends TempNode {
+
+		constructor( uv = new UVNode(), amplitude = new FloatNode( 1.0 ), pivot = new FloatNode( 0.0 ) ) {
+
+			super( 'f' );
+
+			this.uv = uv;
+			this.amplitude = amplitude;
+			this.pivot = pivot;
+
+		}
+
+		generate( builder, output ) {
+
+			const noise2d = new FunctionCallNode( Noise2DNode.Nodes.noise2d, [ this.uv, this.amplitude, this.pivot ] );
+			return builder.format( noise2d.generate( builder, output ), this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.uv = source.uv;
+			this.amplitude = source.amplitude;
+			this.pivot = source.pivot;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.uv = this.uv.toJSON( meta ).uuid;
+				data.amplitude = this.amplitude.toJSON( meta ).uuid;
+				data.pivot = this.pivot.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Noise2DNode.prototype.nodeType = 'Noise2D';
+
+	Noise2DNode.Nodes = ( function () {
+
+		const noiseCommon = new FunctionNode( NOISE_COMMON_SRC );
+		const noise2d = new FunctionNode( NOISE2D_SRC );
+
+		noise2d.includes = [ noiseCommon ];
+
+		return { noiseCommon, noise2d };
+
+	} )();
+
+	const NOISE3D_SRC = `
+float noise3d( vec3 P, float amplitude, float pivot ) {
+
+	vec3 Pi0 = floor(P); // Integer part for indexing
+	vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+	Pi0 = mod289(Pi0);
+	Pi1 = mod289(Pi1);
+	vec3 Pf0 = fract(P); // Fractional part for interpolation
+	vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+	vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+	vec4 iy = vec4(Pi0.yy, Pi1.yy);
+	vec4 iz0 = Pi0.zzzz;
+	vec4 iz1 = Pi1.zzzz;
+
+	vec4 ixy = permute(permute(ix) + iy);
+	vec4 ixy0 = permute(ixy + iz0);
+	vec4 ixy1 = permute(ixy + iz1);
+
+	vec4 gx0 = ixy0 * (1.0 / 7.0);
+	vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+	gx0 = fract(gx0);
+	vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+	vec4 sz0 = step(gz0, vec4(0.0));
+	gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+	gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+	vec4 gx1 = ixy1 * (1.0 / 7.0);
+	vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+	gx1 = fract(gx1);
+	vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+	vec4 sz1 = step(gz1, vec4(0.0));
+	gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+	gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+	vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+	vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+	vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+	vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+	vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+	vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+	vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+	vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+	vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+	g000 *= norm0.x;
+	g010 *= norm0.y;
+	g100 *= norm0.z;
+	g110 *= norm0.w;
+	vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+	g001 *= norm1.x;
+	g011 *= norm1.y;
+	g101 *= norm1.z;
+	g111 *= norm1.w;
+
+	float n000 = dot(g000, Pf0);
+	float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+	float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+	float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+	float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+	float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+	float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+	float n111 = dot(g111, Pf1);
+
+	vec3 fade_xyz = fade(Pf0);
+	vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+	vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+	float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+	return 2.2 * n_xyz * amplitude + pivot;
+
+}
+`.trim();
+
+	class Noise3DNode extends TempNode {
+
+		constructor( position = new PositionNode(), amplitude = new FloatNode( 1.0 ), pivot = new FloatNode( 0.0 ) ) {
+
+			super( 'f' );
+
+			this.position = position;
+			this.amplitude = amplitude;
+			this.pivot = pivot;
+
+		}
+
+		generate( builder, output ) {
+
+			const noise3d = new FunctionCallNode( Noise3DNode.Nodes.noise3d, [ this.position, this.amplitude, this.pivot ] );
+			return builder.format( noise3d.generate( builder, output ), this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.position = source.position;
+			this.amplitude = source.amplitude;
+			this.pivot = source.pivot;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.position = this.position.toJSON( meta ).uuid;
+				data.amplitude = this.amplitude.toJSON( meta ).uuid;
+				data.pivot = this.pivot.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Noise3DNode.prototype.nodeType = 'Noise3D';
+
+	Noise3DNode.Nodes = ( function () {
+
+		const noise3d = new FunctionNode( NOISE3D_SRC );
+
+		noise3d.includes = [ Noise2DNode.Nodes.noiseCommon ];
+
+		return { noise3d };
+
+	} )();
+
+	class CheckerNode extends TempNode {
+
+		constructor( uv ) {
+
+			super( 'f' );
+
+			this.uv = uv || new UVNode();
+
+		}
+
+		generate( builder, output ) {
+
+			const snoise = builder.include( CheckerNode.Nodes.checker );
+
+			return builder.format( snoise + '( ' + this.uv.build( builder, 'v2' ) + ' )', this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.uv = source.uv;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.uv = this.uv.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	CheckerNode.Nodes = ( function () {
+
+		// https://github.com/mattdesl/glsl-checker/blob/master/index.glsl
+
+		const checker = new FunctionNode( /* glsl */`
+		float checker( vec2 uv ) {
+
+			float cx = floor( uv.x );
+			float cy = floor( uv.y );
+			float result = mod( cx + cy, 2.0 );
+
+			return sign( result );
+
+		}`
+		);
+
+		return {
+			checker: checker
+		};
+
+	} )();
+
+	CheckerNode.prototype.nodeType = 'Noise';
+
+	const FRACTAL3D_SRC = `
+float fractal3d( vec3 p, float amplitude, int octaves, float lacunarity, float diminish ) {
+
+	float result = 0.0;
+
+	for (int i = 0;  i < octaves; ++i) {
+
+		result += noise3d(p, amplitude, 0.0);
+		amplitude *= diminish;
+		p *= lacunarity;
+
+	}
+
+	return result;
+
+}
+`.trim();
+
+	/** Fractional Brownian motion. */
+	class Fractal3DNode extends TempNode {
+
+		constructor( position = new PositionNode(), amplitude = new FloatNode( 1.0 ), octaves = 3.0, lacunarity = 2.0, diminish = 0.5 ) {
+
+			super( 'f' );
+
+			this.position = position;
+			this.amplitude = amplitude;
+			this.octaves = new IntNode( octaves ).setReadonly( true );
+			this.lacunarity = new FloatNode( lacunarity ).setReadonly( true );
+			this.diminish = new FloatNode( diminish ).setReadonly( true );
+
+		}
+
+		generate( builder, output ) {
+
+			const fractal3d = new FunctionCallNode( Fractal3DNode.Nodes.fractal3d, [
+
+				this.position,
+				this.amplitude,
+				this.octaves,
+				this.lacunarity,
+				this.diminish,
+
+			] );
+
+			return builder.format( fractal3d.generate( builder, output ), this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.position = source.position;
+			this.amplitude = source.amplitude;
+			this.octaves = source.octaves;
+			this.lacunarity = source.lacunarity;
+			this.diminish = source.diminish;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.position = this.position.toJSON( meta ).uuid;
+				data.amplitude = this.amplitude.toJSON( meta ).uuid;
+				data.octaves = this.octaves.toJSON( meta ).uuid;
+				data.lacunarity = this.lacunarity.toJSON( meta ).uuid;
+				data.diminish = this.diminish.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	Fractal3DNode.prototype.nodeType = 'Fractal3D';
+
+	Fractal3DNode.Nodes = ( function () {
+
+		const fractal3d = new FunctionNode( FRACTAL3D_SRC );
+
+		fractal3d.includes = [ Noise3DNode.Nodes.noise3d ];
+
+		return { fractal3d };
+
+	} )();
+
+	class NormalMapNode extends TempNode {
+
+		constructor( value, scale ) {
+
+			super( 'v3' );
+
+			this.value = value;
+			this.scale = scale || new Vector2Node( 1, 1 );
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				const perturbNormal2Arb = builder.include( NormalMapNode.Nodes.perturbNormal2Arb );
+
+				this.normal = this.normal || new NormalNode();
+				this.position = this.position || new PositionNode( PositionNode.VIEW );
+				this.uv = this.uv || new UVNode();
+
+				let scale = this.scale.build( builder, 'v2' );
+
+				if ( builder.material.side === BackSide ) {
+
+					scale = '-' + scale;
+
+				}
+
+				return builder.format( perturbNormal2Arb + '( -' + this.position.build( builder, 'v3' ) + ', ' +
+					this.normal.build( builder, 'v3' ) + ', ' +
+					this.value.build( builder, 'v3' ) + ', ' +
+					this.uv.build( builder, 'v2' ) + ', ' +
+					scale + ' )', this.getType( builder ), output );
+
+			} else {
+
+				console.warn( 'THREE.NormalMapNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( 'vec3( 0.0 )', this.getType( builder ), output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+			this.scale = source.scale;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+				data.scale = this.scale.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	NormalMapNode.Nodes = ( function () {
+
+		const perturbNormal2Arb = new FunctionNode(
+
+			// Per-Pixel Tangent Space Normal Mapping
+			// http://hacksoflife.blogspot.ch/2009/11/per-pixel-tangent-space-normal-mapping.html
+
+			`vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm, vec3 map, vec2 vUv, vec2 normalScale ) {
+
+		// Workaround for Adreno 3XX dFd*( vec3 ) bug. See #9988
+
+		vec3 q0 = vec3( dFdx( eye_pos.x ), dFdx( eye_pos.y ), dFdx( eye_pos.z ) );
+		vec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );
+		vec2 st0 = dFdx( vUv.st );
+		vec2 st1 = dFdy( vUv.st );
+
+		float scale = sign( st1.t * st0.s - st0.t * st1.s ); // we do not care about the magnitude
+
+		vec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );
+		vec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );
+		vec3 N = normalize( surf_norm );
+
+		vec3 mapN = map * 2.0 - 1.0;
+
+		mapN.xy *= normalScale;
+
+		#ifdef DOUBLE_SIDED
+
+			// Workaround for Adreno GPUs gl_FrontFacing bug. See #15850 and #10331
+
+			if ( dot( cross( S, T ), N ) < 0.0 ) mapN.xy *= - 1.0;
+
+		#else
+
+			mapN.xy *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+
+		#endif
+
+		mat3 tsn = mat3( S, T, N );
+		return normalize( tsn * mapN );
+
+	}`, null, { derivatives: true } );
+
+		return {
+			perturbNormal2Arb: perturbNormal2Arb
+		};
+
+	} )();
+
+	NormalMapNode.prototype.nodeType = 'NormalMap';
+
+	class BumpMapNode extends TempNode {
+
+		constructor( value, scale ) {
+
+			super( 'v3' );
+
+			this.value = value;
+			this.scale = scale || new FloatNode( 1 );
+
+			this.toNormalMap = false;
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				if ( this.toNormalMap ) {
+
+					const bumpToNormal = builder.include( BumpMapNode.Nodes.bumpToNormal );
+
+					return builder.format( bumpToNormal + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' +
+						this.value.uv.build( builder, 'v2' ) + ', ' +
+						this.scale.build( builder, 'f' ) + ' )', this.getType( builder ), output );
+
+				} else {
+
+					const derivativeHeight = builder.include( BumpMapNode.Nodes.dHdxy_fwd ),
+						perturbNormalArb = builder.include( BumpMapNode.Nodes.perturbNormalArb );
+
+					this.normal = this.normal || new NormalNode();
+					this.position = this.position || new PositionNode( PositionNode.VIEW );
+
+					const derivativeHeightCode = derivativeHeight + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' +
+						this.value.uv.build( builder, 'v2' ) + ', ' +
+						this.scale.build( builder, 'f' ) + ' )';
+
+					return builder.format( perturbNormalArb + '( -' + this.position.build( builder, 'v3' ) + ', ' +
+						this.normal.build( builder, 'v3' ) + ', ' +
+						derivativeHeightCode + ' )', this.getType( builder ), output );
+
+				}
+
+			} else {
+
+				console.warn( 'THREE.BumpMapNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( 'vec3( 0.0 )', this.getType( builder ), output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+			this.scale = source.scale;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+				data.scale = this.scale.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	BumpMapNode.Nodes = ( function () {
+
+		// Bump Mapping Unparametrized Surfaces on the GPU by Morten S. Mikkelsen
+		// http://api.unrealengine.com/attachments/Engine/Rendering/LightingAndShadows/BumpMappingWithoutTangentSpace/mm_sfgrad_bump.pdf
+
+		// Evaluate the derivative of the height w.r.t. screen-space using forward differencing (listing 2)
+
+		const dHdxy_fwd = new FunctionNode( /* glsl */`
+
+		vec2 dHdxy_fwd( sampler2D bumpMap, vec2 vUv, float bumpScale ) {
+
+			vec2 dSTdx = dFdx( vUv );
+			vec2 dSTdy = dFdy( vUv );
+
+			float Hll = bumpScale * texture2D( bumpMap, vUv ).x;
+			float dBx = bumpScale * texture2D( bumpMap, vUv + dSTdx ).x - Hll;
+			float dBy = bumpScale * texture2D( bumpMap, vUv + dSTdy ).x - Hll;
+
+			return vec2( dBx, dBy );
+
+		}`
+
+		, null, { derivatives: true } );
+
+		const perturbNormalArb = new FunctionNode( /* glsl */`
+
+		vec3 perturbNormalArb( vec3 surf_pos, vec3 surf_norm, vec2 dHdxy ) {
+
+			vec3 vSigmaX = vec3( dFdx( surf_pos.x ), dFdx( surf_pos.y ), dFdx( surf_pos.z ) );
+			vec3 vSigmaY = vec3( dFdy( surf_pos.x ), dFdy( surf_pos.y ), dFdy( surf_pos.z ) );
+			vec3 vN = surf_norm; // normalized
+
+			vec3 R1 = cross( vSigmaY, vN );
+			vec3 R2 = cross( vN, vSigmaX );
+
+			float fDet = dot( vSigmaX, R1 );
+
+			fDet *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+
+			vec3 vGrad = sign( fDet ) * ( dHdxy.x * R1 + dHdxy.y * R2 );
+
+			return normalize( abs( fDet ) * surf_norm - vGrad );
+
+		}`
+
+		, [ dHdxy_fwd ], { derivatives: true } );
+
+		const bumpToNormal = new FunctionNode( /* glsl */`
+		vec3 bumpToNormal( sampler2D bumpMap, vec2 uv, float scale ) {
+
+			vec2 dSTdx = dFdx( uv );
+			vec2 dSTdy = dFdy( uv );
+
+			float Hll = texture2D( bumpMap, uv ).x;
+			float dBx = texture2D( bumpMap, uv + dSTdx ).x - Hll;
+			float dBy = texture2D( bumpMap, uv + dSTdy ).x - Hll;
+
+			return vec3( .5 - ( dBx * scale ), .5 - ( dBy * scale ), 1.0 );
+
+		}`
+		, null, { derivatives: true } );
+
+		return {
+			dHdxy_fwd: dHdxy_fwd,
+			perturbNormalArb: perturbNormalArb,
+			bumpToNormal: bumpToNormal
+		};
+
+	} )();
+
+	BumpMapNode.prototype.nodeType = 'BumpMap';
+	BumpMapNode.prototype.hashProperties = [ 'toNormalMap' ];
+
+	class BypassNode extends Node {
+
+		constructor( code, value ) {
+
+			super();
+
+			this.code = code;
+			this.value = value;
+
+		}
+
+		getType( builder ) {
+
+			if ( this.value ) {
+
+				return this.value.getType( builder );
+
+			} else if ( builder.isShader( 'fragment' ) ) {
+
+				return 'f';
+
+			}
+
+			return 'void';
+
+		}
+
+		generate( builder, output ) {
+
+			const code = this.code.build( builder, output ) + ';';
+
+			builder.addNodeCode( code );
+
+			if ( builder.isShader( 'vertex' ) ) {
+
+				if ( this.value ) {
+
+					return this.value.build( builder, output );
+
+				}
+
+			} else {
+
+				return this.value ? this.value.build( builder, output ) : builder.format( '0.0', 'f', output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.code = source.code;
+			this.value = source.value;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.code = this.code.toJSON( meta ).uuid;
+
+				if ( this.value ) data.value = this.value.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	BypassNode.prototype.nodeType = 'Bypass';
+
+	const inputs = NodeUtils.elements;
+
+	class JoinNode extends TempNode {
+
+		constructor( x, y, z, w ) {
+
+			super( 'f' );
+
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.w = w;
+
+		}
+
+		getNumElements() {
+
+			let i = inputs.length;
+
+			while ( i -- ) {
+
+				if ( this[ inputs[ i ] ] !== undefined ) {
+
+					++ i;
+
+					break;
+
+				}
+
+			}
+
+			return Math.max( i, 2 );
+
+		}
+
+		getType( builder ) {
+
+			return builder.getTypeFromLength( this.getNumElements() );
+
+		}
+
+		generate( builder, output ) {
+
+			const type = this.getType( builder ),
+				length = this.getNumElements(),
+				outputs = [];
+
+			for ( let i = 0; i < length; i ++ ) {
+
+				const elm = this[ inputs[ i ] ];
+
+				outputs.push( elm ? elm.build( builder, 'f' ) : '0.0' );
+
+			}
+
+			const code = ( length > 1 ? builder.getConstructorFromLength( length ) : '' ) + '( ' + outputs.join( ', ' ) + ' )';
+
+			return builder.format( code, type, output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			for ( const prop in source.inputs ) {
+
+				this[ prop ] = source.inputs[ prop ];
+
+			}
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.inputs = {};
+
+				const length = this.getNumElements();
+
+				for ( let i = 0; i < length; i ++ ) {
+
+					const elm = this[ inputs[ i ] ];
+
+					if ( elm ) {
+
+						data.inputs[ inputs[ i ] ] = elm.toJSON( meta ).uuid;
+
+					}
+
+				}
+
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	JoinNode.prototype.nodeType = 'Join';
+
+	class SwitchNode extends Node {
+
+		constructor( node, components ) {
+
+			super();
+
+			this.node = node;
+			this.components = components || 'x';
+
+		}
+
+		getType( builder ) {
+
+			return builder.getTypeFromLength( this.components.length );
+
+		}
+
+		generate( builder, output ) {
+
+			const type = this.node.getType( builder ),
+				inputLength = builder.getTypeLength( type ) - 1;
+
+			let node = this.node.build( builder, type );
+
+			if ( inputLength > 0 ) {
+
+				// get max length
+
+				let outputLength = 0;
+				const components = builder.colorToVectorProperties( this.components );
+
+				let i;
+				const len = components.length;
+
+				for ( i = 0; i < len; i ++ ) {
+
+					outputLength = Math.max( outputLength, builder.getIndexByElement( components.charAt( i ) ) );
+
+				}
+
+				if ( outputLength > inputLength ) outputLength = inputLength;
+
+				// split
+
+				node += '.';
+
+				for ( i = 0; i < len; i ++ ) {
+
+					let idx = builder.getIndexByElement( components.charAt( i ) );
+
+					if ( idx > outputLength ) idx = outputLength;
+
+					node += builder.getElementByIndex( idx );
+
+				}
+
+				return builder.format( node, this.getType( builder ), output );
+
+			} else {
+
+				// join
+
+				return builder.format( node, type, output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.node = source.node;
+			this.components = source.components;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.node = this.node.toJSON( meta ).uuid;
+				data.components = this.components;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	SwitchNode.prototype.nodeType = 'Switch';
+
+	const REMAP_SRC = `
+float remap( float value, float inLow, float inHigh, float outLow, float outHigh ) {
+
+	float x = ( value - inLow ) / ( inHigh - inLow );
+	return outLow + ( outHigh - outLow ) * x;
+
+}
+
+vec2 remap( vec2 value, vec2 inLow, vec2 inHigh, vec2 outLow, vec2 outHigh ) {
+
+	return vec2(
+		remap( value.x, inLow.x, inHigh.x, outLow.x, outHigh.x ),
+		remap( value.y, inLow.y, inHigh.y, outLow.y, outHigh.y )
+	);
+
+}
+
+vec2 remap( vec2 value, float inLow, float inHigh, float outLow, float outHigh ) {
+
+	return vec2(
+		remap( value.x, inLow, inHigh, outLow, outHigh ),
+		remap( value.y, inLow, inHigh, outLow, outHigh )
+	);
+
+}
+
+vec3 remap( vec3 value, vec3 inLow, vec3 inHigh, vec3 outLow, vec3 outHigh ) {
+
+	return vec3(
+		remap( value.x, inLow.x, inHigh.x, outLow.x, outHigh.x ),
+		remap( value.y, inLow.y, inHigh.y, outLow.y, outHigh.y ),
+		remap( value.z, inLow.z, inHigh.z, outLow.z, outHigh.z )
+	);
+
+}
+
+vec3 remap( vec3 value, float inLow, float inHigh, float outLow, float outHigh ) {
+
+	return vec3(
+		remap( value.x, inLow, inHigh, outLow, outHigh ),
+		remap( value.y, inLow, inHigh, outLow, outHigh ),
+		remap( value.z, inLow, inHigh, outLow, outHigh )
+	);
+
+}
+
+vec4 remap( vec4 value, vec4 inLow, vec4 inHigh, vec4 outLow, vec4 outHigh ) {
+
+	return vec4(
+		remap( value.x, inLow.x, inHigh.x, outLow.x, outHigh.x ),
+		remap( value.y, inLow.y, inHigh.y, outLow.y, outHigh.y ),
+		remap( value.z, inLow.z, inHigh.z, outLow.z, outHigh.z ),
+		remap( value.w, inLow.w, inHigh.w, outLow.w, outHigh.w )
+	);
+
+}
+
+vec4 remap( vec4 value, float inLow, float inHigh, float outLow, float outHigh ) {
+
+	return vec4(
+		remap( value.x, inLow, inHigh, outLow, outHigh ),
+		remap( value.y, inLow, inHigh, outLow, outHigh ),
+		remap( value.z, inLow, inHigh, outLow, outHigh ),
+		remap( value.w, inLow, inHigh, outLow, outHigh )
+	);
+
+}
+`.trim();
+
+	class RemapNode extends TempNode {
+
+		constructor( value, inLow, inHigh, outLow, outHigh ) {
+
+			super( 'f' );
+
+			this.value = value;
+			this.inLow = inLow;
+			this.inHigh = inHigh;
+			this.outLow = outLow;
+			this.outHigh = outHigh;
+
+		}
+
+		generate( builder, output ) {
+
+			const remap = builder.include( RemapNode.Nodes.remap );
+
+			return builder.format( remap + '( ' + [
+
+				this.value.build( builder ),
+				this.inLow.build( builder ),
+				this.inHigh.build( builder ),
+				this.outLow.build( builder ),
+				this.outHigh.build( builder ),
+
+			].join( ', ' ) + ' )', this.getType( builder ), output );
+
+		}
+
+		getType( builder ) {
+
+			return this.value.getType( builder );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+			this.inLow = source.inLow;
+			this.inHigh = source.inHigh;
+			this.outLow = source.outLow;
+			this.outHigh = source.outHigh;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+				data.inLow = this.inLow.toJSON( meta ).uuid;
+				data.inHigh = this.inHigh.toJSON( meta ).uuid;
+				data.outLow = this.outLow.toJSON( meta ).uuid;
+				data.outHigh = this.outHigh.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	RemapNode.prototype.nodeType = 'Remap';
+
+	RemapNode.Nodes = ( function () {
+
+		return {
+
+			remap: new FunctionNode( REMAP_SRC )
+
+		};
+
+	} )();
+
+	class TimerNode extends FloatNode {
+
+		constructor( scale, scope, timeScale ) {
+
+			super();
+
+			this.scale = scale !== undefined ? scale : 1;
+			this.scope = scope || TimerNode.GLOBAL;
+
+			this.timeScale = timeScale !== undefined ? timeScale : scale !== undefined;
+
+		}
+
+		getReadonly() {
+
+			// never use TimerNode as readonly but aways as "uniform"
+
+			return false;
+
+		}
+
+		getUnique() {
+
+			// share TimerNode "uniform" input if is used on more time with others TimerNode
+
+			return this.timeScale && ( this.scope === TimerNode.GLOBAL || this.scope === TimerNode.DELTA );
+
+		}
+
+		updateFrame( frame ) {
+
+			const scale = this.timeScale ? this.scale : 1;
+
+			switch ( this.scope ) {
+
+				case TimerNode.LOCAL:
+
+					this.value += frame.delta * scale;
+
+					break;
+
+				case TimerNode.DELTA:
+
+					this.value = frame.delta * scale;
+
+					break;
+
+				default:
+
+					this.value = frame.time * scale;
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.scope = source.scope;
+			this.scale = source.scale;
+
+			this.timeScale = source.timeScale;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			const data = super.toJSON( meta );
+
+			data.scope = this.scope;
+			data.scale = this.scale;
+
+			data.timeScale = this.timeScale;
+
+			return data;
+
+		}
+
+	}
+
+	TimerNode.GLOBAL = 'global';
+	TimerNode.LOCAL = 'local';
+	TimerNode.DELTA = 'delta';
+
+	TimerNode.prototype.nodeType = 'Timer';
+
+	NodeLib.addKeyword( 'time', function () {
+
+		return new TimerNode();
+
+	} );
+
+	class VelocityNode extends Vector3Node {
+
+		constructor( target, params ) {
+
+			super();
+
+			this.params = {};
+
+			this.velocity = new Vector3();
+
+			this.setTarget( target );
+			this.setParams( params );
+
+		}
+
+		getReadonly( /*builder*/ ) {
+
+			return false;
+
+		}
+
+		setParams( params ) {
+
+			switch ( this.params.type ) {
+
+				case 'elastic':
+
+					delete this.moment;
+
+					delete this.speed;
+					delete this.springVelocity;
+
+					delete this.lastVelocity;
+
+					break;
+
+			}
+
+			this.params = params || {};
+
+			switch ( this.params.type ) {
+
+				case 'elastic':
+
+					this.moment = new Vector3();
+
+					this.speed = new Vector3();
+					this.springVelocity = new Vector3();
+
+					this.lastVelocity = new Vector3();
+
+					break;
+
+			}
+
+		}
+
+		setTarget( target ) {
+
+			if ( this.target ) {
+
+				delete this.position;
+				delete this.oldPosition;
+
+			}
+
+			this.target = target;
+
+			if ( target ) {
+
+				this.position = target.getWorldPosition( this.position || new Vector3() );
+				this.oldPosition = this.position.clone();
+
+			}
+
+		}
+
+		updateFrameVelocity( /*frame*/ ) {
+
+			if ( this.target ) {
+
+				this.position = this.target.getWorldPosition( this.position || new Vector3() );
+				this.velocity.subVectors( this.position, this.oldPosition );
+				this.oldPosition.copy( this.position );
+
+			}
+
+		}
+
+		updateFrame( frame ) {
+
+			this.updateFrameVelocity( frame );
+
+			switch ( this.params.type ) {
+
+				case 'elastic':
+
+					// convert to real scale: 0 at 1 values
+					const deltaFps = frame.delta * ( this.params.fps || 60 );
+
+					const spring = Math.pow( this.params.spring, deltaFps ),
+						damping = Math.pow( this.params.damping, deltaFps );
+
+					// fix relative frame-rate
+					this.velocity.multiplyScalar( Math.exp( - this.params.damping * deltaFps ) );
+
+					// elastic
+					this.velocity.add( this.springVelocity );
+					this.velocity.add( this.speed.multiplyScalar( damping ).multiplyScalar( 1 - spring ) );
+
+					// speed
+					this.speed.subVectors( this.velocity, this.lastVelocity );
+
+					// spring velocity
+					this.springVelocity.add( this.speed );
+					this.springVelocity.multiplyScalar( spring );
+
+					// moment
+					this.moment.add( this.springVelocity );
+
+					// damping
+					this.moment.multiplyScalar( damping );
+
+					this.lastVelocity.copy( this.velocity );
+					this.value.copy( this.moment );
+
+					break;
+
+				default:
+
+					this.value.copy( this.velocity );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			if ( source.target ) this.setTarget( source.target );
+
+			this.setParams( source.params );
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			const data = super.toJSON( meta );
+
+			if ( this.target ) data.target = this.target.uuid;
+
+			// clone params
+			data.params = JSON.parse( JSON.stringify( this.params ) );
+
+			return data;
+
+		}
+
+	}
+
+	VelocityNode.prototype.nodeType = 'Velocity';
+
+	class UVTransformNode extends ExpressionNode {
+
+		constructor( uv, position ) {
+
+			super( '( uvTransform * vec3( uvNode, 1 ) ).xy', 'vec2' );
+
+			this.uv = uv || new UVNode();
+			this.position = position || new Matrix3Node();
+
+		}
+
+		generate( builder, output ) {
+
+			this.keywords[ 'uvNode' ] = this.uv;
+			this.keywords[ 'uvTransform' ] = this.position;
+
+			return super.generate( builder, output );
+
+		}
+
+		setUvTransform( tx, ty, sx, sy, rotation, cx, cy ) {
+
+			cx = cx !== undefined ? cx : .5;
+			cy = cy !== undefined ? cy : .5;
+
+			this.position.value.setUvTransform( tx, ty, sx, sy, rotation, cx, cy );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.uv = source.uv;
+			this.position = source.position;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			var data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.uv = this.uv.toJSON( meta ).uuid;
+				data.position = this.position.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	UVTransformNode.prototype.nodeType = 'UVTransform';
+
+	class MaxMIPLevelNode extends FloatNode {
+
+		constructor( texture ) {
+
+			super();
+
+			this.texture = texture;
+
+			this.maxMIPLevel = 0;
+
+		}
+
+		get value() {
+
+			if ( this.maxMIPLevel === 0 ) {
+
+				var image = this.texture.value.image;
+
+				if ( Array.isArray( image ) ) image = image[ 0 ];
+
+				this.maxMIPLevel = image !== undefined ? Math.log( Math.max( image.width, image.height ) ) * Math.LOG2E : 0;
+
+			}
+
+			return this.maxMIPLevel;
+
+		}
+
+		set value( val ) {
+
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.texture = this.texture.uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	MaxMIPLevelNode.prototype.nodeType = 'MaxMIPLevel';
+
+	class SpecularMIPLevelNode extends TempNode {
+
+		constructor( roughness, texture ) {
+
+			super( 'f' );
+
+			this.roughness = roughness;
+			this.texture = texture;
+
+			this.maxMIPLevel = undefined;
+
+		}
+
+		setTexture( texture ) {
+
+			this.texture = texture;
+
+			return this;
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				this.maxMIPLevel = this.maxMIPLevel || new MaxMIPLevelNode();
+				this.maxMIPLevel.texture = this.texture;
+
+				const getSpecularMIPLevel = builder.include( SpecularMIPLevelNode.Nodes.getSpecularMIPLevel );
+
+				return builder.format( getSpecularMIPLevel + '( ' + this.roughness.build( builder, 'f' ) + ', ' + this.maxMIPLevel.build( builder, 'f' ) + ' )', this.type, output );
+
+			} else {
+
+				console.warn( 'THREE.SpecularMIPLevelNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( '0.0', this.type, output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.texture = source.texture;
+			this.roughness = source.roughness;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.texture = this.texture;
+				data.roughness = this.roughness;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	SpecularMIPLevelNode.Nodes = ( function () {
+
+		// taken from here: http://casual-effects.blogspot.ca/2011/08/plausible-environment-lighting-in-two.html
+
+		const getSpecularMIPLevel = new FunctionNode( /* glsl */`
+
+		float getSpecularMIPLevel( const in float roughness, const in float maxMIPLevelScalar ) {
+
+			float sigma = PI * roughness * roughness / ( 1.0 + roughness );
+			float desiredMIPLevel = maxMIPLevelScalar + log2( sigma );
+
+			return clamp( desiredMIPLevel, 0.0, maxMIPLevelScalar );
+
+		}`
+		);
+
+		return {
+			getSpecularMIPLevel: getSpecularMIPLevel
+		};
+
+	} )();
+
+	SpecularMIPLevelNode.prototype.nodeType = 'SpecularMIPLevel';
+
+	class SubSlotNode extends TempNode {
+
+		constructor( slots ) {
+
+			super();
+
+			this.slots = slots || {};
+
+		}
+
+		getType( builder, output ) {
+
+			return output;
+
+		}
+
+		generate( builder, output ) {
+
+			if ( this.slots[ builder.slot ] ) {
+
+				return this.slots[ builder.slot ].build( builder, output );
+
+			}
+
+			return builder.format( '0.0', 'f', output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			for ( const prop in source.slots ) {
+
+				this.slots[ prop ] = source.slots[ prop ];
+
+			}
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.slots = {};
+
+				for ( const prop in this.slots ) {
+
+					const slot = this.slots[ prop ];
+
+					if ( slot ) {
+
+						data.slots[ prop ] = slot.toJSON( meta ).uuid;
+
+					}
+
+				}
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	SubSlotNode.prototype.nodeType = 'SubSlot';
+
+	class BlurNode extends TempNode {
+
+		constructor( value, uv, radius, size ) {
+
+			super( 'v4' );
+
+			this.value = value;
+			this.uv = uv || new UVNode();
+			this.radius = radius || new Vector2Node( 1, 1 );
+
+			this.size = size;
+
+			this.blurX = true;
+			this.blurY = true;
+
+			this.horizontal = new FloatNode( 1 / 64 );
+			this.vertical = new FloatNode( 1 / 64 );
+
+		}
+
+		updateFrame( /* frame */ ) {
+
+			if ( this.size ) {
+
+				this.horizontal.value = this.radius.x / this.size.x;
+				this.vertical.value = this.radius.y / this.size.y;
+
+			} else if ( this.value.value && this.value.value.image ) {
+
+				const image = this.value.value.image;
+
+				this.horizontal.value = this.radius.x / image.width;
+				this.vertical.value = this.radius.y / image.height;
+
+			}
+
+		}
+
+		generate( builder, output ) {
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				const blurCode = [];
+				let code;
+
+				const blurX = builder.include( BlurNode.Nodes.blurX ),
+					blurY = builder.include( BlurNode.Nodes.blurY );
+
+				if ( this.blurX ) {
+
+					blurCode.push( blurX + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' + this.uv.build( builder, 'v2' ) + ', ' + this.horizontal.build( builder, 'f' ) + ' )' );
+
+				}
+
+				if ( this.blurY ) {
+
+					blurCode.push( blurY + '( ' + this.value.build( builder, 'sampler2D' ) + ', ' + this.uv.build( builder, 'v2' ) + ', ' + this.vertical.build( builder, 'f' ) + ' )' );
+
+				}
+
+				if ( blurCode.length == 2 ) code = '( ' + blurCode.join( ' + ' ) + ' / 2.0 )';
+				else if ( blurCode.length ) code = '( ' + blurCode[ 0 ] + ' )';
+				else code = 'vec4( 0.0 )';
+
+				return builder.format( code, this.getType( builder ), output );
+
+			} else {
+
+				console.warn( 'THREE.BlurNode is not compatible with ' + builder.shader + ' shader.' );
+
+				return builder.format( 'vec4( 0.0 )', this.getType( builder ), output );
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.value = source.value;
+			this.uv = source.uv;
+			this.radius = source.radius;
+
+			if ( source.size !== undefined ) this.size = new Vector2( source.size.x, source.size.y );
+
+			this.blurX = source.blurX;
+			this.blurY = source.blurY;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.value = this.value.toJSON( meta ).uuid;
+				data.uv = this.uv.toJSON( meta ).uuid;
+				data.radius = this.radius.toJSON( meta ).uuid;
+
+				if ( this.size ) data.size = { x: this.size.x, y: this.size.y };
+
+				data.blurX = this.blurX;
+				data.blurY = this.blurY;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	BlurNode.Nodes = ( function () {
+
+		const blurX = new FunctionNode( /* glsl */`
+		vec4 blurX( sampler2D tex, vec2 uv, float s ) {
+			vec4 sum = vec4( 0.0 );
+			sum += texture2D( tex, vec2( uv.x - 4.0 * s, uv.y ) ) * 0.051;
+			sum += texture2D( tex, vec2( uv.x - 3.0 * s, uv.y ) ) * 0.0918;
+			sum += texture2D( tex, vec2( uv.x - 2.0 * s, uv.y ) ) * 0.12245;
+			sum += texture2D( tex, vec2( uv.x - 1.0 * s, uv.y ) ) * 0.1531;
+			sum += texture2D( tex, vec2( uv.x, uv.y ) ) * 0.1633;
+			sum += texture2D( tex, vec2( uv.x + 1.0 * s, uv.y ) ) * 0.1531;
+			sum += texture2D( tex, vec2( uv.x + 2.0 * s, uv.y ) ) * 0.12245;
+			sum += texture2D( tex, vec2( uv.x + 3.0 * s, uv.y ) ) * 0.0918;
+			sum += texture2D( tex, vec2( uv.x + 4.0 * s, uv.y ) ) * 0.051;
+			return sum * .667;
+		}`
+		);
+
+		const blurY = new FunctionNode( /* glsl */`
+		vec4 blurY( sampler2D tex, vec2 uv, float s ) {
+			vec4 sum = vec4( 0.0 );
+			sum += texture2D( tex, vec2( uv.x, uv.y - 4.0 * s ) ) * 0.051;
+			sum += texture2D( tex, vec2( uv.x, uv.y - 3.0 * s ) ) * 0.0918;
+			sum += texture2D( tex, vec2( uv.x, uv.y - 2.0 * s ) ) * 0.12245;
+			sum += texture2D( tex, vec2( uv.x, uv.y - 1.0 * s ) ) * 0.1531;
+			sum += texture2D( tex, vec2( uv.x, uv.y ) ) * 0.1633;
+			sum += texture2D( tex, vec2( uv.x, uv.y + 1.0 * s ) ) * 0.1531;
+			sum += texture2D( tex, vec2( uv.x, uv.y + 2.0 * s ) ) * 0.12245;
+			sum += texture2D( tex, vec2( uv.x, uv.y + 3.0 * s ) ) * 0.0918;
+			sum += texture2D( tex, vec2( uv.x, uv.y + 4.0 * s ) ) * 0.051;
+			return sum * .667;
+		}`
+		 );
+
+		return {
+			blurX: blurX,
+			blurY: blurY
+		};
+
+	} )();
+
+	BlurNode.prototype.nodeType = 'Blur';
+	BlurNode.prototype.hashProperties = [ 'blurX', 'blurY' ];
+
+	class LuminanceNode extends TempNode {
+
+		constructor( rgb ) {
+
+			super( 'f' );
+
+			this.rgb = rgb;
+
+		}
+
+		generate( builder, output ) {
+
+			const luminance = builder.include( LuminanceNode.Nodes.luminance );
+
+			return builder.format( luminance + '( ' + this.rgb.build( builder, 'v3' ) + ' )', this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.rgb = source.rgb;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.rgb = this.rgb.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	LuminanceNode.Nodes = ( function () {
+
+		const LUMA = new ConstNode( 'vec3 LUMA vec3( 0.2125, 0.7154, 0.0721 )' );
+
+		// Algorithm from Chapter 10 of Graphics Shaders
+
+		const luminance = new FunctionNode( /* glsl */`
+
+		float luminance( vec3 rgb ) {
+
+			return dot( rgb, LUMA );
+
+		}`
+		, [ LUMA ] );
+
+		return {
+			LUMA: LUMA,
+			luminance: luminance
+		};
+
+	} )();
+
+	LuminanceNode.prototype.nodeType = 'Luminance';
+
+	class ColorAdjustmentNode extends TempNode {
+
+		constructor( rgb, adjustment, method ) {
+
+			super( 'v3' );
+
+			this.rgb = rgb;
+			this.adjustment = adjustment;
+
+			this.method = method || ColorAdjustmentNode.SATURATION;
+
+		}
+
+		generate( builder, output ) {
+
+			const rgb = this.rgb.build( builder, 'v3' ),
+				adjustment = this.adjustment.build( builder, 'f' );
+
+			switch ( this.method ) {
+
+				case ColorAdjustmentNode.BRIGHTNESS:
+
+					return builder.format( '( ' + rgb + ' + ' + adjustment + ' )', this.getType( builder ), output );
+
+				case ColorAdjustmentNode.CONTRAST:
+
+					return builder.format( '( ' + rgb + ' * ' + adjustment + ' )', this.getType( builder ), output );
+
+			}
+
+			const method = builder.include( ColorAdjustmentNode.Nodes[ this.method ] );
+
+			return builder.format( method + '( ' + rgb + ', ' + adjustment + ' )', this.getType( builder ), output );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.rgb = source.rgb;
+			this.adjustment = source.adjustment;
+			this.method = source.method;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.rgb = this.rgb.toJSON( meta ).uuid;
+				data.adjustment = this.adjustment.toJSON( meta ).uuid;
+				data.method = this.method;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	ColorAdjustmentNode.Nodes = ( function () {
+
+		const hue = new FunctionNode( /* glsl */`
+		vec3 hue(vec3 rgb, float adjustment) {
+
+			const mat3 RGBtoYIQ = mat3(0.299, 0.587, 0.114, 0.595716, -0.274453, -0.321263, 0.211456, -0.522591, 0.311135);
+			const mat3 YIQtoRGB = mat3(1.0, 0.9563, 0.6210, 1.0, -0.2721, -0.6474, 1.0, -1.107, 1.7046);
+
+			vec3 yiq = RGBtoYIQ * rgb;
+
+			float hue = atan(yiq.z, yiq.y) + adjustment;
+			float chroma = sqrt(yiq.z * yiq.z + yiq.y * yiq.y);
+
+			return YIQtoRGB * vec3(yiq.x, chroma * cos(hue), chroma * sin(hue));
+
+		}`
+		);
+
+		// Algorithm from Chapter 16 of OpenGL Shading Language
+
+		const saturation = new FunctionNode( /* glsl */`
+		vec3 saturation(vec3 rgb, float adjustment) {
+
+			vec3 intensity = vec3( luminance( rgb ) );
+
+			return mix( intensity, rgb, adjustment );
+
+		}`
+		, [ LuminanceNode.Nodes.luminance ] ); // include LuminanceNode function
+
+		// Shader by Evan Wallace adapted by @lo-th
+
+		const vibrance = new FunctionNode( /* glsl */`
+
+		vec3 vibrance(vec3 rgb, float adjustment) {
+
+			float average = (rgb.r + rgb.g + rgb.b) / 3.0;
+
+			float mx = max(rgb.r, max(rgb.g, rgb.b));
+			float amt = (mx - average) * (-3.0 * adjustment);
+
+			return mix(rgb.rgb, vec3(mx), amt);
+
+		}`
+		);
+
+		return {
+			hue: hue,
+			saturation: saturation,
+			vibrance: vibrance
+		};
+
+	} )();
+
+	ColorAdjustmentNode.SATURATION = 'saturation';
+	ColorAdjustmentNode.HUE = 'hue';
+	ColorAdjustmentNode.VIBRANCE = 'vibrance';
+	ColorAdjustmentNode.BRIGHTNESS = 'brightness';
+	ColorAdjustmentNode.CONTRAST = 'contrast';
+
+	ColorAdjustmentNode.prototype.nodeType = 'ColorAdjustment';
+	ColorAdjustmentNode.prototype.hashProperties = [ 'method' ];
+
+	class BasicNode extends Node {
+
+		constructor() {
+
+			super();
+
+			this.color = new ColorNode( 0xFFFFFF );
+
+		}
+
+		generate( builder ) {
+
+			let code;
+
+			if ( builder.isShader( 'vertex' ) ) {
+
+				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
+
+
+				const output = [
+					'#include <beginnormal_vertex>',
+					'#include <morphnormal_vertex>',
+					'#include <skinnormal_vertex>',
+					'#include <defaultnormal_vertex>'
+				];
+
+				output.push(
+					'#include <begin_vertex>'
+
+				);
+
+				if ( position ) {
+
+					output.push(
+						position.code,
+						position.result ? 'transformed = ' + position.result + ';' : ''
+					);
+
+				}
+
+				output.push(
+					'#include <morphtarget_vertex>',
+					'#include <skinning_vertex>',
+					'#include <project_vertex>',
+					'#include <logdepthbuf_vertex>',
+
+					'#include <worldpos_vertex>',
+					'#include <clipping_planes_vertex>',
+					'#include <fog_vertex>',
+				);
+
+				code = output.join( '\n' );
+
+			} else {
+
+				// Analyze all nodes to reuse generate codes
+				this.color.analyze( builder, { slot: 'color' } );
+
+				if ( this.alpha ) this.alpha.analyze( builder );
+				if ( this.mask ) this.mask.analyze( builder );
+
+				// Build code
+				const color = this.color.flow( builder, 'c', { slot: 'color' } );
+				const alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined;
+				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined;
+
+				builder.requires.transparent = alpha !== undefined;
+
+				const output = [
+					color.code
+				];
+
+				if ( mask ) {
+
+					output.push(
+						mask.code,
+						'if ( ! ' + mask.result + ' ) discard;'
+					);
+
+				}
+
+				if ( alpha ) {
+
+					output.push(
+						alpha.code,
+						'#ifdef ALPHATEST',
+
+						' if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
+
+						'#endif'
+					);
+
+				}
+
+				if ( alpha ) {
+
+					output.push( 'gl_FragColor = vec4(' + color.result + ', ' + alpha.result + ' );' );
+
+				} else {
+
+					output.push( 'gl_FragColor = vec4(' + color.result + ', 1.0 );' );
+
+				}
+
+				code = output.join( '\n' );
+
+			}
+
+			return code;
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.color = source.color;
+
+			if ( source.position ) this.position = source.position;
+			if ( source.alpha ) this.alpha = source.alpha;
+			if ( source.mask ) this.mask = source.mask;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				data.color = this.color.toJSON( meta ).uuid;
+
+				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
+				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
+				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	BasicNode.prototype.nodeType = 'Basic';
+
+	class SpriteNode extends Node {
+
+		constructor() {
+
+			super();
+
+			this.color = new ColorNode( 0xEEEEEE );
+			this.spherical = true;
+
+		}
+
+		build( builder ) {
+
+			let output;
+
+			builder.define( 'SPRITE' );
+
+			builder.requires.lights = false;
+			builder.requires.transparent = this.alpha !== undefined;
+
+			if ( builder.isShader( 'vertex' ) ) {
+
+				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
+
+				builder.mergeUniform( UniformsUtils$1.merge( [
+					UniformsLib$1.fog
+				] ) );
+
+				builder.addParsCode( /* glsl */`
+				#include <fog_pars_vertex>
+				#include <logdepthbuf_pars_vertex>
+				#include <clipping_planes_pars_vertex>`
+				);
+
+				output = [
+					'#include <clipping_planes_fragment>',
+					'#include <begin_vertex>'
+				];
+
+				if ( position ) {
+
+					output.push(
+						position.code,
+						position.result ? 'transformed = ' + position.result + ';' : ''
+					);
+
+				}
+
+				output.push(
+					'#include <project_vertex>',
+					'#include <fog_vertex>',
+
+					'mat4 modelViewMtx = modelViewMatrix;',
+					'mat4 modelMtx = modelMatrix;',
+
+					// ignore position from modelMatrix (use vary position)
+					'modelMtx[3][0] = 0.0;',
+					'modelMtx[3][1] = 0.0;',
+					'modelMtx[3][2] = 0.0;'
+				);
+
+				if ( ! this.spherical ) {
+
+					output.push(
+						'modelMtx[1][1] = 1.0;'
+					);
+
+				}
+
+				output.push(
+					// http://www.geeks3d.com/20140807/billboarding-vertex-shader-glsl/
+					// First colunm.
+					'modelViewMtx[0][0] = 1.0;',
+					'modelViewMtx[0][1] = 0.0;',
+					'modelViewMtx[0][2] = 0.0;'
+				);
+
+				if ( this.spherical ) {
+
+					output.push(
+						// Second colunm.
+						'modelViewMtx[1][0] = 0.0;',
+						'modelViewMtx[1][1] = 1.0;',
+						'modelViewMtx[1][2] = 0.0;'
+					);
+
+				}
+
+				output.push(
+					// Thrid colunm.
+					'modelViewMtx[2][0] = 0.0;',
+					'modelViewMtx[2][1] = 0.0;',
+					'modelViewMtx[2][2] = 1.0;',
+
+					'gl_Position = projectionMatrix * modelViewMtx * modelMtx * vec4( transformed, 1.0 );',
+
+					'#include <logdepthbuf_vertex>',
+					'#include <clipping_planes_vertex>',
+					'#include <fog_vertex>'
+				);
+
+			} else {
+
+				builder.addParsCode( /* glsl */`
+				#include <fog_pars_fragment>
+				#include <logdepthbuf_pars_fragment>
+				#include <clipping_planes_pars_fragment>`
+				);
+
+				builder.addCode( /* glsl */`
+				#include <clipping_planes_fragment>
+				#include <logdepthbuf_fragment>`
+				);
+
+				// analyze all nodes to reuse generate codes
+
+				if ( this.mask ) this.mask.analyze( builder );
+
+				if ( this.alpha ) this.alpha.analyze( builder );
+
+				this.color.analyze( builder, { slot: 'color' } );
+
+				// build code
+
+				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined,
+					alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined,
+					color = this.color.flow( builder, 'c', { slot: 'color' } );
+
+				output = [];
+
+				if ( mask ) {
+
+					output.push(
+						mask.code,
+						'if ( ! ' + mask.result + ' ) discard;'
+					);
+
+				}
+
+				if ( alpha ) {
+
+					output.push(
+						alpha.code,
+						'#ifdef ALPHATEST',
+
+						'if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
+
+						'#endif',
+						color.code,
+						'gl_FragColor = vec4( ' + color.result + ', ' + alpha.result + ' );'
+					);
+
+				} else {
+
+					output.push(
+						color.code,
+						'gl_FragColor = vec4( ' + color.result + ', 1.0 );'
+					);
+
+				}
+
+				output.push(
+					'#include <tonemapping_fragment>',
+					'#include <encodings_fragment>',
+					'#include <fog_fragment>'
+				);
+
+			}
+
+			return output.join( '\n' );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			// vertex
+
+			if ( source.position ) this.position = source.position;
+
+			// fragment
+
+			this.color = source.color;
+
+			if ( source.spherical !== undefined ) this.spherical = source.spherical;
+
+			if ( source.mask ) this.mask = source.mask;
+
+			if ( source.alpha ) this.alpha = source.alpha;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				// vertex
+
+				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
+
+				// fragment
+
+				data.color = this.color.toJSON( meta ).uuid;
+
+				if ( this.spherical === false ) data.spherical = false;
+
+				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
+
+				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	SpriteNode.prototype.nodeType = 'Sprite';
+
+	class PhongNode extends Node {
+
+		constructor() {
+
+			super();
+
+			this.color = new ColorNode( 0xEEEEEE );
+			this.specular = new ColorNode( 0x111111 );
+			this.shininess = new FloatNode( 30 );
+
+		}
+
+		build( builder ) {
+
+			let code;
+
+			builder.define( 'PHONG' );
+
+			builder.requires.lights = true;
+
+			if ( builder.isShader( 'vertex' ) ) {
+
+				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
+
+				builder.mergeUniform( UniformsUtils$1.merge( [
+
+					UniformsLib$1.fog,
+					UniformsLib$1.lights
+
+				] ) );
+
+				builder.addParsCode( /* glsl */`
+				varying vec3 vViewPosition;
+
+				#ifndef FLAT_SHADED
+
+					varying vec3 vNormal;
+
+				#endif
+
+				//"#include <encodings_pars_fragment> // encoding functions
+				#include <fog_pars_vertex>
+				#include <morphtarget_pars_vertex>
+				#include <skinning_pars_vertex>
+				#include <shadowmap_pars_vertex>
+				#include <logdepthbuf_pars_vertex>
+				#include <clipping_planes_pars_vertex>`
+				);
+
+				const output = [
+					'#include <beginnormal_vertex>',
+					'#include <morphnormal_vertex>',
+					'#include <skinbase_vertex>',
+					'#include <skinnormal_vertex>',
+					'#include <defaultnormal_vertex>',
+
+					'#ifndef FLAT_SHADED', // normal computed with derivatives when FLAT_SHADED
+
+					'	vNormal = normalize( transformedNormal );',
+
+					'#endif',
+
+					'#include <begin_vertex>'
+				];
+
+				if ( position ) {
+
+					output.push(
+						position.code,
+						position.result ? 'transformed = ' + position.result + ';' : ''
+					);
+
+				}
+
+				output.push(
+					'	#include <morphtarget_vertex>',
+					'	#include <skinning_vertex>',
+					'	#include <project_vertex>',
+					'	#include <fog_vertex>',
+					'	#include <logdepthbuf_vertex>',
+					'	#include <clipping_planes_vertex>',
+
+					'	vViewPosition = - mvPosition.xyz;',
+
+					'	#include <worldpos_vertex>',
+					'	#include <shadowmap_vertex>',
+					'	#include <fog_vertex>'
+				);
+
+				code = output.join( '\n' );
+
+			} else {
+
+				// analyze all nodes to reuse generate codes
+
+				if ( this.mask ) this.mask.analyze( builder );
+
+				this.color.analyze( builder, { slot: 'color' } );
+				this.specular.analyze( builder );
+				this.shininess.analyze( builder );
+
+				if ( this.alpha ) this.alpha.analyze( builder );
+
+				if ( this.normal ) this.normal.analyze( builder );
+
+				if ( this.light ) this.light.analyze( builder, { cache: 'light' } );
+
+				if ( this.ao ) this.ao.analyze( builder );
+				if ( this.ambient ) this.ambient.analyze( builder );
+				if ( this.shadow ) this.shadow.analyze( builder );
+				if ( this.emissive ) this.emissive.analyze( builder, { slot: 'emissive' } );
+
+				if ( this.environment ) this.environment.analyze( builder, { slot: 'environment' } );
+				if ( this.environmentAlpha && this.environment ) this.environmentAlpha.analyze( builder );
+
+				// build code
+
+				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined;
+
+				const color = this.color.flow( builder, 'c', { slot: 'color' } );
+				const specular = this.specular.flow( builder, 'c' );
+				const shininess = this.shininess.flow( builder, 'f' );
+
+				const alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined;
+
+				const normal = this.normal ? this.normal.flow( builder, 'v3' ) : undefined;
+
+				const light = this.light ? this.light.flow( builder, 'v3', { cache: 'light' } ) : undefined;
+
+				const ao = this.ao ? this.ao.flow( builder, 'f' ) : undefined;
+				const ambient = this.ambient ? this.ambient.flow( builder, 'c' ) : undefined;
+				const shadow = this.shadow ? this.shadow.flow( builder, 'c' ) : undefined;
+				const emissive = this.emissive ? this.emissive.flow( builder, 'c', { slot: 'emissive' } ) : undefined;
+
+				const environment = this.environment ? this.environment.flow( builder, 'c', { slot: 'environment' } ) : undefined;
+				const environmentAlpha = this.environmentAlpha && this.environment ? this.environmentAlpha.flow( builder, 'f' ) : undefined;
+
+				builder.requires.transparent = alpha !== undefined;
+
+				builder.addParsCode( /* glsl */`
+				#include <fog_pars_fragment>
+				#include <bsdfs>
+				#include <lights_pars_begin>
+				#include <lights_phong_pars_fragment>
+				#include <shadowmap_pars_fragment>
+				#include <logdepthbuf_pars_fragment>`
+				);
+
+				const output = [
+					// prevent undeclared normal
+					'#include <normal_fragment_begin>',
+
+					// prevent undeclared material
+					'	BlinnPhongMaterial material;'
+				];
+
+				if ( mask ) {
+
+					output.push(
+						mask.code,
+						'if ( ! ' + mask.result + ' ) discard;'
+					);
+
+				}
+
+				output.push(
+					color.code,
+					'	vec3 diffuseColor = ' + color.result + ';',
+					'	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );',
+
+					'#include <logdepthbuf_fragment>',
+
+					specular.code,
+					'	vec3 specular = ' + specular.result + ';',
+
+					shininess.code,
+					'	float shininess = max( 0.0001, ' + shininess.result + ' );',
+
+					'	float specularStrength = 1.0;' // Ignored in MaterialNode ( replace to specular )
+				);
+
+				if ( alpha ) {
+
+					output.push(
+						alpha.code,
+						'#ifdef ALPHATEST',
+
+						'if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
+
+						'#endif'
+					);
+
+				}
+
+				if ( normal ) {
+
+					output.push(
+						normal.code,
+						'normal = ' + normal.result + ';'
+					);
+
+				}
+
+				// optimization for now
+
+				output.push( 'material.diffuseColor = ' + ( light ? 'vec3( 1.0 )' : 'diffuseColor' ) + ';' );
+
+				output.push(
+					// accumulation
+					'material.specularColor = specular;',
+					'material.specularShininess = shininess;',
+					'material.specularStrength = specularStrength;',
+
+					'#include <lights_fragment_begin>',
+					'#include <lights_fragment_end>'
+				);
+
+				if ( light ) {
+
+					output.push(
+						light.code,
+						'reflectedLight.directDiffuse = ' + light.result + ';'
+					);
+
+					// apply color
+
+					output.push(
+						'reflectedLight.directDiffuse *= diffuseColor;',
+						'reflectedLight.indirectDiffuse *= diffuseColor;'
+					);
+
+				}
+
+				if ( ao ) {
+
+					output.push(
+						ao.code,
+						'reflectedLight.indirectDiffuse *= ' + ao.result + ';'
+					);
+
+				}
+
+				if ( ambient ) {
+
+					output.push(
+						ambient.code,
+						'reflectedLight.indirectDiffuse += ' + ambient.result + ';'
+					);
+
+				}
+
+				if ( shadow ) {
+
+					output.push(
+						shadow.code,
+						'reflectedLight.directDiffuse *= ' + shadow.result + ';',
+						'reflectedLight.directSpecular *= ' + shadow.result + ';'
+					);
+
+				}
+
+				if ( emissive ) {
+
+					output.push(
+						emissive.code,
+						'reflectedLight.directDiffuse += ' + emissive.result + ';'
+					);
+
+				}
+
+				output.push( 'vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular;' );
+
+				if ( environment ) {
+
+					output.push( environment.code );
+
+					if ( environmentAlpha ) {
+
+						output.push(
+							environmentAlpha.code,
+							'outgoingLight = mix( outgoingLight, ' + environment.result + ', ' + environmentAlpha.result + ' );'
+						);
+
+					} else {
+
+						output.push( 'outgoingLight = ' + environment.result + ';' );
+
+					}
+
+				}
+				/*
+				switch( builder.material.combine ) {
+
+					case ENVMAP_BLENDING_MULTIPLY:
+
+						//output.push( "vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular;" );
+						//outgoingLight = mix( outgoingLight, outgoingLight * envColor.xyz, specularStrength * reflectivity );
+
+						break;
+
+
+				}
+			*/
+
+				if ( alpha ) {
+
+					output.push( 'gl_FragColor = vec4( outgoingLight, ' + alpha.result + ' );' );
+
+				} else {
+
+					output.push( 'gl_FragColor = vec4( outgoingLight, 1.0 );' );
+
+				}
+
+				output.push(
+					'#include <tonemapping_fragment>',
+					'#include <encodings_fragment>',
+					'#include <fog_fragment>',
+					'#include <premultiplied_alpha_fragment>'
+				);
+
+				code = output.join( '\n' );
+
+			}
+
+			return code;
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			// vertex
+
+			if ( source.position ) this.position = source.position;
+
+			// fragment
+
+			this.color = source.color;
+			this.specular = source.specular;
+			this.shininess = source.shininess;
+
+			if ( source.mask ) this.mask = source.mask;
+
+			if ( source.alpha ) this.alpha = source.alpha;
+
+			if ( source.normal ) this.normal = source.normal;
+
+			if ( source.light ) this.light = source.light;
+			if ( source.shadow ) this.shadow = source.shadow;
+
+			if ( source.ao ) this.ao = source.ao;
+
+			if ( source.emissive ) this.emissive = source.emissive;
+			if ( source.ambient ) this.ambient = source.ambient;
+
+			if ( source.environment ) this.environment = source.environment;
+			if ( source.environmentAlpha ) this.environmentAlpha = source.environmentAlpha;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				// vertex
+
+				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
+
+				// fragment
+
+				data.color = this.color.toJSON( meta ).uuid;
+				data.specular = this.specular.toJSON( meta ).uuid;
+				data.shininess = this.shininess.toJSON( meta ).uuid;
+
+				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
+
+				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
+
+				if ( this.normal ) data.normal = this.normal.toJSON( meta ).uuid;
+
+				if ( this.light ) data.light = this.light.toJSON( meta ).uuid;
+
+				if ( this.ao ) data.ao = this.ao.toJSON( meta ).uuid;
+				if ( this.ambient ) data.ambient = this.ambient.toJSON( meta ).uuid;
+				if ( this.shadow ) data.shadow = this.shadow.toJSON( meta ).uuid;
+				if ( this.emissive ) data.emissive = this.emissive.toJSON( meta ).uuid;
+
+				if ( this.environment ) data.environment = this.environment.toJSON( meta ).uuid;
+				if ( this.environmentAlpha ) data.environmentAlpha = this.environmentAlpha.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	PhongNode.prototype.nodeType = 'Phong';
+
+	class StandardNode extends Node {
+
+		constructor() {
+
+			super();
+
+			this.color = new ColorNode( 0xFFFFFF );
+			this.roughness = new FloatNode( 1 );
+			this.metalness = new FloatNode( 0 );
+
+		}
+
+		build( builder ) {
+
+			let code;
+
+			builder.define( 'STANDARD' );
+
+			const useClearcoat = this.clearcoat || this.clearcoatRoughness || this.clearCoatNormal;
+
+			if ( useClearcoat ) {
+
+				builder.define( 'CLEARCOAT' );
+
+			}
+
+			builder.requires.lights = true;
+
+			builder.extensions.derivatives = true;
+			builder.extensions.shaderTextureLOD = true;
+
+			if ( builder.isShader( 'vertex' ) ) {
+
+				const position = this.position ? this.position.analyzeAndFlow( builder, 'v3', { cache: 'position' } ) : undefined;
+
+				builder.mergeUniform( UniformsUtils$1.merge( [
+
+					UniformsLib$1.fog,
+					UniformsLib$1.lights
+
+				] ) );
+
+				if ( UniformsLib$1.LTC_1 ) {
+
+					// add ltc data textures to material uniforms
+
+					builder.uniforms.ltc_1 = { value: undefined };
+					builder.uniforms.ltc_2 = { value: undefined };
+
+				}
+
+				builder.addParsCode( /* glsl */`
+				varying vec3 vViewPosition;
+
+				#ifndef FLAT_SHADED
+
+					varying vec3 vNormal;
+
+				#endif
+
+				//"#include <encodings_pars_fragment> // encoding functions
+				#include <fog_pars_vertex>
+				#include <morphtarget_pars_vertex>
+				#include <skinning_pars_vertex>
+				#include <shadowmap_pars_vertex>
+				#include <logdepthbuf_pars_vertex>
+				#include <clipping_planes_pars_vertex>`
+
+				);
+
+				const output = [
+					'#include <beginnormal_vertex>',
+					'#include <morphnormal_vertex>',
+					'#include <skinbase_vertex>',
+					'#include <skinnormal_vertex>',
+					'#include <defaultnormal_vertex>',
+
+					'#ifndef FLAT_SHADED', // Normal computed with derivatives when FLAT_SHADED
+
+					'	vNormal = normalize( transformedNormal );',
+
+					'#endif',
+
+					'#include <begin_vertex>'
+				];
+
+				if ( position ) {
+
+					output.push(
+						position.code,
+						position.result ? 'transformed = ' + position.result + ';' : ''
+					);
+
+				}
+
+				output.push(
+					'#include <morphtarget_vertex>',
+					'#include <skinning_vertex>',
+					'#include <project_vertex>',
+					'#include <fog_vertex>',
+					'#include <logdepthbuf_vertex>',
+					'#include <clipping_planes_vertex>',
+
+					'	vViewPosition = - mvPosition.xyz;',
+
+					'#include <worldpos_vertex>',
+					'#include <shadowmap_vertex>'
+				);
+
+				code = output.join( '\n' );
+
+			} else {
+
+				const specularRoughnessNode = new ExpressionNode( 'material.specularRoughness', 'f' );
+				const clearcoatRoughnessNode = new ExpressionNode( 'material.clearcoatRoughness', 'f' );
+
+				const contextEnvironment = {
+					roughness: specularRoughnessNode,
+					bias: new SpecularMIPLevelNode( specularRoughnessNode ),
+					viewNormal: new ExpressionNode( 'normal', 'v3' ),
+					worldNormal: new ExpressionNode( 'inverseTransformDirection( geometry.normal, viewMatrix )', 'v3' ),
+					gamma: true
+				};
+
+				const contextGammaOnly = {
+					gamma: true
+				};
+
+				const contextClearcoatEnvironment = {
+					roughness: clearcoatRoughnessNode,
+					bias: new SpecularMIPLevelNode( clearcoatRoughnessNode ),
+					viewNormal: new ExpressionNode( 'clearcoatNormal', 'v3' ),
+					worldNormal: new ExpressionNode( 'inverseTransformDirection( geometry.clearcoatNormal, viewMatrix )', 'v3' ),
+					gamma: true
+				};
+
+				// analyze all nodes to reuse generate codes
+
+				if ( this.mask ) this.mask.analyze( builder );
+
+				this.color.analyze( builder, { slot: 'color', context: contextGammaOnly } );
+				this.roughness.analyze( builder );
+				this.metalness.analyze( builder );
+
+				if ( this.alpha ) this.alpha.analyze( builder );
+
+				if ( this.normal ) this.normal.analyze( builder );
+
+				if ( this.clearcoat ) this.clearcoat.analyze( builder );
+				if ( this.clearcoatRoughness ) this.clearcoatRoughness.analyze( builder );
+				if ( this.clearcoatNormal ) this.clearcoatNormal.analyze( builder );
+
+				if ( this.reflectivity ) this.reflectivity.analyze( builder );
+
+				if ( this.light ) this.light.analyze( builder, { cache: 'light' } );
+
+				if ( this.ao ) this.ao.analyze( builder );
+				if ( this.ambient ) this.ambient.analyze( builder );
+				if ( this.shadow ) this.shadow.analyze( builder );
+				if ( this.emissive ) this.emissive.analyze( builder, { slot: 'emissive' } );
+
+				if ( this.environment ) {
+
+					// isolate environment from others inputs ( see TextureNode, CubeTextureNode )
+					// environment.analyze will detect if there is a need of calculate irradiance
+
+					this.environment.analyze( builder, { cache: 'radiance', context: contextEnvironment, slot: 'radiance' } );
+
+					if ( builder.requires.irradiance ) {
+
+						this.environment.analyze( builder, { cache: 'irradiance', context: contextEnvironment, slot: 'irradiance' } );
+
+					}
+
+				}
+
+				if ( this.sheen ) this.sheen.analyze( builder );
+
+				// build code
+
+				const mask = this.mask ? this.mask.flow( builder, 'b' ) : undefined;
+
+				const color = this.color.flow( builder, 'c', { slot: 'color', context: contextGammaOnly } );
+				const roughness = this.roughness.flow( builder, 'f' );
+				const metalness = this.metalness.flow( builder, 'f' );
+
+				const alpha = this.alpha ? this.alpha.flow( builder, 'f' ) : undefined;
+
+				const normal = this.normal ? this.normal.flow( builder, 'v3' ) : undefined;
+
+				const clearcoat = this.clearcoat ? this.clearcoat.flow( builder, 'f' ) : undefined;
+				const clearcoatRoughness = this.clearcoatRoughness ? this.clearcoatRoughness.flow( builder, 'f' ) : undefined;
+				const clearcoatNormal = this.clearcoatNormal ? this.clearcoatNormal.flow( builder, 'v3' ) : undefined;
+
+				const reflectivity = this.reflectivity ? this.reflectivity.flow( builder, 'f' ) : undefined;
+
+				const light = this.light ? this.light.flow( builder, 'v3', { cache: 'light' } ) : undefined;
+
+				const ao = this.ao ? this.ao.flow( builder, 'f' ) : undefined;
+				const ambient = this.ambient ? this.ambient.flow( builder, 'c' ) : undefined;
+				const shadow = this.shadow ? this.shadow.flow( builder, 'c' ) : undefined;
+				const emissive = this.emissive ? this.emissive.flow( builder, 'c', { slot: 'emissive' } ) : undefined;
+
+				let environment;
+
+				if ( this.environment ) {
+
+					environment = {
+						radiance: this.environment.flow( builder, 'c', { cache: 'radiance', context: contextEnvironment, slot: 'radiance' } )
+					};
+
+					if ( builder.requires.irradiance ) {
+
+						environment.irradiance = this.environment.flow( builder, 'c', { cache: 'irradiance', context: contextEnvironment, slot: 'irradiance' } );
+
+					}
+
+				}
+
+				const clearcoatEnv = useClearcoat && environment ? this.environment.flow( builder, 'c', { cache: 'clearcoat', context: contextClearcoatEnvironment, slot: 'environment' } ) : undefined;
+
+				const sheen = this.sheen ? this.sheen.flow( builder, 'c' ) : undefined;
+
+				builder.requires.transparent = alpha !== undefined;
+
+				builder.addParsCode( /* glsl */`
+				varying vec3 vViewPosition;
+
+				#ifndef FLAT_SHADED
+
+					varying vec3 vNormal;
+
+				#endif
+
+				#include <dithering_pars_fragment>
+				#include <fog_pars_fragment>
+				#include <bsdfs>
+				#include <lights_pars_begin>
+				#include <lights_physical_pars_fragment>
+				#include <shadowmap_pars_fragment>
+				#include <logdepthbuf_pars_fragment>`
+				);
+
+				const output = [
+					'#include <clipping_planes_fragment>',
+
+					// add before: prevent undeclared normal
+					'	#include <normal_fragment_begin>',
+					'	#include <clearcoat_normal_fragment_begin>',
+
+					// add before: prevent undeclared material
+					'	PhysicalMaterial material;',
+					'	material.diffuseColor = vec3( 1.0 );'
+				];
+
+				if ( mask ) {
+
+					output.push(
+						mask.code,
+						'if ( ! ' + mask.result + ' ) discard;'
+					);
+
+				}
+
+				output.push(
+					color.code,
+					'	vec3 diffuseColor = ' + color.result + ';',
+					'	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );',
+
+					'#include <logdepthbuf_fragment>',
+
+					roughness.code,
+					'	float roughnessFactor = ' + roughness.result + ';',
+
+					metalness.code,
+					'	float metalnessFactor = ' + metalness.result + ';'
+				);
+
+				if ( alpha ) {
+
+					output.push(
+						alpha.code,
+						'#ifdef ALPHATEST',
+
+						'	if ( ' + alpha.result + ' <= ALPHATEST ) discard;',
+
+						'#endif'
+					);
+
+				}
+
+				if ( normal ) {
+
+					output.push(
+						normal.code,
+						'normal = ' + normal.result + ';'
+					);
+
+				}
+
+				if ( clearcoatNormal ) {
+
+					output.push(
+						clearcoatNormal.code,
+						'clearcoatNormal = ' + clearcoatNormal.result + ';'
+					);
+
+				}
+
+				// anti-aliasing code by @elalish
+
+				output.push(
+					'vec3 dxy = max( abs( dFdx( geometryNormal ) ), abs( dFdy( geometryNormal ) ) );',
+					'float geometryRoughness = max( max( dxy.x, dxy.y ), dxy.z );',
+				);
+
+				// optimization for now
+
+				output.push(
+					'material.diffuseColor = ' + ( light ? 'vec3( 1.0 )' : 'diffuseColor * ( 1.0 - metalnessFactor )' ) + ';',
+
+					'material.specularRoughness = max( roughnessFactor, 0.0525 );',
+					'material.specularRoughness += geometryRoughness;',
+					'material.specularRoughness = min( material.specularRoughness, 1.0 );',
+
+					'material.specularRoughness = clamp( roughnessFactor, 0.04, 1.0 );'
+				);
+
+				if ( clearcoat ) {
+
+					output.push(
+						clearcoat.code,
+						'material.clearcoat = saturate( ' + clearcoat.result + ' );' // Burley clearcoat model
+					);
+
+				} else if ( useClearcoat ) {
+
+					output.push( 'material.clearcoat = 0.0;' );
+
+				}
+
+				if ( clearcoatRoughness ) {
+
+					output.push(
+						clearcoatRoughness.code,
+						'material.clearcoatRoughness = max( ' + clearcoatRoughness.result + ', 0.0525 );',
+						'material.clearcoatRoughness += geometryRoughness;',
+						'material.clearcoatRoughness = min( material.clearcoatRoughness, 1.0 );'
+					);
+
+				} else if ( useClearcoat ) {
+
+					output.push( 'material.clearcoatRoughness = 0.0;' );
+
+				}
+
+				if ( sheen ) {
+
+					output.push( 'material.sheenColor = ' + sheen.result + ';' );
+
+				}
+
+				if ( reflectivity ) {
+
+					output.push(
+						reflectivity.code,
+						'material.specularColor = mix( vec3( MAXIMUM_SPECULAR_COEFFICIENT * pow2( ' + reflectivity.result + ' ) ), diffuseColor, metalnessFactor );'
+					);
+
+				} else {
+
+					output.push(
+						'material.specularColor = mix( vec3( DEFAULT_SPECULAR_COEFFICIENT ), diffuseColor, metalnessFactor );'
+					);
+
+				}
+
+				output.push(
+					'#include <lights_fragment_begin>'
+				);
+
+				if ( light ) {
+
+					output.push(
+						light.code,
+						'reflectedLight.directDiffuse = ' + light.result + ';'
+					);
+
+					// apply color
+
+					output.push(
+						'diffuseColor *= 1.0 - metalnessFactor;',
+
+						'reflectedLight.directDiffuse *= diffuseColor;',
+						'reflectedLight.indirectDiffuse *= diffuseColor;'
+					);
+
+				}
+
+				if ( ao ) {
+
+					output.push(
+						ao.code,
+						'reflectedLight.indirectDiffuse *= ' + ao.result + ';',
+						'float dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );',
+						'reflectedLight.indirectSpecular *= computeSpecularOcclusion( dotNV, ' + ao.result + ', material.specularRoughness );'
+					);
+
+				}
+
+				if ( ambient ) {
+
+					output.push(
+						ambient.code,
+						'reflectedLight.indirectDiffuse += ' + ambient.result + ';'
+					);
+
+				}
+
+				if ( shadow ) {
+
+					output.push(
+						shadow.code,
+						'reflectedLight.directDiffuse *= ' + shadow.result + ';',
+						'reflectedLight.directSpecular *= ' + shadow.result + ';'
+					);
+
+				}
+
+				if ( emissive ) {
+
+					output.push(
+						emissive.code,
+						'reflectedLight.directDiffuse += ' + emissive.result + ';'
+					);
+
+				}
+
+				if ( environment ) {
+
+					output.push( environment.radiance.code );
+
+					if ( builder.requires.irradiance ) {
+
+						output.push( environment.irradiance.code );
+
+					}
+
+					if ( clearcoatEnv ) {
+
+						output.push(
+							clearcoatEnv.code,
+							'clearcoatRadiance += ' + clearcoatEnv.result + ';'
+						);
+
+					}
+
+					output.push( 'radiance += ' + environment.radiance.result + ';' );
+
+					if ( builder.requires.irradiance ) {
+
+						output.push( 'iblIrradiance += PI * ' + environment.irradiance.result + ';' );
+
+					}
+
+				}
+
+				output.push(
+					'#include <lights_fragment_end>'
+				);
+
+				output.push( 'vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular;' );
+
+				if ( alpha ) {
+
+					output.push( 'gl_FragColor = vec4( outgoingLight, ' + alpha.result + ' );' );
+
+				} else {
+
+					output.push( 'gl_FragColor = vec4( outgoingLight, 1.0 );' );
+
+				}
+
+				output.push(
+					'#include <tonemapping_fragment>',
+					'#include <encodings_fragment>',
+					'#include <fog_fragment>',
+					'#include <premultiplied_alpha_fragment>',
+					'#include <dithering_fragment>'
+				);
+
+				code = output.join( '\n' );
+
+			}
+
+			return code;
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			// vertex
+
+			if ( source.position ) this.position = source.position;
+
+			// fragment
+
+			this.color = source.color;
+			this.roughness = source.roughness;
+			this.metalness = source.metalness;
+
+			if ( source.mask ) this.mask = source.mask;
+
+			if ( source.alpha ) this.alpha = source.alpha;
+
+			if ( source.normal ) this.normal = source.normal;
+
+			if ( source.clearcoat ) this.clearcoat = source.clearcoat;
+			if ( source.clearcoatRoughness ) this.clearcoatRoughness = source.clearcoatRoughness;
+			if ( source.clearcoatNormal ) this.clearcoatNormal = source.clearcoatNormal;
+
+			if ( source.reflectivity ) this.reflectivity = source.reflectivity;
+
+			if ( source.light ) this.light = source.light;
+			if ( source.shadow ) this.shadow = source.shadow;
+
+			if ( source.ao ) this.ao = source.ao;
+
+			if ( source.emissive ) this.emissive = source.emissive;
+			if ( source.ambient ) this.ambient = source.ambient;
+
+			if ( source.environment ) this.environment = source.environment;
+
+			if ( source.sheen ) this.sheen = source.sheen;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				// vertex
+
+				if ( this.position ) data.position = this.position.toJSON( meta ).uuid;
+
+				// fragment
+
+				data.color = this.color.toJSON( meta ).uuid;
+				data.roughness = this.roughness.toJSON( meta ).uuid;
+				data.metalness = this.metalness.toJSON( meta ).uuid;
+
+				if ( this.mask ) data.mask = this.mask.toJSON( meta ).uuid;
+
+				if ( this.alpha ) data.alpha = this.alpha.toJSON( meta ).uuid;
+
+				if ( this.normal ) data.normal = this.normal.toJSON( meta ).uuid;
+
+				if ( this.clearcoat ) data.clearcoat = this.clearcoat.toJSON( meta ).uuid;
+				if ( this.clearcoatRoughness ) data.clearcoatRoughness = this.clearcoatRoughness.toJSON( meta ).uuid;
+				if ( this.clearcoatNormal ) data.clearcoatNormal = this.clearcoatNormal.toJSON( meta ).uuid;
+
+				if ( this.reflectivity ) data.reflectivity = this.reflectivity.toJSON( meta ).uuid;
+
+				if ( this.light ) data.light = this.light.toJSON( meta ).uuid;
+				if ( this.shadow ) data.shadow = this.shadow.toJSON( meta ).uuid;
+
+				if ( this.ao ) data.ao = this.ao.toJSON( meta ).uuid;
+
+				if ( this.emissive ) data.emissive = this.emissive.toJSON( meta ).uuid;
+				if ( this.ambient ) data.ambient = this.ambient.toJSON( meta ).uuid;
+
+				if ( this.environment ) data.environment = this.environment.toJSON( meta ).uuid;
+
+				if ( this.sheen ) data.sheen = this.sheen.toJSON( meta ).uuid;
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	StandardNode.prototype.nodeType = 'Standard';
+
+	class MeshStandardNode extends StandardNode {
+
+		constructor() {
+
+			super();
+
+			this.properties = {
+				color: new Color( 0xffffff ),
+				roughness: 0.5,
+				metalness: 0.5,
+				normalScale: new Vector2( 1, 1 )
+			};
+
+			this.inputs = {
+				color: new PropertyNode( this.properties, 'color', 'c' ),
+				roughness: new PropertyNode( this.properties, 'roughness', 'f' ),
+				metalness: new PropertyNode( this.properties, 'metalness', 'f' ),
+				normalScale: new PropertyNode( this.properties, 'normalScale', 'v2' )
+			};
+
+		}
+
+		build( builder ) {
+
+			const props = this.properties,
+				inputs = this.inputs;
+
+			if ( builder.isShader( 'fragment' ) ) {
+
+				// slots
+				// * color
+				// * map
+
+				const color = builder.findNode( props.color, inputs.color ),
+					map = builder.resolve( props.map );
+
+				this.color = map ? new OperatorNode( color, map, OperatorNode.MUL ) : color;
+
+				// slots
+				// * roughness
+				// * roughnessMap
+
+				const roughness = builder.findNode( props.roughness, inputs.roughness ),
+					roughnessMap = builder.resolve( props.roughnessMap );
+
+				this.roughness = roughnessMap ? new OperatorNode( roughness, new SwitchNode( roughnessMap, 'g' ), OperatorNode.MUL ) : roughness;
+
+				// slots
+				// * metalness
+				// * metalnessMap
+
+				const metalness = builder.findNode( props.metalness, inputs.metalness ),
+					metalnessMap = builder.resolve( props.metalnessMap );
+
+				this.metalness = metalnessMap ? new OperatorNode( metalness, new SwitchNode( metalnessMap, 'b' ), OperatorNode.MUL ) : metalness;
+
+				// slots
+				// * normalMap
+				// * normalScale
+
+				if ( props.normalMap ) {
+
+					this.normal = new NormalMapNode( builder.resolve( props.normalMap ) );
+					this.normal.scale = builder.findNode( props.normalScale, inputs.normalScale );
+
+				} else {
+
+					this.normal = undefined;
+
+				}
+
+				// slots
+				// * envMap
+
+				this.environment = builder.resolve( props.envMap );
+
+			}
+
+			// build code
+
+			return super.build( builder );
+
+		}
+
+		toJSON( meta ) {
+
+			let data = this.getJSONNode( meta );
+
+			if ( ! data ) {
+
+				data = this.createJSONNode( meta );
+
+				console.warn( '.toJSON not implemented in', this );
+
+			}
+
+			return data;
+
+		}
+
+	}
+
+	MeshStandardNode.prototype.nodeType = 'MeshStandard';
+
+	class BasicNodeMaterial extends NodeMaterial {
+
+		constructor() {
+
+			const node = new BasicNode();
+
+			super( node, node );
+
+			this.type = 'BasicNodeMaterial';
+
+		}
+
+	}
+
+	NodeUtils.addShortcuts( BasicNodeMaterial.prototype, 'fragment', [
+		'color',
+		'alpha',
+		'mask',
+		'position'
+	] );
+
+	class SpriteNodeMaterial extends NodeMaterial {
+
+		constructor() {
+
+			const node = new SpriteNode();
+
+			super( node, node );
+
+			this.type = 'SpriteNodeMaterial';
+
+		}
+
+	}
+
+	NodeUtils.addShortcuts( SpriteNodeMaterial.prototype, 'fragment', [
+		'color',
+		'alpha',
+		'mask',
+		'position',
+		'spherical'
+	] );
+
+	class PhongNodeMaterial extends NodeMaterial {
+
+		constructor() {
+
+			const node = new PhongNode();
+
+			super( node, node );
+
+			this.type = 'PhongNodeMaterial';
+
+		}
+
+	}
+
+	NodeUtils.addShortcuts( PhongNodeMaterial.prototype, 'fragment', [
+		'color',
+		'alpha',
+		'specular',
+		'shininess',
+		'normal',
+		'emissive',
+		'ambient',
+		'light',
+		'shadow',
+		'ao',
+		'environment',
+		'environmentAlpha',
+		'mask',
+		'position'
+	] );
+
+	class StandardNodeMaterial extends NodeMaterial {
+
+		constructor() {
+
+			const node = new StandardNode();
+
+			super( node, node );
+
+			this.type = 'StandardNodeMaterial';
+
+		}
+
+	}
+
+	NodeUtils.addShortcuts( StandardNodeMaterial.prototype, 'fragment', [
+		'color',
+		'alpha',
+		'roughness',
+		'metalness',
+		'reflectivity',
+		'clearcoat',
+		'clearcoatRoughness',
+		'clearcoatNormal',
+		'normal',
+		'emissive',
+		'ambient',
+		'light',
+		'shadow',
+		'ao',
+		'environment',
+		'mask',
+		'position',
+		'sheen'
+	] );
+
+	class MeshStandardNodeMaterial extends NodeMaterial {
+
+		constructor() {
+
+			const node = new MeshStandardNode();
+
+			super( node, node );
+
+			this.type = 'MeshStandardNodeMaterial';
+
+		}
+
+	}
+
+	NodeUtils.addShortcuts( MeshStandardNodeMaterial.prototype, 'properties', [
+		'color',
+		'roughness',
+		'metalness',
+		'map',
+		'normalMap',
+		'normalScale',
+		'metalnessMap',
+		'roughnessMap',
+		'envMap'
+	] );
 
 	/**
 	 * Work based on :

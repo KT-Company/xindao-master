@@ -70,32 +70,32 @@ const initialState2 = {
 
 // 经济板块摄像头角度
 const industrialState = {
-  position: { x: 1346.0836766651585, y: 361.5726274993122, z: 11426.413353060876},
-  target: { x: 0, y: 0, z: 0},
+  position: { x: -35601.01657544943, y: 5660.2046484694665, z: 28164.922484242572},
+  target: {x: -4282.960488408456, y: -3.651104997883275e-14, z: 2072.90884278651},
 };
 
 // 交通出行摄像头角度
 const trafficState = {
-  position: {x: -1180.3790242026694, y: 25201.98661206192, z: 26640.019261253095 },
-  target: { x: -1228.6784680935405, y: -4.66416189255705e-15, z: 1525.3533257694262},
+  position: {x: -41493.29262478442, y: 21836.694946018495, z: 4507.389427745726 },
+  target: {x: -3915.367087432909, y: 1.1998562471585104e-13, z: 127.55006969957931},
 };
 
 // 环境人口摄像头角度
 const environmentState = {
-  position: { x: 27232.37620252988, y: 1303.4831245819794, z: -28646.683970676724 },
-  target: { x: -1228.6784680935405, y: -4.66416189255705e-15, z: 1525.3533257694262},
+  position: { x: 33699.19378343043, y: 4111.400455059309, z: -20502.416922664383 },
+  target: {x: -1228.6784680935405, y: -4.66416189255705e-15, z: 1525.3533257694262},
 };
 
 // 教育医疗摄像头角度
 const educationState = {
-  position: {x: -1180.3790242026694, y: 25201.98661206192, z: 26640.019261253095 },
-  target: { x: -1228.6784680935405, y: -4.66416189255705e-15, z: 1525.3533257694262},
+  position: { x: 33699.19378343043, y: 4111.400455059309, z: -20502.416922664383 },
+  target: {x: -1228.6784680935405, y: -4.66416189255705e-15, z: 1525.3533257694262},
 };
 
 // 能源角度
 const energyState = {
-  position: {x: -1180.3790242026694, y: 25201.98661206192, z: 26640.019261253095 },
-  target: { x: -1228.6784680935405, y: -4.66416189255705e-15, z: 1525.3533257694262},
+  position: { x: 28321.335973649308, y: 17754.31878184519, z: 34071.194874251494 },
+  target: {x: 14329.812077278846, y: 4.168845175579688e-15, z: 6595.563294037233},
 };
 
 // 区域层角度
@@ -193,41 +193,41 @@ const enterpriseInnerStates = {
 // 外部
 const enterpriseStates = {
   zhizaojituan: {
-    position: {x: 1773.3106168055658, y: 821.1458324305668, z: 10850.370149593018},
-    target: { x: 1673.4438432200163, y: 0, z: 8067.14762447227 },
+    position: {x: 2316.4496155673637, y: 273.9217141815714, z: 9248.650103658982},
+    target: {x: 1351.9770113675402, y: 2.525342066939244e-15, z: 8248.760898136521 },
   },
   yinhangyuanqu: {
-    position: {x: -1547.271453416433, y: 607.3278386602567, z: 165.73357635487446},
-    target: { x: -1643.7555085856513, y: 0, z: -2523.2148248987637},
+    position: {  x: -2423.8055099569733, y: 210.66388904907504, z: -1855.258846173214 },
+    target: { x: -1045.5933629498784, y: 1.0195968424216527e-15, z: -2102.5864356455913},
   },
   zhengwuzhongxin: {
-    position: {x: 12136.027129431415, y: 799.453063305556, z: 13285.061210990036},
+    position: {x: 12247.145333224285, y: 428.3484228722898, z: 11220.88540100983},
     target: { x: 12057.163459434247, y: 0, z: 8502.60942212603 },
   },
   guanweihui: {
     //无内部
-    position: {x: 8341.37028337402, y: 932.4429356750018, z: 5997.472350841389},
-    target: {x: 8276.412426652058, y: 0, z: 419.0758490974344},
+    position: { x: 8560.936019844008, y: 424.8171384138537, z: 3956.603969676288},
+    target: { x: 8353.696436761853, y: -3.2451589011441017e-16, z: 1760.1789875892105},
   },
   wuliuqiye: {
-    position: { x: -3627.910623908293, y: 744.9559482062643, z: 22210.737974181247},
-    target: { x: -3734.9780099236423, y: 0, z: 18121.621600655977 },
+    position: { x: -3053.7847965415367, y: 198.71631071954803, z: 20111.495556497466 },
+    target: { x: -4418.708735921996, y: 6.279955201484174e-16, z: 18338.02578910454 },
   },
   zonghefuwulou: {
-    position: { x: 2823.3644930977243, y: 891.9821889010011, z: 20260.990368599567},
-    target: { x: 2837.1346761314317, y: 0, z: 15494.297180320329 },
+    position: { x: 2919.9703519302006, y: 165.13393432554335, z: 17725.444326215606 },
+    target: { x: 2828.777717483803, y: 2.602361743549215e-18, z: 15486.669130378981 },
   },
   Xiao_Shou_Gong_Si: {
-    position: { x: -5142.951553278955, y: 963.225159677281, z: 10207.838646195745},
-    target: {x: -5322.709191395561, y: 0, z: 5198.076924623613 },
+    position: {x: -5340.467360427358, y: 187.79511006305972, z: 7284.066691511527 },
+    target: {x: -5344.624481416113, y: 2.3867026161143805e-19, z: 5157.975536245758},
   },
   GongYingBanGongShi: {
-    position: { x: 19199.93184860966, y: 1349.1553229754095, z: 8535.237331242464},
-    target: { x: 19216.684340190615, y: 0, z: 2736.2809847050867 },
+    position: { x: 19268.276217638224, y: 154.87666099163937, z: 5442.492613349783 },
+    target: { x: 19346.595775875296, y: 3.175922184296228e-16, z: 3315.1871363579135 },
   },
   JingXiaoBanGongShi: {
-    position: { x: -10293.921577543264, y: 1361.6232225243957, z: 3530.2255050827625},
-    target: { x: -10224.874212593266, y: 0, z: -1959.1634906410648 },
+    position: { x: -10321.260858083548, y: 98.13507429757074, z: 711.8341356661394 },
+    target: { x: -10277.92577527996, y: -2.529389089482726e-19, z: -1775.2813930664197 },
   },
 };
 
@@ -313,6 +313,7 @@ const enterprisesIcons = [
   {
     name: "供应企业",
     position: { x: 19248.103132661443, y: 10, z: 4954.823308964046 },
+    popupPosition: { x: 0, y: .05, z: 0 },
     inner: true,
     type: "GongYingBanGongShi",
     content:
@@ -321,6 +322,7 @@ const enterprisesIcons = [
   {
     name: "经销企业",
     position: { x: -10287.40256572037, y: 10, z: 233.8936394619204 },
+    popupPosition: { x: 0, y: .06, z: 0 },
     inner: true,
     type: "JingXiaoBanGongShi",
     content:
@@ -329,6 +331,7 @@ const enterprisesIcons = [
   {
     name: "销售公司",
     position: { x: -5372.648725912452, y: 10, z: 6895.494659472656 },
+    popupPosition: { x: 0, y: .1, z: 0 },
     inner: true,
     type: "Xiao_Shou_Gong_Si",
     content:
@@ -337,6 +340,7 @@ const enterprisesIcons = [
   {
     name: "工商银行",
     position: { x: -1605.626010147031, y: 10, z: -2124.3371874043587 },
+    popupPosition: { x: 0, y: .05, z: 0 },
     inner: true,
     type: "yinhangyuanqu",
     content:
@@ -345,6 +349,7 @@ const enterprisesIcons = [
   {
     name: "政务服务",
     position: { x: 12172.6232505863, y: 10, z: 10489.113002582086 },
+    popupPosition: { x: 0, y: .12, z: 0 },
     inner: true,
     type: "zhengwuzhongxin",
     content:
@@ -353,6 +358,7 @@ const enterprisesIcons = [
   {
     name: "制造集团",
     position: { x: 1675.3892046318097, y: 10, z: 8728.292905219469 },
+    popupPosition: { x: 0, y: .05, z: 0 },
     inner: true,
     type: "zhizaojituan",
     content:
@@ -361,6 +367,7 @@ const enterprisesIcons = [
   {
     name: "综合服务",
     position: { x: 2835.441504939446, y: 10, z: 16897.858815489963 },
+    popupPosition: { x: 0, y: .1, z: 0 },
     inner: true,
     type: "zonghefuwulou",
     content:
@@ -369,6 +376,7 @@ const enterprisesIcons = [
   {
     name: "物流公司",
     position: { x: -3773.1485368738836, y: 10, z: 19631.761207797565 },
+    popupPosition: { x: 0, y: .05, z: 0 },
     inner: true,
     type: "wuliuqiye",
     content:
@@ -377,6 +385,7 @@ const enterprisesIcons = [
   {
     name: "管委会",
     position: { x: 8338.327547500401, y: 10, z: 3007.024347085281 },
+    popupPosition: { x: 0, y: .18, z: 0 },
     inner: false,
     type: "guanweihui",
     content:
@@ -393,6 +402,7 @@ const enterprisesInnerIcons = {
     {
       name: "企业管理部",
       position: { x: 3919.565251248053, y: 850, z: 15817.646633978142 },
+      id: '8-1'
     },
     {
       name: "会议室",
@@ -401,6 +411,7 @@ const enterprisesInnerIcons = {
     {
       name: "业务部",
       position: { x: 4567.742180370165, y: 850, z: 17766.248766547214 },
+      id: '8-2'
     },
     {
       name: "行政部",
@@ -412,6 +423,7 @@ const enterprisesInnerIcons = {
     {
       name: "业务部",
       position: { x: 18375.50779580549, y: 850, z: 3967.3926511880813 },
+      id: '10-3'
     },
     {
       name: "会议室",
@@ -420,10 +432,12 @@ const enterprisesInnerIcons = {
     {
       name: "企业管理部",
       position: { x: 21341.40739748559, y: 850, z: 3500.153580788229 },
+      id: '10-1'
     },
     {
       name: "财务部",
       position: { x: 21347.058190231615, y: 850, z: 4463.885834850727 },
+      id: '10-2'
     },
     {
       name: "行政部",
@@ -439,18 +453,22 @@ const enterprisesInnerIcons = {
     {
       name: "采购部",
       position: { x: -10621.677739611709, y: 650, z: -1415.8606783448477 },
+      id: '11-3'
     },
     {
       name: "财务部",
       position: { x: -9450.419654442285, y: 650, z: -1398.044262846015 },
+      id: '11-2'
     },
     {
       name: "企业管理部",
       position: { x: -8208.787918720287, y: 650, z: -1380.3654654700797 },
+      id: '11-1'
     },
     {
       name: "营销部",
       position: { x: -11980.617255870626, y: 650, z: 270.7444486735394 },
+      id: '11-4'
     },
     {
       name: "行政部",
@@ -466,6 +484,7 @@ const enterprisesInnerIcons = {
     {
       name: "企业管理部",
       position: { x: -3665.732312774057, y: 500, z: 18071.250764634267 },
+      id: "7-1"
     },
     {
       name: "财务部",
@@ -478,6 +497,7 @@ const enterprisesInnerIcons = {
     {
       name: "业务部",
       position: { x: -5279.762855219847, y: 500, z: 18693.135366419516 },
+      id: "7-2"
     },
     {
       name: "行政部",
@@ -489,6 +509,7 @@ const enterprisesInnerIcons = {
     {
       name: "业务部",
       position: { x: -6697.8290513419215, y: 1000, z: 6256.49074400574 },
+      id: "9-3"
     },
     {
       name: "行政部",
@@ -497,10 +518,12 @@ const enterprisesInnerIcons = {
     {
       name: "企业管理部",
       position: { x: -3139.856069852616, y: 1000, z: 5713.811608332197 },
+      id: "9-1"
     },
     {
       name: "财务部",
       position: { x: -3144.764221830271, y: 1000, z: 6548.306346194357 },
+      id: "9-4"
     },
     {
       name: "会议室",
@@ -512,26 +535,32 @@ const enterprisesInnerIcons = {
     {
       name: "企业管理部",
       position: { x: 186.87588317351174, y: 550, z: 8806.624992775201 },
+      id: "3-1"
     },
     {
       name: "人力资源部",
       position: { x: 983.3798891539435, y: 550, z: 9402.85209883289 },
+      id: "3-2"
     },
     {
       name: "财务部",
       position: { x: 1748.3814025866116, y: 550, z: 9395.193685913731 },
+      id: "3-3"
     },
     {
       name: "采购部",
       position: { x: 2566.989925203354, y: 550, z: 9416.378724330836 },
+      id: "3-4"
     },
     {
       name: "营销部",
       position: { x: 985.1498023699143, y: 550, z: 8045.725951083245 },
+      id: "3-5"
     },
     {
       name: "生产部",
       position: { x: 1747.6064922979315, y: 550, z: 8028.821021854147 },
+      id: "3-6"
     },
     {
       name: "仓储部",
@@ -883,6 +912,73 @@ const enterpriseInnerMap = {
 }
 
 const baseModelNames = ['Aqu','Bqu','Cqu','Dqu','Equ','Fqu', 'Aqu-1']
+const areaModelNames = ['qiyezhulou' , 'qiyepeilou']
+
+const areaModelMap = {
+  'wuliuqiye' : ['WLBGL01_BanGongLou', 'WLCK01_Cangku_R' , 'WLCK01_S_Cangku'],
+  'jingxiaoqiye' : ['jingxiaobangonglou'],
+  'gongyingqiye' :['GYBGL_Wall'],
+  'yinhangyuanqu': ['YHDL_Qiang'],
+  'xiaoshougongsi' : ['xiaoshougongsidalou'],
+  'zhengwuzhongxin' : ['ZWDL_DaLou'],
+  'zhizaojituan' : ['zhizaojituan-BanGongLou','zhizaojituan-chejianlou', 'BanChengPinCangKu'],
+  'fuwugongsi' : ['zonghefuwulou'],
+  'guanweihui': ['guanweihuidalou'],
+}
+const areaModelData = {
+  'WLBGL01_BanGongLou': {
+    position: {x: -3450, y: 18,z: 19650},
+    scale: {x:1.5 ,y: 1.5, z:1.5}
+  },
+  'WLCK01_Cangku_R': {
+    position: {x: -3800, y: 0,z: 19650},
+    scale: {x:1.7 ,y: 1.7, z:1.7}
+  },
+  'WLCK01_S_Cangku': {
+    position: {x: -3455, y: 0,z: 19500},
+    scale: {x:1.2 ,y: 1.2, z:1.2}
+  },
+  'jingxiaobangonglou': {
+    position: {x: -10310, y: 45, z: 210},
+    scale: {x:3.5 ,y: 3.5, z:3.5}
+  },
+  'GYBGL_Wall': {
+    position: {x: 19249, y: 0, z: 4991},
+    scale: {x:2 ,y: 2, z:2 }
+  },
+  'YHDL_Qiang': {
+    position: {x: -1956, y: 90.5, z: -2000},
+    scale: {x:5 ,y: 5, z:5 }
+  },
+  'xiaoshougongsidalou': {
+    position: {x: -5345, y: 65, z: 6875},
+    scale: {x:3 ,y: 3, z:3 }
+  },
+  'ZWDL_DaLou': {
+    position: {x: 12170, y: 57, z: 10484},
+    scale: {x:7 ,y: 7, z:7 }
+  },
+  'zhizaojituan-BanGongLou': {
+    position: {x: 1680, y: 0, z: 8720},
+    scale: {x:2.5 ,y: 2.5, z:2.5 }
+  },
+  'zhizaojituan-chejianlou': {
+    position: {x: 1590, y: 0, z: 8550},
+    scale: {x:2 ,y: 2, z:2 }
+  },
+  'BanChengPinCangKu': {
+    position: {x: 1790, y: 0, z: 8570},
+    scale: {x:1.8 ,y: 1.8, z:1.8 }
+  },
+  'zonghefuwulou': {
+    position: {x: 2800, y: 53, z: 17110},
+    scale: {x: 4.63291692 ,y: 5.677104, z:4.90535 }
+  },
+  'guanweihuidalou': {
+    position: {x: 8350, y: 85, z: 3000},
+    scale: {x: .5 ,y: .5, z: .5 }
+  }
+}
 
 export const STATE = {
   DEV_ENV,
@@ -926,5 +1022,8 @@ export const STATE = {
   modelExcludeMap,
   threeFlowsMap,
   enterpriseInnerMap,
-  baseModelNames
+  baseModelNames,
+  areaModelNames,
+  areaModelMap,
+  areaModelData
 };

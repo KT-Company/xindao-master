@@ -13,7 +13,7 @@ const handleBMenuBMap = {
     API.showRoutes();
     API.showModels();
     API.cameraAnimation({
-      cameraState: STATE.trafficState,
+      cameraState: STATE.industrialState,
       callback: () => {
         API.showIndustrialEconomy();
       },
@@ -129,6 +129,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zhizaojituanbangongshi"],
       "企业管理部"
     );
+    API.selectEnterpriseInnerIcon('zhizaojituanbangongshi', "企业管理部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -144,6 +145,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zhizaojituanbangongshi"],
       "人力资源部"
     );
+    API.selectEnterpriseInnerIcon('zhizaojituanbangongshi', "人力资源部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -159,6 +161,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zhizaojituanbangongshi"],
       "财务部"
     );
+    API.selectEnterpriseInnerIcon('zhizaojituanbangongshi', "财务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -174,6 +177,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zhizaojituanbangongshi"],
       "采购部"
     );
+    API.selectEnterpriseInnerIcon('zhizaojituanbangongshi', "采购部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -189,6 +193,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zhizaojituanbangongshi"],
       "营销部"
     );
+    API.selectEnterpriseInnerIcon('zhizaojituanbangongshi', "营销部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -204,6 +209,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zhizaojituanbangongshi"],
       "生产部"
     );
+    API.selectEnterpriseInnerIcon('zhizaojituanbangongshi', "生产部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -259,6 +265,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["wuliubangongshi"],
       "企业管理部"
     );
+    API.selectEnterpriseInnerIcon('wuliubangongshi', "企业管理部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -274,6 +281,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["wuliubangongshi"],
       "业务部"
     );
+    API.selectEnterpriseInnerIcon('wuliubangongshi', "业务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -300,6 +308,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zonghefuwulou"],
       "企业管理部"
     );
+    API.selectEnterpriseInnerIcon('zonghefuwulou', "企业管理部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -315,6 +324,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["zonghefuwulou"],
       "业务部"
     );
+    API.selectEnterpriseInnerIcon('zonghefuwulou', "业务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -341,6 +351,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["Xiao_Shou_Gong_Si"],
       "企业管理部"
     );
+    API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "企业管理部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -356,6 +367,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["Xiao_Shou_Gong_Si"],
       "行政部"
     );
+    API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "行政部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -371,6 +383,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["Xiao_Shou_Gong_Si"],
       "业务部"
     );
+    API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "业务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -386,6 +399,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["Xiao_Shou_Gong_Si"],
       "财务部"
     );
+    API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "财务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -412,6 +426,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["GongYingBanGongShi"],
       "企业管理部"
     );
+    API.selectEnterpriseInnerIcon('GongYingBanGongShi', "企业管理部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -427,6 +442,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["GongYingBanGongShi"],
       "财务部"
     );
+    API.selectEnterpriseInnerIcon('GongYingBanGongShi', "财务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -442,6 +458,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["GongYingBanGongShi"],
       "业务部"
     );
+    API.selectEnterpriseInnerIcon('GongYingBanGongShi', "业务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -468,6 +485,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["JingXiaoBanGongShi"],
       "企业管理部"
     );
+    API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "企业管理部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -483,6 +501,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["JingXiaoBanGongShi"],
       "财务部"
     );
+    API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "财务部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -498,6 +517,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["JingXiaoBanGongShi"],
       "采购部"
     );
+    API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "采购部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,
@@ -513,6 +533,7 @@ const handleBMenuBMap = {
       STATE.enterprisesInnerIcons["JingXiaoBanGongShi"],
       "营销部"
     );
+    API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "营销部")
     CACHE.container.cameraFocus({
       target: [obj.position.x, obj.position.y, obj.position.z],
       distance: 2000,

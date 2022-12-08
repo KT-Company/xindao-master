@@ -7,6 +7,8 @@ import router from "@/2d/router";
 
 let Bol3D = window.Bol3D;
 
+window.CACHE = CACHE
+
 export const sceneOnLoad = ({ domElement, callback }) => {
   CACHE.container = new Bol3D.Container({
     publicPath: STATE.DEV_ENV,
@@ -90,15 +92,8 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       "/assets/models/BeiJing/Dqu.glb",
       "/assets/models/BeiJing/Equ.glb",
       "/assets/models/BeiJing/Fqu.glb",
-      "/assets/models/BeiJing/fuwugongsi.glb",
-      "/assets/models/BeiJing/gongyingqiye.glb",
-      "/assets/models/BeiJing/guanweihui.glb",
-      "/assets/models/BeiJing/jingxiaoqiye.glb",
-      "/assets/models/BeiJing/wuliuqiye.glb",
-      "/assets/models/BeiJing/xiaoshougongsi.glb",
-      "/assets/models/BeiJing/yinhangyuanqu.glb",
-      "/assets/models/BeiJing/zhengwuzhongxin.glb",
-      "/assets/models/BeiJing/zhizaojituan.glb",
+      "/assets/models/BeiJing/qiyezhulou.glb",
+      "/assets/models/BeiJing/qiyepeilou.glb",
       // *** 内部 ***
       "/assets/models/NeiBu/GongYingBanGongShi.glb",
       "/assets/models/NeiBu/JingXiaoBanGongShi.glb",
@@ -124,9 +119,9 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     },
 
     gammaEnabled: false,
-    stats: false,
+    stats: true,
     loadingBar: {
-      show: true,
+      show: false,
       type: 5,
     },
     onProgress: (model) => {
@@ -231,32 +226,40 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
         // CACHE.cities.push(model);
         // CACHE.models.push(model);
-      } else if (STATE.modelExclude.includes(model.name)) {
-        model.scale.set(2, 3.8, 2);
-        model.children.forEach((m) => {
-          if (m.isMesh) {
-            m.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial(
-              {
-                color: "#405887",
-                emissiveBase: "#969696",
-                minHeightBase: -142,
-                maxHeightBase: -125,
-                mixColorBase: "#01010a",
-                thresholdBase: 0,
-                minHeightStripe: -183,
-                maxHeightStripe: -90,
-                emissiveStripe: "#555555",
-              }
-            );
-            // CACHE.container.addBloom(m)
-            // todo
-            // m.material.envMap = CACHE.container.envMap
-          }
-        });
+      }else if(STATE.areaModelNames.includes(model.name)){
+        if(model.name == 'qiyepeilou'){
+          model.scale.set(2, 3.8, 2);
+          model.children.forEach(d => {
+            if(d.isMesh){
+              d.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial(
+                {
+                  color: "#405887",
+                  emissiveBase: "#969696",
+                  minHeightBase: -142,
+                  maxHeightBase: -125,
+                  mixColorBase: "#01010a",
+                  thresholdBase: -159,
+                  minHeightStripe: -183,
+                  maxHeightStripe: 36,
+                  emissiveStripe: "#555555",
+                }
+              );
+            }
+          })
+        }
+        else if(model.name == 'qiyezhulou'){
+          const keys = Object.keys(STATE.areaModelData)
+          model.children.forEach( m => {
+            if(keys.includes(m.name)){
+              const data = STATE.areaModelData[m.name]
+              const {position ,scale} = data
+              m.position.set(position.x , position.y , position.z)
+              m.scale.set(scale.x , scale.y , scale.z)
+            }
+          })
+        }
         CACHE.cities2.push(model);
         CACHE.models.push(model);
-
-        // model.visible = false
       } else {
         model.scale.set(100, 100, 100);
         if (STATE.enterprisesNames.includes(model.name)) {
@@ -272,7 +275,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       window.position = evt.orbitControls.object;
       evt.clickObjects = [];
 
-      console.log("CACHE.mergeGeos", CACHE.mergedGeos);
+      // console.log("CACHE.mergeGeos", CACHE.mergedGeos);
 
       // *** merge geo start***
       CACHE.mergedMaterials = {
@@ -369,16 +372,20 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // *** merge geo end***
 
       CACHE.cities2.forEach((c) => {
-        c.children.forEach((d) => {
-          if (d.isGroup) {
-            d.traverse((m) => {
-              if (m.isMesh) {
-                evt.clickObjects.push(m);
-                m.userData.name = STATE.modelExcludeMap[c.name];
+        if(c.name == 'qiyezhulou'){
+          c.children.forEach((d) => {
+            for(const i in STATE.areaModelMap){
+              if(STATE.areaModelMap[i].includes(d.name)){
+                d.traverse((m) => {
+                  if (m.isMesh) {
+                    evt.clickObjects.push(m);
+                    m.userData.name = STATE.modelExcludeMap[i];
+                  }
+                });
               }
-            });
-          }
-        });
+            }
+          });
+        }
       });
 
       // console.log(evt.sceneModels , evt.clickObjects);
@@ -400,55 +407,55 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       promiseAll.push(API.loadTraffic());
       promiseAll.push(API.loadEducation());
 
-      Promise.all(promiseAll).then(() => {
-        if (CACHE.container.loadingBar)
-          CACHE.container.loadingBar.style.visibility = "hidden";
-        API.hideAll();
-        API.showModels();
-        API.showRoutes();
-        API.showFloor();
-        API.showMirror();
+      // Promise.all(promiseAll).then(() => {
+      //   if (CACHE.container.loadingBar)
+      //     CACHE.container.loadingBar.style.visibility = "hidden";
+      //   API.hideAll();
+      //   API.showModels();
+      //   API.showRoutes();
+      //   API.showFloor();
+      //   API.showMirror();
 
-        let animationId = -1;
-        CACHE.container.orbitControls.enabled = false
-        const rotateAnimation = () => {
-          animationId = requestAnimationFrame(rotateAnimation);
+      //   let animationId = -1;
+      //   CACHE.container.orbitControls.enabled = false
+      //   const rotateAnimation = () => {
+      //     animationId = requestAnimationFrame(rotateAnimation);
 
-          let angle = CACHE.container.orbitControls.getAzimuthalAngle();
-          angle -= 0.015;
-          const offset = new Bol3D.Vector3().subVectors(
-            CACHE.container.orbitCamera.position,
-            CACHE.container.orbitControls.target
-          );
-          const spherical = new Bol3D.Spherical().setFromVector3(offset);
-          spherical.theta = angle;
-          offset.setFromSpherical(spherical);
-          const newPOS = new Bol3D.Vector3();
-          newPOS.copy(CACHE.container.orbitControls.target).add(offset);
+      //     let angle = CACHE.container.orbitControls.getAzimuthalAngle();
+      //     angle -= 0.015;
+      //     const offset = new Bol3D.Vector3().subVectors(
+      //       CACHE.container.orbitCamera.position,
+      //       CACHE.container.orbitControls.target
+      //     );
+      //     const spherical = new Bol3D.Spherical().setFromVector3(offset);
+      //     spherical.theta = angle;
+      //     offset.setFromSpherical(spherical);
+      //     const newPOS = new Bol3D.Vector3();
+      //     newPOS.copy(CACHE.container.orbitControls.target).add(offset);
 
-          CACHE.container.orbitCamera.position.copy(newPOS);
+      //     CACHE.container.orbitCamera.position.copy(newPOS);
 
-          if (spherical.theta <= - .9 * Math.PI) {
-            cancelAnimationFrame(animationId);
+      //     if (spherical.theta <= - .9 * Math.PI) {
+      //       cancelAnimationFrame(animationId);
 
-            API.cameraAnimation({
-              cameraState: STATE.industrialState,
-              callback: () => {
-                store.commit("changeLevel", 1);
-                router.push("/IndustrialEconomy");
+      //       API.cameraAnimation({
+      //         cameraState: STATE.industrialState,
+      //         callback: () => {
+      //           store.commit("changeLevel", 1);
+      //           router.push("/IndustrialEconomy");
 
-                API.showIndustrialEconomy();
-              },
-            });
-          }
-        };
+      //           API.showIndustrialEconomy();
+      //         },
+      //       });
+      //     }
+      //   };
 
-        rotateAnimation();
-      });
+      //   rotateAnimation();
+      // });
 
-      // API.hideAll();
-      // API.showModels();
-      // API.showRoutes();
+      API.hideAll();
+      API.showModels();
+      API.showRoutes();
 
       // floor
       const floorGeo = new Bol3D.CircleBufferGeometry(50000, 64);
@@ -590,85 +597,49 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // }
       // const areasModelFolder = gui.addFolder('区域模型')
       // areasModelFolder.addColor(areaModels, 'color').onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.color.value.set(val)
-      //       }
-      //     })
       //   })
       // })
       // areasModelFolder.addColor(areaModels, 'emissiveBase').onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.emissiveBase.value.set(val)
-      //       }
-      //     })
       //   })
       // })
       // areasModelFolder.addColor(areaModels, 'mixColorBase').onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.mixColorBase.value.set(val)
-      //       }
-      //     })
       //   })
       // })
       // areasModelFolder.addColor(areaModels, 'emissiveStripe').onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.emissiveStripe.value.set(val)
-      //       }
-      //     })
       //   })
       // })
 
       // areasModelFolder.add(areaModels, 'minHeightBase').step(1).onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.minHeightBase.value = val
-      //       }
-      //     })
       //   })
       // })
       // areasModelFolder.add(areaModels, 'maxHeightBase').step(1).onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.maxHeightBase.value = val
-      //       }
-      //     })
       //   })
       // })
       // areasModelFolder.add(areaModels, 'thresholdBase').onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.thresholdBase.value = val
-      //       }
-      //     })
       //   })
       // })
       // areasModelFolder.add(areaModels, 'minHeightStripe').onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.minHeightStripe.value = val
-      //       }
-      //     })
       //   })
       // })
       // areasModelFolder.add(areaModels, 'maxHeightStripe').onChange((val) => {
-      //   CACHE.cities2.forEach( cs => {
-      //     cs.children.forEach( d => {
-      //       if(d.isMesh){
+      //   CACHE.cities2.forEach( d => {
       //         d.material.uniforms.maxHeightStripe.value = val
-      //       }
-      //     })
       //   })
       // })
 
@@ -828,6 +799,14 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         target: obj.position,
         distance: 2000,
       });
+      API.selectEnterpriseInnerIcon(obj.userData.enterprise, obj.userData.name)
+      store.commit("setMenuBid", null);
+      if(obj.userData.id){
+        store.commit(
+          "setMenuBid",
+          obj.userData.id
+        );
+      } 
     } else if (
       Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
     ) {
