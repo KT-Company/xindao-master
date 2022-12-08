@@ -23,7 +23,7 @@ export const menu = ref([
         isPick: false,
         icon: require('@/2d/assets/images/quyu.png'),
         children: [
-            { id: "2-1", name: "三圈关系", isPick: false, level: 2 },
+            { id: "2-1", name: "产业分布", isPick: false, level: 2 },
             { id: "2-2", name: "资金流关系", isPick: false, level: 2 },
             { id: "2-3", name: "物流关系", isPick: false, level: 2 },
             { id: "2-4", name: "信息流关系", isPick: false, level: 2 },

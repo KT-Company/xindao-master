@@ -87,7 +87,7 @@ watch(
           v-for="item in menu"
           :key="item.id"
           @click.stop="handleFooters(item, 1)"
-          :class="[store.state.menuAid === item.id ? `pick2` : '']"
+          :class="[store.state.menuAid === item.id ? `pick2` : '',store.state.LEVEL == 4 ? 'off-menu' : 'on-menu']"
         >
           <img
             v-if="item.icon"
@@ -499,5 +499,16 @@ watch(
     bottom: 0%;
     right: 44%;
   }
+}
+
+.off-menu {
+  background: rgb(58, 58, 58) !important;
+  cursor: not-allowed !important;
+  .m1-t{
+    color: rgb(158, 158, 158);
+  }
+}
+.on-menu {
+  cursor: pointer !important;
 }
 </style>

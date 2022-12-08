@@ -839,7 +839,7 @@ export function setBingChart4(res, obj) {
         })(
 
         ),
-        roseType: 'area',
+        // roseType: 'area',
       },
       {
         name: '外部刻度',
