@@ -134,17 +134,17 @@ onMounted(() => {
     });
   });
 
-  postParam().then((res) => {
-    console.log("postParam: ", res);
-  });
+  // postParam().then((res) => {
+  //   console.log("postParam: ", res);
+  // });
 
-  getParam().then((res) => {
-    console.log("getParam: ", res);
-  });
+  // getParam().then((res) => {
+  //   console.log("getParam: ", res);
+  // });
 
-  getqyjycx().then((res)=>{
-    console.log('getqyjycx: ', res);
-  })
+  // getqyjycx().then((res)=>{
+  //   console.log('getqyjycx: ', res);
+  // })
 });
 </script>
 
