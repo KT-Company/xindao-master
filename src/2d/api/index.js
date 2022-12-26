@@ -1,40 +1,45 @@
 import request from '@/2d/utils/request'
 import store from '@/2d/store'
 import getData from './getDatas'
-import useData from '../hooks/useData'
 import getUrlParam from '@/2d/utils/getUrlParam'
 // const url = 'https://dapi.seentao.com/custom-form/customForm.formInfos.get?caseVersionId=82347900509093947&enterpriseId=82441349728567340&userName=18871870420&userId=74791556441702461&userType=PLATFORM&userToken=a23defc6acd8954460b543d23bcfee2d&memberId=74791556450091021&orgType=SCHOOL&orgId=100678506119168&schoolId=100678506119168&sceneId=portal_logo&sysCode='
 const p = getUrlParam()
+console.log('p: ', p);
+
+const MODE = p.mode  // 经营模式: BUSINESS  探索模式: EXPLORE
+store.commit('setMODE', MODE)
+console.log('MODE: ', store.state.MODE);
+
 // https://dapi.seentao.com/custom-form/customForm.formInfos.get
 // 部署环境 api 地址
-const url = `${window.publicUrl}?
-caseVersionId=${p.caseVersionId}
-&enterpriseId=${p.enterpriseId}
-&userName=${p.userName}
-&userId=${p.userId}
-&userType=${p.userType}
-&userToken=${p.userToken}
-&memberId=${p.memberId}
-&orgType=${p.orgType}
-&orgId=${p.orgId}
-&schoolId=${p.schoolId}
-&sceneId=${p.sceneId}
-&sysCode=`
+// const url = `${window.publicUrl}?
+// caseVersionId=${p.caseVersionId}
+// &enterpriseId=${p.enterpriseId}
+// &userName=${p.userName}
+// &userId=${p.userId}
+// &userType=${p.userType}
+// &userToken=${p.userToken}
+// &memberId=${p.memberId}
+// &orgType=${p.orgType}
+// &orgId=${p.orgId}
+// &schoolId=${p.schoolId}
+// &sceneId=${p.sceneId}
+// &sysCode=`
 
 // 开发环境 api 地址（如果没有数据就替换 token -----》 获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：1234qwer!）
-// const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
-// caseVersionId=82347900509093947
-// &enterpriseId=82441349728567340
-// &userName=15178904534
-// &userId=85566304814628903
-// &userType=PLATFORM
-// &userToken=${window.myToken}
-// &memberId=85566304824590394
-// &orgType=SCHOOL
-// &orgId=31978613954314240
-// &schoolId=31978613954314240
-// &sceneId=portal_logo
-// &sysCode=`
+const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+caseVersionId=82347900509093947
+&enterpriseId=82441349728567340
+&userName=15178904534
+&userId=85566304814628903
+&userType=PLATFORM
+&userToken=${window.myToken}
+&memberId=85566304824590394
+&orgType=SCHOOL
+&orgId=31978613954314240
+&schoolId=31978613954314240
+&sceneId=portal_logo
+&sysCode=`
 
 // // get
 // export function get(params) {
@@ -233,45 +238,68 @@ export function getData10() {
     })
 }
 
+// ******************************************** 经营模式-BUSINESS ********************************************
 
+function getUrLParams(index) {
+    if ([2, 3].includes(index)) {
+        return `${window.FRONT_INTERFACE[index]}`
+    } else {
+        const p = window.parent.getParamsA()
+        return `${window.FRONT_INTERFACE[index]}?userId=${p.userId}&userName=${p.userName}&userType=${p.userType}&userToken=${p.userToken}&orgId=${p.orgId}&orgType=${p.orgType}&memberId=${p.memberId}&memberType=${p.memberType}&schoolId=${p.schoolId}&teachClassId=${p.teachClassId}&teachClassStepId=${p.teachClassStepId}`
+    }
+}
 
-export function getParam() {
+// 前置接口
+export function getParamsA() {
     return request({
-        url: `https://dedu.seentao.com/api/xverse/paramsmapping/convert?platformSerkey: 
-        Seentao@12345
-        pageCode: 
-        xbizerp_databoard_manage
-        systemKey: 
-        xbizerp-1.0
-        userName: 
-        18612107916
-        paramValue: 
-        {
-        "userId":"13085827083014144",
-        "userName":"18612107916",
-        "userType":"PLATFORM",
-        "userToken":"7f84fcf2880901fc01aa84e16379520f",
-        "orgId":"13066758269702144",
-        "orgType":"SCHOOL",
-        "memberId":"13085827099787264",
-        "memberType":"STUDENT",
-        "schoolId":"13066758269702144",
-        "enterpriseCode":"GE002",
-        "classId":"85662867958267939",
-        "teachClassStepId":"85662876444917791",
-        "memberSourceDeptCodes":"110101",
-        "realName":"谢华志","caseVersionId":"85662731031543860","caseCode":"SZZHSJ_2","memberSourcePostCodes":"11010103","teamId":"85662882041167889","virtualDate":"2023-01-25"}`,
+        url: getUrLParams(0),
+        method: 'post'
+    })
+}
+export function getParamsB() {
+    return request({
+        url: getUrLParams(1),
+        method: 'post'
+    })
+}
+export function getParamsC() {
+    const p = window.parent.getParamsB()
+    return request({
+        url: getUrLParams(2),
         method: 'get',
+        params: {
+            platformSerkey: p.platformSerkey,
+            pageCode: p.pageCode,
+            systemKey: p.systemKey,
+            userName: p.userName,
+            paramValue: JSON.stringify(p.paramValue)
+        }
     })
 }
 
-export function postParam(data) {
+export function getParamsD() {
+    const p = window.parent.getParamsC()
     return request({
-        url: `https://dedu.seentao.com/api/vbseTeach/vbse.teachClass.steps.get?userId=74791556441702461&userName=18612107916&userType=PLATFORM&userToken=75bfc69012f9cacb5179436c60ad319b&orgId=13066758269702144&orgType=SCHOOL&memberId=81180384836976670&memberType=STUDENT&schoolId=13066758269702144&teachClassId=85662867958267939&teachClassStepId=85662876444917791`,
-        method: 'post',
+        url: getUrLParams(3),
+        method: 'get',
+        params: {
+            orgCode: p.orgCode,
+            deptCode: p.deptCode,
+            deptName: p.deptName,
+            userId: p.userId,
+            userName: p.userName,
+            classId: p.classId,
+            orgName: p.orgName,
+            virtualDate: p.virtualDate,
+            caseCode: p.caseCode,
+            version: p.version,
+            profileType: p.profileType,
+        }
     })
 }
 
-
-
-getData.All()
+if (MODE === 'BUSINESS') {
+    getData.BUSINESS()
+} else {
+    getData.All()
+}

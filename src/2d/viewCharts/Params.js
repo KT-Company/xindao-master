@@ -1,5 +1,5 @@
-const inventoryNames = [] // 仓库种类名称
-const inventoryNamesLow = [] // 仓库种类名称
+const inventoryNames = [] // 仓库种类名称 ( echart x 轴显示名字 )
+const inventoryNamesLow = [] // 仓库种类名称 ( 后端返回数据 key )
 for (let index = 0; index < 18; index++) {
   let num = index + 1
   num = num >= 10 ? num : `0${num}`

@@ -5,7 +5,7 @@ export const menu = ref([
         id: 1,
         name: "社会层",
         path: '/IndustrialEconomy',
-        isPick: true,
+        isPick: true, // 没得卵用，但是就是不删
         icon: require('@/2d/assets/images/shehui.png'),
         children: [
             { id: "1-1", name: "产业经济", isPick: true, path: "/IndustrialEconomy", level: 1 },
@@ -30,6 +30,7 @@ export const menu = ref([
         ],
         level: 2
     },
+    // *********************************************************************** 企业层 ***********************************************************************
     {
         id: 3,
         name: "制造集团",

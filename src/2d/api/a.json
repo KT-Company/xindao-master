@@ -1,0 +1,50 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "materialCode": "FP00001",
+      "materialName": "玉龙X4mini 遥控飞机航拍器",
+      "quantity": 4500
+    },
+    {
+      "materialCode": "RM01001",
+      "materialName": "PP塑料机架壳MINI",
+      "quantity": 4000
+    },
+    {
+      "materialCode": "RM01002",
+      "materialName": "PP螺旋桨",
+      "quantity": 16000
+    },
+    {
+      "materialCode": "RM01003",
+      "materialName": "飞控主机主板",
+      "quantity": 4000
+    },
+    {
+      "materialCode": "RM01004",
+      "materialName": "玉龙X4mini钢机架",
+      "quantity": 4000
+    },
+    {
+      "materialCode": "RM01005",
+      "materialName": "无刷动力套装A",
+      "quantity": 4000
+    },
+    {
+      "materialCode": "RM01006",
+      "materialName": "MINI遥控器",
+      "quantity": 4000
+    },
+    {
+      "materialCode": "RM01007",
+      "materialName": "4K高清云图套件",
+      "quantity": 4000
+    },
+    {
+      "materialCode": "RM01008",
+      "materialName": "MINI包装套件",
+      "quantity": 4000
+    }
+  ]
+}

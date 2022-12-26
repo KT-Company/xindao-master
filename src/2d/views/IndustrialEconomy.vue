@@ -1,7 +1,7 @@
 <!-- 产业经济 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { getcyjj, getqyjycx, postParam, getParam } from "@/2d/api";
+import { getcyjj } from "@/2d/api";
 import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
 import { setZhuChart } from "@/2d/viewCharts/Area";
@@ -12,18 +12,16 @@ const store = useStore();
 
 // 企业总量点击事件
 const handleCompany = (item, index) => {
-
-  const {name, key} = DATA.industryDataMap[index]
+  const { name, key } = DATA.industryDataMap[index];
   CACHE.industries.forEach((d) => {
-
     let num = API.findIndustryData({
       areaname: d.name,
       time: store.state.year,
-      key
-    })
+      key,
+    });
 
     d.setTitle1(name);
-    if(num) {
+    if (num) {
       d.setTitle3("数量：" + num);
     }
   });
@@ -133,18 +131,6 @@ onMounted(() => {
       legend: true,
     });
   });
-
-  // postParam().then((res) => {
-  //   console.log("postParam: ", res);
-  // });
-
-  // getParam().then((res) => {
-  //   console.log("getParam: ", res);
-  // });
-
-  // getqyjycx().then((res)=>{
-  //   console.log('getqyjycx: ', res);
-  // })
 });
 </script>
 

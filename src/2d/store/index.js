@@ -29,10 +29,14 @@ const store = createStore({
             debug: true, // console
             globalYear: window.publicParams.year, // 左上角年份
             pickId: 1, // 二级菜单显示
+            MODE: 'EXPLORE', // 当前运行模式
         }
     },
     mutations: {
-        setPickId(state,value){
+        setMODE(state, value) {
+            state.MODE = value
+        },
+        setPickId(state, value) {
             state.pickId = value
         },
         setMenuAid(state, value) {
