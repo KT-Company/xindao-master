@@ -64,7 +64,7 @@ const BUSINESS = () => {
     const data = res
     console.log('BUSINESS: ', data);
     const a = data[0].data.data
-    const b = data[1].data.data.steps.find(item => item.stepName == '经营模式')
+    // const b = data[1].data.data.steps.find(item => item.stepName == '经营模式')
     const c = data[2].data.data.param
     const d = data[3].data.data
     const orgTypeCode = d.find(item => item.caseCode == a.caseCode && item.code == a.enterpriseCode).orgTypeCode
@@ -150,6 +150,10 @@ const BUSINESS = () => {
         wlddqk03: data[8].data.data.ringRatio,
         wlddqk04: data[8].data.data.ringRatioRate,
 
+        HZXDPH: [...data[9].data.data],   // 货主下单排行
+        HZXDQS: [...data[10].data.data],  // 货主下单趋势
+        ZHFWSR: [], //综合服务收入
+
         // 卡住 start
         zwgrsds01: 0,
         zwgrsds02: 0,
@@ -179,7 +183,7 @@ const BUSINESS = () => {
       store.commit('setData8', data1)
       store.commit('setData9', data1)
       store.commit('setData10', data1)
-        
+
       console.log('getBUSINESSall: ', data);
     })
     // getBUSINESS1(p).then(res => {

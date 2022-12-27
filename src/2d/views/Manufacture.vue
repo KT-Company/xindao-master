@@ -9,7 +9,7 @@ import useData from "@/2d/hooks/useData";
 import { toThreeDigitRating } from "@/2d/utils/num";
 import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
-const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const currMenu = menu.value.find((item) => item.id === store.state.menuAid);
 const base = useData.data1(currMenu.name);
 const base2 = useData.data2(currMenu.name);
 const option = reactive({

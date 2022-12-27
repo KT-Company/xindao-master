@@ -42,15 +42,33 @@ const data2 = reactive({
 });
 
 const data3 = reactive({
-  xData: base4.map((item) => item.month),
-  data: [{ name: "货主下单趋势", value: base4.map((item) => item.wlhzxdqs02) }],
+  xData: [],
+  data: [
+    {
+      name: "货主下单趋势",
+      value: [],
+    },
+  ],
 });
 
-const hzxdph = ref(
-  base3.map((item) => {
+// 货主下单排行
+const hzxdph = ref([]);
+
+if (store.state.MODE === "BUSINESS") {
+  data3.xData = base4.HZXDQS.map((item) => item.billDate);
+  data3.data[0].value = base4.HZXDQS.map((item) => item.taxAmount);
+
+  hzxdph.value = base3.HZXDPH.map((item) => {
+    return { name: item.orgName, value: item.taxAmount };
+  });
+} else {
+  data3.xData = base4.map((item) => item.month);
+  data3.data[0].value = base4.map((item) => item.wlhzxdqs02);
+
+  hzxdph.value = base3.map((item) => {
     return { name: item.wlhzxd01, value: item.wlhzxd02 };
-  })
-);
+  });
+}
 
 const clqk = reactive({
   data1: [
@@ -70,7 +88,7 @@ onMounted(() => {
 
   option.data3 = setQuXianChart(data3, {
     color: [1],
-    interval: 0,
+    // interval: 0,
   });
 });
 </script>
@@ -108,7 +126,7 @@ onMounted(() => {
         </div>
       </Content>
     </Bar>
-    <Bar>
+    <Bar class="hzxdpj-bar">
       <Title>货主下单排行</Title>
       <Content class="hzxdph-main">
         <div
@@ -241,6 +259,10 @@ onMounted(() => {
         }
       }
     }
+  }
+
+  .hzxdpj-bar{
+    overflow: auto;
   }
 
   .hzxdph-main {

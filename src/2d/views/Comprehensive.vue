@@ -13,9 +13,15 @@ const qyyhck = reactive({
 });
 
 const findVal = (name) => {
-  return toThreeDigitRating(
-    base.find((item) => item.zhwflx01 == name).zhwflx02
-  );
+  if (store.state.MODE === "BUSINESS") {
+    return toThreeDigitRating(
+      base.ZHFWSR.find((item) => item.zhwflx01 == name).zhwflx02
+    );
+  } else {
+    return toThreeDigitRating(
+      base.find((item) => item.zhwflx01 == name).zhwflx02
+    );
+  }
 };
 let synthesizeIncome = reactive({
   SCKT: findVal("市场开拓"),
@@ -44,7 +50,11 @@ let synthesizeIncome = reactive({
           <span class="hui">详细金额：{{ qyyhck.value1 }}元</span>
         </p>
         <div class="qyyhck-value">
-          <span :class="[item.includes('.') ? 'fg' : 'money-bg']" v-for="(item, i) in qyyhck.value2" :key="i">
+          <span
+            :class="[item.includes('.') ? 'fg' : 'money-bg']"
+            v-for="(item, i) in qyyhck.value2"
+            :key="i"
+          >
             {{ item }}
           </span>
         </div>
@@ -56,14 +66,20 @@ let synthesizeIncome = reactive({
         <div class="synthesizeIncome-wrap">
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-1.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-1.png"
+                  alt=""
+                ></div>
               <div>
                 <div>市场开拓</div>
                 <div>{{ synthesizeIncome.SCKT }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-2.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-2.png"
+                  alt=""
+                ></div>
               <div>
                 <div>广告投放</div>
                 <div>{{ synthesizeIncome.GGTF }}</div>
@@ -72,14 +88,20 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-3.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-3.png"
+                  alt=""
+                ></div>
               <div>
                 <div>3C认证</div>
                 <div>{{ synthesizeIncome.RZ3C }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-4.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-4.png"
+                  alt=""
+                ></div>
               <div>
                 <div>高新认证</div>
                 <div>{{ synthesizeIncome.GXRZ }}</div>
@@ -88,14 +110,20 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-5.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-5.png"
+                  alt=""
+                ></div>
               <div>
                 <div>ISO认证</div>
                 <div>{{ synthesizeIncome.ISORZ }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-6.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-6.png"
+                  alt=""
+                ></div>
               <div>
                 <div>软件著作权</div>
                 <div>{{ synthesizeIncome.RJZZQ }}</div>
@@ -104,14 +132,20 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-7.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-7.png"
+                  alt=""
+                ></div>
               <div>
                 <div>产品研发</div>
                 <div>{{ synthesizeIncome.CPYF }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-8.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-8.png"
+                  alt=""
+                ></div>
               <div>
                 <div>碳交易</div>
                 <div>{{ synthesizeIncome.TJY }}</div>
@@ -120,14 +154,20 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-9.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-9.png"
+                  alt=""
+                ></div>
               <div>
                 <div>电费代收</div>
                 <div>{{ synthesizeIncome.DFDS }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-10.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-10.png"
+                  alt=""
+                ></div>
               <div>
                 <div>人员招聘</div>
                 <div>{{ synthesizeIncome.RYZP }}</div>
@@ -136,14 +176,20 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-11.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-11.png"
+                  alt=""
+                ></div>
               <div>
                 <div>人员解聘</div>
                 <div>{{ synthesizeIncome.RYJP }}</div>
               </div>
             </div>
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-12.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-12.png"
+                  alt=""
+                ></div>
               <div>
                 <div>资产购买</div>
                 <div>{{ synthesizeIncome.ZCGM }}</div>
@@ -152,7 +198,10 @@ let synthesizeIncome = reactive({
           </div>
           <div class="dpy-row">
             <div class="dpy-row">
-              <div><img src="@/2d/assets/icons/ico-comsive-13.png" alt=""></div>
+              <div><img
+                  src="@/2d/assets/icons/ico-comsive-13.png"
+                  alt=""
+                ></div>
               <div>
                 <div>资产回收</div>
                 <div>{{ synthesizeIncome.ZCHS }}</div>
@@ -218,7 +267,8 @@ let synthesizeIncome = reactive({
       .money-bg {
         max-width: var(--valbgSize);
         // contain
-        background: url("@/2d/assets/icons/ico-comsive-0.png") no-repeat center center/ 100% 100%;
+        background: url("@/2d/assets/icons/ico-comsive-0.png") no-repeat center
+          center/ 100% 100%;
       }
     }
   }
@@ -278,26 +328,26 @@ let synthesizeIncome = reactive({
     flex-flow: column;
     justify-content: space-between;
 
-    &>div:not(:last-child) {
+    & > div:not(:last-child) {
       border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    &>div {
+    & > div {
       flex: 1;
 
-      &>div {
+      & > div {
         align-items: center;
         flex: 1;
         justify-content: flex-start;
 
-        &>div:nth-of-type(2) {
+        & > div:nth-of-type(2) {
           display: flex;
           flex-flow: column;
           justify-content: space-between;
           height: 4vh;
           padding-left: 1rem;
 
-          &>div:nth-of-type(1) {
+          & > div:nth-of-type(1) {
             font-size: 14px;
             font-family: Source Han Sans CN;
             font-weight: 500;
@@ -305,7 +355,7 @@ let synthesizeIncome = reactive({
             opacity: 0.5;
           }
 
-          &>div:nth-of-type(2) {
+          & > div:nth-of-type(2) {
             font-size: 16px;
             font-family: Source Han Sans CN;
             font-weight: 500;
