@@ -449,8 +449,8 @@ export const sceneOnLoad = ({ domElement, callback }) => {
                   store.commit("changeLevel", 1);
                   router.push("/IndustrialEconomy");
                 }
-                store.state.MODE === 'BUSINESS' && API.showIndustrialEconomy();
-                handleBackMap[store.state.menuAid]()
+                API.showIndustrialEconomy();
+                store.state.MODE === 'BUSINESS' && handleBackMap[store.state.menuAid]()
               },
             });
           }
