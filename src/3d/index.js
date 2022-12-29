@@ -4,6 +4,7 @@ import { CACHE } from "./CACHE.js";
 import { DATA } from "./DATA.js";
 import store from "@/2d/store";
 import router from "@/2d/router";
+import { handleBackMap } from "@/2d/hooks/use3dhandle";
 
 let Bol3D = window.Bol3D;
 
@@ -103,7 +104,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       "/assets/models/NeiBu/zhizaojituanbangongshi.glb",
       "/assets/models/NeiBu/zonghefuwulou.glb",
       "/assets/models/NeiBu/wuliubangongshi.glb",
-      
+
     ],
     hdrUrls: ["/assets/hdr/st_peters_square_night_1k.hdr"],
     enableShadow: false,
@@ -226,11 +227,11 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
         // CACHE.cities.push(model);
         // CACHE.models.push(model);
-      }else if(STATE.areaModelNames.includes(model.name)){
-        if(model.name == 'qiyepeilou'){
+      } else if (STATE.areaModelNames.includes(model.name)) {
+        if (model.name == 'qiyepeilou') {
           model.scale.set(2, 3.8, 2);
           model.children.forEach(d => {
-            if(d.isMesh){
+            if (d.isMesh) {
               d.material = new Bol3D.PrimitiveMaterial.BaseBuildingStripeMaterial(
                 {
                   color: "#405887",
@@ -247,14 +248,14 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             }
           })
         }
-        else if(model.name == 'qiyezhulou'){
+        else if (model.name == 'qiyezhulou') {
           const keys = Object.keys(STATE.areaModelData)
-          model.children.forEach( m => {
-            if(keys.includes(m.name)){
+          model.children.forEach(m => {
+            if (keys.includes(m.name)) {
               const data = STATE.areaModelData[m.name]
-              const {position ,scale} = data
-              m.position.set(position.x , position.y , position.z)
-              m.scale.set(scale.x , scale.y , scale.z)
+              const { position, scale } = data
+              m.position.set(position.x, position.y, position.z)
+              m.scale.set(scale.x, scale.y, scale.z)
             }
           })
         }
@@ -372,10 +373,10 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       // *** merge geo end***
 
       CACHE.cities2.forEach((c) => {
-        if(c.name == 'qiyezhulou'){
+        if (c.name == 'qiyezhulou') {
           c.children.forEach((d) => {
-            for(const i in STATE.areaModelMap){
-              if(STATE.areaModelMap[i].includes(d.name)){
+            for (const i in STATE.areaModelMap) {
+              if (STATE.areaModelMap[i].includes(d.name)) {
                 d.traverse((m) => {
                   if (m.isMesh) {
                     evt.clickObjects.push(m);
@@ -439,12 +440,17 @@ export const sceneOnLoad = ({ domElement, callback }) => {
             cancelAnimationFrame(animationId);
 
             API.cameraAnimation({
-              cameraState: STATE.industrialState,
+              cameraState: store.state.MODE === 'BUSINESS' ? STATE.enterpriseStates[store.state.enterpriseInfo.cameraKey] : STATE.industrialState,
               callback: () => {
-                store.commit("changeLevel", 1);
-                router.push("/IndustrialEconomy");
-
-                API.showIndustrialEconomy();
+                if (store.state.MODE === 'BUSINESS') {
+                  store.commit("changeLevel", store.state.enterpriseInfo.level);
+                  router.push(store.state.enterpriseInfo.path);
+                } else {
+                  store.commit("changeLevel", 1);
+                  router.push("/IndustrialEconomy");
+                }
+                store.state.MODE === 'BUSINESS' && API.showIndustrialEconomy();
+                handleBackMap[store.state.menuAid]()
               },
             });
           }
@@ -754,8 +760,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           store.commit("setMenuBid", null);
           store.commit(
             "setMenuBid",
-            `${STATE.enterpriseInnerMap[obj.userData.name].id}-${
-              STATE.enterpriseInnerMap[obj.userData.name].cid
+            `${STATE.enterpriseInnerMap[obj.userData.name].id}-${STATE.enterpriseInnerMap[obj.userData.name].cid
             }`
           );
           store.commit("changeLevel", 4);
@@ -801,12 +806,12 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       });
       API.selectEnterpriseInnerIcon(obj.userData.enterprise, obj.userData.name)
       store.commit("setMenuBid", null);
-      if(obj.userData.id){
+      if (obj.userData.id) {
         store.commit(
           "setMenuBid",
           obj.userData.id
         );
-      } 
+      }
     } else if (
       Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
     ) {
@@ -821,7 +826,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         API.hideThreeCircles();
         API.hideThreeFlows();
         API.showThreeFlowsByName(STATE.threeFlowsMap[obj.userData.name]);
-      }else if(store.state.LEVEL == 3){
+      } else if (store.state.LEVEL == 3) {
         CACHE.enterpriseIcons.forEach((d) => {
           if (d.userData.type == obj.userData.name)
             d.children[d.children.length - 1].visible = true;

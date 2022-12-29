@@ -6,8 +6,9 @@ import getUrlParam from '@/2d/utils/getUrlParam'
 const p = getUrlParam()
 console.log('p: ', p);
 
-const MODE = p.mode  // 经营模式: BUSINESS  探索模式: EXPLORE
-store.commit('setMODE', MODE)
+// const MODE = p.mode  // 经营模式: BUSINESS  探索模式: EXPLORE
+store.commit('setMODE', p.mode)
+
 console.log('MODE: ', store.state.MODE);
 
 // https://dapi.seentao.com/custom-form/customForm.formInfos.get
@@ -298,7 +299,7 @@ export function getParamsD() {
     })
 }
 
-if (MODE === 'BUSINESS') {
+if (store.state.MODE === 'BUSINESS') {
     getData.BUSINESS()
 } else {
     getData.All()

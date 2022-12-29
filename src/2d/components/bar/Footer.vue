@@ -68,15 +68,15 @@ const goBack = () => {
   USE3D.goBack();
 };
 
-const routerName = ref("/IndustrialEconomy");
+// const routerName = ref("/IndustrialEconomy");
 
-watch(
-  () => router,
-  () => {
-    routerName.value = getWenhaoA(firstA(router.options.history.state.current));
-  },
-  { deep: true }
-);
+// watch(
+//   () => router,
+//   () => {
+//     routerName.value = getWenhaoA(firstA(router.options.history.state.current));
+//   },
+//   { deep: true }
+// );
 </script>
 
 <template>

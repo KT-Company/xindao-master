@@ -67,8 +67,15 @@ const BUSINESS = () => {
     // const b = data[1].data.data.steps.find(item => item.stepName == '经营模式')
     const c = data[2].data.data.param
     const d = data[3].data.data
-    const orgTypeCode = d.find(item => item.caseCode == a.caseCode && item.code == a.enterpriseCode).orgTypeCode
+    const orgTypeCode = d.find(item => item.caseCode == a.caseCode && item.code == a.enterpriseCode)?.orgTypeCode
+    // const orgTypeCode = null
     console.log('orgTypeCode: ', orgTypeCode);
+    const enterpriseInfo = window.enterpriseMap[a.enterpriseCode]
+    // const enterpriseInfo = window.enterpriseMap['MGE001'] // 测试用
+    store.commit('setEnterpriseInfo', enterpriseInfo)
+    store.commit('setMenuAid', enterpriseInfo.id)
+    store.commit('setMenuBid', null)
+    store.commit('setPickId', enterpriseInfo.id)
     const p = {
       orgCode: c.orgCode,
       deptCode: c.deptCode,

@@ -30,9 +30,13 @@ const store = createStore({
             globalYear: window.publicParams.year, // 左上角年份
             pickId: 1, // 二级菜单显示
             MODE: 'EXPLORE', // 当前运行模式
+            enterpriseInfo: {} // 企业信息
         }
     },
     mutations: {
+        setEnterpriseInfo(state, value) {
+            state.enterpriseInfo = value
+        },
         setMODE(state, value) {
             state.MODE = value
         },
