@@ -4,6 +4,7 @@ import {
   getParamsA, getParamsB, getParamsC, getParamsD
 } from '@/2d/api'
 import { getBUSINESS1, getBUSINESS2, getBUSINESS3, getBUSINESS4, getBUSINESS5, getBUSINESS6, getBUSINESS7, getBUSINESS8, getBUSINESS9, getBUSINESS10, getBUSINESS11 } from '@/2d/api/BUSINESS'
+import * as BUSINESS2 from './BUSINESS2'
 import store from '@/2d/store'
 import CHART from '@/2d/viewCharts/Params'
 
@@ -88,9 +89,21 @@ const BUSINESS = () => {
       caseCode: c.caseCode,
       version: c.version,
       orgTypeCode: orgTypeCode,
+      userToken: null,
+      orgId: null,
+      memberId: null,
+      teachClassId: null,
     }
 
-    Promise.all([getBUSINESS1(p), getBUSINESS2(p), getBUSINESS3(p), getBUSINESS4(p), getBUSINESS5(p), getBUSINESS6(p), getBUSINESS7(p), getBUSINESS8(p), getBUSINESS9(p), getBUSINESS10(p), getBUSINESS11(p),]).then(res => {
+    Promise.all([
+      getBUSINESS1(p), getBUSINESS2(p), getBUSINESS3(p), getBUSINESS4(p), getBUSINESS5(p), getBUSINESS6(p), getBUSINESS7(p), getBUSINESS8(p), getBUSINESS9(p), getBUSINESS10(p), getBUSINESS11(p),
+      BUSINESS2.get_ryzb(p), BUSINESS2.get_ryld(p), BUSINESS2.get_xzzc(p), BUSINESS2.get_kdj(p), BUSINESS2.get_cgzc(p),
+      BUSINESS2.get_schdqk(p), BUSINESS2.get_ggtfqk(p), BUSINESS2.get_scktqk(p), BUSINESS2.get_ryld(p), BUSINESS2.get_khxl(p),
+      BUSINESS2.get_gyspm(p), BUSINESS2.get_grpgqk(p), BUSINESS2.get_scjd(p), BUSINESS2.get_sbzt(p), BUSINESS2.get_zzczzl(p),
+      BUSINESS2.get_xsmll(p), BUSINESS2.get_zcfzl(p), BUSINESS2.get_wlfy(p), BUSINESS2.get_chzzl(p), BUSINESS2.get_clzs(p),
+      BUSINESS2.get_qyyhck(p), BUSINESS2.get_qyyhdk(p), BUSINESS2.get_qysdssfl(p), BUSINESS2.get_qyzzssfl(p), BUSINESS2.get_qysl(p),
+      BUSINESS2.get_qydk(p), BUSINESS2.get_qyck(p), BUSINESS2.get_zhfwsr(p), BUSINESS2.get_tpf(p)
+    ]).then(res => {
       const data = res
       console.log('data: ', data);
       function returnData(name) {
@@ -193,39 +206,7 @@ const BUSINESS = () => {
 
       console.log('getBUSINESSall: ', data);
     })
-    // getBUSINESS1(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS1: ', res);
-    // })
-    // getBUSINESS2(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS2: ', res);
-    // })
-    // getBUSINESS3(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS3: ', res);
-    // })
-    // getBUSINESS4(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS4: ', res);
-    // })
-    // getBUSINESS5(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS5: ', res);
-    // })
-    // getBUSINESS6(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS6: ', res);
-    // })
-    // getBUSINESS7(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS7: ', res);
-    // })
-    // getBUSINESS8(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS8: ', res);
-    // })
-    // getBUSINESS9(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS9: ', res);
-    // })
-    // getBUSINESS10(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS10: ', res);
-    // })
-    // getBUSINESS11(p).then(res => {
-    //   store.state.debug && console.log('getBUSINESS11: ', res);
-    // })
+
   })
 
 }
