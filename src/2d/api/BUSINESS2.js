@@ -107,7 +107,7 @@ export function get_scktqk(p) {
 }
 
 // 销售结构
-export function get_ryld(p) {
+export function get_xsjg(p) {
   return request({
     url: `https://dedu.seentao.com/api/sale/stat/material/totalQuantity`,
     method: 'POST',

@@ -13,7 +13,7 @@ window.publicParams = {
   szxs: '北京',      // 全局省直辖市
   // fireBackup: false, // 开启火力备用图
 }
-window.myToken = '6dc1e3fbb7ba7be24c4ab1b06f503041' // 仅用于测试
+window.myToken = '2f3314ef4f26f296bb782bfdca0fe8b4' // 仅用于测试
 window.backHome = () => {
   window.top.location.href = "/aie_web"; // 返回用户 home 地址
 }

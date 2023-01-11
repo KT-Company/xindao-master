@@ -7,6 +7,7 @@ import { getBUSINESS1, getBUSINESS2, getBUSINESS3, getBUSINESS4, getBUSINESS5, g
 import * as BUSINESS2 from './BUSINESS2'
 import store from '@/2d/store'
 import CHART from '@/2d/viewCharts/Params'
+import dayjs from "dayjs";
 
 const All = () => {
   getData1().then(res => {
@@ -77,6 +78,7 @@ const BUSINESS = () => {
     store.commit('setMenuAid', enterpriseInfo.id)
     store.commit('setMenuBid', null)
     store.commit('setPickId', enterpriseInfo.id)
+    const p2 = store.state.paramsA
     const p = {
       orgCode: c.orgCode,
       deptCode: c.deptCode,
@@ -89,16 +91,20 @@ const BUSINESS = () => {
       caseCode: c.caseCode,
       version: c.version,
       orgTypeCode: orgTypeCode,
-      userToken: null,
-      orgId: null,
-      memberId: null,
-      teachClassId: null,
+
+      userToken: p2.userToken,
+      orgId: p2.orgId,
+      memberId: p2.memberId,
+      teachClassId: p2.teachClassId,
     }
 
+    const currMoth = dayjs().format()
+
     Promise.all([
+      //11
       getBUSINESS1(p), getBUSINESS2(p), getBUSINESS3(p), getBUSINESS4(p), getBUSINESS5(p), getBUSINESS6(p), getBUSINESS7(p), getBUSINESS8(p), getBUSINESS9(p), getBUSINESS10(p), getBUSINESS11(p),
       BUSINESS2.get_ryzb(p), BUSINESS2.get_ryld(p), BUSINESS2.get_xzzc(p), BUSINESS2.get_kdj(p), BUSINESS2.get_cgzc(p),
-      BUSINESS2.get_schdqk(p), BUSINESS2.get_ggtfqk(p), BUSINESS2.get_scktqk(p), BUSINESS2.get_ryld(p), BUSINESS2.get_khxl(p),
+      BUSINESS2.get_schdqk(p), BUSINESS2.get_ggtfqk(p), BUSINESS2.get_scktqk(p), BUSINESS2.get_xsjg(p), BUSINESS2.get_khxl(p),
       BUSINESS2.get_gyspm(p), BUSINESS2.get_grpgqk(p), BUSINESS2.get_scjd(p), BUSINESS2.get_sbzt(p), BUSINESS2.get_zzczzl(p),
       BUSINESS2.get_xsmll(p), BUSINESS2.get_zcfzl(p), BUSINESS2.get_wlfy(p), BUSINESS2.get_chzzl(p), BUSINESS2.get_clzs(p),
       BUSINESS2.get_qyyhck(p), BUSINESS2.get_qyyhdk(p), BUSINESS2.get_qysdssfl(p), BUSINESS2.get_qyzzssfl(p), BUSINESS2.get_qysl(p),
@@ -106,9 +112,15 @@ const BUSINESS = () => {
     ]).then(res => {
       const data = res
       console.log('data: ', data);
+
+
       function returnData(name) {
         return data[4].data.data.find(item => item.materialCode == name)?.quantity || 0
       }
+      const nan = data[11].data.list.find(item => item.sex == '男')
+      const nv = data[11].data.list.find(item => item.sex == '女')
+      const ryld = data[12].data.find(item => item.employedTime == currMoth)
+
       const data1 = {
         ndsrzb01: data[0].data.data.budget,
         ndsrzb02: data[0].data.data.income,
@@ -173,6 +185,17 @@ const BUSINESS = () => {
         HZXDPH: [...data[9].data.data],   // 货主下单排行
         HZXDQS: [...data[10].data.data],  // 货主下单趋势
         ZHFWSR: [], //综合服务收入
+
+        ryxbzb01: nan.num,
+        ryxbzb02: nv.num,
+        ryxbzb03: (nan.num / (nan.num + nv.num)).toPrecision(2) * 100,
+        ryld01: ryld.num,
+        ryld02: ryld.curMonthDisNum,
+        ryld03: (ryld.curMonthDisNum / (ryld.num + ryld.curMonthDisNum)).toPrecision(2) * 100,
+        ryxczc01: data[13].data.data.totalSum,
+        ryxczc02: data[13].data.data.currentMonthSum,
+        ryxczc03: data[13].data.data.ringRatio,
+        ryxczc04: data[13].data.data.ringRatioRate,
 
         // 卡住 start
         zwgrsds01: 0,

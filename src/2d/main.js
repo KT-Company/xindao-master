@@ -6,6 +6,7 @@ import router from '@/2d/router'
 import store from '@/2d/store'
 import '@/2d/css/animate.min.css'
 import dayjs from "dayjs";
+console.log(dayjs().format('YYYY-MM'),'YYYY');
 import getUrlParam from '@/2d/utils/getUrlParam'
 import {
     Left,
