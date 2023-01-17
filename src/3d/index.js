@@ -377,6 +377,10 @@ export const sceneOnLoad = ({ domElement, callback }) => {
           c.children.forEach((d) => {
             for (const i in STATE.areaModelMap) {
               if (STATE.areaModelMap[i].includes(d.name)) {
+                if (d.name === 'ZWDL_DaLou') {
+                  d.scale.set(35, 35, 35)
+                  d.position.y = 0
+                }
                 d.traverse((m) => {
                   if (m.isMesh) {
                     evt.clickObjects.push(m);

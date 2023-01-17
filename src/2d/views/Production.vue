@@ -6,6 +6,7 @@ import { setZhuChart, setBingChart4 } from "@/2d/viewCharts/Area";
 import { setZhexiantu } from "@/2d/viewCharts/Environmental";
 import { setJinduChart } from "@/2d/viewCharts/Production";
 import useData from "@/2d/hooks/useData";
+import * as NUM from "@/2d/utils/num";
 const base = useData.data7("制造集团");
 const base1 = useData.data8("制造集团");
 const base9 = useData.data9("制造集团");
@@ -17,52 +18,119 @@ const option = reactive({
   data3: {},
 });
 
+const data1 = reactive({
+  xData: [],
+  data: [
+    {
+      name: "已完工",
+      value: [],
+    },
+    {
+      name: "生产中",
+      value: [],
+    },
+    {
+      name: "待生产",
+      value: [],
+    },
+  ],
+});
+
 // 生产进度
 function geting(name, satate) {
   return base.find((item) => item.qyscjd01 == name && item.qyscjd02 == satate)
     .qyscjd03;
 }
-const data1 = reactive({
-  xData: ["X4MINI", "X4SE", "X4pro"],
-  data: [
-    {
-      name: "已完工",
-      value: [
-        geting("X4MINI", "已完工"),
-        geting("X4SE", "已完工"),
-        geting("X4pro", "已完工"),
-      ],
-    },
-    {
-      name: "生产中",
-      value: [
-        geting("X4MINI", "生产中"),
-        geting("X4SE", "生产中"),
-        geting("X4pro", "生产中"),
-      ],
-    },
-    {
-      name: "待生产",
-      value: [
-        geting("X4MINI", "待生产"),
-        geting("X4SE", "待生产"),
-        geting("X4pro", "待生产"),
-      ],
-    },
-  ],
-});
 
 const data2 = reactive({
-  xData: base10.map((item) => item.month),
-  data: [
-    { name: "实际产量", value: base10.map((item) => item.qyclzs02) },
-    { name: "计划产量", value: base10.map((item) => item.qyclzs03) },
-  ],
+  xData: [],
+  data: [],
 });
 
 const data3 = reactive({
   name: "设备状态",
-  data: [
+  data: [],
+});
+
+function geting2(type, key) {
+  return base.find((item) => item.qygrqk01 == type)[key];
+}
+const grpgqk = ref([]);
+
+if (store.state.MODE === "BUSINESS") {
+  base.scjd.forEach((item) => {
+    data1.xData.push(item.materialName);
+    data1.data[0].value.push(item.completeNum);
+    data1.data[1].value.push(item.productionNum);
+    data1.data[2].value.push(item.leisureNum);
+  });
+
+  data2.xData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  data2.data = [
+    { name: "实际产量", value: base10.clzs.map((item) => item.inNum) },
+  ];
+
+  const total = base9.sbzt
+    .map((item) => item.num)
+    .reduce((prev, current, index, arr) => {
+      return prev + current;
+    });
+  const wg = base9.sbzt.find((item) => item.stateRemark == "完工").num;
+  const scz = base9.sbzt.find((item) => item.stateRemark == "生产中").num;
+  const kx = base9.sbzt.find((item) => item.stateRemark == "空闲").num;
+
+  data3.data = [
+    {
+      name: "完工",
+      color: "92,115,230",
+      value: NUM.reservedTwo100times(wg / total),
+      value1: wg,
+    },
+    {
+      name: "生产中",
+      color: "255,159,64",
+      value: NUM.reservedTwo100times(scz / total),
+      value1: scz,
+    },
+    {
+      name: "空闲",
+      color: "72,192,151",
+      value: NUM.reservedTwo100times(kx / total),
+      value1: kx,
+    },
+  ];
+
+  grpgqk.value = base.grpgqk.map((item) => {
+    return {
+      name: item.jobName,
+      value: item.workerOnEquNum,
+      target: item.workerNum,
+      zhanbi: item.rate,
+    };
+  });
+} else {
+  grpgqk.value = [
+    {
+      name: "初级工人",
+      value: geting2("初级工人", "qygrqk03"),
+      target: geting2("初级工人", "qygrqk02"),
+      zhanbi: geting2("初级工人", "qygrqk04"),
+    },
+    {
+      name: "中级工人",
+      value: geting2("中级工人", "qygrqk03"),
+      target: geting2("中级工人", "qygrqk02"),
+      zhanbi: geting2("中级工人", "qygrqk04"),
+    },
+    {
+      name: "高级工人",
+      value: geting2("高级工人", "qygrqk03"),
+      target: geting2("高级工人", "qygrqk02"),
+      zhanbi: geting2("高级工人", "qygrqk04"),
+    },
+  ];
+
+  data3.data = [
     {
       name: "完工",
       color: "92,115,230",
@@ -81,17 +149,31 @@ const data3 = reactive({
       value: base9.find((item) => item.qysbzt01 == "空闲").qysbzt03,
       value1: base9.find((item) => item.qysbzt01 == "空闲").qysbzt02,
     },
-  ],
-});
+  ];
 
-function geting2(type, key) {
-  return base.find((item) => item.qygrqk01 == type)[key];
+  data2.xData = base10.map((item) => item.month);
+  data2.data = [
+    { name: "实际产量", value: base10.map((item) => item.qyclzs02) },
+    { name: "计划产量", value: base10.map((item) => item.qyclzs03) },
+  ];
+
+  data1.xData = ["X4MINI", "X4SE", "X4pro"];
+  data1.data[0].value = [
+    geting("X4MINI", "已完工"),
+    geting("X4SE", "已完工"),
+    geting("X4pro", "已完工"),
+  ];
+  data1.data[1].value = [
+    geting("X4MINI", "生产中"),
+    geting("X4SE", "生产中"),
+    geting("X4pro", "生产中"),
+  ];
+  data1.data[2].value = [
+    geting("X4MINI", "待生产"),
+    geting("X4SE", "待生产"),
+    geting("X4pro", "待生产"),
+  ];
 }
-const grpgqk = ref([
-  { name: "初级工人", value: geting2('初级工人','qygrqk03'), target: geting2('初级工人','qygrqk02'), zhanbi: geting2('初级工人','qygrqk04') },
-  { name: "中级工人", value: geting2('中级工人','qygrqk03'), target: geting2('中级工人','qygrqk02'), zhanbi: geting2('中级工人','qygrqk04') },
-  { name: "高级工人", value: geting2('高级工人','qygrqk03'), target: geting2('高级工人','qygrqk02'), zhanbi: geting2('高级工人','qygrqk04') },
-]);
 
 option.data1 = setZhuChart(data1, {
   barW: "10%",
@@ -105,9 +187,11 @@ option.data1 = setZhuChart(data1, {
 
 option.data2 = setZhexiantu(data2);
 option.data3 = setBingChart4(data3);
-grpgqk.value[0].option = setJinduChart(grpgqk.value[0].zhanbi);
-grpgqk.value[1].option = setJinduChart(grpgqk.value[1].zhanbi);
-grpgqk.value[2].option = setJinduChart(grpgqk.value[2].zhanbi);
+try {
+  grpgqk.value[0].option = setJinduChart(grpgqk.value[0].zhanbi);
+  grpgqk.value[1].option = setJinduChart(grpgqk.value[1].zhanbi);
+  grpgqk.value[2].option = setJinduChart(grpgqk.value[2].zhanbi);
+} catch (error) {}
 </script>
 
 <template>

@@ -235,7 +235,7 @@ export function setLineFinancial(data) {
                 margin: 10,
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                interval: 0
+                interval: data.interval ?? 0
             },
             splitLine: {
                 show: false

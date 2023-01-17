@@ -14,8 +14,23 @@ const qyyhck = reactive({
 
 const findVal = (name) => {
   if (store.state.MODE === "BUSINESS") {
+    const codeMap = {
+      '市场开拓': "MARKET_APPLY",
+      '广告投放': "ADVERT_APPLY",
+      '3C认证': "CCC_QUALIFICATION",
+      '高新认证': "HIGH_TECH_QUALIFICATION",
+      'ISO认证': "ISO9001_QUALIFICATION",
+      '软件著作权': "SOFTWARE_QUALIFICATION",
+      '产品研发': "PRODUCT_APPLY",
+      '碳交易': "CARBON_APPLY",
+      '电费代收': "ELECT_APPLY",
+      '人员招聘': "RECRUI_PERSON",
+      '人员解聘': "DISMISS_PERSON",
+      '资产购买': "ASSETS_APPLY",
+      '资产回收': "DEPRE_DISPOSAL",
+    }
     return toThreeDigitRating(
-      base.ZHFWSR.find((item) => item.zhwflx01 == name).zhwflx02
+      base.ZHFWSR.find((item) => item.code == codeMap[name]).total
     );
   } else {
     return toThreeDigitRating(

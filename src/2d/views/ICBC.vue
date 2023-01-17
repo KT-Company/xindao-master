@@ -7,8 +7,33 @@ const base = useData.data1();
 const store = useStore();
 let leftIndex = 0;
 let rightIndex = 0;
-const dataLeft = ref(
-  base.map((item, i) => {
+const dataLeft = ref([]);
+const dataRight = ref([]);
+
+if (store.state.MODE === "BUSINESS") {
+  dataRight.value = base.qyyhck.map((item, i) => {
+    rightIndex++;
+    if (rightIndex > 5) rightIndex = 1;
+    return {
+      id: i + 1,
+      bg: require(`@/2d/assets/icons/ICBC-bg-right-${rightIndex}.png`),
+      name: item.orgTypeName,
+      value: item.balance || 0,
+    };
+  });
+
+  dataLeft.value = base.qyyhdk.map((item, i) => {
+    leftIndex++;
+    if (leftIndex > 5) leftIndex = 1;
+    return {
+      id: i + 1,
+      bg: require(`@/2d/assets/icons/ICBC-bg-left-${leftIndex}.png`),
+      name: item.orgTypeName,
+      value: item.loan || 0,
+    };
+  });
+} else {
+  dataLeft.value = base.map((item, i) => {
     leftIndex++;
     if (leftIndex > 5) leftIndex = 1;
     return {
@@ -17,10 +42,9 @@ const dataLeft = ref(
       name: item.qylx,
       value: item.qyyhdkxj || 0,
     };
-  })
-);
-const dataRight = ref(
-  base.map((item, i) => {
+  });
+
+  dataRight.value = base.map((item, i) => {
     rightIndex++;
     if (rightIndex > 5) rightIndex = 1;
     return {
@@ -29,8 +53,8 @@ const dataRight = ref(
       name: item.qylx,
       value: item.qyyhckxj || 0,
     };
-  })
-);
+  });
+}
 onMounted(() => {});
 </script>
 
@@ -89,14 +113,15 @@ onMounted(() => {});
 }
 .item {
   margin: 0.5rem;
-} .dpy-column{
-    justify-content: flex-start !important;
-  }
+}
+.dpy-column {
+  justify-content: flex-start !important;
+}
 .content-box {
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 5px;
- 
+
   .left-wrap,
   .right-wrap {
     width: 100%;

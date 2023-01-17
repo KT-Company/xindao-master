@@ -10,7 +10,7 @@ import CHART from "@/2d/viewCharts/Params";
 import { setBar } from "@/2d/viewCharts/Business";
 import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
-const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const currMenu = menu.value.find((item) => item.id === store.state.menuAid);
 const base = useData.data5(currMenu.name);
 const base1 = useData.data7(currMenu.name);
 const base2 = useData.data8(currMenu.name);
@@ -62,16 +62,18 @@ const peMoney = reactive([
   { unit: "￥", value: base.qycgzc002, prefix: "", desc: "本月" },
   { unit: "￥", value: base.qycgzc003, prefix: "+", desc: "环比" },
 ]);
-// 供应商排行
-const supplier = reactive(
-  // base1.map((item, i) => {
-  //   return {
-  //     name: `${i + 1}、${item.qygyspm01}`,
-  //     value: item.qygyspm02 || 0,
-  //     percentage: item.qygyspm02 || 0,
-  //   };
-  // })
-  base1
+
+let gysphb = {};
+if (store.state.MODE === "BUSINESS") {
+  gysphb = base1.gysphb.map((item, i) => {
+    return {
+      name: `${i + 1}、${item.supplierName}`,
+      value: item.taxAmount || 0,
+      percentage: item.taxAmount || 0,
+    };
+  });
+} else {
+  gysphb = base1
     .filter((item, i) => item.qygyspm01)
     .map((item, i) => {
       return {
@@ -79,23 +81,39 @@ const supplier = reactive(
         value: item.qygyspm02 || 0,
         percentage: item.qygyspm02 || 0,
       };
-    })
-);
+    });
+}
+// 供应商排行
+const supplier = reactive(gysphb);
 
 // 物流费用
 const logisticsEl = ref(null);
 const drawLogisticsChar = (el) => {
-  const { char, option } = getEchartsAndOption(el, "line1", {
-    xAxis: {
-      data: base2.map((item) => item.month),
-    },
-    series: [
-      {
-        data: base2.map((item) => item.qywlfy02),
+  if (store.state.MODE === "BUSINESS") {
+    const { char, option } = getEchartsAndOption(el, "line1", {
+      xAxis: {
+        data: base2.wlfy.map((item) => item.billDate),
       },
-    ],
-  });
-  char.setOption(option);
+      series: [
+        {
+          data: base2.wlfy.map((item) => item.taxAmount),
+        },
+      ],
+    });
+    char.setOption(option);
+  } else {
+    const { char, option } = getEchartsAndOption(el, "line1", {
+      xAxis: {
+        data: base2.map((item) => item.month),
+      },
+      series: [
+        {
+          data: base2.map((item) => item.qywlfy02),
+        },
+      ],
+    });
+    char.setOption(option);
+  }
 };
 // 企业仓库容积
 const businessRepoEl = ref(null);
@@ -139,16 +157,26 @@ const brMoney = reactive([
   { value: base3.qyckzy02, prefix: "", desc: "总空闲量" },
 ]);
 
-// 货币周转率
+// 存货周转率
 const goodsTREL = ref(null);
 const drawGoodsTRELChar = (el) => {
-  const { char, option } = getEchartsAndOption(el, "line1", {
-    xAxis: {
-      data: base2.map((item) => item.month),
-    },
-    series: [{ data: base2.map((item) => item.qychzzl02 || 0) }],
-  });
-  char.setOption(option);
+  if (store.state.MODE === "BUSINESS") {
+    const { char, option } = getEchartsAndOption(el, "line1", {
+      xAxis: {
+        data: base2.chzzl.map((item) => item.period),
+      },
+      series: [{ data: base2.chzzl.map((item) => item.rate || 0) }],
+    });
+    char.setOption(option);
+  } else {
+    const { char, option } = getEchartsAndOption(el, "line1", {
+      xAxis: {
+        data: base2.map((item) => item.month),
+      },
+      series: [{ data: base2.map((item) => item.qychzzl02 || 0) }],
+    });
+    char.setOption(option);
+  }
 };
 // 企业库存情况
 let dataObj1 = {
@@ -168,7 +196,7 @@ const data1 = reactive({
   dataList: dataObj1.val,
   isShow: true,
 });
-option.data1 = setBar(data1, {interval: 0});
+option.data1 = setBar(data1, { interval: 0 });
 // const businessRepoSituationEl = ref(null);
 // const drawBusinessRepoSituationElChar = (el) => {
 //   const { char, option } = getEchartsAndOption(el, "bar1", {});

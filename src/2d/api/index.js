@@ -27,7 +27,7 @@ console.log('MODE: ', store.state.MODE);
 // &sceneId=${p.sceneId}
 // &sysCode=`
 
-// 开发环境 api 地址（如果没有数据就替换 token -----》 获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：1234qwer!）
+// 开发环境 api 地址（如果没有数据就替换 token -----》 获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：admin9527...）
 const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
 caseVersionId=82347900509093947
 &enterpriseId=82441349728567340

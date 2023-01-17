@@ -5,8 +5,8 @@ import * as echarts from "echarts";
 import router from '@/2d/router'
 import store from '@/2d/store'
 import '@/2d/css/animate.min.css'
-import dayjs from "dayjs";
-console.log(dayjs().format('YYYY-MM'),'YYYY');
+// import dayjs from "dayjs";
+// console.log(dayjs().format('YYYY-MM'),'YYYY');
 import getUrlParam from '@/2d/utils/getUrlParam'
 import {
     Left,
@@ -30,9 +30,9 @@ app.component('Left', Left)
     .component('Bar', Bar)
     .component('Content', Content)
 
-    if (false) {
-        // alert('体验时间过期，请联系管理员')
-    } else {
+if (false) {
+    // alert('体验时间过期，请联系管理员')
+} else {
     app.use(router).use(store).mount('#app')
     store.commit('setUrlParam', getUrlParam())
 }

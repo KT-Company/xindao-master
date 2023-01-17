@@ -8,8 +8,6 @@ import useData from "@/2d/hooks/useData";
 const base = useData.data4("政务服务");
 const base1 = useData.data2("政务服务");
 const base2 = useData.data2();
-console.log("base2: ", base2);
-console.log("base1: ", base1);
 const store = useStore();
 // 企业所得税税负率
 const purchaseChar = ref(null);
@@ -44,9 +42,9 @@ const drawPurchaseChar = (el) => {
         },
         data: [
           {
-            value: base1.zwgrsds03
-          }
-        ]
+            value: base1.zwgrsds03,
+          },
+        ],
       },
     ],
   });
@@ -60,10 +58,19 @@ const peMoney = reactive([
 const carbonEmissionEl = ref(null);
 const drawCarbonEmissionChar = (el) => {
   const { char, option } = getEchartsAndOption(el, "mutilLine1");
-  option.xAxis.data = base.map((item) => item.month);
-  option.series[0].data = base.map((item) => item.zwtpf02);
-  option.series[1].data = base.map((item) => item.zwtpf03);
-  option.series[2].data = base.map((item) => item.zwtpf04);
+
+  if (store.state.MODE === "BUSINESS") {
+    option.xAxis.data = base.tpf.map((item) => item.month);
+    option.series[0].data = base.tpf.map((item) => item.allocationTotal);
+    option.series[1].data = base.tpf.map((item) => item.dischargeTotal);
+    option.series[2].data = base.tpf.map((item) => item.buyTotal);
+  } else {
+    option.xAxis.data = base.map((item) => item.month);
+    option.series[0].data = base.map((item) => item.zwtpf02);
+    option.series[1].data = base.map((item) => item.zwtpf03);
+    option.series[2].data = base.map((item) => item.zwtpf04);
+  }
+
   char.setOption(option);
 };
 
@@ -123,11 +130,15 @@ const drawBusinessNumChar = (el) => {
       axisLabel: { align: "left", margin: 8, rotate: -45 },
     },
   });
-  option.xAxis.data = base2.map((item) => item.qylx);
-  option.title.text = '单位：家';
-  option.series[0].data = base2.map((item) => item.zwqysl02);
+  option.title.text = "单位：家";
+  if (store.state.MODE === "BUSINESS") {
+    option.xAxis.data = base2.qysl.map((item) => item.name);
+    option.series[0].data = base2.qysl.map((item) => item.num);
+  } else {
+    option.xAxis.data = base2.map((item) => item.qylx);
+    option.series[0].data = base2.map((item) => item.zwqysl02);
+  }
   char.setOption(option);
-  console.log("option: ", option);
 };
 onMounted(() => {
   drawPurchaseChar(purchaseChar.value);

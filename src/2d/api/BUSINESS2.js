@@ -12,6 +12,7 @@ const params1 = (p) => {
     virtualDate: p.virtualDate,
     caseCode: p.caseCode,
     version: p.version,
+    orgTypeCode: p.orgTypeCode,
   }
 }
 
@@ -27,7 +28,7 @@ const params3 = (p) => {
   return {
     startDate: p.startDate,
     endDate: p.endDate,
-    courseVersionId: p.courseVersionId,
+    // courseVersionId: p.courseVersionId,
     classId: p.classId,
     teamId: p.teamId,
     taxNum: p.taxNum
@@ -109,7 +110,7 @@ export function get_scktqk(p) {
 // 销售结构
 export function get_xsjg(p) {
   return request({
-    url: `https://dedu.seentao.com/api/sale/stat/material/totalQuantity`,
+    url: `https://dedu.seentao.com/api/xbizerp/sale/stat/material/totalQuantity`,
     method: 'POST',
     params: params2(p)
   })
@@ -209,7 +210,7 @@ export function get_chzzl(p) {
 export function get_clzs(p) {
   return request({
     url: `https://dedu.seentao.com/api/xbizerp/erpequipment/stat/queryProductionTrend`,
-    method: 'POST',
+    method: 'get',
     params: params1(p)
   })
 }
@@ -221,6 +222,7 @@ export function get_qyyhck(p) {
     method: 'get',
     params: {
       orgCode: p.orgCode,
+      classId: p.classId,
       caseCode: p.caseCode,
     }
   })
@@ -239,7 +241,7 @@ export function get_qyyhdk(p) {
   })
 }
 
-// 企业所得税税负率
+// 企业所得税税负率 ( 暂定 )
 export function get_qysdssfl(p) {
   return request({
     url: `https://dchinataxn.seentao.com/chinataxn/invoice.getIncomeByParams`,
@@ -260,7 +262,7 @@ export function get_qyzzssfl(p) {
 // 企业数量
 export function get_qysl(p) {
   return request({
-    url: `https://dapi.seentao.com/school/enterpriseNum.getByTeachClassId`,
+    url: `https://dedu.seentao.com/api/vbseTeach/enterpriseNum.getByTeachClassId`,
     method: 'POST',
     params: {
       userId: p.userId,

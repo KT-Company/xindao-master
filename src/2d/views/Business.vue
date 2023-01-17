@@ -13,7 +13,7 @@ import { toThreeDigitRating } from "@/2d/utils/num";
 import CHART from "@/2d/viewCharts/Params";
 import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
-const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const currMenu = menu.value.find((item) => item.id === store.state.menuAid);
 const base = useData.data5(currMenu.name);
 const base1 = useData.data7(currMenu.name);
 const base2 = useData.data8(currMenu.name);
@@ -45,18 +45,32 @@ const data1 = reactive({
 const data3 = reactive({
   color: "#FF9F40",
   // name: "物流费用",
-  Xdata: base2.map((item) => item.month),
-  dataList: base2.map((item) => item.qywlfy02),
+  Xdata: [],
+  dataList: [],
   isShow: false,
 });
 
 const data6 = reactive({
   color: "#FF9F40",
   name: "存货周转率",
-  Xdata: base2.map((item) => item.month),
-  dataList: base2.map((item) => item.qychzzl02),
+  Xdata: null,
+  dataList: null,
   isShow: false,
 });
+
+if (store.state.MODE === "BUSINESS") {
+  data6.Xdata = base2.chzzl.map((item) => item.period);
+  data6.dataList = base2.chzzl.map((item) => item.rate);
+
+  data3.Xdata = base2.wlfy.map((item) => item.billDate);
+  data3.dataList = base2.wlfy.map((item) => item.taxAmount);
+} else {
+  data6.Xdata = base2.map((item) => item.month);
+  data6.dataList = base2.map((item) => item.qychzzl02);
+
+  data3.Xdata = base2.map((item) => item.month);
+  data3.dataList = base2.map((item) => item.qywlfy02);
+}
 
 onMounted(() => {
   option.data1 = setPiePercentage(data1);
@@ -69,22 +83,30 @@ onMounted(() => {
   data8Echarts();
   data9Echarts();
 });
-const labelData = ref(
-  base1
-    .filter((item, i) => item.qygyspm01)
-    .map((item, i) => `${i + 1}、` + item.qygyspm01)
-);
-const valueData = ref(
-  base1.filter((item, i) => item.qygyspm01).map((item) => item.qygyspm02 || 0)
-);
+
 const data2Echarts = () => {
-  labelData;
   const data2 = reactive({
     color: "#5C73E6",
     name: "供应商排名",
-    labelData: labelData.value,
-    valueData: valueData.value,
+    labelData: null,
+    valueData: null,
   });
+
+  //
+  if (store.state.MODE === "BUSINESS") {
+    data2.labelData = base1.gysphb.map(
+      (item, i) => `${i + 1}、` + item.supplierName
+    );
+    data2.valueData = base1.gysphb.map((item) => item.taxAmount || 0);
+  } else {
+    data2.labelData = base1
+      .filter((item, i) => item.qygyspm01)
+      .map((item, i) => `${i + 1}、` + item.qygyspm01);
+    data2.valueData = base1
+      .filter((item, i) => item.qygyspm01)
+      .map((item) => item.qygyspm02 || 0);
+  }
+
   option.data2 = setBarAcross(data2);
 };
 
@@ -93,12 +115,22 @@ const data4Echarts = () => {
   const data4 = reactive({
     color: "#5C73E6",
     name: "客户销量",
-    Xdata: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl01),
-    dataList: base1
-      .filter((item) => item.qykhxl01)
-      .map((item) => item.qykhxl02),
+    Xdata: null,
+    dataList: null,
     isShow: false,
   });
+
+  if (store.state.MODE === "BUSINESS") {
+    data4.Xdata = data4.khxl.map((item) => item.purchaseOrgName);
+    data4.dataList = data4.khxl.map((item) => item.taxAmount);
+  } else {
+    data4.Xdata = base1
+      .filter((item) => item.qykhxl01)
+      .map((item) => item.qykhxl01);
+    data4.dataList = base1
+      .filter((item) => item.qykhxl01)
+      .map((item) => item.qykhxl02);
+  }
   option.data4 = setBar(data4);
 };
 const data5 = reactive({
@@ -360,7 +392,7 @@ const data8Echarts = () => {
   }
 
   .data2-warp {
-      height: 100%;
+    height: 100%;
     .echart-data {
       width: 100%;
       height: 100%;
@@ -368,7 +400,7 @@ const data8Echarts = () => {
   }
 
   .data3-warp {
-      height: 100%;
+    height: 100%;
     .echart-data {
       width: 100%;
       height: 100%;
@@ -376,7 +408,7 @@ const data8Echarts = () => {
   }
 
   .data4-warp {
-      height: 100%;
+    height: 100%;
     .echart-data {
       width: 100%;
       height: 100%;
@@ -436,7 +468,7 @@ const data8Echarts = () => {
   }
 
   .data6-warp {
-      height: 100%;
+    height: 100%;
     .echart-data {
       width: 100%;
       height: 100%;
@@ -463,7 +495,7 @@ const data8Echarts = () => {
   }
 
   .data7-warp {
-     height: 100%;
+    height: 100%;
     .echart-data {
       width: 100%;
       height: 100%;
@@ -471,7 +503,7 @@ const data8Echarts = () => {
   }
 
   .data8-warp {
-     height: 100%;
+    height: 100%;
     .echart-data {
       width: 100%;
       height: 100%;

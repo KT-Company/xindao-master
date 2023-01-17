@@ -1,4 +1,4 @@
-<!-- 物流公司 -->
+<!-- 营销部 -->
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
@@ -24,7 +24,18 @@ onMounted(() => {
   data3Echarts();
   data4Echarts();
 });
-const khxl = base7.filter((item) => item.qykhxl01);
+let khxl = null;
+
+if (store.state.MODE === "BUSINESS") {
+  khxl = base7.khxl.map((item) => {
+    return {
+      qykhxl01: item.purchaseOrgName,
+      qykhxl02: item.taxAmount,
+    };
+  });
+} else {
+  khxl = base7.filter((item) => item.qykhxl01);
+}
 const data1Echarts = () => {
   const data1 = reactive({
     color: "#C99827",
@@ -34,17 +45,25 @@ const data1Echarts = () => {
     isShow: false,
   });
   option.data1 = setBar(data1, { interval: 1, barW: "5%" });
+  console.log("option.data1: ", option.data1);
 };
 let dataObj = {
-  x:[],
-  val:[]
-}
-CHART.inventoryNamesLow.forEach((item,i)=>{
-  if(base5[item]) {
-    dataObj.x.push(CHART.inventoryNames[i])
-    dataObj.val.push(base5[item])
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (store.state.MODE === "BUSINESS") {
+    if (base5.kdj[item]) {
+      dataObj.x.push(CHART.inventoryNames[i]);
+      dataObj.val.push(base5.kdj[item]);
+    }
+  } else {
+    if (base5[item]) {
+      dataObj.x.push(CHART.inventoryNames[i]);
+      dataObj.val.push(base5[item]);
+    }
   }
-})
+});
 const data2Echarts = () => {
   const data2 = reactive({
     color: "#5C73E6",
@@ -59,23 +78,38 @@ const data3Echarts = () => {
   const data3 = reactive({
     color: "#4EBA92",
     name: "销售毛利率",
-    Xdata: base8.map((item) => item.month),
-    dataList: base8.map((item) => item.qyxsmlv02),
+    Xdata: null,
+    dataList: null,
     isShow: true,
   });
+
+  if (store.state.MODE === "BUSINESS") {
+    data3.Xdata = Object.keys(base8.xsmll);
+    data3.dataList = Object.values(base8.xsmll);
+  } else {
+    data3.Xdata = base8.map((item) => item.month);
+    data3.dataList = base8.map((item) => item.qyxsmlv02);
+  }
   option.data3 = setLineFinancial(data3);
 };
 
 let dataObj1 = {
-  x:[],
-  val:[]
-}
-CHART.inventoryNamesLow.forEach((item,i)=>{
-  if(base6[item]) {
-    dataObj1.x.push(CHART.inventoryNames[i])
-    dataObj1.val.push(base6[item])
+  x: [],
+  val: [],
+};
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (store.state.MODE === "BUSINESS") {
+    if (base6.xsjg[item]) {
+      dataObj1.x.push(CHART.inventoryNames[i]);
+      dataObj1.val.push(base6.xsjg[item]);
+    }
+  } else {
+    if (base6[item]) {
+      dataObj1.x.push(CHART.inventoryNames[i]);
+      dataObj1.val.push(base6[item]);
+    }
   }
-})
+});
 const data4Echarts = () => {
   const data4 = reactive({
     color: "#CCCCCC",

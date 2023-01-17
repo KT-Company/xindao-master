@@ -12,7 +12,7 @@ import useData from "@/2d/hooks/useData";
 import { toThreeDigitRating } from "@/2d/utils/num";
 import { menu } from "@/2d/hooks/useMenu";
 const store = useStore();
-const currMenu = menu.value.find(item=>item.id === store.state.menuAid)
+const currMenu = menu.value.find((item) => item.id === store.state.menuAid);
 const base1 = useData.data1(currMenu.name);
 const base8 = useData.data8(currMenu.name);
 const option = reactive({
@@ -69,10 +69,20 @@ const data3Echarts = () => {
   const data3 = reactive({
     color: "#7D60B0",
     name: "总资产增长率",
-    Xdata: base8.map((item) => item.month),
-    dataList: base8.map((item) => item.qyzczzzl02),
+    Xdata: [],
+    dataList: [],
     isShow: false,
   });
+
+  if (store.state.MODE === "BUSINESS") {
+    data3.Xdata = Object.keys(base8.zzczzl);
+    data3.dataList = Object.values(base8.zzczzl);
+    data3.interval = 1;
+  } else {
+    data3.Xdata = base8.map((item) => item.month);
+    data3.dataList = base8.map((item) => item.qyzczzzl02);
+  }
+  console.log('data3: ', data3);
   option.data3 = setLineFinancial(data3);
 };
 
@@ -80,10 +90,19 @@ const data4Echarts = () => {
   const data4 = reactive({
     color: "#FF9F40",
     name: "资产负债率",
-    Xdata: base8.map((item) => item.month),
-    dataList: base8.map((item) => item.qyzcfzl02),
+    Xdata: [],
+    dataList: [],
     isShow: true,
   });
+  if (store.state.MODE === "BUSINESS") {
+    data4.Xdata = Object.keys(base8.zcfzl);
+    data4.dataList = Object.values(base8.zcfzl);
+    data4.interval = 1;
+  } else {
+    data4.Xdata = base8.map((item) => item.month);
+    data4.dataList = base8.map((item) => item.qyzcfzl02);
+  }
+  console.log('data4: ', data4);
   option.data4 = setLineFinancial(data4);
 };
 
@@ -91,10 +110,19 @@ const data5Echarts = () => {
   const data5 = reactive({
     color: "#4EBA92",
     name: "销售毛利率",
-    Xdata: base8.map((item) => item.month),
-    dataList: base8.map((item) => item.qyxsmlv02),
+    Xdata: [],
+    dataList: [],
     isShow: true,
   });
+  if (store.state.MODE === "BUSINESS") {
+    data5.Xdata = Object.keys(base8.xsmll);
+    data5.dataList = Object.values(base8.xsmll);
+    data5.interval = 1;
+  } else {
+    data5.Xdata = base8.map((item) => item.month);
+    data5.dataList = base8.map((item) => item.qyxsmlv02);
+  }
+  console.log('data5: ', data5);
   option.data5 = setLineFinancial(data5);
 };
 </script>
@@ -105,7 +133,10 @@ const data5Echarts = () => {
       <Title>企业营业收入</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data1" class="echart-data"></Echart>
+          <Echart
+            :option="option.data1"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap">
           <div class="purple">￥{{ data1.value0 }}</div>
@@ -120,7 +151,10 @@ const data5Echarts = () => {
       <Title>企业成本支出</Title>
       <Content class="dpy-row wrap-data-pie">
         <div class="echart-data-box">
-          <Echart :option="option.data2" class="echart-data"></Echart>
+          <Echart
+            :option="option.data2"
+            class="echart-data"
+          ></Echart>
         </div>
         <div class="type-wrap">
           <div class="green">￥{{ data2.value0 }}</div>
@@ -135,7 +169,10 @@ const data5Echarts = () => {
       <Title>总资产增长率</Title>
       <Content>
         <div class="data3-warp">
-          <Echart :option="option.data3" class="echart-data"></Echart>
+          <Echart
+            :option="option.data3"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -146,7 +183,10 @@ const data5Echarts = () => {
       <Title>资产负债率</Title>
       <Content>
         <div class="data4-warp">
-          <Echart :option="option.data4" class="echart-data"></Echart>
+          <Echart
+            :option="option.data4"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -154,7 +194,10 @@ const data5Echarts = () => {
       <Title>销售毛利率</Title>
       <Content>
         <div class="data5-warp">
-          <Echart :option="option.data5" class="echart-data"></Echart>
+          <Echart
+            :option="option.data5"
+            class="echart-data"
+          ></Echart>
         </div>
       </Content>
     </Bar>
@@ -162,7 +205,8 @@ const data5Echarts = () => {
 </template>
 
 <style lang="less" scoped>
-.z-left,.z-right{
+.z-left,
+.z-right {
   top: 15.9% !important;
 }
 .z-left {
@@ -190,7 +234,7 @@ const data5Echarts = () => {
       position: relative;
       top: -1vh;
 
-      &>div {
+      & > div {
         font-size: 1vw;
         font-family: Source Han Sans CN;
         font-weight: 400;
@@ -205,7 +249,7 @@ const data5Echarts = () => {
         color: #4eba92;
       }
 
-      &>p {
+      & > p {
         font-size: 0.5rem;
         font-family: Source Han Sans CN;
         font-weight: 400;
