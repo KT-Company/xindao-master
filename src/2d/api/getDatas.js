@@ -79,10 +79,9 @@ const BUSINESS = () => {
     } catch (error) {
       orgTypeCode = {}
     }
-    // const orgTypeCode = null
     console.log('orgTypeCode: ', orgTypeCode);
-    // const enterpriseInfo = window.enterpriseMap[b.paramValue.enterpriseCode]
-    const enterpriseInfo = window.enterpriseMap['MGE001'] // 测试用
+    const enterpriseInfo = window.enterpriseMap[b.paramValue.enterpriseCode]
+    // const enterpriseInfo = window.enterpriseMap['MGE001'] // 测试用
     store.commit('setEnterpriseInfo', enterpriseInfo)
     store.commit('setMenuAid', enterpriseInfo.id)
     store.commit('setMenuBid', null)
