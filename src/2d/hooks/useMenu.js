@@ -145,13 +145,12 @@ export const menu = ref([
 ]);
 
 
-watch(
-    () => router.currentRoute.value.path,
-    (a) => {
-        menu.value[0].children.forEach(v => {
-            if (v.path === a) v.isPick = true
-            else v.isPick = false
-        })
-    },
-    { deep: true }
-)
+// watch(
+//     () => router.currentRoute.value.path,
+//     (a) => {
+//         menu.value[0].children.forEach(v => {
+//             v.isPick = v.path === a
+//         })
+//     },
+//     { deep: true }
+// )

@@ -10,6 +10,7 @@ import CHART from '@/2d/viewCharts/Params'
 import dayjs from "dayjs";
 import * as NUM from '@/2d/utils/num'
 
+// 探索模式
 const All = () => {
   getData1().then(res => {
     store.commit('setData1', res.data.formInfoList)
@@ -62,6 +63,7 @@ const All = () => {
   })
 }
 
+// 经营模式
 const BUSINESS = () => {
   const currMoth = dayjs().format('YYYY-MM')
   const startUnix = dayjs(`${dayjs(`${currMoth}`).startOf('month').format('YYYY-MM-DD')} 8:00`).valueOf()

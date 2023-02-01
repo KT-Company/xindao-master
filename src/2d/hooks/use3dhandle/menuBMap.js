@@ -3,6 +3,20 @@ import { STATE } from "@/3d/STATE";
 import { CACHE } from "@/3d/CACHE";
 import store from "@/2d/store";
 
+const myFocus = (position, obj) => {
+  API.cameraAnimation({
+    cameraState: position,
+    callback: () => {
+      CACHE.container.cameraFocus({
+        target: [obj.position.x, obj.position.y, obj.position.z],
+        distance: 2000,
+      })
+    },
+    delayTime: 0,
+    duration: 0,
+  });
+}
+
 // 二级菜单事件
 const handleBMenuBMap = {
   // ******* 社会层 start *******
@@ -266,10 +280,7 @@ const handleBMenuBMap = {
       "企业管理部"
     );
     API.selectEnterpriseInnerIcon('wuliubangongshi', "企业管理部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.wuliuqiye, obj)
   },
   "7-2": () => {
     // 业务部
@@ -282,10 +293,7 @@ const handleBMenuBMap = {
       "业务部"
     );
     API.selectEnterpriseInnerIcon('wuliubangongshi', "业务部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.wuliuqiye, obj)
   },
   // ******* 物流公司 end *******
   // ******* 综合服务 start *******
@@ -309,10 +317,7 @@ const handleBMenuBMap = {
       "企业管理部"
     );
     API.selectEnterpriseInnerIcon('zonghefuwulou', "企业管理部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.zonghefuwulou, obj)
   },
   "8-2": () => {
     // 业务部
@@ -325,10 +330,7 @@ const handleBMenuBMap = {
       "业务部"
     );
     API.selectEnterpriseInnerIcon('zonghefuwulou', "业务部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.zonghefuwulou, obj)
   },
   // ******* 综合服务 end *******
   // ******* 销售公司 start *******
@@ -352,9 +354,16 @@ const handleBMenuBMap = {
       "企业管理部"
     );
     API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "企业管理部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseInnerStates.Xiao_Shou_Gong_Si,
+      callback: () => {
+        CACHE.container.cameraFocus({
+          target: [obj.position.x, obj.position.y, obj.position.z],
+          distance: 2000,
+        });
+      },
+      delayTime: 0,
+      duration: 0,
     });
   },
   "9-2": () => {
@@ -368,10 +377,18 @@ const handleBMenuBMap = {
       "行政部"
     );
     API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "行政部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseInnerStates.Xiao_Shou_Gong_Si,
+      callback: () => {
+        CACHE.container.cameraFocus({
+          target: [obj.position.x, obj.position.y, obj.position.z],
+          distance: 2000,
+        });
+      },
+      delayTime: 0,
+      duration: 0,
     });
+
   },
   "9-3": () => {
     // 业务部
@@ -384,11 +401,18 @@ const handleBMenuBMap = {
       "业务部"
     );
     API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "业务部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseInnerStates.Xiao_Shou_Gong_Si,
+      callback: () => {
+        CACHE.container.cameraFocus({
+          target: [obj.position.x, obj.position.y, obj.position.z],
+          distance: 2000,
+        });
+      },
+      delayTime: 0,
+      duration: 0,
     });
-  }, 
+  },
   "9-4": () => {
     // 财务部
     API.hideAll()
@@ -400,9 +424,16 @@ const handleBMenuBMap = {
       "财务部"
     );
     API.selectEnterpriseInnerIcon('Xiao_Shou_Gong_Si', "财务部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
+    API.cameraAnimation({
+      cameraState: STATE.enterpriseInnerStates.Xiao_Shou_Gong_Si,
+      callback: () => {
+        CACHE.container.cameraFocus({
+          target: [obj.position.x, obj.position.y, obj.position.z],
+          distance: 2000,
+        });
+      },
+      delayTime: 0,
+      duration: 0,
     });
   },
   // ******* 销售公司 end *******
@@ -427,10 +458,7 @@ const handleBMenuBMap = {
       "企业管理部"
     );
     API.selectEnterpriseInnerIcon('GongYingBanGongShi', "企业管理部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.GongYingBanGongShi, obj)
   },
   "10-2": () => {
     // 财务部
@@ -443,10 +471,7 @@ const handleBMenuBMap = {
       "财务部"
     );
     API.selectEnterpriseInnerIcon('GongYingBanGongShi', "财务部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.GongYingBanGongShi, obj)
   },
   "10-3": () => {
     // 业务部
@@ -459,10 +484,7 @@ const handleBMenuBMap = {
       "业务部"
     );
     API.selectEnterpriseInnerIcon('GongYingBanGongShi', "业务部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.GongYingBanGongShi, obj)
   },
   // ******* 供应企业 end *******
   // ******* 经销企业 start *******
@@ -486,10 +508,7 @@ const handleBMenuBMap = {
       "企业管理部"
     );
     API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "企业管理部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.JingXiaoBanGongShi, obj)
   },
   "11-2": () => {
     // 财务部
@@ -502,10 +521,7 @@ const handleBMenuBMap = {
       "财务部"
     );
     API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "财务部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.JingXiaoBanGongShi, obj)
   },
   "11-3": () => {
     // 采购部
@@ -518,10 +534,7 @@ const handleBMenuBMap = {
       "采购部"
     );
     API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "采购部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.JingXiaoBanGongShi, obj)
   },
   "11-4": () => {
     // 营销部
@@ -534,10 +547,7 @@ const handleBMenuBMap = {
       "营销部"
     );
     API.selectEnterpriseInnerIcon('JingXiaoBanGongShi', "营销部")
-    CACHE.container.cameraFocus({
-      target: [obj.position.x, obj.position.y, obj.position.z],
-      distance: 2000,
-    });
+    myFocus(STATE.enterpriseInnerStates.JingXiaoBanGongShi, obj)
   },
   // ******* 经销企业 end *******
 };

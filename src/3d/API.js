@@ -879,6 +879,7 @@ function beforeShowEducations() {
 }
 
 function showEducations() {
+  console.log(CACHE.education,'asdasdasd');
   CACHE.education.forEach((edu) => {
     edu.visible = true;
 

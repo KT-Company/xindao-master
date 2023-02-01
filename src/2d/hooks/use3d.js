@@ -119,7 +119,6 @@ function menuInteraction(item, leve, son) {
     }
   } else {
     // 二级菜单点击事件
-    // console.log('son.id', son.id)
     try {
       handleBMenuBMap[son.id](store.state.menuBid.includes(son.id));
     } catch (error) { }

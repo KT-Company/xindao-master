@@ -659,6 +659,15 @@ export const sceneOnLoad = ({ domElement, callback }) => {
 
   window.container = () => console.log(CACHE.container);
 
+  window.outCooroutCoordinate = () => {
+    let points = CACHE.container.orbitControls.target;
+    let camera = CACHE.container.orbitCamera.position;
+    return [
+      [Math.round(points.x), Math.round(points.y), Math.round(points.z)],
+      [Math.round(camera.x), Math.round(camera.y), Math.round(camera.z)],
+    ];
+  };
+
   const events = new Bol3D.Events(CACHE.container);
   events.enabled.hover = false;
   events.ondbclick = (e) => {

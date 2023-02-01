@@ -1,0 +1,38 @@
+[
+    {
+        "qylxid": "1101",
+        "qysbzt01": "空闲",
+        "qylx": "制造集团",
+        "qysbzt02": 1,
+        "month": "12月",
+        "year": "2022",
+        "qysbzt03": 12.5,
+        "qy": "",
+        "bm": "",
+        "banji": ""
+    },
+    {
+        "qylxid": "1101",
+        "qysbzt01": "生产中",
+        "qylx": "制造集团",
+        "qysbzt02": 6,
+        "month": "12月",
+        "year": "2022",
+        "qysbzt03": 75,
+        "qy": "",
+        "bm": "",
+        "banji": ""
+    },
+    {
+        "qylxid": "1101",
+        "qysbzt01": "完工",
+        "qylx": "制造集团",
+        "qysbzt02": 1,
+        "month": "12月",
+        "year": "2022",
+        "qysbzt03": 12.5,
+        "qy": "",
+        "bm": "",
+        "banji": ""
+    }
+]
