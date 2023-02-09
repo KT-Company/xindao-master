@@ -310,6 +310,7 @@ function loadIndustrialEconomy() {
   return new Promise((resolve) => {
 
     getqyjycx().then( (result) => {
+      console.log('getqyjycx: ', result);
       const {code , formInfoList}  = result.data
       if(code == 200){
         DATA.industryDataHttp = formInfoList

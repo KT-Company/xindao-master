@@ -28,28 +28,17 @@ console.log('MODE: ', store.state.MODE);
 // &sysCode=`
 
 // 开发环境 api 地址（如果没有数据就替换 token -----》 获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：admin9527...）
-const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
-caseVersionId=82347900509093947
-&enterpriseId=82441349728567340
-&userName=15178904534
-&userId=85566304814628903
-&userType=PLATFORM
-&userToken=${window.myToken}
-&memberId=85566304824590394
-&orgType=SCHOOL
-&orgId=31978613954314240
-&schoolId=31978613954314240
-&sceneId=portal_logo
-&sysCode=`
+const url = `./mock/`
 
 
 // #region ********************************************* 正式接口 *********************************************
+
 
 // 产业经济
 export function getcyjj() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}cyjj`,
+        url: `${url}cyjj.json`,
         method: 'get',
     })
 }
@@ -58,7 +47,7 @@ export function getcyjj() {
 export function getjtcx() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}jtcx`,
+        url: `${url}jtcx.json`,
         method: 'get',
     })
 }
@@ -67,7 +56,7 @@ export function getjtcx() {
 // 企业总量详情
 export function getqyjycx() {
     return request({
-        url: `${url}qyjycx`,
+        url: `${url}qyjycx.json`,
         method: 'get',
     })
 }
@@ -76,7 +65,7 @@ export function getqyjycx() {
 export function gethjrk() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}hjrk`,
+        url: `${url}hjrk.json`,
         method: 'get',
     })
 }
@@ -85,7 +74,7 @@ export function gethjrk() {
 export function getjyyl() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}jyyl`,
+        url: `${url}jyyl.json`,
         method: 'get',
     })
 }
@@ -94,7 +83,7 @@ export function getjyyl() {
 export function getnytpfy() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}nytpfy`,
+        url: `${url}nytpfy.json`,
         method: 'get',
     })
 }
@@ -103,7 +92,7 @@ export function getnytpfy() {
 export function getnyzxhm() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}nyzxhm1`,
+        url: `${url}nyzxhm1.json`,
         method: 'get',
     })
 }
@@ -113,7 +102,7 @@ export function getnyzxhm() {
 export function getqynytpfy() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}qynytpfy`,
+        url: `${url}qynytpfy.json`,
         method: 'get',
     })
 }
@@ -122,40 +111,40 @@ export function getqynytpfy() {
 export function getqycyjj() {
     store.state.globalYear = window.publicParams.year
     return request({
-        url: `${url}qycyjj`,
+        url: `${url}qycyjj.json`,
         method: 'get',
     })
 }
 
-// 区域企业信息
-export function getqyqyxx() {
-    store.state.globalYear = window.publicParams.year
-    return request({
-        url: `${url}qyqyxx`,
-        method: 'get',
-    })
-}
+// // 区域企业信息
+// export function getqyqyxx() {
+//     store.state.globalYear = window.publicParams.year
+//     return request({
+//         url: `${url}qyqyxx.json`,
+//         method: 'get',
+//     })
+// }
 
 
-// 人力资源
-export function getrlzy() {
-    return request({
-        url: `${url}rlzy`,
-        method: 'get',
-    })
-}
+// // 人力资源
+// export function getrlzy() {
+//     return request({
+//         url: `${url}rlzy.json`,
+//         method: 'get',
+//     })
+// }
 
 // 企业看板1
 export function getData1() {
     return request({
-        url: `${url}qyzbhzb01`,
+        url: `${url}data1.json`,
         method: 'get',
     })
 }
 // 企业看板2
 export function getData2() {
     return request({
-        url: `${url}qyzbhzb02`,
+        url: `${url}data2.json`,
         method: 'get',
     })
 }
@@ -163,7 +152,7 @@ export function getData2() {
 // 企业看板3
 export function getData3() {
     return request({
-        url: `${url}qyzbmx`,
+        url: `${url}data3.json`,
         method: 'get',
     })
 }
@@ -171,7 +160,7 @@ export function getData3() {
 // 企业看板4
 export function getData4() {
     return request({
-        url: `${url}qyzbyfqs`,
+        url: `${url}data4.json`,
         method: 'get',
     })
 }
@@ -179,7 +168,7 @@ export function getData4() {
 // 企业看板5
 export function getData5() {
     return request({
-        url: `${url}bmzbhzb01`,
+        url: `${url}data5.json`,
         method: 'get',
     })
 }
@@ -187,7 +176,7 @@ export function getData5() {
 // 企业看板6
 export function getData6() {
     return request({
-        url: `${url}bmzbhzb02`,
+        url: `${url}data6.json`,
         method: 'get',
     })
 }
@@ -195,7 +184,7 @@ export function getData6() {
 // 企业看板7
 export function getData7() {
     return request({
-        url: `${url}bmzbmx`,
+        url: `${url}data7.json`,
         method: 'get',
     })
 }
@@ -203,7 +192,7 @@ export function getData7() {
 // 企业看板8
 export function getData8() {
     return request({
-        url: `${url}bmzbyfqs`,
+        url: `${url}data8.json`,
         method: 'get',
     })
 }
@@ -211,14 +200,14 @@ export function getData8() {
 // 企业看板9
 export function getData9() {
     return request({
-        url: `${url}bmzbmx_b`,
+        url: `${url}data9.json`,
         method: 'get',
     })
 }
 // 企业看板10
 export function getData10() {
     return request({
-        url: `${url}bmzbyfqs_b`,
+        url: `${url}data10.json`,
         method: 'get',
     })
 }
