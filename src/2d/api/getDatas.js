@@ -81,8 +81,7 @@ const BUSINESS = () => {
     } catch (error) {
       orgTypeCode = {}
     }
-    console.log('orgTypeCode: ', orgTypeCode);
-    const enterpriseInfo = window.enterpriseMap[b.paramValue.enterpriseCode]
+    const enterpriseInfo = window.enterpriseMap[orgTypeCode]
     // const enterpriseInfo = window.enterpriseMap['MGE001'] // 测试用
     store.commit('setEnterpriseInfo', enterpriseInfo)
     store.commit('setMenuAid', enterpriseInfo.id)
@@ -127,6 +126,7 @@ const BUSINESS = () => {
       BUSINESS2.get_qyyhck(p), BUSINESS2.get_qyyhdk(p), BUSINESS2.get_qysdssfl(p), BUSINESS2.get_qyzzssfl(p), BUSINESS2.get_qysl(p),
       BUSINESS2.get_qydk(p), BUSINESS2.get_qyck(p), BUSINESS2.get_zhfwsr(p), BUSINESS2.get_tpf(p)
     ]).then(res => {
+      // console.log('res: ', res);
       const data = res
       console.log('data: ', data);
 
