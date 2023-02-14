@@ -1,4 +1,9 @@
 import request from '@/2d/utils/request'
+import store from '@/2d/store'
+
+const baseUrl = store.state.isMock ? 'https://dapi.seentao.com' : '/api'
+const baseUrl2 = store.state.isMock ? 'https://dchinataxn.seentao.com' : '/api'
+
 
 const params1 = (p) => {
   return {
@@ -38,7 +43,7 @@ const params3 = (p) => {
 // 人员占比
 export function get_ryzb(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erpperson/stat/queryNumGroupBySex`,
+    url: `${baseUrl}/xbizerp/erpperson/stat/queryNumGroupBySex`,
     method: 'POST',
     params: params1(p)
   })
@@ -47,7 +52,7 @@ export function get_ryzb(p) {
 // 人员流动
 export function get_ryld(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erpperson/stat/queryFlowPersons`,
+    url: `${baseUrl}/xbizerp/erpperson/stat/queryFlowPersons`,
     method: 'POST',
     params: params1(p)
   })
@@ -56,7 +61,7 @@ export function get_ryld(p) {
 // 薪酬支出
 export function get_xzzc(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erpsalaryscheme/stat/sumPay`,
+    url: `${baseUrl}/xbizerp/erpsalaryscheme/stat/sumPay`,
     method: 'POST',
     params: params1(p)
   })
@@ -65,7 +70,7 @@ export function get_xzzc(p) {
 // 客单价
 export function get_kdj(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/sale/stat/material/averageUnitPrice`,
+    url: `${baseUrl}/xbizerp/sale/stat/material/averageUnitPrice`,
     method: 'POST',
     params: params2(p)
   })
@@ -74,7 +79,7 @@ export function get_kdj(p) {
 // 采购支出
 export function get_cgzc(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erppurchase/stat/sumPay`,
+    url: `${baseUrl}/xbizerp/erppurchase/stat/sumPay`,
     method: 'POST',
     params: params1(p)
   })
@@ -83,7 +88,7 @@ export function get_cgzc(p) {
 // 市场获单情况
 export function get_schdqk(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/market/stat/bidOrderAmountMonth`,
+    url: `${baseUrl}/xbizerp/market/stat/bidOrderAmountMonth`,
     method: 'get',
     params: params1(p)
   })
@@ -92,7 +97,7 @@ export function get_schdqk(p) {
 // 广告投放情况
 export function get_ggtfqk(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/market/stat/advertisingAmount`,
+    url: `${baseUrl}/xbizerp/market/stat/advertisingAmount`,
     method: 'get',
     params: params1(p)
   })
@@ -101,7 +106,7 @@ export function get_ggtfqk(p) {
 // 市场开拓情况
 export function get_scktqk(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/market/stat/marketDevAmount`,
+    url: `${baseUrl}/xbizerp/market/stat/marketDevAmount`,
     method: 'get',
     params: params1(p)
   })
@@ -110,7 +115,7 @@ export function get_scktqk(p) {
 // 销售结构
 export function get_xsjg(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/sale/stat/material/totalQuantity`,
+    url: `${baseUrl}/xbizerp/sale/stat/material/totalQuantity`,
     method: 'POST',
     params: params2(p)
   })
@@ -119,7 +124,7 @@ export function get_xsjg(p) {
 // 客户销量
 export function get_khxl(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/sale/stat/salesVolume`,
+    url: `${baseUrl}/xbizerp/sale/stat/salesVolume`,
     method: 'POST',
     params: params1(p)
   })
@@ -128,7 +133,7 @@ export function get_khxl(p) {
 // 供应商排名
 export function get_gyspm(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erppurchase/stat/querySupplierRank`,
+    url: `${baseUrl}/xbizerp/erppurchase/stat/querySupplierRank`,
     method: 'POST',
     params: params1(p)
   })
@@ -137,7 +142,7 @@ export function get_gyspm(p) {
 // 工人派工情况
 export function get_grpgqk(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erpequipment/stat/queryWorkerUsage`,
+    url: `${baseUrl}/xbizerp/erpequipment/stat/queryWorkerUsage`,
     method: 'get',
     params: params1(p)
   })
@@ -146,7 +151,7 @@ export function get_grpgqk(p) {
 // 生产进度
 export function get_scjd(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erpequipment/stat/queryProduceProgress`,
+    url: `${baseUrl}/xbizerp/erpequipment/stat/queryProduceProgress`,
     method: 'get',
     params: params1(p)
   })
@@ -155,7 +160,7 @@ export function get_scjd(p) {
 // 设备状态
 export function get_sbzt(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erpequipment/stat/queryEquipmentStatusRealTime`,
+    url: `${baseUrl}/xbizerp/erpequipment/stat/queryEquipmentStatusRealTime`,
     method: 'get',
     params: params1(p)
   })
@@ -164,7 +169,7 @@ export function get_sbzt(p) {
 // 总资产增长率
 export function get_zzczzl(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/finance/stat/totalAssetsGrowthRate`,
+    url: `${baseUrl}/xbizerp/finance/stat/totalAssetsGrowthRate`,
     method: 'POST',
     params: params1(p)
   })
@@ -173,7 +178,7 @@ export function get_zzczzl(p) {
 // 销售毛利率
 export function get_xsmll(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/finance/stat/grossMarginRatio`,
+    url: `${baseUrl}/xbizerp/finance/stat/grossMarginRatio`,
     method: 'POST',
     params: params1(p)
   })
@@ -182,7 +187,7 @@ export function get_xsmll(p) {
 // 资产负债率
 export function get_zcfzl(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/finance/stat/debtRate`,
+    url: `${baseUrl}/xbizerp/finance/stat/debtRate`,
     method: 'POST',
     params: params1(p)
   })
@@ -191,7 +196,7 @@ export function get_zcfzl(p) {
 // 物流费用
 export function get_wlfy(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/consignment/stat/logistfee`,
+    url: `${baseUrl}/xbizerp/consignment/stat/logistfee`,
     method: 'POST',
     params: params1(p)
   })
@@ -200,7 +205,7 @@ export function get_wlfy(p) {
 // 存货周转率
 export function get_chzzl(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/orgWarehouse/stat/inventoryTurnoveRate`,
+    url: `${baseUrl}/xbizerp/orgWarehouse/stat/inventoryTurnoveRate`,
     method: 'POST',
     params: params1(p)
   })
@@ -209,7 +214,7 @@ export function get_chzzl(p) {
 // 产量走势
 export function get_clzs(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/erpequipment/stat/queryProductionTrend`,
+    url: `${baseUrl}/xbizerp/erpequipment/stat/queryProductionTrend`,
     method: 'get',
     params: params1(p)
   })
@@ -218,7 +223,7 @@ export function get_clzs(p) {
 // 企业银行存款
 export function get_qyyhck(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizbank/account/getOrgTypeBalance`,
+    url: `${baseUrl}/xbizbank/account/getOrgTypeBalance`,
     method: 'get',
     params: {
       orgCode: p.orgCode,
@@ -231,7 +236,7 @@ export function get_qyyhck(p) {
 // 企业银行贷款
 export function get_qyyhdk(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizbank/loanIssuance/findLoanListForOrgType`,
+    url: `${baseUrl}/xbizbank/loanIssuance/findLoanListForOrgType`,
     method: 'get',
     params: {
       classId: p.classId,
@@ -244,7 +249,7 @@ export function get_qyyhdk(p) {
 // 企业所得税税负率 ( 暂定 )
 export function get_qysdssfl(p) {
   return request({
-    url: `https://dchinataxn.seentao.com/chinataxn/invoice.getIncomeByParams`,
+    url: `${baseUrl2}/chinataxn/invoice.getIncomeByParams`,
     method: 'POST',
     params: params3(p)
   })
@@ -253,7 +258,7 @@ export function get_qysdssfl(p) {
 // 企业增值税税负率
 export function get_qyzzssfl(p) {
   return request({
-    url: `https://dchinataxn.seentao.com/chinataxn/invoice.getVatByParams`,
+    url: `${baseUrl2}/chinataxn/invoice.getVatByParams`,
     method: 'POST',
     params: params3(p)
   })
@@ -262,7 +267,7 @@ export function get_qyzzssfl(p) {
 // 企业数量
 export function get_qysl(p) {
   return request({
-    url: `https://dedu.seentao.com/api/vbseTeach/enterpriseNum.getByTeachClassId`,
+    url: `${baseUrl}/vbseTeach/enterpriseNum.getByTeachClassId`,
     method: 'POST',
     params: {
       userId: p.userId,
@@ -277,7 +282,7 @@ export function get_qysl(p) {
 // 企业贷款
 export function get_qydk(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizbank/loanIssuance/findLoan`,
+    url: `${baseUrl}/xbizbank/loanIssuance/findLoan`,
     method: 'get',
     params: {
       orgCode: p.orgCode,
@@ -291,7 +296,7 @@ export function get_qydk(p) {
 // 企业存款
 export function get_qyck(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizbank/account/getBalanceByCode`,
+    url: `${baseUrl}/xbizbank/account/getBalanceByCode`,
     method: 'get',
     params: {
       orgCode: p.orgCode,
@@ -304,7 +309,7 @@ export function get_qyck(p) {
 // 综合服务收入（元）
 export function get_zhfwsr(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizerp/api/totalAccount`,
+    url: `${baseUrl}/xbizerp/api/totalAccount`,
     method: 'get',
     params: params2(p)
   })
@@ -313,7 +318,7 @@ export function get_zhfwsr(p) {
 // 碳排放
 export function get_tpf(p) {
   return request({
-    url: `https://dedu.seentao.com/api/xbizservicecenter/governmentCarbonQuota/getCarbonSummary`,
+    url: `${baseUrl}/xbizservicecenter/governmentCarbonQuota/getCarbonSummary`,
     method: 'POST',
     params: {
       classId: p.classId,

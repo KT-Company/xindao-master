@@ -12,6 +12,7 @@ import USE3D from "@/2d/hooks/use3d";
 
 const router = useRouter();
 const store = useStore();
+const isMode = store.state.MODE === "BUSINESS";
 
 const isShowBack = () => {
   const isDepartment = ![1, 2].includes(store.state.menuAid);
@@ -58,7 +59,6 @@ const handleMenu = (item) => {
 };
 
 const goBack = () => {
-  // window.top.location.href = "/aie_web"; // 返回用户 home 地址(废弃)
   store.commit("setMenuBid", null);
   store.commit("changeLevel", 3);
   const currentRoute = menu.value.find(
@@ -67,22 +67,12 @@ const goBack = () => {
   router.push(currentRoute.path);
   USE3D.goBack();
 };
-
-// const routerName = ref("/IndustrialEconomy");
-
-// watch(
-//   () => router,
-//   () => {
-//     routerName.value = getWenhaoA(firstA(router.options.history.state.current));
-//   },
-//   { deep: true }
-// );
 </script>
 
 <template>
   <div :class="['footer']">
     <div class="footer-main">
-      <ul class="button-box2 animated bounceInUp">
+      <ul :class="['button-box2 animated bounceInUp',isMode ? 'mode-style' : '']">
         <li
           v-for="item in menu"
           :key="item.id"
@@ -98,10 +88,10 @@ const goBack = () => {
 
           <!-- 二级菜单 -->
           <ul
-            :class="['menu-children', 'animated fadeIn']"
+            :class="['menu-children', 'animated fadeIn',isMode ? 'mode-style' : '']"
             v-show="item.id === store.state.pickId"
           >
-            <div :class="['c-main', `pickClass${item.id}`]">
+            <div :class="['c-main', `pickClass${item.id}`,isMode ? 'mode-style' : '']">
               <img
                 src="../../assets/images/xiajian.png"
                 class="xiajian"
@@ -109,7 +99,7 @@ const goBack = () => {
               <li
                 v-for="son in item.children"
                 :key="son.id"
-                :class="store.state.menuBid.includes(son.id) ? 'pick2' : ''"
+                :class="[store.state.menuBid.includes(son.id) ? 'pick2' : '']"
                 @click.stop="handleFooters(item, 2, son)"
               >
                 {{ son.name }}
@@ -504,11 +494,29 @@ const goBack = () => {
 .off-menu {
   background: rgb(58, 58, 58) !important;
   cursor: not-allowed !important;
-  .m1-t{
+  .m1-t {
     color: rgb(158, 158, 158);
   }
 }
 .on-menu {
   cursor: pointer !important;
+}
+
+.mode-style {
+  display: flex !important;
+  justify-content: center !important;
+  left: 0 !important;
+  .xiajian {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+  &::before{
+    left: -2% !important;
+    width: 50% !important;
+  }
+  &::after{
+    left: 52% !important;
+    width: 50% !important;
+  }
 }
 </style>

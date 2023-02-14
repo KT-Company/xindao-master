@@ -8,6 +8,7 @@ import * as BUSINESS2 from './BUSINESS2'
 import store from '@/2d/store'
 import CHART from '@/2d/viewCharts/Params'
 import dayjs from "dayjs";
+import { setMenu, menu } from '../hooks/useMenu'
 import * as NUM from '@/2d/utils/num'
 
 // 探索模式
@@ -72,7 +73,9 @@ const BUSINESS = () => {
     const data = res
     console.log('BUSINESS: ', data);
     const a = data[0].data.data
-    // const b = data[1].data.data.steps.find(item => item.stepName == '经营模式')
+    const b = data[1].data.data.steps.find(item => item.stepName == '经营模式').calendars
+    const BusinessTime = dayjs(Number(b.find(item=>item.state === 'ACTIVE_CURRENT').calendarTime)).format('YYYY')
+    store.commit('setBusinessTime',BusinessTime)
     const c = data[2].data.data.param
     const d = data[3].data.data
     let orgTypeCode = null
@@ -82,7 +85,9 @@ const BUSINESS = () => {
       orgTypeCode = {}
     }
     const enterpriseInfo = window.enterpriseMap[orgTypeCode]
-    // const enterpriseInfo = window.enterpriseMap['MGE001'] // 测试用
+    console.log('enterpriseInfo: ', enterpriseInfo);
+    // const enterpriseInfo = window.enterpriseMap['LEE001'] // 测试用
+    setMenu(menu.value.filter(item => item.id === enterpriseInfo.id))
     store.commit('setEnterpriseInfo', enterpriseInfo)
     store.commit('setMenuAid', enterpriseInfo.id)
     store.commit('setMenuBid', null)
@@ -141,6 +146,7 @@ const BUSINESS = () => {
       const nan = data[11].data.data.list.find(item => item.sex == '男')
       const nv = data[11].data.data.list.find(item => item.sex == '女')
       const ryld = data[12].data.data.find(item => item.employedTime == currMoth)
+      console.log('ryld: ', ryld);
 
       const data1 = {
         ndsrzb01: data[0].data.data.budget,

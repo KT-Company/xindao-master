@@ -10,11 +10,11 @@ window.FRONT_INTERFACE = [
 window.publicParams = {
   year: 2021,       // 全局年份
   year2: 2022,      // 全局年份 （探索模式 - 企业与部门层）
-  year3: 2023,      // 全局年份  （经营模式）  
+  year3: 2023,      // 全局年份  （经营模式）  // BUSINESS
   szxs: '北京',      // 全局省直辖市
   // fireBackup: false, // 开启火力备用图
 }
-window.myToken = '954cc4e7acbc3342e82f3c879521f13a' // 仅用于测试
+window.myToken = '7bd77333aeb00e851b11bec0289c59b0' // 仅用于测试
 window.backHome = () => {
   window.top.location.href = "/aie_web"; // 返回用户 home 地址
 }

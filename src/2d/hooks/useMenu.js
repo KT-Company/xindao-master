@@ -1,6 +1,7 @@
 import { ref, watch } from 'vue'
 import router from '@/2d/router'
-export const menu = ref([
+import store from '../store';
+const menu = ref([
     {
         id: 1,
         name: "社会层",
@@ -144,13 +145,8 @@ export const menu = ref([
     },
 ]);
 
+const setMenu = (value) => {
+    menu.value = value
+}
 
-// watch(
-//     () => router.currentRoute.value.path,
-//     (a) => {
-//         menu.value[0].children.forEach(v => {
-//             v.isPick = v.path === a
-//         })
-//     },
-//     { deep: true }
-// )
+export { menu, setMenu }

@@ -2,33 +2,16 @@ import request from '@/2d/utils/request'
 import store from '@/2d/store'
 import getData from './getDatas'
 import getUrlParam from '@/2d/utils/getUrlParam'
-// const url = 'https://dapi.seentao.com/custom-form/customForm.formInfos.get?caseVersionId=82347900509093947&enterpriseId=82441349728567340&userName=18871870420&userId=74791556441702461&userType=PLATFORM&userToken=a23defc6acd8954460b543d23bcfee2d&memberId=74791556450091021&orgType=SCHOOL&orgId=100678506119168&schoolId=100678506119168&sceneId=portal_logo&sysCode='
-const p = getUrlParam()
-console.log('p: ', p);
 
-// const MODE = p.mode  // 经营模式: BUSINESS  探索模式: EXPLORE
+// const p = getUrlParam()
+// console.log('p: ', p);
+const p = { mode: 'BUSINESS' }  // 经营模式: BUSINESS  探索模式: EXPLORE （测试）
 store.commit('setMODE', p.mode)
 
 console.log('MODE: ', store.state.MODE);
 
-// https://dapi.seentao.com/custom-form/customForm.formInfos.get
-// 部署环境 api 地址
-// const url = `${window.publicUrl}?
-// caseVersionId=${p.caseVersionId}
-// &enterpriseId=${p.enterpriseId}
-// &userName=${p.userName}
-// &userId=${p.userId}
-// &userType=${p.userType}
-// &userToken=${p.userToken}
-// &memberId=${p.memberId}
-// &orgType=${p.orgType}
-// &orgId=${p.orgId}
-// &schoolId=${p.schoolId}
-// &sceneId=${p.sceneId}
-// &sysCode=`
-
-// 开发环境 api 地址（如果没有数据就替换 token -----》 获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：admin9527...）
-const url = `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+// mock 数据获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：admin9527...）
+const url = false ? `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
 caseVersionId=82347900509093947
 &enterpriseId=82441349728567340
 &userName=15178904534
@@ -40,8 +23,19 @@ caseVersionId=82347900509093947
 &orgId=31978613954314240
 &schoolId=31978613954314240
 &sceneId=portal_logo
+&sysCode=` : `${window.publicUrl}?
+caseVersionId=${p.caseVersionId}
+&enterpriseId=${p.enterpriseId}
+&userName=${p.userName}
+&userId=${p.userId}
+&userType=${p.userType}
+&userToken=${p.userToken}
+&memberId=${p.memberId}
+&orgType=${p.orgType}
+&orgId=${p.orgId}
+&schoolId=${p.schoolId}
+&sceneId=${p.sceneId}
 &sysCode=`
-
 
 // #region ********************************************* 正式接口 *********************************************
 
@@ -232,7 +226,19 @@ function getUrLParams(index) {
     if ([2, 3].includes(index)) {
         return `${window.FRONT_INTERFACE[index]}`
     } else {
-        const p = window.parent.getParamsA()
+        const p = store.state.isMock ? {
+            userId: '13085827083014144',
+            userName: '18612107916',
+            userType: 'PLATFORM',
+            userToken: 'e3ca8823d1f7592b114adcb6144b45fe',
+            orgId: '13066758269702144',
+            orgType: 'SCHOOL',
+            memberId: '13085827099787264',
+            memberType: 'STUDENT',
+            schoolId: '13066758269702144',
+            teachClassId: '85662867958267939',
+            teachClassStepId: '85662876444917791'
+        } : window.parent.getParamsA()
         index == 0 && store.commit('setParamsA', p)
         return `${window.FRONT_INTERFACE[index]}?userId=${p.userId}&userName=${p.userName}&userType=${p.userType}&userToken=${p.userToken}&orgId=${p.orgId}&orgType=${p.orgType}&memberId=${p.memberId}&memberType=${p.memberType}&schoolId=${p.schoolId}&teachClassId=${p.teachClassId}&teachClassStepId=${p.teachClassStepId}`
     }
@@ -252,7 +258,33 @@ export function getParamsB() {
     })
 }
 export function getParamsC() {
-    const p = window.parent.getParamsB()
+    const p = store.state.isMock ? {
+        platformSerkey: 'Seentao@12345',
+        pageCode: 'xbizerp_databoard_manage',
+        systemKey: 'xbizerp-1.0',
+        userName: '18612107916',
+        paramValue: {
+            "userId": "13085827083014144",
+            "userName": "18612107916",
+            "userType": "PLATFORM",
+            "userToken": "e3ca8823d1f7592b114adcb6144b45fe",
+            "orgId": "13066758269702144",
+            "orgType": "SCHOOL",
+            "memberId": "13085827099787264",
+            "memberType": "STUDENT",
+            "schoolId": "13066758269702144",
+            "enterpriseCode": "LE001",
+            "classId": "85662867958267939",
+            "teachClassStepId": "85662876444917791",
+            "memberSourceDeptCodes": "150101",
+            "realName": "谢华志",
+            "caseVersionId": "85662731031543860",
+            "caseCode": "SZZHSJ_2",
+            "memberSourcePostCodes": "15010101",
+            "teamId": "85662882041167900",
+            "virtualDate": "2023-01-25"
+        }
+    } : window.parent.getParamsB()
     return request({
         url: getUrLParams(2),
         method: 'get',
@@ -267,7 +299,19 @@ export function getParamsC() {
 }
 
 export function getParamsD() {
-    const p = window.parent.getParamsC()
+    const p = store.state.isMock ? {
+        orgCode: 'LE001',
+        deptCode: '110101',
+        deptName: '企管部',
+        userId: '74791587158163480',
+        userName: '饶展兴',
+        classId: '86967220904136739-86967228588101667',
+        orgName: '新锐创新科技（集团）有限公司',
+        virtualDate: '2023-01-05',
+        caseCode: 'SZZHSJ_2',
+        version: '86301907887329314',
+        profileType: 'ENTERPRISE_INFO',
+    } : window.parent.getParamsC()
     return request({
         url: getUrLParams(3),
         method: 'get',

@@ -76,8 +76,8 @@ module.exports = {
     static: {
       directory: './public',
     },
-    host: 'local-ip',
-    // host: 'localhost',
+    // host: 'local-ip',
+    host: 'localhost',
     port,
     allowedHosts: 'all',
     hot: true,
