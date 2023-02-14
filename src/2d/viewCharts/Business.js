@@ -18,7 +18,7 @@ export function setPiePercentage(data) {
                 x: 'center',
                 top: '30%',
                 textStyle: {
-                    fontSize: 22,
+                    fontSize: 16,
                     color: '#FFFFFF',
                     fontFamily: 'Source Han Sans CN',
                     foontWeight: '400',
@@ -26,7 +26,7 @@ export function setPiePercentage(data) {
             },
         ],
         polar: {
-            radius: ['92%', '75%'],
+            radius: ['100%', '85%'],
             center: ['50%', '50%'],
         },
         angleAxis: {
@@ -115,7 +115,7 @@ export function setLine(data) {
                 margin: '10',
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                interval: 0
+                interval: data.interval ?? 0
             },
             splitLine: {
                 show: false

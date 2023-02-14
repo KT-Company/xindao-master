@@ -11,7 +11,7 @@ store.commit('setMODE', p.mode)
 console.log('MODE: ', store.state.MODE);
 
 // mock 数据获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：admin9527...）
-const url = false ? `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
+const url = !store.state.isMock ? `https://dapi.seentao.com/custom-form/customForm.formInfos.get?
 caseVersionId=82347900509093947
 &enterpriseId=82441349728567340
 &userName=15178904534
@@ -230,7 +230,7 @@ function getUrLParams(index) {
             userId: '13085827083014144',
             userName: '18612107916',
             userType: 'PLATFORM',
-            userToken: 'e3ca8823d1f7592b114adcb6144b45fe',
+            userToken: '287afa4415b11ed21e0625feae2a68e8',
             orgId: '13066758269702144',
             orgType: 'SCHOOL',
             memberId: '13085827099787264',
@@ -267,7 +267,7 @@ export function getParamsC() {
             "userId": "13085827083014144",
             "userName": "18612107916",
             "userType": "PLATFORM",
-            "userToken": "e3ca8823d1f7592b114adcb6144b45fe",
+            "userToken": "287afa4415b11ed21e0625feae2a68e8",
             "orgId": "13066758269702144",
             "orgType": "SCHOOL",
             "memberId": "13085827099787264",

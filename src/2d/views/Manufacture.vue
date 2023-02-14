@@ -46,7 +46,7 @@ const data2 = reactive({
 const data3 = reactive({
   name: "环比率",
   value: base.qyyysr04,
-  value1: toThreeDigitRating(base.ndcgys01),
+  value1: toThreeDigitRating(base.qyyysr01),
   value2: toThreeDigitRating(base.qyyysr02),
   value3: toThreeDigitRating(base.qyyysr03),
 });

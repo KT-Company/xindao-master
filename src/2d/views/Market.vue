@@ -34,6 +34,7 @@ onMounted(() => {
   data6Echarts();
   data7Echarts();
 });
+// 市场获单情况
 const data1 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
   data: [base.schdqk04],
@@ -62,7 +63,7 @@ const data2Echarts = () => {
 const data3 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
   data: [base.scktqk04],
-  perCentum: "+70%",
+  perCentum: `+${base.scktqk04}%`,
   titleData: "环比率",
   value0: toThreeDigitRating(base.scktqk01),
   value1: base.scktqk02,
@@ -76,12 +77,26 @@ const data4Echarts = () => {
   const data4 = reactive({
     color: "#5C73E6",
     name: "客户销量",
-    Xdata: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl01),
-    dataList: base1
-      .filter((item) => item.qykhxl01)
-      .map((item) => item.qykhxl02),
+    Xdata: [],
+    dataList: [],
     isShow: false,
   });
+
+  if (store.state.MODE === "BUSINESS") {
+    data4.Xdata = base1.khxl
+      .filter((item) => item.purchaseOrgName)
+      .map((item) => item.purchaseOrgName);
+    data4.dataList = base1.khxl
+      .filter((item) => item.taxAmount)
+      .map((item) => item.taxAmount);
+  } else {
+    data4.Xdata = base1
+      .filter((item) => item.qykhxl01)
+      .map((item) => item.qykhxl01);
+    data4.dataList = base1
+      .filter((item) => item.qykhxl01)
+      .map((item) => item.qykhxl02);
+  }
   option.data4 = setBar(data4, { interval: 1 });
 };
 
@@ -89,22 +104,40 @@ const data5Echarts = () => {
   const data5 = reactive({
     color: "#FF9F40",
     name: "销售毛利率",
-    Xdata: base2.map((item) => item.month),
-    dataList: base2.map((item) => item.qyxsmlv02),
+    Xdata: [],
+    dataList: [],
     isShow: true,
   });
+  if (store.state.MODE === "BUSINESS") {
+    data5.Xdata = Object.keys(base2.xsmll);
+    data5.dataList = Object.values(base2.xsmll);
+    data5.interval = 1;
+  } else {
+    data5.Xdata = base2.map((item) => item.month);
+    data5.dataList = base2.map((item) => item.qyxsmlv02);
+  }
   option.data5 = setLine(data5);
 };
 let dataObj = {
   x: [],
   val: [],
 };
-CHART.inventoryNamesLow.forEach((item, i) => {
-  if (base[item]) {
-    dataObj.x.push(CHART.inventoryNames[i]);
-    dataObj.val.push(base[item]);
-  }
-});
+if (store.state.MODE === "BUSINESS") {
+  CHART.inventoryNamesLow.forEach((item, i) => {
+    if (base.xsjg[item]) {
+      dataObj.x.push(CHART.inventoryNames[i]);
+      dataObj.val.push(base.xsjg[item]);
+    }
+  });
+} else {
+  CHART.inventoryNamesLow.forEach((item, i) => {
+    if (base[item]) {
+      dataObj.x.push(CHART.inventoryNames[i]);
+      dataObj.val.push(base[item]);
+    }
+  });
+}
+
 const data6Echarts = () => {
   const data6 = reactive({
     color: "#5C73E6",
@@ -119,12 +152,22 @@ let dataObj3 = {
   x: [],
   val: [],
 };
-CHART.inventoryNamesLow.forEach((item, i) => {
-  if (base3[item]) {
-    dataObj3.x.push(CHART.inventoryNames[i]);
-    dataObj3.val.push(base3[item]);
-  }
-});
+if (store.state.MODE === "BUSINESS") {
+  CHART.inventoryNamesLow.forEach((item, i) => {
+    if (base3.kdj[item]) {
+      dataObj3.x.push(CHART.inventoryNames[i]);
+      dataObj3.val.push(base3.kdj[item]);
+    }
+  });
+} else {
+  CHART.inventoryNamesLow.forEach((item, i) => {
+    if (base3[item]) {
+      dataObj3.x.push(CHART.inventoryNames[i]);
+      dataObj3.val.push(base3[item]);
+    }
+  });
+}
+
 const data7Echarts = () => {
   const data7 = reactive({
     color: "rgba(255,159,64)",
