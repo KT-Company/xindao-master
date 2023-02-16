@@ -1,6 +1,7 @@
 import * as echarts from "echarts"
 import 'echarts-liquidfill'
 import { merge, clone } from "lodash-es"
+import store from '@/2d/store'
 
 const optionCache = {
   gauge1: {
@@ -83,7 +84,8 @@ const optionCache = {
         interval: 0,
         align: "left",
         color: "rgba(202, 224, 255, 1)",
-        rotate: -45
+        rotate: -45,
+        interval: store.state.MODE === 'BUSINESS' ? 1 : 0
       },
       axisTick: { show: false }
     },

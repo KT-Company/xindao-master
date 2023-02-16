@@ -3,9 +3,9 @@ import store from '@/2d/store'
 import getData from './getDatas'
 import getUrlParam from '@/2d/utils/getUrlParam'
 
-// const p = getUrlParam()
-// console.log('p: ', p);
-const p = { mode: 'BUSINESS' }  // 经营模式: BUSINESS  探索模式: EXPLORE （测试）
+// const p = 
+const p = store.state.isMock ? { mode: 'BUSINESS' } : getUrlParam()  // 经营模式: BUSINESS  探索模式: EXPLORE （测试）
+console.log('p: ', p);
 store.commit('setMODE', p.mode)
 
 console.log('MODE: ', store.state.MODE);
@@ -230,7 +230,7 @@ function getUrLParams(index) {
             userId: '13085827083014144',
             userName: '18612107916',
             userType: 'PLATFORM',
-            userToken: '287afa4415b11ed21e0625feae2a68e8',
+            userToken: '2dd1282ea965d8d2d01508345469edf2',
             orgId: '13066758269702144',
             orgType: 'SCHOOL',
             memberId: '13085827099787264',
@@ -267,7 +267,7 @@ export function getParamsC() {
             "userId": "13085827083014144",
             "userName": "18612107916",
             "userType": "PLATFORM",
-            "userToken": "287afa4415b11ed21e0625feae2a68e8",
+            "userToken": "2dd1282ea965d8d2d01508345469edf2",
             "orgId": "13066758269702144",
             "orgType": "SCHOOL",
             "memberId": "13085827099787264",

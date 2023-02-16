@@ -33,7 +33,7 @@ const store = createStore({
             enterpriseInfo: {}, // 企业信息
             paramsA: null,
             BusinessTime: '', // 经营模式时间
-            isMock: true, // 测试
+            isMock: false, // 测试
         }
     },
     mutations: {

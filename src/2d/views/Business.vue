@@ -36,7 +36,7 @@ const data7Id = ref(0);
 const data1 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
   data: [base.qycgzc004],
-  perCentum: "+70%",
+  perCentum: base.qycgzc004,
   titleData: "环比率",
   value0: toThreeDigitRating(base.qycgzc001),
   value1: toThreeDigitRating(base.qycgzc002),
@@ -61,9 +61,11 @@ const data6 = reactive({
 if (store.state.MODE === "BUSINESS") {
   data6.Xdata = base2.chzzl.map((item) => item.period);
   data6.dataList = base2.chzzl.map((item) => item.rate);
+  data6.interval = 1
 
   data3.Xdata = base2.wlfy.map((item) => item.billDate);
   data3.dataList = base2.wlfy.map((item) => item.taxAmount);
+  data3.interval = 1
 } else {
   data6.Xdata = base2.map((item) => item.month);
   data6.dataList = base2.map((item) => item.qychzzl02);
@@ -121,8 +123,8 @@ const data4Echarts = () => {
   });
 
   if (store.state.MODE === "BUSINESS") {
-    data4.Xdata = data4.khxl.map((item) => item.purchaseOrgName);
-    data4.dataList = data4.khxl.map((item) => item.taxAmount);
+    data4.Xdata = base1.khxl.map((item) => item.purchaseOrgName);
+    data4.dataList = base1.khxl.map((item) => item.taxAmount);
   } else {
     data4.Xdata = base1
       .filter((item) => item.qykhxl01)

@@ -34,7 +34,6 @@ const handleFooters = (item, leve, son) => {
     }
     if (currRouter === item.path) {
       router.replace("/Replace");
-      console.log("currRouter: ", currRouter);
     } else router.push(item.path);
     store.commit("setPickId", item.id);
   } else {

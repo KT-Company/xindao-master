@@ -4,7 +4,8 @@ import { CACHE } from "./CACHE.js";
 import { DATA } from "./DATA.js";
 import store from "@/2d/store";
 import router from "@/2d/router";
-import { handleBackMap } from "@/2d/hooks/use3dhandle";
+import { handleBackMap, handleBMenuBMap } from "@/2d/hooks/use3dhandle";
+import { menu } from '@/2d/hooks/useMenu'
 
 let Bol3D = window.Bol3D;
 
@@ -813,18 +814,27 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         API.showThreeFlowsByName(obj.name);
       }
     } else if (obj.userData.type == "enterpriseIconInner" && obj.visible) {
-      CACHE.container.cameraFocus({
-        target: obj.position,
-        distance: 2000,
-      });
-      API.selectEnterpriseInnerIcon(obj.userData.enterprise, obj.userData.name)
-      store.commit("setMenuBid", null);
-      if (obj.userData.id) {
-        store.commit(
-          "setMenuBid",
-          obj.userData.id
-        );
+      const name = obj.text == '企业管理部' ? '企管部' : obj.text
+      try {
+        const son = menu.value.find(item => item.id == store.state.menuAid).children.find(item => item.name == name)
+        handleBMenuBMap[son.id]()
+        store.commit("setMenuBid", son.id);
+        router.push(son.path);
+      } catch (error) {
+        CACHE.container.cameraFocus({
+          target: obj.position,
+          distance: 2000,
+        });
+        API.selectEnterpriseInnerIcon(obj.userData.enterprise, obj.userData.name)
+        store.commit("setMenuBid", null);
+        if (obj.userData.id) {
+          store.commit(
+            "setMenuBid",
+            obj.userData.id
+          );
+        }
       }
+
     } else if (
       Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
     ) {
