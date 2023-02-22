@@ -60,7 +60,7 @@ const drawPurchaseChar = (el) => {
 const peMoney = reactive([
   { unit: "￥", value: base.qycgzc001, prefix: "", desc: "" },
   { unit: "￥", value: base.qycgzc002, prefix: "", desc: "本月" },
-  { unit: "￥", value: base.qycgzc003, prefix: "+", desc: "环比" },
+  { unit: "￥", value: base.qycgzc003, prefix: "", desc: "环比" },
 ]);
 
 let gysphb = {};

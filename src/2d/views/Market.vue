@@ -38,7 +38,7 @@ onMounted(() => {
 const data1 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
   data: [base.schdqk04],
-  perCentum: `+${base.schdqk04}%`,
+  perCentum: `${base.schdqk04}%`,
   titleData: "环比率",
   value0: toThreeDigitRating(base.schdqk04),
   value1: toThreeDigitRating(base.schdqk02),
@@ -50,7 +50,7 @@ const data1Echarts = () => {
 const data2 = reactive({
   color: ["rgb(91,114,227)", "rgba(91,114,227,.5)"],
   data: [base.ggtfqk04],
-  perCentum: `+${base.ggtfqk04}%`,
+  perCentum: `${base.ggtfqk04}%`,
   titleData: "环比率",
   value0: toThreeDigitRating(base.ggtfqk01),
   value1: toThreeDigitRating(base.ggtfqk02),
@@ -60,11 +60,12 @@ const data2Echarts = () => {
   option.data2 = setPiePercentage(data2);
 };
 
+// 市场开拓
 const data3 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
   data: [base.scktqk04],
-  perCentum: `+${base.scktqk04}%`,
-  titleData: "环比率",
+  perCentum: `${base.scktqk04}%`,
+  titleData: "已开拓率",
   value0: toThreeDigitRating(base.scktqk01),
   value1: base.scktqk02,
   value2: base.scktqk03,

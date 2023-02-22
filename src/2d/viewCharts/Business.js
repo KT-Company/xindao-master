@@ -194,7 +194,7 @@ export function setLine(data) {
     };
 
 }
-// 折现图----------------------------
+// 折线图----------------------------
 export function setLineFinancial(data) {
     return {
         tooltip: {
@@ -275,39 +275,38 @@ export function setLineFinancial(data) {
                 }
             },
             show: true,
-
         }],
         series: [{
             name: data.name,
             type: 'line',
             smooth: true, //是否平滑曲线显示
             showSymbol: false,
-
             itemStyle: {
                 color: data.color,
                 borderColor: data.color,
                 borderWidth: 1
             },
             lineStyle: {
-                normal: {
-                    width: 2,
-                    color: {
-                        type: 'linear',
-                        colorStops: [{
-                            offset: 0,
-                            color: data.color // 0% 处的颜色
-                        },
-                        {
-                            offset: 1,
-                            color: data.color // 100% 处的颜色
-                        }
-                        ],
-                        globalCoord: false // 缺省为 false
-                    },
-                    shadowColor: data.color,
-                    shadowBlur: 30,
-                    shadowOffsetY: 5
-                }
+                color: data.color,
+                // normal: {
+                //     width: 2,
+                //     color: {
+                //         type: 'linear',
+                //         colorStops: [{
+                //             offset: 0,
+                //             color: data.color // 0% 处的颜色
+                //         },
+                //         {
+                //             offset: 1,
+                //             color: data.color // 100% 处的颜色
+                //         }
+                //         ],
+                //         globalCoord: false // 缺省为 false
+                //     },
+                //     shadowColor: data.color,
+                //     shadowBlur: 30,
+                //     shadowOffsetY: 5
+                // }
             },
             data: data.dataList
         }]

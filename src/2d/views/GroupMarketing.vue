@@ -86,6 +86,7 @@ const data3Echarts = () => {
   if (store.state.MODE === "BUSINESS") {
     data3.Xdata = Object.keys(base8.xsmll);
     data3.dataList = Object.values(base8.xsmll);
+    data3.interval = 1;
   } else {
     data3.Xdata = base8.map((item) => item.month);
     data3.dataList = base8.map((item) => item.qyxsmlv02);

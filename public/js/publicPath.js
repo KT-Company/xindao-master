@@ -1,12 +1,24 @@
 // 全局路径
-window.publicPath = ''
+// window.publicPath = ''
+// window.publicUrl = '/api/custom-form/customForm.formInfos.get' // 社会层、区域层 请求接口地址
+// window.FRONT_INTERFACE = [
+//   'https://dapi.seentao.com/vbseTeach/vbse.postInfo.member.get',
+//   'https://dedu.seentao.com/api/vbseTeach/vbse.teachClass.steps.get',
+//   'https://dedu.seentao.com/api/xverse/paramsmapping/convert',
+//   'https://dedu.seentao.com/api/xbizerp/common/baseProfile/list',
+// ]
+
+// 发布
+window.publicPath = '/aie_explore_web'
 window.publicUrl = '/api/custom-form/customForm.formInfos.get' // 社会层、区域层 请求接口地址
 window.FRONT_INTERFACE = [
-  'https://dapi.seentao.com/vbseTeach/vbse.postInfo.member.get',
-  'https://dedu.seentao.com/api/vbseTeach/vbse.teachClass.steps.get',
-  'https://dedu.seentao.com/api/xverse/paramsmapping/convert',
-  'https://dedu.seentao.com/api/xbizerp/common/baseProfile/list',
+  '/api/vbseTeach/vbse.postInfo.member.get',
+  '/api/vbseTeach/vbse.teachClass.steps.get',
+  '/api/xverse/paramsmapping/convert',
+  '/api/xbizerp/common/baseProfile/list',
 ]
+
+
 window.publicParams = {
   year: 2021,       // 全局年份
   year2: 2022,      // 全局年份 （探索模式 - 企业与部门层）
@@ -14,7 +26,7 @@ window.publicParams = {
   szxs: '北京',      // 全局省直辖市
   // fireBackup: false, // 开启火力备用图
 }
-window.myToken = 'd6ae32e20a374cf94e5e08d27a57e6b5' // 仅用于测试
+window.myToken = '072d8c11f07ed814bbceaa38895af086' // 仅用于测试
 window.backHome = () => {
   window.top.location.href = "/aie_web"; // 返回用户 home 地址
 }

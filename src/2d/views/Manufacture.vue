@@ -21,11 +21,11 @@ const option = reactive({
 });
 const qyyhck = reactive({
   value1: base.qyyhckxj,
-  value2: `${base.qyyhckxj02}${store.state.MODE == "BUSINESS" ? "" : "元"}`,
+  value2: `${base.qyyhckxj02}${store.state.MODE == "BUSINESS" ? "" : "亿"}`,
 });
 const qyyhdk = reactive({
   value1: base.qyyhdkxj,
-  value2: `${base.qyyhdkxj02}${store.state.MODE == "BUSINESS" ? "" : "元"}`,
+  value2: `${base.qyyhdkxj02}${store.state.MODE == "BUSINESS" ? "" : "亿"}`,
 });
 
 const data1 = reactive({
@@ -98,7 +98,7 @@ onMounted(() => {
       <Content class="qyyhck">
         <p class="qyyhck-info">
           <span class="hui">单位：元</span>
-          <span class="hui">详细金额：{{ qyyhck.value1 }}{{ store.state.MODE == "BUSINESS" ?  "" : "元" }}</span>
+          <span class="hui">详细金额：{{ qyyhck.value1 }}</span>
         </p>
         <div class="qyyhck-value">
           <span
@@ -116,7 +116,7 @@ onMounted(() => {
       <Content class="qyyhck">
         <p class="qyyhck-info">
           <span class="hui">单位：元</span>
-          <span class="hui">详细金额：{{ qyyhdk.value1 }}{{ store.state.MODE == "BUSINESS" ?  "" : "元" }}</span>
+          <span class="hui">详细金额：{{ qyyhdk.value1 }}</span>
         </p>
         <div class="qyyhck-value">
           <span

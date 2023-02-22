@@ -2,7 +2,8 @@ import request from '@/2d/utils/request'
 import store from '@/2d/store'
 
 const baseUrl = store.state.isMock ? 'https://dapi.seentao.com' : '/api'
-const baseUrl2 = store.state.isMock ? 'https://dchinataxn.seentao.com' : '/api'
+// const baseUrl2 = store.state.isMock ? 'https://dchinataxn.seentao.com' : '/api'
+const baseUrl2 = store.state.isMock ? 'https://dapi.seentao.com/api' : '/api'
 
 
 const params1 = (p) => {
@@ -249,7 +250,8 @@ export function get_qyyhdk(p) {
 // 企业所得税税负率 ( 暂定 )
 export function get_qysdssfl(p) {
   return request({
-    url: `${baseUrl2}/chinataxn/invoice.getIncomeByParams`,
+    // url: `${baseUrl2}/chinataxn/invoice.getIncomeByParams`,
+    url: `${baseUrl2}/xbizchinatax/invoice.getIncomeByParams`,
     method: 'POST',
     params: params3(p)
   })
@@ -258,7 +260,8 @@ export function get_qysdssfl(p) {
 // 企业增值税税负率
 export function get_qyzzssfl(p) {
   return request({
-    url: `${baseUrl2}/chinataxn/invoice.getVatByParams`,
+    // url: `${baseUrl2}/chinataxn/invoice.getVatByParams`,
+    url: `${baseUrl2}/xbizchinatax/invoice.getVatByParams`,
     method: 'POST',
     params: params3(p)
   })

@@ -75,6 +75,8 @@ const BUSINESS = () => {
     const a = data[0].data.data
     const b = data[1].data.data.steps.find(item => item.stepName == '经营模式').calendars
     const BusinessTime = dayjs.unix(Number(b.find(item => item.state === 'ACTIVE_CURRENT').calendarTime)).format('YYYY')
+    const BusinessTimeToYYYYMM = dayjs.unix(Number(b.find(item => item.state === 'ACTIVE_CURRENT').calendarTime)).format('YYYY-MM')
+    console.log('BusinessTimeToMoth: ', BusinessTimeToYYYYMM);
     store.commit('setBusinessTime', BusinessTime)
     const c = data[2].data.data.param
     const d = data[3].data.data
@@ -85,7 +87,7 @@ const BUSINESS = () => {
       orgTypeCode = {}
     }
     const enterpriseInfo = window.enterpriseMap[orgTypeCode]
-    // const enterpriseInfo = window.enterpriseMap['MGE001'] // 测试用
+    // const enterpriseInfo = window.enterpriseMap['DTE001'] // 测试用
     // console.log('enterpriseInfo: ', enterpriseInfo);
     setMenu(menu.value.filter(item => item.id === enterpriseInfo.id))
     store.commit('setEnterpriseInfo', enterpriseInfo)
@@ -137,7 +139,12 @@ const BUSINESS = () => {
         // 企业存款（2）
         data[37].data.data = { "balance": "5000000.00元", "balance2": "0.05000亿" }
         // 企业贷款（2）
-        data[36].data.data = {"loan":"10000.00元","loan2":"0.00010亿"}
+        data[36].data.data = { "loan": "10000.00元", "loan2": "0.00010亿" }
+        
+        // 企业所得税税负率
+        data[33].data.data = {"income":0.5405,"sum":37.00,"tax":20}
+        // 企业增值税税负率
+        data[34].data.data = {"current":99.00,"vat":0.2475,"sum":400.00}
 
         // 企业银行贷款（1）
         data[32].data.data = [{ "loan": "7200.00", "orgTypeName": "销售公司" }, { "loan": "1000.00", "orgTypeName": "集团企业" }]
@@ -226,7 +233,19 @@ const BUSINESS = () => {
         // 销售结构
         data[19].data.data = { "RM01001": "100.10", "RM01002": "200", }
         // 市场开拓情况
-        data[18].data.data = { "unDevList": [{ "regionCode": 1, "regionName": "东北", "id": 1 }, { "regionCode": 2, "regionName": "华北", "id": 2 }, { "regionCode": 3, "regionName": "华东", "id": 3 }, { "regionCode": 4, "regionName": "华中", "id": 4 }, { "regionCode": 5, "regionName": "华南", "id": 5 }, { "regionCode": 6, "regionName": "西南", "id": 6 }, { "regionCode": 7, "regionName": "西北", "id": 7 }], "devList": [], "sumAmount": "0" }
+        data[18].data.data = {
+          "unDevList": [
+            { "regionCode": 1, "regionName": "东北", "id": 1 },
+            { "regionCode": 2, "regionName": "华北", "id": 2 },
+            { "regionCode": 3, "regionName": "华东", "id": 3 },
+            { "regionCode": 4, "regionName": "华中", "id": 4 },
+            { "regionCode": 5, "regionName": "华南", "id": 5 },
+            { "regionCode": 6, "regionName": "西南", "id": 6 },
+          ],
+          "devList": [
+            { "regionCode": 7, "regionName": "西北", "id": 7 },],
+          "sumAmount": "0", "pioneeringRate": "14.29"
+        }
         // 广告投放情况
         data[17].data.data = { "monthAmount": "0", "ringRatioAmount": "10", "ringRatioRate": "10.00", "sumAmount": "0" }
         // 市场获单情况
@@ -238,7 +257,7 @@ const BUSINESS = () => {
         // 增长
         data[25].data.data = { "2023-01": 100.00, "2023-02": 0.00, "2023-03": 0.00, "2023-04": 0.00, "2023-05": 0.00, "2023-06": 0.00, "2023-07": 0.00, "2023-08": 0.00, "2023-09": 0.00, "2023-10": 0.00, "2023-11": 0.00, "2023-12": 0.00 }
         // 负债
-        data[27].data.data = { "2023-01": 0.00, "2023-02": 0.98, "2023-03": 0.00, "2023-04": 0.00, "2023-05": 0.00, "2023-06": 0.00, "2023-07": 0.00, "2023-08": 0.00, "2023-09": 0.00, "2023-10": 0.00, "2023-11": 0.00, "2023-12": 0.00 }
+        data[27].data.data = { "2023-01": 1.93, "2023-02": 1.93, "2023-03": 1.93, "2023-04": 1.93, "2023-05": 1.93, "2023-06": 1.93, "2023-07": 1.93, "2023-08": 1.93, "2023-09": 1.93, "2023-10": 1.93, "2023-11": 1.93, "2023-12": 1.93 }
         // 销售毛利率
         data[26].data.data = { "2023-01": 100.00, "2023-02": 0.00, "2023-03": 100.00, "2023-04": 0.00, "2023-05": 0.00, "2023-06": 0.00, "2023-07": 0.00, "2023-08": 0.00, "2023-09": 0.00, "2023-10": 0.00, "2023-11": 0.00, "2023-12": 0.00 }
         // 存货周转率
@@ -256,7 +275,7 @@ const BUSINESS = () => {
       }
       const nan = data[11].data.data.list.find(item => item.sex == '男')
       const nv = data[11].data.data.list.find(item => item.sex == '女')
-      const ryld = data[12].data.data.find(item => item.employedTime == currMoth)
+      const ryld = data[12].data.data.find(item => item.employedTime == BusinessTimeToYYYYMM)
       console.log('ryld: ', ryld);
 
       const data1 = {
@@ -403,7 +422,7 @@ const BUSINESS = () => {
         // 采购支出
         qycgzc001: data[15].data.data.totalSum,
         qycgzc002: data[15].data.data.currentMonthSum,
-        qycgzc003: data[15].data.data.ringRatioAmount,
+        qycgzc003: data[15].data.data.ringRatio,
         qycgzc004: data[15].data.data.ringRatioRate,
 
         // 市场获单情况
@@ -420,9 +439,10 @@ const BUSINESS = () => {
 
         // 市场开拓情况
         scktqk01: data[18].data.data.sumAmount,
-        scktqk02: data[18].data.data.devList,
-        scktqk03: data[18].data.data.unDevList.map(item => item.regionName),
-        scktqk04: NUM.reservedTwo100times(data[18].data.data.devList.length / (data[18].data.data.devList.length + data[18].data.data.unDevList.length)),
+        scktqk02: data[18].data.data.devList.map(item => item.regionName).join(),
+        scktqk03: data[18].data.data.unDevList.map(item => item.regionName).join(),
+        // scktqk04: NUM.reservedTwo100times(data[18].data.data.devList.length / (data[18].data.data.devList.length + data[18].data.data.unDevList.length)),
+        scktqk04: data[18].data.data.pioneeringRate,
 
         // 企业银行存款
         qyyhckxj: data[37].data.data.balance || 0,

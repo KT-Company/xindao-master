@@ -509,13 +509,21 @@ const goBack = () => {
     left: 50% !important;
     transform: translateX(-50%) !important;
   }
-  &::before{
-    left: -2% !important;
-    width: 50% !important;
+  // &::before{
+  //   left: -2% !important;
+  //   width: 50% !important;
+  // }
+  // &::after{
+  //   left: 52% !important;
+  //   width: 50% !important;
+  // }
+   &::before{
+    left: 0% !important;
+    width: 100% !important;
   }
-  &::after{
-    left: 52% !important;
-    width: 50% !important;
-  }
+  // &::after{
+  //   left: 52% !important;
+  //   width: 50% !important;
+  // }
 }
 </style>
