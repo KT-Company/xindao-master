@@ -20,12 +20,12 @@ const option = reactive({
   data5: {},
 });
 const qyyhck = reactive({
-  value1: base.qyyhckxj,
-  value2: `${base.qyyhckxj02}${store.state.MODE == "BUSINESS" ? "" : "亿"}`,
+  value1: base.qyyhckxj+'元',
+  value2: `${base.qyyhckxj02}亿`,
 });
 const qyyhdk = reactive({
-  value1: base.qyyhdkxj,
-  value2: `${base.qyyhdkxj02}${store.state.MODE == "BUSINESS" ? "" : "亿"}`,
+  value1: base.qyyhdkxj+'元',
+  value2: `${base.qyyhdkxj02}亿`,
 });
 
 const data1 = reactive({

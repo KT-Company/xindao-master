@@ -40,7 +40,7 @@ const data1 = reactive({
   data: [base.schdqk04],
   perCentum: `${base.schdqk04}%`,
   titleData: "环比率",
-  value0: toThreeDigitRating(base.schdqk04),
+  value0: toThreeDigitRating(base.schdqk01),
   value1: toThreeDigitRating(base.schdqk02),
   value2: toThreeDigitRating(base.schdqk03),
 });

@@ -3,7 +3,7 @@ import store from '@/2d/store'
 
 const baseUrl = store.state.isMock ? 'https://dapi.seentao.com' : '/api'
 // const baseUrl2 = store.state.isMock ? 'https://dchinataxn.seentao.com' : '/api'
-const baseUrl2 = store.state.isMock ? 'https://dapi.seentao.com/api' : '/api'
+const baseUrl2 = store.state.isMock ? 'https://dedu.seentao.com/api' : '/api'
 
 
 const params1 = (p) => {

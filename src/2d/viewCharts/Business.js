@@ -1,4 +1,5 @@
 import * as echarts from 'echarts'
+import store from '../store';
 // 百分比-------------------------
 export function setPiePercentage(data) {
     return {
@@ -196,6 +197,12 @@ export function setLine(data) {
 }
 // 折线图----------------------------
 export function setLineFinancial(data) {
+    let Xdata = data.Xdata
+    if(store.state.MODE === 'BUSINESS'){
+        Xdata = data.Xdata.map(item=>{
+            return `${parseInt(item.split('-')[1])}月`
+        })
+    }
     return {
         tooltip: {
             trigger: 'axis',
@@ -235,7 +242,7 @@ export function setLineFinancial(data) {
                 margin: 10,
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                interval: data.interval ?? 0
+                // interval: 0
             },
             splitLine: {
                 show: false
@@ -248,7 +255,7 @@ export function setLineFinancial(data) {
                     color: 'rgba(255,255,255,.3)'
                 }
             },
-            data: data.Xdata
+            data: Xdata
         },
         yAxis: [{
             type: 'value',

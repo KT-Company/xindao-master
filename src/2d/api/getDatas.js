@@ -87,7 +87,7 @@ const BUSINESS = () => {
       orgTypeCode = {}
     }
     const enterpriseInfo = window.enterpriseMap[orgTypeCode]
-    // const enterpriseInfo = window.enterpriseMap['DTE001'] // 测试用
+    // const enterpriseInfo = window.enterpriseMap['GSC001'] // 测试用
     // console.log('enterpriseInfo: ', enterpriseInfo);
     setMenu(menu.value.filter(item => item.id === enterpriseInfo.id))
     store.commit('setEnterpriseInfo', enterpriseInfo)
@@ -133,13 +133,15 @@ const BUSINESS = () => {
       BUSINESS2.get_qyyhck(p), BUSINESS2.get_qyyhdk(p), BUSINESS2.get_qysdssfl(p), BUSINESS2.get_qyzzssfl(p), BUSINESS2.get_qysl(p),
       BUSINESS2.get_qydk(p), BUSINESS2.get_qyck(p), BUSINESS2.get_zhfwsr(p), BUSINESS2.get_tpf(p)
     ]).then(res => {
-      // console.log('res: ', res);
+      console.log('res: ', res);
       const data = res
       if (store.state.isMock) {
+        // 客单价
+        data[14].data.data = {"RM01001":"100.10", "RM01002":"200", "RM01003":"300",}
         // 企业存款（2）
-        data[37].data.data = { "balance": "5000000.00元", "balance2": "0.05000亿" }
+        data[37].data.data = { "balance": "5000000.00", "balance2": "0.05000" }
         // 企业贷款（2）
-        data[36].data.data = { "loan": "10000.00元", "loan2": "0.00010亿" }
+        data[36].data.data = { "loan": "10000.00", "loan2": "0.00010" }
         
         // 企业所得税税负率
         data[33].data.data = {"income":0.5405,"sum":37.00,"tax":20}
@@ -252,7 +254,7 @@ const BUSINESS = () => {
         data[16].data.data = { "monthAmount": "0", "ringRatioAmount": "0", "ringRatioRate": "10.00", "sumAmount": "0" }
         // 客户销量
         data[20].data.data = [{ "purchaseOrgCode": "SC001", "purchaseOrgName": "新锐创新科技销售有限公司", "taxAmount": 7725450.00 }]
-        // 
+        // 企业库存情况
         data[4].data.data = [{ "materialCode": "FP00001", "materialName": "玉龙X4mini 遥控飞机航拍器", "quantity": 4500 }, { "materialCode": "RM01001", "materialName": "PP塑料机架壳MINI", "quantity": 4000 }, { "materialCode": "RM01002", "materialName": "PP螺旋桨", "quantity": 16000 }, { "materialCode": "RM01003", "materialName": "飞控主机主板", "quantity": 4000 }, { "materialCode": "RM01004", "materialName": "玉龙X4mini钢机架", "quantity": 4000 }, { "materialCode": "RM01005", "materialName": "无刷动力套装A", "quantity": 4000 }, { "materialCode": "RM01006", "materialName": "MINI遥控器", "quantity": 4000 }, { "materialCode": "RM01007", "materialName": "4K高清云图套件", "quantity": 4000 }, { "materialCode": "RM01008", "materialName": "MINI包装套件", "quantity": 4000 }]
         // 增长
         data[25].data.data = { "2023-01": 100.00, "2023-02": 0.00, "2023-03": 0.00, "2023-04": 0.00, "2023-05": 0.00, "2023-06": 0.00, "2023-07": 0.00, "2023-08": 0.00, "2023-09": 0.00, "2023-10": 0.00, "2023-11": 0.00, "2023-12": 0.00 }
@@ -266,7 +268,7 @@ const BUSINESS = () => {
       console.log('data: ', data);
 
       function returnData(name, id = 4) {
-        if (id = 4) {
+        if (id == 4) {
           return data[id].data.data.find(item => item?.materialCode == name)?.quantity || 0
         } else {
           return data[id].data.data[name] || 0

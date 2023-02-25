@@ -231,7 +231,7 @@ const optionCache = {
       {
         data: [1269, 2222, 3234, 3353, 1543, 1213, 1320, 2321, 2312, 3223, 2231, 2332],
         type: 'line',
-        stack: 'Total',
+        // stack: 'Total',
         name: "碳配额总量",
         areaStyle: {
           color: {
@@ -255,7 +255,7 @@ const optionCache = {
         data: [1269, 2222, 3234, 3353, 1543, 1213, 1320, 2321, 2312, 3223, 2231, 2332],
         type: 'line',
         name: "碳排放总量",
-        stack: 'Total',
+        // stack: 'Total',
         areaStyle: {
           color: {
             type: 'linear',
@@ -278,7 +278,7 @@ const optionCache = {
         data: [1269, 2222, 3234, 3353, 1543, 2213, 2320, 1321, 1312, 2223, 3231, 1332],
         type: 'line',
         name: "碳购买总量",
-        stack: 'Total',
+        // stack: 'Total',
         areaStyle: {
           color: {
             type: 'linear',

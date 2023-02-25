@@ -61,11 +61,11 @@ const data6 = reactive({
 if (store.state.MODE === "BUSINESS") {
   data6.Xdata = base2.chzzl.map((item) => item.period);
   data6.dataList = base2.chzzl.map((item) => item.rate);
-  data6.interval = 1
+  data6.interval = 1;
 
   data3.Xdata = base2.wlfy.map((item) => item.billDate);
   data3.dataList = base2.wlfy.map((item) => item.taxAmount);
-  data3.interval = 1
+  data3.interval = 1;
 } else {
   data6.Xdata = base2.map((item) => item.month);
   data6.dataList = base2.map((item) => item.qychzzl02);
@@ -151,12 +151,22 @@ let dataObj4 = {
   x: [],
   val: [],
 };
-CHART.inventoryNamesLow.forEach((item, i) => {
-  if (base4[item]) {
-    dataObj4.x.push(CHART.inventoryNames[i]);
-    dataObj4.val.push(base4[item]);
-  }
-});
+if (store.state.MODE === "BUSINESS") {
+    CHART.inventoryNamesLow.forEach((item, i) => {
+    if (base4.xsjg[item]) {
+      dataObj4.x.push(CHART.inventoryNames[i]);
+      dataObj4.val.push(base4.xsjg[item]);
+    }
+  });
+} else {
+  CHART.inventoryNamesLow.forEach((item, i) => {
+    if (base4[item]) {
+      dataObj4.x.push(CHART.inventoryNames[i]);
+      dataObj4.val.push(base4[item]);
+    }
+  });
+}
+
 const data7Echarts = () => {
   const data7 = reactive({
     color: "#5C73E6",
@@ -171,12 +181,22 @@ let dataObj = {
   x: [],
   val: [],
 };
+if (store.state.MODE === "BUSINESS") {
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base.kdj[item]) {
+    dataObj.x.push(CHART.inventoryNames[i]);
+    dataObj.val.push(base.kdj[item]);
+  }
+});
+}else{
 CHART.inventoryNamesLow.forEach((item, i) => {
   if (base[item]) {
     dataObj.x.push(CHART.inventoryNames[i]);
     dataObj.val.push(base[item]);
   }
 });
+}
+
 const data9Echarts = () => {
   const data9 = reactive({
     color: "#5C73E6",

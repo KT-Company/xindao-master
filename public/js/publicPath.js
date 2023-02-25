@@ -1,4 +1,4 @@
-// 全局路径
+// //全局路径
 // window.publicPath = ''
 // window.publicUrl = '/api/custom-form/customForm.formInfos.get' // 社会层、区域层 请求接口地址
 // window.FRONT_INTERFACE = [
