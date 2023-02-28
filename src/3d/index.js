@@ -6,10 +6,17 @@ import store from "@/2d/store";
 import router from "@/2d/router";
 import { handleBackMap, handleBMenuBMap } from "@/2d/hooks/use3dhandle";
 import { menu } from '@/2d/hooks/useMenu'
+import progress from './js/progress'
 
 let Bol3D = window.Bol3D;
 
 window.CACHE = CACHE
+progress.init()
+let progressCount = 0
+// const progresstTotal = 30046
+const progresstTotal = 17
+
+
 
 export const sceneOnLoad = ({ domElement, callback }) => {
   CACHE.container = new Bol3D.Container({
@@ -123,10 +130,13 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     gammaEnabled: false,
     stats: false,
     loadingBar: {
-      show: true,
+      show: false,
       type: 5,
     },
     onProgress: (model) => {
+      progressCount++
+      const num = (progressCount/progresstTotal) * 100
+      progress.update(num)
       if (STATE.baseModelNames.includes(model.name)) {
         model.scale.set(2, 3.8, 2);
         if (model.name == "Aqu-1") {
@@ -414,6 +424,7 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       promiseAll.push(API.loadEducation());
 
       Promise.all(promiseAll).then(() => {
+        progress.update(100)
         if (CACHE.container.loadingBar)
           CACHE.container.loadingBar.style.visibility = "hidden";
         API.hideAll();

@@ -19,10 +19,10 @@ const handleHome = () => {
 </script>
 
 <template>
-  <p class="time">
+  <p class="time" v-if="store.state.LEVEL > 0">
     <span>数据统计时间： {{ store.state.MODE === 'BUSINESS' ? store.state.BusinessTime : store.state.globalYear }}年</span>
   </p>
-  <img src="../../assets/images/home.png" class="home" @click="handleHome" />
+  <img src="../../assets/images/home.png" class="home" @click="handleHome" v-if="store.state.LEVEL > 0"/>
   <img src="../../assets/images/logoa.png" class="head" />
 </template>
 
@@ -35,6 +35,7 @@ const handleHome = () => {
   align-items: center;
   justify-content: right;
   padding-right: 1vw;
+  z-index: 10000;
   color: rgb(255, 255, 255);
 }
 

@@ -22,10 +22,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="main" v-if="store.state.LEVEL > 0">
+  <div id="main" >
     <Header></Header>
-    <router-view />
-    <Footer></Footer>
+    <router-view v-if="store.state.LEVEL > 0"/>
+    <Footer v-if="store.state.LEVEL > 0"></Footer>
   </div>
   <div ref="container3d" class="container-3d">
     <canvas class="canvas-3d" ref="canvas3d"></canvas>
@@ -43,7 +43,7 @@ onMounted(() => {
   height: 100%;
   width: 100%;
   position: fixed;
-  z-index: 2;
+  z-index: 10000;
   pointer-events: none;
   background: url("@/2d/assets/images/bg-5.png") no-repeat center center / 101%
     100%;

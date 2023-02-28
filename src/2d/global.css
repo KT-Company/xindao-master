@@ -7,6 +7,7 @@
   padding-left: 20px;
   width: 5px;
 }
+
 *::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: .5rem;
@@ -308,4 +309,18 @@ li {
   display: block;
   margin-top: .189vw;
   border-radius: .15vw;
+}
+
+.m-title-text {
+  left: 50%;
+  top: 30%;
+  transform: translateX(-50%);
+  position: absolute;
+  /* letter-spacing: 3px; */
+  color: white;
+  font-weight: bold;
+  font-size: 1.3vw;
+  z-index: 2;
+  font-family: fangsong;
+  font-style: italic;
 }
