@@ -152,12 +152,14 @@ let dataObj4 = {
   val: [],
 };
 if (store.state.MODE === "BUSINESS") {
-    CHART.inventoryNamesLow.forEach((item, i) => {
-    if (base4.xsjg[item]) {
-      dataObj4.x.push(CHART.inventoryNames[i]);
-      dataObj4.val.push(base4.xsjg[item]);
-    }
-  });
+  dataObj4.x = base4.xsjg.x
+  dataObj4.val = base4.xsjg.data
+  //   CHART.inventoryNamesLow.forEach((item, i) => {
+  //   if (base4.xsjg[item]) {
+  //     dataObj4.x.push(CHART.inventoryNames[i]);
+  //     dataObj4.val.push(base4.xsjg[item]);
+  //   }
+  // });
 } else {
   CHART.inventoryNamesLow.forEach((item, i) => {
     if (base4[item]) {
@@ -182,12 +184,14 @@ let dataObj = {
   val: [],
 };
 if (store.state.MODE === "BUSINESS") {
-CHART.inventoryNamesLow.forEach((item, i) => {
-  if (base.kdj[item]) {
-    dataObj.x.push(CHART.inventoryNames[i]);
-    dataObj.val.push(base.kdj[item]);
-  }
-});
+  dataObj.x = base.kdj.x
+  dataObj.val = base.kdj.data
+// CHART.inventoryNamesLow.forEach((item, i) => {
+//   if (base.kdj[item]) {
+//     dataObj.x.push(CHART.inventoryNames[i]);
+//     dataObj.val.push(base.kdj[item]);
+//   }
+// });
 }else{
 CHART.inventoryNamesLow.forEach((item, i) => {
   if (base[item]) {

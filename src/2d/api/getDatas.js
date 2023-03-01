@@ -137,16 +137,16 @@ const BUSINESS = () => {
       const data = res
       if (store.state.isMock) {
         // 客单价
-        data[14].data.data = {"RM01001":"100.10", "RM01002":"200", "RM01003":"300",}
+        data[14].data.data = { "RM01001": "100.10", "RM01002": "200", "RM01003": "300" }
         // 企业存款（2）
         data[37].data.data = { "balance": "5000000.00", "balance2": "0.05000" }
         // 企业贷款（2）
         data[36].data.data = { "loan": "10000.00", "loan2": "0.00010" }
-        
+
         // 企业所得税税负率
-        data[33].data.data = {"income":0.5405,"sum":37.00,"tax":20}
+        data[33].data.data = { "income": 0.5405, "sum": 37.00, "tax": 20 }
         // 企业增值税税负率
-        data[34].data.data = {"current":99.00,"vat":0.2475,"sum":400.00}
+        data[34].data.data = { "current": 99.00, "vat": 0.2475, "sum": 400.00 }
 
         // 企业银行贷款（1）
         data[32].data.data = [{ "loan": "7200.00", "orgTypeName": "销售公司" }, { "loan": "1000.00", "orgTypeName": "集团企业" }]
@@ -255,7 +255,16 @@ const BUSINESS = () => {
         // 客户销量
         data[20].data.data = [{ "purchaseOrgCode": "SC001", "purchaseOrgName": "新锐创新科技销售有限公司", "taxAmount": 7725450.00 }]
         // 企业库存情况
-        data[4].data.data = [{ "materialCode": "FP00001", "materialName": "玉龙X4mini 遥控飞机航拍器", "quantity": 4500 }, { "materialCode": "RM01001", "materialName": "PP塑料机架壳MINI", "quantity": 4000 }, { "materialCode": "RM01002", "materialName": "PP螺旋桨", "quantity": 16000 }, { "materialCode": "RM01003", "materialName": "飞控主机主板", "quantity": 4000 }, { "materialCode": "RM01004", "materialName": "玉龙X4mini钢机架", "quantity": 4000 }, { "materialCode": "RM01005", "materialName": "无刷动力套装A", "quantity": 4000 }, { "materialCode": "RM01006", "materialName": "MINI遥控器", "quantity": 4000 }, { "materialCode": "RM01007", "materialName": "4K高清云图套件", "quantity": 4000 }, { "materialCode": "RM01008", "materialName": "MINI包装套件", "quantity": 4000 }]
+        data[4].data.data = [
+          { "materialCode": "FP00001", "materialName": "玉龙X4mini 遥控飞机航拍器", "quantity": 4500 },
+          { "materialCode": "RM01001", "materialName": "PP塑料机架壳MINI", "quantity": 4000 },
+          { "materialCode": "RM01002", "materialName": "PP螺旋桨", "quantity": 16000 },
+          { "materialCode": "RM01003", "materialName": "飞控主机主板", "quantity": 4000 },
+          { "materialCode": "RM01004", "materialName": "玉龙X4mini钢机架", "quantity": 4000 },
+          { "materialCode": "RM01005", "materialName": "无刷动力套装A", "quantity": 4000 },
+          { "materialCode": "RM01006", "materialName": "MINI遥控器", "quantity": 4000 },
+          { "materialCode": "RM01007", "materialName": "4K高清云图套件", "quantity": 4000 },
+          { "materialCode": "RM01008", "materialName": "MINI包装套件", "quantity": 4000 }]
         // 增长
         data[25].data.data = { "2023-01": 100.00, "2023-02": 0.00, "2023-03": 0.00, "2023-04": 0.00, "2023-05": 0.00, "2023-06": 0.00, "2023-07": 0.00, "2023-08": 0.00, "2023-09": 0.00, "2023-10": 0.00, "2023-11": 0.00, "2023-12": 0.00 }
         // 负债
@@ -322,50 +331,54 @@ const BUSINESS = () => {
         fp00003: returnData(CHART.inventoryNames[20]),
 
         kdj: {
-          rm01001: returnData(CHART.inventoryNames[0], 14),
-          rm01002: returnData(CHART.inventoryNames[1], 14),
-          rm01003: returnData(CHART.inventoryNames[2], 14),
-          rm01004: returnData(CHART.inventoryNames[3], 14),
-          rm01005: returnData(CHART.inventoryNames[4], 14),
-          rm01006: returnData(CHART.inventoryNames[5], 14),
-          rm01007: returnData(CHART.inventoryNames[6], 14),
-          rm01008: returnData(CHART.inventoryNames[7], 14),
-          rm01009: returnData(CHART.inventoryNames[8], 14),
-          rm01010: returnData(CHART.inventoryNames[9], 14),
-          rm01011: returnData(CHART.inventoryNames[10], 14),
-          rm01012: returnData(CHART.inventoryNames[11], 14),
-          rm01013: returnData(CHART.inventoryNames[12], 14),
-          rm01014: returnData(CHART.inventoryNames[13], 14),
-          rm01015: returnData(CHART.inventoryNames[14], 14),
-          rm01016: returnData(CHART.inventoryNames[15], 14),
-          rm01017: returnData(CHART.inventoryNames[16], 14),
-          rm01018: returnData(CHART.inventoryNames[17], 14),
-          fp00001: returnData(CHART.inventoryNames[18], 14),
-          fp00002: returnData(CHART.inventoryNames[19], 14),
-          fp00003: returnData(CHART.inventoryNames[20], 14),
+          x: Object.keys(data[14].data.data),
+          data: Object.values(data[14].data.data)
+          // rm01001: returnData(CHART.inventoryNames[0], 14),
+          // rm01002: returnData(CHART.inventoryNames[1], 14),
+          // rm01003: returnData(CHART.inventoryNames[2], 14),
+          // rm01004: returnData(CHART.inventoryNames[3], 14),
+          // rm01005: returnData(CHART.inventoryNames[4], 14),
+          // rm01006: returnData(CHART.inventoryNames[5], 14),
+          // rm01007: returnData(CHART.inventoryNames[6], 14),
+          // rm01008: returnData(CHART.inventoryNames[7], 14),
+          // rm01009: returnData(CHART.inventoryNames[8], 14),
+          // rm01010: returnData(CHART.inventoryNames[9], 14),
+          // rm01011: returnData(CHART.inventoryNames[10], 14),
+          // rm01012: returnData(CHART.inventoryNames[11], 14),
+          // rm01013: returnData(CHART.inventoryNames[12], 14),
+          // rm01014: returnData(CHART.inventoryNames[13], 14),
+          // rm01015: returnData(CHART.inventoryNames[14], 14),
+          // rm01016: returnData(CHART.inventoryNames[15], 14),
+          // rm01017: returnData(CHART.inventoryNames[16], 14),
+          // rm01018: returnData(CHART.inventoryNames[17], 14),
+          // fp00001: returnData(CHART.inventoryNames[18], 14),
+          // fp00002: returnData(CHART.inventoryNames[19], 14),
+          // fp00003: returnData(CHART.inventoryNames[20], 14),
         },
         xsjg: {
-          rm01001: returnData(CHART.inventoryNames[0], 19),
-          rm01002: returnData(CHART.inventoryNames[1], 19),
-          rm01003: returnData(CHART.inventoryNames[2], 19),
-          rm01004: returnData(CHART.inventoryNames[3], 19),
-          rm01005: returnData(CHART.inventoryNames[4], 19),
-          rm01006: returnData(CHART.inventoryNames[5], 19),
-          rm01007: returnData(CHART.inventoryNames[6], 19),
-          rm01008: returnData(CHART.inventoryNames[7], 19),
-          rm01009: returnData(CHART.inventoryNames[8], 19),
-          rm01010: returnData(CHART.inventoryNames[9], 19),
-          rm01011: returnData(CHART.inventoryNames[10], 19),
-          rm01012: returnData(CHART.inventoryNames[11], 19),
-          rm01013: returnData(CHART.inventoryNames[12], 19),
-          rm01014: returnData(CHART.inventoryNames[13], 19),
-          rm01015: returnData(CHART.inventoryNames[14], 19),
-          rm01016: returnData(CHART.inventoryNames[15], 19),
-          rm01017: returnData(CHART.inventoryNames[16], 19),
-          rm01018: returnData(CHART.inventoryNames[17], 19),
-          fp00001: returnData(CHART.inventoryNames[18], 19),
-          fp00002: returnData(CHART.inventoryNames[19], 19),
-          fp00003: returnData(CHART.inventoryNames[20], 19),
+          x: Object.keys(data[19].data.data),
+          data: Object.values(data[19].data.data)
+          // rm01001: returnData(CHART.inventoryNames[0], 19),
+          // rm01002: returnData(CHART.inventoryNames[1], 19),
+          // rm01003: returnData(CHART.inventoryNames[2], 19),
+          // rm01004: returnData(CHART.inventoryNames[3], 19),
+          // rm01005: returnData(CHART.inventoryNames[4], 19),
+          // rm01006: returnData(CHART.inventoryNames[5], 19),
+          // rm01007: returnData(CHART.inventoryNames[6], 19),
+          // rm01008: returnData(CHART.inventoryNames[7], 19),
+          // rm01009: returnData(CHART.inventoryNames[8], 19),
+          // rm01010: returnData(CHART.inventoryNames[9], 19),
+          // rm01011: returnData(CHART.inventoryNames[10], 19),
+          // rm01012: returnData(CHART.inventoryNames[11], 19),
+          // rm01013: returnData(CHART.inventoryNames[12], 19),
+          // rm01014: returnData(CHART.inventoryNames[13], 19),
+          // rm01015: returnData(CHART.inventoryNames[14], 19),
+          // rm01016: returnData(CHART.inventoryNames[15], 19),
+          // rm01017: returnData(CHART.inventoryNames[16], 19),
+          // rm01018: returnData(CHART.inventoryNames[17], 19),
+          // fp00001: returnData(CHART.inventoryNames[18], 19),
+          // fp00002: returnData(CHART.inventoryNames[19], 19),
+          // fp00003: returnData(CHART.inventoryNames[20], 19),
         },
 
 

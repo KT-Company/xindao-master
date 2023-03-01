@@ -4,6 +4,10 @@ var lightLoader = function (c, cw, ch) { var _this = this; this.c = c; this.ctx 
 var setupRAF = function () { var lastTime = 0; var vendors = ["ms", "moz", "webkit", "o"]; for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) { window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"]; window.cancelAnimationFrame = window[vendors[x] + "CancelAnimationFrame"] || window[vendors[x] + "CancelRequestAnimationFrame"] } if (!window.requestAnimationFrame) { window.requestAnimationFrame = function (callback, element) { var currTime = new Date().getTime(); var timeToCall = Math.max(0, 16 - (currTime - lastTime)); var id = window.setTimeout(function () { callback(currTime + timeToCall) }, timeToCall); lastTime = currTime + timeToCall; return id } } if (!window.cancelAnimationFrame) { window.cancelAnimationFrame = function (id) { clearTimeout(id) } } };
 
 
+/**
+ * 创建进度条 DOM 元素
+ * @date 2023-02-28
+ */
 function create() {
     //背景底纹
     KT_loading = document.createElement('div');
@@ -53,6 +57,12 @@ function create() {
 }
 
 let a = null 
+
+/**
+ * 进度条更新
+ * @date 2023-02-28
+ * @param {number} percentComplete // 进度值
+ */
 function update(percentComplete) {
     if(a === percentComplete) return
     KT_loadText.innerHTML = Math.round(percentComplete) + '%'; 
@@ -63,11 +73,16 @@ function update(percentComplete) {
 }
 
 
+/**
+ * 删除进度条 DOM 元素
+ * @date 2023-02-28
+ */
 function remove() {
     document.body.removeChild(KT_loading)
 }
 
-const progress = {
+export default {
+    // 初始化进度条
     init: () => {
         create()
         setupRAF()
@@ -76,5 +91,3 @@ const progress = {
     update,
     remove,
 }
-
-export default progress
