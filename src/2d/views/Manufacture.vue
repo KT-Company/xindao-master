@@ -62,12 +62,19 @@ let dataObj1 = {
   x: [],
   val: [],
 };
+
+if (store.state.MODE === "BUSINESS") {
+  dataObj1.x = base.qykcqk.x
+  dataObj1.val = base.qykcqk.data
+}else{
 CHART.inventoryNamesLow.forEach((item, i) => {
   if (base[item]) {
     dataObj1.x.push(CHART.inventoryNames[i]);
     dataObj1.val.push(base[item]);
   }
 });
+}
+
 
 const data5 = reactive({
   color: "rgba(255,159,64)",

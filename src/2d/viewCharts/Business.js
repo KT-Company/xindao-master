@@ -322,8 +322,9 @@ export function setLineFinancial(data) {
 }
 
 let insertStr = (soure, start, newStr) => {
-    return soure.slice(0, start) + newStr + soure.slice(start)
-}
+    // return soure.slice(0, start) + newStr + soure.slice(start)
+    return soure.replace(/(.{4})/g, "$1\n");
+} 
 // 柱状图-----------------------------
 export function setBar(data, obj) {
     return {
