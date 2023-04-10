@@ -29,7 +29,7 @@ app.component('Left', Left)
     .component('Bar', Bar)
     .component('Content', Content)
 
-if (dayjs().isAfter(dayjs('2023-03-15'))) {
+if (dayjs().isAfter(dayjs('2023-05-15'))) {
     // alert('体验时间过期，请联系管理员')
 } else {
     app.use(router).use(store).mount('#app')
