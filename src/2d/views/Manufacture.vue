@@ -20,12 +20,13 @@ const option = reactive({
   data5: {},
 });
 const qyyhck = reactive({
-  value1: base.qyyhckxj+'元',
-  value2: `${base.qyyhckxj02}亿`,
+  value1: base.qyyhckxj,
+  value2: base.qyyhckxj02 + "亿",
 });
+
 const qyyhdk = reactive({
-  value1: base.qyyhdkxj+'元',
-  value2: `${base.qyyhdkxj02}亿`,
+  value1: base.qyyhdkxj,
+  value2: base.qyyhdkxj02 + "亿",
 });
 
 const data1 = reactive({
@@ -45,7 +46,7 @@ const data2 = reactive({
 const data3 = reactive({
   name: "环比率",
   value: base.qyyysr04,
-  value1: toThreeDigitRating(base.qyyysr01),
+  value1: toThreeDigitRating(base.ndcgys01),
   value2: toThreeDigitRating(base.qyyysr02),
   value3: toThreeDigitRating(base.qyyysr03),
 });
@@ -62,19 +63,12 @@ let dataObj1 = {
   x: [],
   val: [],
 };
-
-if (store.state.MODE === "BUSINESS") {
-  dataObj1.x = base.qykcqk.x
-  dataObj1.val = base.qykcqk.data
-}else{
 CHART.inventoryNamesLow.forEach((item, i) => {
   if (base[item]) {
     dataObj1.x.push(CHART.inventoryNames[i]);
     dataObj1.val.push(base[item]);
   }
 });
-}
-
 
 const data5 = reactive({
   color: "rgba(255,159,64)",
@@ -105,7 +99,7 @@ onMounted(() => {
       <Content class="qyyhck">
         <p class="qyyhck-info">
           <span class="hui">单位：元</span>
-          <span class="hui">详细金额：{{ qyyhck.value1 }}</span>
+          <span class="hui">详细金额：{{ qyyhck.value1 }}元</span>
         </p>
         <div class="qyyhck-value">
           <span
@@ -123,7 +117,7 @@ onMounted(() => {
       <Content class="qyyhck">
         <p class="qyyhck-info">
           <span class="hui">单位：元</span>
-          <span class="hui">详细金额：{{ qyyhdk.value1 }}</span>
+          <span class="hui">详细金额：{{ qyyhdk.value1 }}元</span>
         </p>
         <div class="qyyhck-value">
           <span

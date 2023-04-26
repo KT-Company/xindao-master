@@ -51,23 +51,19 @@ let dataObj = {
   x: [],
   val: [],
 };
-
-if (store.state.MODE === "BUSINESS") {
-  dataObj.x = base5.kdj.x
-  dataObj.val = base5.kdj.data
-  // if (base5.kdj[item]) {
-  //   dataObj.x.push(CHART.inventoryNames[i]);
-  //   dataObj.val.push(base5.kdj[item]);
-  // }
-} else {
-  CHART.inventoryNamesLow.forEach((item, i) => {
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (store.state.MODE === "BUSINESS") {
+    if (base5.kdj[item]) {
+      dataObj.x.push(CHART.inventoryNames[i]);
+      dataObj.val.push(base5.kdj[item]);
+    }
+  } else {
     if (base5[item]) {
       dataObj.x.push(CHART.inventoryNames[i]);
       dataObj.val.push(base5[item]);
     }
-  });
-}
-
+  }
+});
 const data2Echarts = () => {
   const data2 = reactive({
     color: "#5C73E6",
@@ -90,7 +86,6 @@ const data3Echarts = () => {
   if (store.state.MODE === "BUSINESS") {
     data3.Xdata = Object.keys(base8.xsmll);
     data3.dataList = Object.values(base8.xsmll);
-    data3.interval = 1;
   } else {
     data3.Xdata = base8.map((item) => item.month);
     data3.dataList = base8.map((item) => item.qyxsmlv02);
@@ -102,18 +97,19 @@ let dataObj1 = {
   x: [],
   val: [],
 };
-if (store.state.MODE === "BUSINESS") {
-  dataObj1.x = base6.xsjg.x;
-  dataObj1.val = base6.xsjg.data;
-} else {
-  CHART.inventoryNamesLow.forEach((item, i) => {
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (store.state.MODE === "BUSINESS") {
+    if (base6.xsjg[item]) {
+      dataObj1.x.push(CHART.inventoryNames[i]);
+      dataObj1.val.push(base6.xsjg[item]);
+    }
+  } else {
     if (base6[item]) {
       dataObj1.x.push(CHART.inventoryNames[i]);
       dataObj1.val.push(base6[item]);
     }
-  });
-}
-
+  }
+});
 const data4Echarts = () => {
   const data4 = reactive({
     color: "#CCCCCC",

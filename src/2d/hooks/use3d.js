@@ -24,6 +24,7 @@ function menuInteraction(item, leve, son) {
         },
       });
     } else if (item.name == "区域层") {
+      console.log("item",item,"leve",leve,"son",son)
       API.hideAll();
       API.showRoutes();
       API.showModels();

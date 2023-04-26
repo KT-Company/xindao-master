@@ -1,5 +1,4 @@
 import * as echarts from 'echarts'
-import store from '../store';
 // 百分比-------------------------
 export function setPiePercentage(data) {
     return {
@@ -19,7 +18,7 @@ export function setPiePercentage(data) {
                 x: 'center',
                 top: '30%',
                 textStyle: {
-                    fontSize: 16,
+                    fontSize: 22,
                     color: '#FFFFFF',
                     fontFamily: 'Source Han Sans CN',
                     foontWeight: '400',
@@ -27,7 +26,7 @@ export function setPiePercentage(data) {
             },
         ],
         polar: {
-            radius: ['100%', '85%'],
+            radius: ['92%', '75%'],
             center: ['50%', '50%'],
         },
         angleAxis: {
@@ -116,7 +115,7 @@ export function setLine(data) {
                 margin: '10',
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                interval: data.interval ?? 0
+                interval: 0
             },
             splitLine: {
                 show: false
@@ -195,14 +194,8 @@ export function setLine(data) {
     };
 
 }
-// 折线图----------------------------
+// 折现图----------------------------
 export function setLineFinancial(data) {
-    let Xdata = data.Xdata
-    if(store.state.MODE === 'BUSINESS'){
-        Xdata = data.Xdata.map(item=>{
-            return `${parseInt(item.split('-')[1])}月`
-        })
-    }
     return {
         tooltip: {
             trigger: 'axis',
@@ -242,7 +235,7 @@ export function setLineFinancial(data) {
                 margin: 10,
                 color: 'rgba(202,224,255,.6)',
                 fontSize: 12,
-                // interval: 0
+                interval: data.interval ?? 0
             },
             splitLine: {
                 show: false
@@ -255,7 +248,7 @@ export function setLineFinancial(data) {
                     color: 'rgba(255,255,255,.3)'
                 }
             },
-            data: Xdata
+            data: data.Xdata
         },
         yAxis: [{
             type: 'value',
@@ -282,38 +275,39 @@ export function setLineFinancial(data) {
                 }
             },
             show: true,
+
         }],
         series: [{
             name: data.name,
             type: 'line',
             smooth: true, //是否平滑曲线显示
             showSymbol: false,
+
             itemStyle: {
                 color: data.color,
                 borderColor: data.color,
                 borderWidth: 1
             },
             lineStyle: {
-                color: data.color,
-                // normal: {
-                //     width: 2,
-                //     color: {
-                //         type: 'linear',
-                //         colorStops: [{
-                //             offset: 0,
-                //             color: data.color // 0% 处的颜色
-                //         },
-                //         {
-                //             offset: 1,
-                //             color: data.color // 100% 处的颜色
-                //         }
-                //         ],
-                //         globalCoord: false // 缺省为 false
-                //     },
-                //     shadowColor: data.color,
-                //     shadowBlur: 30,
-                //     shadowOffsetY: 5
-                // }
+                normal: {
+                    width: 2,
+                    color: {
+                        type: 'linear',
+                        colorStops: [{
+                            offset: 0,
+                            color: data.color // 0% 处的颜色
+                        },
+                        {
+                            offset: 1,
+                            color: data.color // 100% 处的颜色
+                        }
+                        ],
+                        globalCoord: false // 缺省为 false
+                    },
+                    shadowColor: data.color,
+                    shadowBlur: 30,
+                    shadowOffsetY: 5
+                }
             },
             data: data.dataList
         }]
@@ -322,9 +316,8 @@ export function setLineFinancial(data) {
 }
 
 let insertStr = (soure, start, newStr) => {
-    // return soure.slice(0, start) + newStr + soure.slice(start)
-    return soure.replace(/(.{4})/g, "$1\n");
-} 
+    return soure.slice(0, start) + newStr + soure.slice(start)
+}
 // 柱状图-----------------------------
 export function setBar(data, obj) {
     return {

@@ -32,14 +32,9 @@ const store = createStore({
             MODE: 'EXPLORE', // 当前运行模式
             enterpriseInfo: {}, // 企业信息
             paramsA: null,
-            BusinessTime: '', // 经营模式时间
-            isMock: false, // 测试
         }
     },
     mutations: {
-        setBusinessTime(state, value) {
-            state.BusinessTime = value
-        },
         setParamsA(state, value) {
             state.paramsA = value
         },

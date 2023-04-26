@@ -1,7 +1,6 @@
 import { ref, watch } from 'vue'
 import router from '@/2d/router'
-import store from '../store';
-const menu = ref([
+export const menu = ref([
     {
         id: 1,
         name: "社会层",
@@ -24,7 +23,7 @@ const menu = ref([
         isPick: false,
         icon: require('@/2d/assets/images/quyu.png'),
         children: [
-            { id: "2-1", name: "三圈关系", isPick: false, level: 2 },
+            { id: "2-1", name: "产业分布", isPick: false, level: 2 },
             { id: "2-2", name: "资金流关系", isPick: false, level: 2 },
             { id: "2-3", name: "物流关系", isPick: false, level: 2 },
             { id: "2-4", name: "信息流关系", isPick: false, level: 2 },
@@ -145,8 +144,13 @@ const menu = ref([
     },
 ]);
 
-const setMenu = (value) => {
-    menu.value = value
-}
 
-export { menu, setMenu }
+// watch(
+//     () => router.currentRoute.value.path,
+//     (a) => {
+//         menu.value[0].children.forEach(v => {
+//             v.isPick = v.path === a
+//         })
+//     },
+//     { deep: true }
+// )

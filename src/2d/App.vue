@@ -8,24 +8,40 @@ const store = useStore();
 const router = useRouter();
 provide("echarts", echarts);
 const canvas3d = ref(null);
-router.push('/');
+window
+// router.push('/');
 onMounted(() => {
     nextTick(() => {
-      sceneOnLoad({
-        domElement: canvas3d.value,
-        callback: () => {
-          // console.log('load finish')
-        },
-      });
+      if (store.state.MODE === 'BUSINESS') {
+                  store.commit("changeLevel", store.state.enterpriseInfo.level);
+                  router.push(store.state.enterpriseInfo.path);
+                } else {
+                  store.commit("changeLevel", 1);
+                  router.push("/IndustrialEconomy");
+                }
+      // sceneOnLoad({
+      //   domElement: canvas3d.value,
+      //   callback: () => {
+      //     // console.log('load finish')
+      //   },
+      // });
     });
 });
+// window.ue.interface.ue2js = function (data) {
+//   console.log('data: ', data);
+// };
+
+// const goback = ()=>{
+//    const data = 456
+//    window.ue('uefunctionName',data)
+//  }
 </script>
 
 <template>
-  <div id="main" >
+  <div id="main" v-if="store.state.LEVEL > 0">
     <Header></Header>
-    <router-view v-if="store.state.LEVEL > 0"/>
-    <Footer v-if="store.state.LEVEL > 0"></Footer>
+    <router-view />
+    <Footer></Footer>
   </div>
   <div ref="container3d" class="container-3d">
     <canvas class="canvas-3d" ref="canvas3d"></canvas>
@@ -43,7 +59,7 @@ onMounted(() => {
   height: 100%;
   width: 100%;
   position: fixed;
-  z-index: 10000;
+  z-index: 2;
   pointer-events: none;
   background: url("@/2d/assets/images/bg-5.png") no-repeat center center / 101%
     100%;

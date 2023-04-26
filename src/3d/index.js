@@ -4,19 +4,11 @@ import { CACHE } from "./CACHE.js";
 import { DATA } from "./DATA.js";
 import store from "@/2d/store";
 import router from "@/2d/router";
-import { handleBackMap, handleBMenuBMap } from "@/2d/hooks/use3dhandle";
-import { menu } from '@/2d/hooks/useMenu'
-import progress from './js/progress'
+import { handleBackMap } from "@/2d/hooks/use3dhandle";
 
 let Bol3D = window.Bol3D;
 
 window.CACHE = CACHE
-progress.init()
-let progressCount = 0
-// const progresstTotal = 30046
-const progresstTotal = 17
-
-
 
 export const sceneOnLoad = ({ domElement, callback }) => {
   CACHE.container = new Bol3D.Container({
@@ -130,13 +122,10 @@ export const sceneOnLoad = ({ domElement, callback }) => {
     gammaEnabled: false,
     stats: false,
     loadingBar: {
-      show: false,
+      show: true,
       type: 5,
     },
     onProgress: (model) => {
-      progressCount++
-      const num = (progressCount/progresstTotal) * 100
-      progress.update(num)
       if (STATE.baseModelNames.includes(model.name)) {
         model.scale.set(2, 3.8, 2);
         if (model.name == "Aqu-1") {
@@ -424,7 +413,6 @@ export const sceneOnLoad = ({ domElement, callback }) => {
       promiseAll.push(API.loadEducation());
 
       Promise.all(promiseAll).then(() => {
-        progress.update(100)
         if (CACHE.container.loadingBar)
           CACHE.container.loadingBar.style.visibility = "hidden";
         API.hideAll();
@@ -825,27 +813,18 @@ export const sceneOnLoad = ({ domElement, callback }) => {
         API.showThreeFlowsByName(obj.name);
       }
     } else if (obj.userData.type == "enterpriseIconInner" && obj.visible) {
-      const name = obj.text == '企业管理部' ? '企管部' : obj.text
-      try {
-        const son = menu.value.find(item => item.id == store.state.menuAid).children.find(item => item.name == name)
-        handleBMenuBMap[son.id]()
-        store.commit("setMenuBid", son.id);
-        router.push(son.path);
-      } catch (error) {
-        CACHE.container.cameraFocus({
-          target: obj.position,
-          distance: 2000,
-        });
-        API.selectEnterpriseInnerIcon(obj.userData.enterprise, obj.userData.name)
-        store.commit("setMenuBid", null);
-        if (obj.userData.id) {
-          store.commit(
-            "setMenuBid",
-            obj.userData.id
-          );
-        }
+      CACHE.container.cameraFocus({
+        target: obj.position,
+        distance: 2000,
+      });
+      API.selectEnterpriseInnerIcon(obj.userData.enterprise, obj.userData.name)
+      store.commit("setMenuBid", null);
+      if (obj.userData.id) {
+        store.commit(
+          "setMenuBid",
+          obj.userData.id
+        );
       }
-
     } else if (
       Object.values(STATE.modelExcludeMap).includes(obj.userData.name)
     ) {

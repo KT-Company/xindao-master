@@ -73,7 +73,7 @@ if (store.state.MODE === "BUSINESS") {
   const total = base9.sbzt
     .map((item) => item.num)
     .reduce((prev, current, index, arr) => {
-      return Number(prev) + Number(current);
+      return prev + current;
     });
   const wg = base9.sbzt.find((item) => item.stateRemark == "完工").num;
   const scz = base9.sbzt.find((item) => item.stateRemark == "生产中").num;

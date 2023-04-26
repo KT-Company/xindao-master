@@ -1,26 +1,39 @@
 <!DOCTYPE html>
 <html lang="">
-  <script src="./js/heatmap.min.js"></script>
-  <script src="./js/dat.gui.min.js"></script>
-  <script src="./main.js"></script>
-  <script src="./js/publicPath.js"></script>
-  <style type="text/css">
-    .dg.ac {
-      z-index: 20 !important;
-    }
-  </style>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+<script src="./js/heatmap.min.js"></script>
+<script src="./js/dat.gui.min.js"></script>
+<script src="./main.js"></script>
+<script src="./js/publicPath.js"></script>
+<style type="text/css">
+  .dg.ac {
+    z-index: 20 !important;
+  }
+</style>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>
+    <%= htmlWebpackPlugin.options.title %>
+  </title>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+        Please enable it to continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
+<script>
+  linkUE();
+  function linkUE() {
+    "object" != typeof ue || "object" != typeof ue.interface ? ("object" != typeof ue && (ue = {}), ue.interface = {}, ue.interface.broadcast = function (e, t) { if ("string" == typeof e) { var o = [e, ""]; void 0 !== t && (o[1] = t); var n = encodeURIComponent(JSON.stringify(o)); "object" == typeof history && "function" == typeof history.pushState ? (history.pushState({}, "", "#" + n), history.pushState({}, "", "#" + encodeURIComponent("[]"))) : (document.location.hash = n, document.location.hash = encodeURIComponent("[]")) } }) : function (e) { ue.interface = {}, ue.interface.broadcast = function (t, o) { "string" == typeof t && (void 0 !== o ? e.broadcast(t, JSON.stringify(o)) : e.broadcast(t, "")) } }(ue.interface), (ue5 = ue.interface.broadcast);
+  }
+</script>
+
 </html>

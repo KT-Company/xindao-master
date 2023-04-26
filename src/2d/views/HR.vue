@@ -96,7 +96,7 @@ onMounted(() => {
           <div class="huanbi">
             <p class="title hui">环比</p>
             <p class="value">￥{{data3.hb}}</p>
-            <!-- <span class="value">+</span> -->
+            <span class="value">+</span>
           </div>
         </div>
       </div>

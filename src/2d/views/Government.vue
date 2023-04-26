@@ -249,8 +249,7 @@ onMounted(() => {
 
   .char {
     height: 120px;
-    // width: 120px;
-    width: 50%;
+    width: 120px;
   }
 
   .pe-money-list,
@@ -289,7 +288,6 @@ onMounted(() => {
 
   .char {
     height: 100%;
-    width: 100%;
   }
 }
 </style>

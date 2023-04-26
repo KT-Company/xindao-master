@@ -56,15 +56,11 @@ const drawPurchaseChar = (el) => {
     ],
   });
   char.setOption(option);
-  const resizeHandler = () => {
-    char.resize();
-  };
-  window.addEventListener("resize", resizeHandler);
 };
 const peMoney = reactive([
   { unit: "￥", value: base.qycgzc001, prefix: "", desc: "" },
   { unit: "￥", value: base.qycgzc002, prefix: "", desc: "本月" },
-  { unit: "￥", value: base.qycgzc003, prefix: "", desc: "环比" },
+  { unit: "￥", value: base.qycgzc003, prefix: "+", desc: "环比" },
 ]);
 
 let gysphb = {};
@@ -105,10 +101,6 @@ const drawLogisticsChar = (el) => {
       ],
     });
     char.setOption(option);
-    const resizeHandler = () => {
-      char.resize();
-    };
-    window.addEventListener("resize", resizeHandler);
   } else {
     const { char, option } = getEchartsAndOption(el, "line1", {
       xAxis: {
@@ -191,18 +183,12 @@ let dataObj1 = {
   x: [],
   val: [],
 };
-if (store.state.MODE === "BUSINESS") {
-  dataObj1.x = base4.qykcqk.x;
-  dataObj1.val = base4.qykcqk.data;
-} else {
-  CHART.inventoryNamesLow.forEach((item, i) => {
-    if (base4[item]) {
-      dataObj1.x.push(CHART.inventoryNames[i]);
-      dataObj1.val.push(base4[item]);
-    }
-  });
-}
-
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base4[item]) {
+    dataObj1.x.push(CHART.inventoryNames[i]);
+    dataObj1.val.push(base4[item]);
+  }
+});
 const data1 = reactive({
   color: "rgba(255,159,64)",
   name: "企业库存情况",
@@ -368,8 +354,7 @@ onMounted(() => {
 
   .char {
     height: 120px;
-    // width: 120px;
-    width: 50%;
+    width: 120px;
   }
 
   .pe-money-list,
@@ -439,7 +424,6 @@ onMounted(() => {
   }
   .char {
     height: 100%;
-    width: 100%;
   }
 }
 </style>

@@ -314,14 +314,13 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 20px 0;
-  width: 90%;
 
   .item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
-    width: 100%;
+    width: 223px;
     height: 32px;
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.4);

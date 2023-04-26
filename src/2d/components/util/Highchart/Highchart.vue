@@ -2,8 +2,8 @@
 //按需导入需要用到的 vue函数 和 echarts
 import { ref, defineProps, watch, onMounted, reactive } from "vue";
 //获取 dom 和 父组件数据 并定义"myChart"用于初始化图表
-import Highcharts from "./highcharts";
-import Highcharts3D from './highcharts-3d';
+import Highcharts from "highcharts";
+import Highcharts3D from "./highcharts-3d";
 
 const props = defineProps({
   option: Object,

@@ -34,13 +34,12 @@ onMounted(() => {
   data6Echarts();
   data7Echarts();
 });
-// 市场获单情况
 const data1 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
   data: [base.schdqk04],
-  perCentum: `${base.schdqk04}%`,
+  perCentum: `+${base.schdqk04}%`,
   titleData: "环比率",
-  value0: toThreeDigitRating(base.schdqk01),
+  value0: toThreeDigitRating(base.schdqk04),
   value1: toThreeDigitRating(base.schdqk02),
   value2: toThreeDigitRating(base.schdqk03),
 });
@@ -50,7 +49,7 @@ const data1Echarts = () => {
 const data2 = reactive({
   color: ["rgb(91,114,227)", "rgba(91,114,227,.5)"],
   data: [base.ggtfqk04],
-  perCentum: `${base.ggtfqk04}%`,
+  perCentum: `+${base.ggtfqk04}%`,
   titleData: "环比率",
   value0: toThreeDigitRating(base.ggtfqk01),
   value1: toThreeDigitRating(base.ggtfqk02),
@@ -60,12 +59,11 @@ const data2Echarts = () => {
   option.data2 = setPiePercentage(data2);
 };
 
-// 市场开拓
 const data3 = reactive({
   color: ["rgb(252,110,1)", "rgba(252,110,1,.5)"],
   data: [base.scktqk04],
-  perCentum: `${base.scktqk04}%`,
-  titleData: "已开拓率",
+  perCentum: "+70%",
+  titleData: "环比率",
   value0: toThreeDigitRating(base.scktqk01),
   value1: base.scktqk02,
   value2: base.scktqk03,
@@ -78,26 +76,12 @@ const data4Echarts = () => {
   const data4 = reactive({
     color: "#5C73E6",
     name: "客户销量",
-    Xdata: [],
-    dataList: [],
+    Xdata: base1.filter((item) => item.qykhxl01).map((item) => item.qykhxl01),
+    dataList: base1
+      .filter((item) => item.qykhxl01)
+      .map((item) => item.qykhxl02),
     isShow: false,
   });
-
-  if (store.state.MODE === "BUSINESS") {
-    data4.Xdata = base1.khxl
-      .filter((item) => item.purchaseOrgName)
-      .map((item) => item.purchaseOrgName);
-    data4.dataList = base1.khxl
-      .filter((item) => item.taxAmount)
-      .map((item) => item.taxAmount);
-  } else {
-    data4.Xdata = base1
-      .filter((item) => item.qykhxl01)
-      .map((item) => item.qykhxl01);
-    data4.dataList = base1
-      .filter((item) => item.qykhxl01)
-      .map((item) => item.qykhxl02);
-  }
   option.data4 = setBar(data4, { interval: 1 });
 };
 
@@ -105,42 +89,22 @@ const data5Echarts = () => {
   const data5 = reactive({
     color: "#FF9F40",
     name: "销售毛利率",
-    Xdata: [],
-    dataList: [],
+    Xdata: base2.map((item) => item.month),
+    dataList: base2.map((item) => item.qyxsmlv02),
     isShow: true,
   });
-  if (store.state.MODE === "BUSINESS") {
-    data5.Xdata = Object.keys(base2.xsmll);
-    data5.dataList = Object.values(base2.xsmll);
-    data5.interval = 1;
-  } else {
-    data5.Xdata = base2.map((item) => item.month);
-    data5.dataList = base2.map((item) => item.qyxsmlv02);
-  }
   option.data5 = setLine(data5);
 };
 let dataObj = {
   x: [],
   val: [],
 };
-if (store.state.MODE === "BUSINESS") {
-  dataObj.x = base.xsjg.x
-  dataObj.val = base.xsjg.data
-  // CHART.inventoryNamesLow.forEach((item, i) => {
-  //   if (base.xsjg[item]) {
-  //     dataObj.x.push(CHART.inventoryNames[i]);
-  //     dataObj.val.push(base.xsjg[item]);
-  //   }
-  // });
-} else {
-  CHART.inventoryNamesLow.forEach((item, i) => {
-    if (base[item]) {
-      dataObj.x.push(CHART.inventoryNames[i]);
-      dataObj.val.push(base[item]);
-    }
-  });
-}
-
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base[item]) {
+    dataObj.x.push(CHART.inventoryNames[i]);
+    dataObj.val.push(base[item]);
+  }
+});
 const data6Echarts = () => {
   const data6 = reactive({
     color: "#5C73E6",
@@ -155,24 +119,12 @@ let dataObj3 = {
   x: [],
   val: [],
 };
-if (store.state.MODE === "BUSINESS") {
-  dataObj3.x = base3.kdj.x
-  dataObj3.val = base3.kdj.data
-  // CHART.inventoryNamesLow.forEach((item, i) => {
-  //   if (base3.kdj[item]) {
-  //     dataObj3.x.push(CHART.inventoryNames[i]);
-  //     dataObj3.val.push(base3.kdj[item]);
-  //   }
-  // });
-} else {
-  CHART.inventoryNamesLow.forEach((item, i) => {
-    if (base3[item]) {
-      dataObj3.x.push(CHART.inventoryNames[i]);
-      dataObj3.val.push(base3[item]);
-    }
-  });
-}
-
+CHART.inventoryNamesLow.forEach((item, i) => {
+  if (base3[item]) {
+    dataObj3.x.push(CHART.inventoryNames[i]);
+    dataObj3.val.push(base3[item]);
+  }
+});
 const data7Echarts = () => {
   const data7 = reactive({
     color: "rgba(255,159,64)",

@@ -59,7 +59,7 @@ for (let index = 0; index < 5; index++) {
 const baseList = ref([]);
 onMounted(() => {
   gethjrk().then((res) => {
-    console.log("环境人口: ", res);
+    console.log("gethjrk: ", res);
     const data = res.data.formInfoList;
     base.data = data.find((item) => item.year == store.state.year);
     baseList.value = data.filter((item) => useYear(item));
