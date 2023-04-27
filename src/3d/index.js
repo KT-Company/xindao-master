@@ -683,8 +683,6 @@ export const sceneOnLoad = ({ domElement, callback }) => {
   const events = new Bol3D.Events(CACHE.container);
   events.enabled.hover = false;
   events.ondbclick = (e) => {
-    console.log("e", e);
-
     // console.log(e, e.objects[0].point , e.objects[0].object.name)
 
     // e.objects[0].object.visible = false

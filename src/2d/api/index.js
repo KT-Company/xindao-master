@@ -5,11 +5,7 @@ import getUrlParam from '@/2d/utils/getUrlParam'
 
 // const p = 
 const p = store.state.isMock ? { mode: 'BUSINESS' } : getUrlParam()  // 经营模式: BUSINESS  探索模式: EXPLORE （测试）
-console.log('p: ', p);
 store.commit('setMODE', p.mode)
-
-console.log('MODE: ', store.state.MODE);
-
 // mock 数据获取 token 地址：https://dstudent.seentao.com/ 账号：15178904534 密码：admin9527...）
 const url = `${window.publicUrl}?
 caseVersionId=${p.caseVersionId}

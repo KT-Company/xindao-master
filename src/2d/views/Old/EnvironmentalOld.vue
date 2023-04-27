@@ -164,7 +164,7 @@ onMounted(() => {
   // });
 
   gethjrk().then((res) => {
-    console.log("gethjrk: ", res);
+
     const datas = res.data.formInfoList;
     base.data = datas.filter((item) => useYear(item));
     // 历练人口-------------------------------------------------

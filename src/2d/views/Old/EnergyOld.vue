@@ -65,7 +65,7 @@ const option = reactive({
 
 onMounted(() => {
   getnytpfy().then((res) => {
-    console.log("nytpfy: ", res);
+
 
     const data = res.data.formInfoList;
     // 寻找某个省份某年的数据
@@ -91,7 +91,7 @@ onMounted(() => {
   });
 
   getnyzxhm().then((res) => {
-    console.log("getnyzxhm: ", res);
+
     const data = res.data.formInfoList;
     fireChart.data[0].value = data
       .filter((item) => item.year == store.state.year - 1)
@@ -107,7 +107,7 @@ onMounted(() => {
 
   getqynytpfy().then((res) => {
     quanguoArea.value = res.data.formInfoList;
-    console.log("getqynytpfy: ", res);
+
   });
 });
 </script>

@@ -45,7 +45,7 @@ const data1Echarts = () => {
     isShow: false,
   });
   option.data1 = setBar(data1, { interval: 1, barW: "5%" });
-  console.log("option.data1: ", option.data1);
+
 };
 let dataObj = {
   x: [],

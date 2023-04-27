@@ -11,10 +11,10 @@ import { useYear } from "@/2d/hooks/useTime";
 import { useStore } from "vuex";
 const store = useStore();
 
-// 企业总量点击事件
-const handleCompany = (item) => {
-  console.log("item: ", item);
-};
+// // 企业总量点击事件
+// const handleCompany = (item) => {
+
+// };
 
 const cyzb = reactive({
   data: {},
@@ -69,7 +69,7 @@ const taxChartData = ref([
 ]);
 onMounted(() => {
   getcyjj().then((res) => {
-    console.log("getcyjj: ", res);
+
     const data = res.data.formInfoList;
     cyzb.data = data.find((item) => item.year == store.state.year);
     cyzbList.value = data.filter((item) => useYear(item));

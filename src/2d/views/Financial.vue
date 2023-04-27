@@ -82,7 +82,6 @@ const data3Echarts = () => {
     data3.Xdata = base8.map((item) => item.month);
     data3.dataList = base8.map((item) => item.qyzczzzl02);
   }
-  console.log('data3: ', data3);
   option.data3 = setLineFinancial(data3);
 };
 
@@ -102,7 +101,6 @@ const data4Echarts = () => {
     data4.Xdata = base8.map((item) => item.month);
     data4.dataList = base8.map((item) => item.qyzcfzl02);
   }
-  console.log('data4: ', data4);
   option.data4 = setLineFinancial(data4);
 };
 
@@ -122,7 +120,6 @@ const data5Echarts = () => {
     data5.Xdata = base8.map((item) => item.month);
     data5.dataList = base8.map((item) => item.qyxsmlv02);
   }
-  console.log('data5: ', data5);
   option.data5 = setLineFinancial(data5);
 };
 </script>

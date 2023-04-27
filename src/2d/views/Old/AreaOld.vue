@@ -42,9 +42,9 @@ const gongyeChart = reactive({
 });
 
 onMounted(() => {
-  getqycyjj().then((res) => {
-    console.log("getqycyjj: ", res);
-  });
+  // getqycyjj().then((res) => {
+  //   console.log("getqycyjj: ", res);
+  // });
 
   for (let index = 0; index < 12; index++) {
     fixedAssetsChartData.xData.push(`${index + 1}月`);

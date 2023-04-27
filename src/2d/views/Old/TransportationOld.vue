@@ -13,15 +13,19 @@
           <div>高速公路总里程</div>
         </div>
       </div>
-      <Echart :option="optionTrafficMileage.data" class="chart-box"></Echart>
+      <Echart
+        :option="optionTrafficMileage.data"
+        class="chart-box"
+      ></Echart>
       <div class="box-km">
-        城市轨道交通总里程：<span class="span"
-          >{{ base.data.csgdjtzlc }}&nbsp;公里</span
-        >
+        城市轨道交通总里程：<span class="span">{{ base.data.csgdjtzlc }}&nbsp;公里</span>
       </div>
     </div>
 
-    <Item title="公共交通" class="item-wrap-PT">
+    <Item
+      title="公共交通"
+      class="item-wrap-PT"
+    >
       <div class="pie-n bg-charts">
         <div class="charts-ctn">
           <Echart :option="optionPublicTransport0.data"></Echart>
@@ -32,8 +36,7 @@
             <p>公交总里程</p>
           </div>
           <div class="right">
-            <span class="span1">{{ base.data.gjzlc }}</span
-            ><span class="span2">{{
+            <span class="span1">{{ base.data.gjzlc }}</span><span class="span2">{{
               base.data.gjzlc !== undefined ? "公里" : ""
             }}</span>
           </div>
@@ -49,8 +52,7 @@
             <p>年客运量</p>
           </div>
           <div class="right">
-            <span class="span1">{{ base.data.nkyl }}</span
-            ><span class="span2">{{
+            <span class="span1">{{ base.data.nkyl }}</span><span class="span2">{{
               base.data.nkyl !== undefined ? "亿人次" : ""
             }}</span>
           </div>
@@ -66,8 +68,7 @@
             <p>出租车保有量</p>
           </div>
           <div class="right">
-            <span class="span1">{{ base.data.czcbyl }}</span
-            ><span class="span2">{{
+            <span class="span1">{{ base.data.czcbyl }}</span><span class="span2">{{
               base.data.czcbyl !== undefined ? "万辆" : ""
             }}</span>
           </div>
@@ -83,8 +84,7 @@
             <p>共享自行车投放量</p>
           </div>
           <div class="right">
-            <span class="span1">{{ base.data.gxzxctfl }}</span
-            ><span class="span2">{{
+            <span class="span1">{{ base.data.gxzxctfl }}</span><span class="span2">{{
               base.data.gxzxctfl !== undefined ? "万辆" : ""
             }}</span>
           </div>
@@ -144,14 +144,14 @@ import { toRaw } from "@vue/reactivity";
 import {
   setTrafficMileage,
   setPublicTransport,
-  setGoingOutData
+  setGoingOutData,
 } from "@/2d/viewCharts/transportation";
 import { getjtcx } from "@/2d/api";
 import { useStore } from "vuex";
 import { Title } from "../components";
 const store = useStore();
 const base = reactive({
-  data: {}
+  data: {},
 });
 
 const optionTrafficMileage = reactive({ data: {} }); //交通里程
@@ -172,35 +172,34 @@ onMounted(() => {
     {
       id: 0,
       value: "",
-      name: "物流企业总数(家)"
+      name: "物流企业总数(家)",
     },
     {
       id: 1,
       value: "",
-      name: "物流运输总量(件)"
+      name: "物流运输总量(件)",
     },
     {
       id: 2,
       value: "",
-      name: "货运量(吨)"
-    }
+      name: "货运量(吨)",
+    },
   ];
 
   // 出行数据
   goingOutData.value = [
     { id: 0, value: "", name: "交通通信支出", unit: "元/年" },
     { id: 1, value: "", name: "平均通勤时耗", unit: "分钟" },
-    { id: 2, value: "", name: "平均通勤距离", unit: "公里" }
+    { id: 2, value: "", name: "平均通勤距离", unit: "公里" },
   ];
   // 智能交通
   intelligentTransportation.value = [
     { id: 3, value: "", name: "智能图像采集终端", unit: "个" },
     { id: 4, value: "", name: "智能停车场", unit: "个" },
-    { id: 5, value: "", name: "智能信号灯", unit: "个" }
+    { id: 5, value: "", name: "智能信号灯", unit: "个" },
   ];
 
   getjtcx().then((res) => {
-    console.log("getjtcx", res);
     const data = res.data.formInfoList;
     base.data = data.find((item) => item.year == store.state.year);
     // 交通里程
@@ -209,14 +208,14 @@ onMounted(() => {
         id: 1,
         name: "高速铁路总里程",
         value: base.data.gstlzlc,
-        color: "rgba(18,78,251,.5)"
+        color: "rgba(18,78,251,.5)",
       },
       {
         id: 2,
         name: "普通铁路总里程",
         value: base.data.pttlzlc,
-        color: "rgba(255,175,21,.5)"
-      }
+        color: "rgba(255,175,21,.5)",
+      },
     ];
     optionTrafficMileage.data = setTrafficMileage(
       base.data.tlzlc,
@@ -268,7 +267,6 @@ onMounted(() => {
       (item.wrap = require(`@/2d/assets/images/wl-wrap-${index + 1}.png`)),
         (item.bg = require(`@/2d/assets/images/wl-bg-${index + 1}.png`)),
         console.log(item, index);
-      console.log("item");
     });
 
     // 出行数据
@@ -290,7 +288,7 @@ onMounted(() => {
       [
         " rgba(52,143,255,0.19)",
         "rgba(0,66,255,0.71)",
-        "rgba(133,165,255,0.99)"
+        "rgba(133,165,255,0.99)",
       ],
       require("@/2d/assets/images/blue-bar.png")
     );
@@ -314,7 +312,7 @@ onMounted(() => {
       [
         " rgba(255,175,21,0.19)",
         "rgba(255,175,21,0.71)",
-        "rgba(255,175,21,0.99)"
+        "rgba(255,175,21,0.99)",
       ],
       require("@/2d/assets/images/orange-bar.png")
     );

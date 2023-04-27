@@ -102,7 +102,6 @@ const handleZJZ = (type) => {
 
 onMounted(() => {
   getqycyjj().then((res) => {
-    console.log("getqycyjj: ", res);
     const data = res.data.formInfoList;
     baseListA.value = data.filter((item) => item.year == store.state.year);
     baseListB.value = data.filter((item) => item.year == store.state.year - 1);

@@ -51,8 +51,6 @@ const data4 = reactive({
 
 onMounted(() => {
   getnytpfy().then((res) => {
-    console.log("nytpfy: ", res);
-
     const data = res.data.formInfoList;
     // 寻找某个省份某年的数据
     base.data = data.find(

@@ -46,7 +46,7 @@ const wuliu = ref([
 ]);
 onMounted(() => {
   getjtcx().then((res) => {
-    console.log('res: ', res);
+
     const data = res.data.formInfoList;
     base.data = data.find((item) => item.year == store.state.year);
     data1.data[0].value = base.data.gstlzlc;

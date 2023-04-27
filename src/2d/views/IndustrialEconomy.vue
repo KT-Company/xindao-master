@@ -80,7 +80,6 @@ const economicData = reactive([
 const pickIndex = ref(0);
 onMounted(() => {
   getcyjj().then((res) => {
-    console.log("getcyjj: ", res);
     const data = res.data.formInfoList;
     cyzb.data = data.find((item) => item.year == store.state.year);
     cyzbList.value = data.filter((item) => useYear(item));

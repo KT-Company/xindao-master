@@ -71,12 +71,12 @@ const BUSINESS = () => {
   const endUnix = dayjs(`${dayjs(`${currMoth}`).endOf('month').format('YYYY-MM-DD')} 8:00`).valueOf()
   Promise.all([getParamsA(), getParamsB(), getParamsC(), getParamsD()]).then(res => {
     const data = res
-    console.log('BUSINESS: ', data);
+
     const a = data[0].data.data
-    const b = data[1].data.data.steps.find(item => item.stepName == '经营模式').calendars
+    const b = data[1].data.data.steps.find(item => item.stepCode == 'INDEPENDENT_MANAGEMENT').calendars
     const BusinessTime = dayjs.unix(Number(b.find(item => item.state === 'ACTIVE_CURRENT').calendarTime)).format('YYYY')
     const BusinessTimeToYYYYMM = dayjs.unix(Number(b.find(item => item.state === 'ACTIVE_CURRENT').calendarTime)).format('YYYY-MM')
-    console.log('BusinessTimeToMoth: ', BusinessTimeToYYYYMM);
+
     store.commit('setBusinessTime', BusinessTime)
     const c = data[2].data.data.param
     const d = data[3].data.data
@@ -120,7 +120,7 @@ const BUSINESS = () => {
       startDate: endUnix,
     }
 
-    console.log('p-->', p);
+
 
 
     Promise.all([
@@ -133,7 +133,7 @@ const BUSINESS = () => {
       BUSINESS2.get_qyyhck(p), BUSINESS2.get_qyyhdk(p), BUSINESS2.get_qysdssfl(p), BUSINESS2.get_qyzzssfl(p), BUSINESS2.get_qysl(p),
       BUSINESS2.get_qydk(p), BUSINESS2.get_qyck(p), BUSINESS2.get_zhfwsr(p), BUSINESS2.get_tpf(p)
     ]).then(res => {
-      console.log('res: ', res);
+
       const data = res
       if (store.state.isMock) {
         // 客单价
@@ -274,7 +274,7 @@ const BUSINESS = () => {
         // 存货周转率
         data[29].data.data = [{ "period": "2023-01", "rate": 0.00 }, { "period": "2023-02", "rate": 0 }, { "period": "2023-03", "rate": 0 }, { "period": "2023-04", "rate": 0 }, { "period": "2023-05", "rate": 0 }, { "period": "2023-06", "rate": 0 }, { "period": "2023-07", "rate": 0 }, { "period": "2023-08", "rate": 0 }, { "period": "2023-09", "rate": 0 }, { "period": "2023-10", "rate": 50 }, { "period": "2023-11", "rate": 0 }, { "period": "2023-12", "rate": 0 }]
       }
-      console.log('data: ', data);
+
 
       function returnData(name, id = 4) {
         if (id == 4) {
@@ -287,7 +287,7 @@ const BUSINESS = () => {
       const nan = data[11].data.data.list.find(item => item.sex == '男')
       const nv = data[11].data.data.list.find(item => item.sex == '女')
       const ryld = data[12].data.data.find(item => item.employedTime == BusinessTimeToYYYYMM)
-      console.log('ryld: ', ryld);
+
 
       const data1 = {
         ndsrzb01: data[0].data.data.budget,
@@ -515,7 +515,7 @@ const BUSINESS = () => {
 
 
       }
-      console.log('data1: ', data1);
+
       store.commit('setData1', data1)
       store.commit('setData2', data1)
       store.commit('setData3', data1)
@@ -527,7 +527,7 @@ const BUSINESS = () => {
       store.commit('setData9', data1)
       store.commit('setData10', data1)
 
-      console.log('getBUSINESSall: ', data);
+
     })
 
   })

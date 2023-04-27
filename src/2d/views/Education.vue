@@ -32,7 +32,6 @@ const option = reactive({
 
 onMounted(() => {
   getjyyl().then((res) => {
-    console.log("getjyyl: ", res);
     const data = res.data.formInfoList;
     base.data = data.find((item) => item.year == store.state.year);
     // baseList.value = data.filter((item) => useYear(item));
